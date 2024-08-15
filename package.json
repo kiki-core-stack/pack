@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@kikiutils/mongoose": "^1.2.1",
+    "@kikiutils/node": "^4.2.2",
     "@kikiutils/types": "^2.0.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
