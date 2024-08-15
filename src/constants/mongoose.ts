@@ -1,6 +1,13 @@
 import { commonMongooseSchemas as _commonMongooseSchemas } from '@kikiutils/mongoose/constants';
-import { createCommonMongooseSchemas } from '@kikiutils/mongoose/utils';
+import { createCommonMongooseSchemas, createMongooseObjectIdRefSchema } from '@kikiutils/mongoose/utils';
 
 export const commonMongooseSchemas = (() => {
-	return createCommonMongooseSchemas({} as const);
+	return createCommonMongooseSchemas({
+		ref: {
+			admin: {
+				nonRequired: createMongooseObjectIdRefSchema('Admin'),
+				required: createMongooseObjectIdRefSchema('Admin', 'required')
+			}
+		}
+	} as const);
 })();
