@@ -25,5 +25,36 @@
     "ts-project-builder": "^3.0.1",
     "tslib": "^2.6.3"
   },
+  "exports": {
+    "./constants": {
+      "import": "./constants/index.mjs",
+      "types": "./constants/index.d.ts"
+    },
+    "./constants/*": {
+      "import": "./constants/*.mjs",
+      "types": "./constants/*.d.ts"
+    },
+    "./models": {
+      "import": "./models/index.mjs",
+      "types": "./models/index.d.ts"
+    },
+    "./types": {
+      "types": "./types/index.d.ts"
+    },
+    "./types/*": {
+      "types": "./types/*.d.ts"
+    },
+    "./types/data": {
+      "types": "./types/data/index.d.ts"
+    },
+    "./utils": {
+      "import": "./utils/index.mjs",
+      "types": "./utils/index.d.ts"
+    },
+    "./utils/*": {
+      "import": "./utils/*.mjs",
+      "types": "./utils/*.d.ts"
+    }
+  },
   "prettier": "@kikiutils/prettierrc"
 }
