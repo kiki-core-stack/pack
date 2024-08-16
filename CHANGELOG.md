@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.1
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.4.0...v0.4.1)
+
+### 🏡 Chore
+
+- Remove API_BASE_URL env and update axios baseURL ([05740ba](https://github.com/el-plus-admin/pack/commit/05740ba))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.4.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.3.0...v0.4.0)
