@@ -6,7 +6,7 @@ export { AxiosError } from 'axios';
 export type ApiRequestData = FormData | ApiRequestParams;
 export type ApiRequestParams = Dict<any>;
 
-export const apiInstance: AxiosInstance = axios.create({ baseURL: process.env.BASE_URL ?? '/api' });
+export const apiInstance: AxiosInstance = axios.create();
 export const requestApi = async <T extends object = {}, R extends AxiosResponse<ApiResponseData<T>> = AxiosResponse<ApiResponseData<T>>, D extends ApiRequestData = any>(
 	url: string,
 	method: Method,
