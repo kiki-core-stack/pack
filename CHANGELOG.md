@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.3.0...v0.4.0)
+
+### 🚀 Enhancements
+
+- Export `mongooseConnections` in `models/index.ts` ([e9ee50e](https://github.com/el-plus-admin/pack/commit/e9ee50e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.3.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.2.0...v0.3.0)
