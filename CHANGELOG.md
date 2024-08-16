@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.2.0...v0.3.0)
+
+### 🩹 Fixes
+
+- Correct excluded type in `AjvValidatorJSONSchema` type definition ([14fd4be](https://github.com/el-plus-admin/pack/commit/14fd4be))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.2.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.1.0...v0.2.0)
