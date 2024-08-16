@@ -42,6 +42,10 @@
       "import": "./constants/*.mjs",
       "types": "./constants/*.d.ts"
     },
+    "./controllers/*": {
+      "import": "./controllers/*.mjs",
+      "types": "./controllers/*.d.ts"
+    },
     "./models": {
       "import": "./models/index.mjs",
       "types": "./models/index.d.ts"
