@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.5.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.4.1...v0.5.0)
+
+### 🚀 Enhancements
+
+- Add optional `requiredTwoFactorAuthentications` field to ApiResponseData's data property ([85eb862](https://github.com/el-plus-admin/pack/commit/85eb862))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.4.1
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.4.0...v0.4.1)
