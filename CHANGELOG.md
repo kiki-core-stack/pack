@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.2.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.1.0...v0.2.0)
+
+### 🚀 Enhancements
+
+- Add `commonAjvValidatorSchemas` constant ([7d718aa](https://github.com/el-plus-admin/pack/commit/7d718aa))
+- Add two-factor authentication types ([d79c5bb](https://github.com/el-plus-admin/pack/commit/d79c5bb))
+- Add Redis dependency and related files ([fe9a705](https://github.com/el-plus-admin/pack/commit/fe9a705))
+- Add email dependencies and related files ([dc458d2](https://github.com/el-plus-admin/pack/commit/dc458d2))
+- Add two-factor authentication dependencies and utils ([58caa23](https://github.com/el-plus-admin/pack/commit/58caa23))
+
+### 🩹 Fixes
+
+- Correct key error in `TwoFactorAuthenticationCodesData` type ([7833f2c](https://github.com/el-plus-admin/pack/commit/7833f2c))
+
+### 🏡 Chore
+
+- Update exports field in package.json ([3e59470](https://github.com/el-plus-admin/pack/commit/3e59470))
+- Remove unused files ([7385cda](https://github.com/el-plus-admin/pack/commit/7385cda))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.1.0
 
 ### 🚀 Enhancements
