@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.6.1
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.6.0...v0.6.1)
+
+### 🩹 Fixes
+
+- Add missing nitropack path in package.json exports field ([292cb2a](https://github.com/el-plus-admin/pack/commit/292cb2a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.6.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.5.0...v0.6.0)
