@@ -4,7 +4,7 @@ import { getRouterParam } from 'h3';
 import type { H3Event } from 'h3';
 import type { ProjectionType, QueryOptions, Schema } from 'mongoose';
 
-import { createH3ErrorAndThrow } from '../utils/nitropack';
+import { createH3ErrorAndThrow } from '../nitropack/utils/response';
 
 export const buildMongooseModel = <DocType, Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>, InstanceMethodsAndOverrides = {}, QueryHelpers = {}>(
 	collection: string,
