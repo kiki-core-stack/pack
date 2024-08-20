@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.6.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.5.0...v0.6.0)
+
+### 🚀 Enhancements
+
+- Export common lodash functions in `nitropack/utils` ([173d438](https://github.com/el-plus-admin/pack/commit/173d438))
+
+### 🩹 Fixes
+
+- Correct incorrect type names ([84554e8](https://github.com/el-plus-admin/pack/commit/84554e8))
+
+### 💅 Refactors
+
+- ⚠️ Split and move some utils to `nitropack/utils` ([d20f25a](https://github.com/el-plus-admin/pack/commit/d20f25a))
+
+### 🏡 Chore
+
+- Move `@types/lodash-es` to dependencies ([cb969f7](https://github.com/el-plus-admin/pack/commit/cb969f7))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Split and move some utils to `nitropack/utils` ([d20f25a](https://github.com/el-plus-admin/pack/commit/d20f25a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.5.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.4.1...v0.5.0)
