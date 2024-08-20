@@ -50,6 +50,14 @@
       "import": "./models/index.mjs",
       "types": "./models/index.d.ts"
     },
+    "./nitropack/*": {
+      "import": "./nitropack/*.mjs",
+      "types": "./nitropack/*.d.ts"
+    },
+    "./nitropack/utils": {
+      "import": "./nitropack/utils/index.mjs",
+      "types": "./nitropack/utils/index.d.ts"
+    },
     "./types": {
       "types": "./types/index.d.ts"
     },
