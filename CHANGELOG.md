@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.7.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.6.1...v0.7.0)
+
+### 🚀 Enhancements
+
+- Export all constants from `constants/index.ts` in `nitropack/utils/index.ts` ([5e964e3](https://github.com/el-plus-admin/pack/commit/5e964e3))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([1c48d03](https://github.com/el-plus-admin/pack/commit/1c48d03))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.6.1
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.6.0...v0.6.1)
