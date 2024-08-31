@@ -18,7 +18,7 @@ export interface AdminLogData extends BaseMongooseModelData<true, false> {
 	type: AdminLogType;
 }
 
-export interface AdminLoginFormData {
+export interface AdminLoginFormData extends TwoFactorAuthenticationCodesData {
 	account: string;
 	password: string;
 	verCode: string;
