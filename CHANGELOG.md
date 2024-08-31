@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.8.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.7.0...v0.8.0)
+
+### 🚀 Enhancements
+
+- Add `AdminLoginFormData` interface ([9b0a99b](https://github.com/el-plus-admin/pack/commit/9b0a99b))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([c3a4d9e](https://github.com/el-plus-admin/pack/commit/c3a4d9e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.7.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.6.1...v0.7.0)
