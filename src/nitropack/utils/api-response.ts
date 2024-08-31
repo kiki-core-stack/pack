@@ -12,9 +12,9 @@ export function createApiErrorAndThrow(statusCode: number = 500, arg1: any, arg2
 	throw createApiError(statusCode, arg1, arg2);
 }
 
-export function createResponseData<D extends object>(data?: D, message?: string): ApiResponseData<D>;
-export function createResponseData<D extends object>(message?: string, data?: D): ApiResponseData<D>;
-export function createResponseData(arg1: any, arg2?: any) {
+export function createApiSuccessResponseData<D extends object>(data?: D, message?: string): ApiResponseData<D>;
+export function createApiSuccessResponseData<D extends object>(message?: string, data?: D): ApiResponseData<D>;
+export function createApiSuccessResponseData(arg1: any, arg2?: any) {
 	if (typeof arg1 === 'string') [arg1, arg2] = [arg2, arg1];
 	return { data: arg1 || {}, message: arg2 || '成功', success: true };
 }
