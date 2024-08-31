@@ -1,3 +1,4 @@
+import logger from '@kikiutils/node/consola';
 import { isError } from 'h3';
 import { mongo } from 'mongoose';
 import type { NitroApp } from 'nitropack';
@@ -33,6 +34,7 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string
 export default (nitroApp: NitroApp) => {
 	nitroApp.hooks.hook('error', (error: Error) => {
 		if (!isError(error)) return;
+		logger.error(error);
 		let apiError;
 		if (error.cause instanceof ApiError) apiError = error.cause;
 		else if (error.cause instanceof mongo.MongoServerError && error.cause.code) error.statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.cause.code] || 500;
