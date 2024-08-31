@@ -29,6 +29,7 @@
     "changelogen": "^0.5.5",
     "date-fns": "^3.6.0",
     "mongoose": "^8.6.0",
+    "nitropack": "^2.9.7",
     "rollup-plugin-delete": "^2.0.0",
     "ts-project-builder": "^3.0.1",
     "tslib": "^2.7.0"

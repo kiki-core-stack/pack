@@ -6,8 +6,7 @@ const statusCodeToMessageMap: Dict<string> = {
 	401: '尚未登入！',
 	403: '沒有權限！',
 	404: '找不到資料！',
-	409: '欄位值重複或是該資料使用中！',
-	500: '系統錯誤！'
+	409: '欄位值重複或是該資料使用中！'
 };
 
 export function createApiError<D extends object>(statusCode?: number, data?: D, message?: string): H3Error;
