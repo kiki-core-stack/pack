@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.11.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.10.0...v0.11.0)
+
+### 🚀 Enhancements
+
+- Add ApiError class ([85afdc2](https://github.com/el-plus-admin/pack/commit/85afdc2))
+- Log original error in unified error handling hook ([c453f44](https://github.com/el-plus-admin/pack/commit/c453f44))
+
+### 💅 Refactors
+
+- Modify `createApiError` to instantiate `ApiError` instead of `H3Error` ([74aab91](https://github.com/el-plus-admin/pack/commit/74aab91))
+- ⚠️ Remove `createApiErrorAndThrow` util ([cae1b74](https://github.com/el-plus-admin/pack/commit/cae1b74))
+- Update logic in unified error handling hook ([1fa5a6a](https://github.com/el-plus-admin/pack/commit/1fa5a6a))
+
+### 🏡 Chore
+
+- Export ApiError in nitropack utils ([9a6b1d1](https://github.com/el-plus-admin/pack/commit/9a6b1d1))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `createApiErrorAndThrow` util ([cae1b74](https://github.com/el-plus-admin/pack/commit/cae1b74))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.10.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.9.0...v0.10.0)
