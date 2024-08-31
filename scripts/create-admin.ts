@@ -8,7 +8,7 @@ import { AdminModel } from '../src/models';
 		account: 'account',
 		enabled: true,
 		name: 'name',
-		password: cryptoSha3256(cryptoSha3512('password'))
+		password: cryptoSha3512('password')
 	});
 
 	logger.success(`Successfully created admin account: '${admin.account}'`);
