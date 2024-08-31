@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.11.1
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.11.0...v0.11.1)
+
+### 💅 Refactors
+
+- Update error logging logic in unified error handling hook ([1cc4a84](https://github.com/el-plus-admin/pack/commit/1cc4a84))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.11.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.10.0...v0.11.0)
