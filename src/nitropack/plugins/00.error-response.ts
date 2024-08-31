@@ -33,18 +33,11 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string
 export default (nitroApp: NitroApp) => {
 	nitroApp.hooks.hook('error', (error: Error) => {
 		if (!isError(error)) return;
-		let errorStatusCode = 500;
-		if (error.cause instanceof mongo.MongoServerError && error.cause.code) errorStatusCode = mongodbErrorCodeToHttpStatusCodeMap[error.cause.code] || 500;
-		else {
-			try {
-				const messageData: Partial<ApiResponseData> = JSON.parse((error.cause as any)?.message);
-				if (messageData.success !== undefined) return;
-			} catch {}
-		}
-
-		const newError = new ApiError(errorStatusCode);
+		let apiError;
+		if (error.cause instanceof ApiError) apiError = error.cause;
+		else if (error.cause instanceof mongo.MongoServerError && error.cause.code) error.statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.cause.code] || 500;
+		const newError = apiError || new ApiError(error.statusCode);
 		error.cause = newError.cause;
 		error.message = newError.message;
-		error.statusCode = errorStatusCode;
 	});
 };
