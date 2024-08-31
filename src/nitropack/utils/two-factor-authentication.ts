@@ -6,14 +6,14 @@ import { nanoid } from 'nanoid';
 import { importKey, totp as getTotpCode } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
+import ApiError from '../../classes/api-error';
 import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '../../constants';
 import redisController from '../../controllers/redis';
 import type { AdminDocument } from '../../models';
 import { sendEmail } from '../../utils/email';
-import { createApiErrorAndThrow } from './response';
 
 export const requireTwoFactorAuthentication = async (event: H3Event, emailOtp: boolean = true, totp: boolean = true, admin?: AdminDocument, autoSendEmailOtpCode?: boolean) => {
-	if (!(admin = admin || event.context.admin)) createApiErrorAndThrow();
+	if (!(admin = admin || event.context.admin)) throw new ApiError();
 	const { emailOtpCode, totpCode } = await readBody<TwoFactorAuthenticationCodesData>(event);
 	const requiredTwoFactorAuthentications = {
 		emailOtp: !!(emailOtp && admin.twoFactorAuthenticationStatus.emailOtp && admin.email),
@@ -26,27 +26,27 @@ export const requireTwoFactorAuthentication = async (event: H3Event, emailOtp: b
 				try {
 					await sendEmailOtpCode(admin);
 				} catch (error) {
-					if (!isError(error) || error.statusCode !== 429) createApiErrorAndThrow(500, '發送Email OTP驗證碼失敗！', { requiredTwoFactorAuthentications });
+					if (!isError(error) || error.statusCode !== 429) throw new ApiError(500, '發送Email OTP驗證碼失敗！', { requiredTwoFactorAuthentications });
 				}
 			}
 
-			createApiErrorAndThrow(400, '請輸入Email OTP驗證碼！', { requiredTwoFactorAuthentications });
+			throw new ApiError(400, '請輸入Email OTP驗證碼！', { requiredTwoFactorAuthentications });
 		}
 
-		if (emailOtpCode !== (await redisController.twoFactorAuthentication.emailOtpCode.get(admin))) createApiErrorAndThrow(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+		if (emailOtpCode !== (await redisController.twoFactorAuthentication.emailOtpCode.get(admin))) throw new ApiError(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
 		await redisController.twoFactorAuthentication.emailOtpCode.del(admin);
 	}
 
 	if (requiredTwoFactorAuthentications.totp) {
-		if (!totpCode) createApiErrorAndThrow(400, '請輸入TOTP驗證碼！', { requiredTwoFactorAuthentications });
-		if (totpCode !== (await getTotpCode(hmac, { secret: importKey(admin.totpSecret!) }))) createApiErrorAndThrow(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+		if (!totpCode) throw new ApiError(400, '請輸入TOTP驗證碼！', { requiredTwoFactorAuthentications });
+		if (totpCode !== (await getTotpCode(hmac, { secret: importKey(admin.totpSecret!) }))) throw new ApiError(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
 	}
 };
 
 export const sendEmailOtpCode = async (admin: AdminDocument) => {
-	if (!admin.email) createApiErrorAndThrow(400, 'Email未綁定，無法發送OTP驗證碼！');
+	if (!admin.email) throw new ApiError(400, 'Email未綁定，無法發送OTP驗證碼！');
 	const emailOtpTTL = await redisController.twoFactorAuthentication.emailOtpCode.ttl(admin);
-	if (emailOtpTTL > 0 && emailOtpExpirationSeconds - emailOtpTTL < sendEmailOtpCodeCoolingSeconds) createApiErrorAndThrow(429, 'Email OTP驗證碼已發送過，請稍後再試！');
+	if (emailOtpTTL > 0 && emailOtpExpirationSeconds - emailOtpTTL < sendEmailOtpCodeCoolingSeconds) throw new ApiError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
 	const emailOtpCode = nanoid(6);
 	await redisController.twoFactorAuthentication.emailOtpCode.set(admin, emailOtpCode, emailOtpExpirationSeconds);
 	const htmlContentTexts = [

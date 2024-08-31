@@ -2,7 +2,7 @@ import { isError } from 'h3';
 import { mongo } from 'mongoose';
 import type { NitroApp } from 'nitropack';
 
-import { createApiError } from '../utils/response';
+import ApiError from '../../classes/api-error';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string, number>>({
 	2: 400, // BadValue -> Bad Request
@@ -42,7 +42,7 @@ export default (nitroApp: NitroApp) => {
 			} catch {}
 		}
 
-		const newError = createApiError(errorStatusCode);
+		const newError = new ApiError(errorStatusCode);
 		error.cause = newError.cause;
 		error.message = newError.message;
 		error.statusCode = errorStatusCode;

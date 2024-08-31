@@ -4,7 +4,7 @@ import { getRouterParam } from 'h3';
 import type { H3Event } from 'h3';
 import type { ProjectionType, QueryOptions, Schema } from 'mongoose';
 
-import { createApiErrorAndThrow } from '../nitropack/utils/response';
+import ApiError from '../classes/api-error';
 
 export const buildMongooseModel = <DocType, Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>, InstanceMethodsAndOverrides = {}, QueryHelpers = {}>(
 	collection: string,
@@ -18,7 +18,7 @@ export const buildMongooseModel = <DocType, Model extends BaseMongoosePaginateMo
 
 	schema.static('findByRouteIdOrThrowNotFoundError', async function (event: H3Event, projection?: Nullable<ProjectionType<DocType>>, options?: Nullable<QueryOptions<DocType>>) {
 		const document = (await this.findById(getRouterParam(event, 'id'), projection, options)) as Nullable<MongooseHydratedDocument<DocType, InstanceMethodsAndOverrides, QueryHelpers>>;
-		if (!document) createApiErrorAndThrow(404);
+		if (!document) throw new ApiError(404);
 		return document;
 	});
 
