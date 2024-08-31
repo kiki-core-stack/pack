@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.9.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.8.0...v0.9.0)
+
+### 🚀 Enhancements
+
+- Add profile related types file ([5001a06](https://github.com/el-plus-admin/pack/commit/5001a06))
+- Add script for creating admin ([4099791](https://github.com/el-plus-admin/pack/commit/4099791))
+
+### 🩹 Fixes
+
+- Extend `AdminLoginFormData` interface with `TwoFactorAuthenticationCodesData` ([5a6b31b](https://github.com/el-plus-admin/pack/commit/5a6b31b))
+
+### 🏡 Chore
+
+- Add `MONGODB_URI` and `REDIS_URI` settings to example env ([a39ec7d](https://github.com/el-plus-admin/pack/commit/a39ec7d))
+
+### ✅ Tests
+
+- Add `send-admin-email-otp-code` file ([2eb365c](https://github.com/el-plus-admin/pack/commit/2eb365c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.8.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.7.0...v0.8.0)

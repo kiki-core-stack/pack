@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/el-plus-admin-pack",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules",
