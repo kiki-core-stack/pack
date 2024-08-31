@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.10.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.9.0...v0.10.0)
+
+### 🚀 Enhancements
+
+- Split `createH3ErrorAndThrow` into `createH3Error` and throw versions ([69d31bb](https://github.com/el-plus-admin/pack/commit/69d31bb))
+- Add hook for unified error handling and conversion to generic error format ([0b19f91](https://github.com/el-plus-admin/pack/commit/0b19f91))
+
+### 🩹 Fixes
+
+- Correct password setting method in create admin script ([4d4030a](https://github.com/el-plus-admin/pack/commit/4d4030a))
+
+### 💅 Refactors
+
+- ⚠️ Rename createH3Error to createApiError ([95fcaf5](https://github.com/el-plus-admin/pack/commit/95fcaf5))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename createH3Error to createApiError ([95fcaf5](https://github.com/el-plus-admin/pack/commit/95fcaf5))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.9.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.8.0...v0.9.0)
