@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.12.0
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.11.1...v0.12.0)
+
+### 🚀 Enhancements
+
+- Add `createApiErrorAndThrow` utils ([b46ac0b](https://github.com/el-plus-admin/pack/commit/b46ac0b))
+
+### 💅 Refactors
+
+- ⚠️  Rename `createResponseData` to `createApiSuccessResponseData` and update file name ([88b8f7b](https://github.com/el-plus-admin/pack/commit/88b8f7b))
+- Update method for creating and throwing `ApiError` ([74e5fcf](https://github.com/el-plus-admin/pack/commit/74e5fcf))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Rename `createResponseData` to `createApiSuccessResponseData` and update file name ([88b8f7b](https://github.com/el-plus-admin/pack/commit/88b8f7b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.11.1
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.11.0...v0.11.1)
