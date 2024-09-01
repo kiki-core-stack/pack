@@ -1,1 +1,1 @@
-# @kikiutils/el-plus-admin-pack
+# @kikiutils/kiki-core-stack-pack
