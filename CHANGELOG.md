@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.12.1
+
+[compare changes](https://github.com/el-plus-admin/pack/compare/v0.12.0...v0.12.1)
+
+### 🩹 Fixes
+
+- Resolve issue where email OTP resend was blocked after a failed attempt ([dd20224](https://github.com/el-plus-admin/pack/commit/dd20224))
+
+### 💅 Refactors
+
+- Replace ts-ignore with ts-expect-error ([6b9b1d3](https://github.com/el-plus-admin/pack/commit/6b9b1d3))
+- Move send-admin-email-otp-code to scripts directory ([daf9185](https://github.com/el-plus-admin/pack/commit/daf9185))
+
+### 🏡 Chore
+
+- Update include fields in tsconfig ([a47144c](https://github.com/el-plus-admin/pack/commit/a47144c))
+- Remove unused imports ([8af323c](https://github.com/el-plus-admin/pack/commit/8af323c))
+- Update tsconfig.json ([1e6dfad](https://github.com/el-plus-admin/pack/commit/1e6dfad))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.12.0
 
 [compare changes](https://github.com/el-plus-admin/pack/compare/v0.11.1...v0.12.0)
