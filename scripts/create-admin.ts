@@ -1,5 +1,5 @@
 import logger from '@kikiutils/node/consola';
-import { cryptoSha3256, cryptoSha3512 } from '@kikiutils/node/crypto-hash';
+import { cryptoSha3512 } from '@kikiutils/node/crypto-hash';
 
 import { AdminModel } from '../src/models';
 
