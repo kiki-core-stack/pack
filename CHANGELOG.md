@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.12.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.1...v0.12.2)
+
+### 💅 Refactors
+
+- Update references to old organization name due to name change ([ba28cdb](https://github.com/kiki-core-stack/pack/commit/ba28cdb))
+- Update return type of requestApi function in api-requests to possibly be undefined ([48f3f1a](https://github.com/kiki-core-stack/pack/commit/48f3f1a))
+
+### 🏡 Chore
+
+- Update example env file ([a5b3018](https://github.com/kiki-core-stack/pack/commit/a5b3018))
+- Upgrade dependencies ([251af1e](https://github.com/kiki-core-stack/pack/commit/251af1e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.12.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.0...v0.12.1)
