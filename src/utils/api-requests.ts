@@ -7,7 +7,7 @@ export type ApiRequestData = FormData | ApiRequestParams;
 export type ApiRequestParams = Dict<any>;
 
 export const apiInstance: AxiosInstance = axios.create();
-export const requestApi = async <T extends object = {}, R extends AxiosResponse<ApiResponseData<T>> = AxiosResponse<ApiResponseData<T>>, D extends ApiRequestData = any>(
+export const requestApi = async <T extends object = {}, R extends AxiosResponse<ApiResponseData<T>> | undefined = AxiosResponse<ApiResponseData<T>> | undefined, D extends ApiRequestData = any>(
 	url: string,
 	method: Method,
 	params?: ApiRequestData,
@@ -16,12 +16,12 @@ export const requestApi = async <T extends object = {}, R extends AxiosResponse<
 ) => await apiInstance.request<T, R, D>({ ...config, data, method, params, url });
 
 export const deleteApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => await requestApi<T>(url, 'delete', params, {}, config);
-export const $deleteApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => (await deleteApi<T>(url, params, config)).data;
+export const $deleteApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => (await deleteApi<T>(url, params, config))?.data;
 export const getApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => await requestApi<T>(url, 'get', params, {}, config);
-export const $getApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => (await getApi<T>(url, params, config)).data;
+export const $getApi = async <T extends object = {}>(url: string, params?: ApiRequestParams, config?: AxiosRequestConfig) => (await getApi<T>(url, params, config))?.data;
 export const patchApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => await requestApi<T>(url, 'patch', {}, data, config);
-export const $patchApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await patchApi<T>(url, data, config)).data;
+export const $patchApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await patchApi<T>(url, data, config))?.data;
 export const postApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => await requestApi<T>(url, 'post', {}, data, config);
-export const $postApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await postApi<T>(url, data, config)).data;
+export const $postApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await postApi<T>(url, data, config))?.data;
 export const putApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => await requestApi<T>(url, 'put', {}, data, config);
-export const $putApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await putApi<T>(url, data, config)).data;
+export const $putApi = async <T extends object = {}>(url: string, data?: ApiRequestData, config?: AxiosRequestConfig<ApiRequestData>) => (await putApi<T>(url, data, config))?.data;
