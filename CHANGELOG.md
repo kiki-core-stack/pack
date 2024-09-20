@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.12.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.2...v0.12.3)
+
+### 💅 Refactors
+
+- **types:** Update `AjvValidatorJSONSchema` to refine generic parameter constraints ([dfebd53](https://github.com/kiki-core-stack/pack/commit/dfebd53))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([43c5b5a](https://github.com/kiki-core-stack/pack/commit/43c5b5a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.12.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.1...v0.12.2)
