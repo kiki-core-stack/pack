@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.13.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.3...v0.13.0)
+
+### 🚀 Enhancements
+
+- Add error handler for nitropack ([d3a0597](https://github.com/kiki-core-stack/pack/commit/d3a0597))
+
+### 💅 Refactors
+
+- Update static method definition in model ([5172403](https://github.com/kiki-core-stack/pack/commit/5172403))
+
+### 🏡 Chore
+
+- Update example env and upgrade dependencies ([2250cde](https://github.com/kiki-core-stack/pack/commit/2250cde))
+- Update `build-and-publish` script ([2efe7d0](https://github.com/kiki-core-stack/pack/commit/2efe7d0))
+- Modify file permissions ([9bca6ac](https://github.com/kiki-core-stack/pack/commit/9bca6ac))
+- Upgrade dependencies ([7c72bc4](https://github.com/kiki-core-stack/pack/commit/7c72bc4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.12.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.2...v0.12.3)
