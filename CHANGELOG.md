@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.14.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.14.0...v0.14.1)
+
+### 🩹 Fixes
+
+- Validate if id can be converted to `ObjectId` in `findByRouteIdOrThrowNotFoundError` static method ([ae0fc4f](https://github.com/kiki-core-stack/pack/commit/ae0fc4f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.14.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.13.0...v0.14.0)
