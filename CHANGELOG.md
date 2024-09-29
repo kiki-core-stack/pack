@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.14.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.13.0...v0.14.0)
+
+### 🚀 Enhancements
+
+- ⚠️ Add `filterQuery` parameter to `findByRouteIdOrThrowNotFoundError` static method in model ([123808e](https://github.com/kiki-core-stack/pack/commit/123808e))
+
+### 🩹 Fixes
+
+- Add `InstanceMethodsAndOverrides` type parameter to `MongooseFindOneReturnType` usage ([b28df6a](https://github.com/kiki-core-stack/pack/commit/b28df6a))
+
+### 💅 Refactors
+
+- Use `Object.freeze` to freeze some constants ([cdfa49a](https://github.com/kiki-core-stack/pack/commit/cdfa49a))
+- Update type definitions for constants defined with `Object.freeze` ([c332777](https://github.com/kiki-core-stack/pack/commit/c332777))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([049853e](https://github.com/kiki-core-stack/pack/commit/049853e))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Add `filterQuery` parameter to `findByRouteIdOrThrowNotFoundError` static method in model ([123808e](https://github.com/kiki-core-stack/pack/commit/123808e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.13.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.12.3...v0.13.0)
