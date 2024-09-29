@@ -9,7 +9,7 @@ declare module '@kikiutils/mongoose/types' {
 			event: H3Event,
 			projection?: Nullable<ProjectionType<RawDocType>>,
 			options?: Nullable<QueryOptions<RawDocType>>
-		): MongooseFindOneReturnType<RawDocType, HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>, QueryHelpers>;
+		): MongooseFindOneReturnType<RawDocType, HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>, QueryHelpers, InstanceMethodsAndOverrides>;
 
 		findByRouteIdOrThrowNotFoundError(event: H3Event, projection?: Nullable<ProjectionType<RawDocType>>, options?: Nullable<QueryOptions<RawDocType>>): Promise<HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>>;
 	}

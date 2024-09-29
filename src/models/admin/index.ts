@@ -17,7 +17,7 @@ interface AdminMethodsAndOverrides {
 }
 
 interface AdminModel extends BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides> {
-	findByAccount(account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>): MongooseFindOneReturnType<Admin, AdminDocument>;
+	findByAccount(account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>): MongooseFindOneReturnType<Admin, AdminDocument, {}, AdminMethodsAndOverrides>;
 }
 
 const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
