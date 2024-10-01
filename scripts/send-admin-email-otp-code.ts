@@ -1,5 +1,5 @@
 import { AdminModel } from '../src/models';
-import { sendEmailOtpCode } from '../src/nitropack/utils/two-factor-authentication';
+import { sendEmailOtpCode } from '../src/nitro/utils/two-factor-authentication';
 
 (async () => {
 	const admin = await AdminModel.findByAccount('');

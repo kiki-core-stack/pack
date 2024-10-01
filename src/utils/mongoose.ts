@@ -5,7 +5,7 @@ import type { H3Event } from 'h3';
 import { Types } from 'mongoose';
 import type { ProjectionType, QueryOptions, Schema, RootFilterQuery } from 'mongoose';
 
-import { createApiErrorAndThrow } from '../nitropack/utils/api-response';
+import { createApiErrorAndThrow } from '../nitro/utils/api-response';
 
 export const buildMongooseModel = <DocType, Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>, InstanceMethodsAndOverrides = {}, QueryHelpers = {}>(
 	collection: string,
