@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.15.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.14.1...v0.15.0)
+
+### 🚀 Enhancements
+
+- Export `flattenToSingleValue` in nitropack utils ([bd84306](https://github.com/kiki-core-stack/pack/commit/bd84306))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([9a1105e](https://github.com/kiki-core-stack/pack/commit/9a1105e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.14.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.14.0...v0.14.1)
