@@ -1,7 +1,12 @@
 import logger from '@kikiutils/node/consola';
 import { isError } from 'h3';
 import { mongo } from 'mongoose';
+// @ts-expect-error
+import type { NitroApp } from 'nitro/types';
+// @ts-expect-error
 import type { NitroApp } from 'nitropack';
+// @ts-expect-error
+import type { NitroApp } from 'nitropack-nightly/types';
 
 import ApiError from '../../classes/api-error';
 
