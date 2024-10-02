@@ -1,10 +1,10 @@
+import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
 import type { ProjectionType, QueryOptions } from 'mongoose';
 
 import { commonMongooseSchemas } from '../../constants/mongoose';
 import type { AdminData } from '../../types/data/admin';
-import { buildMongooseModel } from '../../utils/mongoose';
 
 export * from './log';
 

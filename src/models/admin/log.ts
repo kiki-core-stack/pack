@@ -1,3 +1,4 @@
+import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
 import type { Types } from 'mongoose';
@@ -5,7 +6,6 @@ import type { Types } from 'mongoose';
 import { AdminLogType } from '../../constants/admin';
 import { commonMongooseSchemas } from '../../constants/mongoose';
 import type { AdminLogData } from '../../types/data/admin';
-import { buildMongooseModel } from '../../utils/mongoose';
 
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
