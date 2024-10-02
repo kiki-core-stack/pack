@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.17.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.17.0...v0.17.1)
+
+### 🏡 Chore
+
+- Remove unnecessary types export files ([eb2c7e8](https://github.com/kiki-core-stack/pack/commit/eb2c7e8))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.17.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.16.0...v0.17.0)

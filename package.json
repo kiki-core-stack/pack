@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/kiki-core-stack-pack",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "type": "module",
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules",
