@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.18.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.17.1...v0.18.0)
+
+### 💅 Refactors
+
+- ⚠️ Move mongoose-setup to nitro plugin ([8d726af](https://github.com/kiki-core-stack/pack/commit/8d726af))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Move mongoose-setup to nitro plugin ([8d726af](https://github.com/kiki-core-stack/pack/commit/8d726af))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.17.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.17.0...v0.17.1)
