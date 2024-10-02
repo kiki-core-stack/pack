@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.16.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.15.0...v0.16.0)
+
+### 💅 Refactors
+
+- ⚠️ Move h3-related mongoose schema static methods and types to nitro folder ([a7f0436](https://github.com/kiki-core-stack/pack/commit/a7f0436))
+
+### 🏡 Chore
+
+- Upgrade nitropack to v3 beta ([30b6f16](https://github.com/kiki-core-stack/pack/commit/30b6f16))
+- ⚠️ Rename nitropack folder to nitro ([c302845](https://github.com/kiki-core-stack/pack/commit/c302845))
+- Upgrade dependencies ([0231f27](https://github.com/kiki-core-stack/pack/commit/0231f27))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Move h3-related mongoose schema static methods and types to nitro folder ([a7f0436](https://github.com/kiki-core-stack/pack/commit/a7f0436))
+- ⚠️ Rename nitropack folder to nitro ([c302845](https://github.com/kiki-core-stack/pack/commit/c302845))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.15.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.14.1...v0.15.0)
