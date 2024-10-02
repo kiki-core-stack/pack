@@ -1,4 +1,4 @@
-import ApiError from '../../classes/api-error';
+import ApiError from '../classes/api-error';
 
 export function createApiError<D extends object>(statusCode?: number, data?: D, message?: string): ApiError<D>;
 export function createApiError<D extends object>(statusCode?: number, message?: string, data?: D): ApiError<D>;

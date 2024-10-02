@@ -8,7 +8,7 @@ import type { NitroApp } from 'nitropack';
 // @ts-expect-error
 import type { NitroApp } from 'nitropack-nightly/types';
 
-import ApiError from '../../classes/api-error';
+import ApiError from '../classes/api-error';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string, number>>({
 	2: 400, // BadValue -> Bad Request
