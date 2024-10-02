@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import type { Schema } from 'mongoose';
 import type { ProjectionType, QueryOptions, RootFilterQuery } from 'mongoose';
 
-import { createApiErrorAndThrow } from '../nitro/utils/api-response';
+import { createApiErrorAndThrow } from './utils/api-response';
 
 customMongooseOptions.beforeModelBuild = <DocType, Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>, InstanceMethodsAndOverrides = {}, QueryHelpers = {}>(
 	schema: Schema<DocType, Model, InstanceMethodsAndOverrides, QueryHelpers>
