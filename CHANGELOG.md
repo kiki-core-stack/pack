@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.17.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.16.0...v0.17.0)
+
+### 🚀 Enhancements
+
+- Add default export to mongoose-setup ([b58cf8c](https://github.com/kiki-core-stack/pack/commit/b58cf8c))
+
+### 🩹 Fixes
+
+- Add h3 dependency to rollup node externals list ([2f968c9](https://github.com/kiki-core-stack/pack/commit/2f968c9))
+
+### 💅 Refactors
+
+- Simplify some import paths ([eb95ef6](https://github.com/kiki-core-stack/pack/commit/eb95ef6))
+- ⚠️  Move API error class to nitro folder ([86e4ac5](https://github.com/kiki-core-stack/pack/commit/86e4ac5))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Move API error class to nitro folder ([86e4ac5](https://github.com/kiki-core-stack/pack/commit/86e4ac5))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.16.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.15.0...v0.16.0)
