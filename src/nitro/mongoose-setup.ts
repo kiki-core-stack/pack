@@ -23,3 +23,5 @@ customMongooseOptions.beforeModelBuild = <DocType, Model extends BaseMongoosePag
 		return document;
 	});
 };
+
+export default {};
