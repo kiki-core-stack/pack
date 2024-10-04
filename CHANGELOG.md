@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.19.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.18.0...v0.19.0)
+
+### 🚀 Enhancements
+
+- Add socket.io-client dependencies ([df38c71](https://github.com/kiki-core-stack/pack/commit/df38c71))
+- Add `createSocketIoClient` utility ([05cc13e](https://github.com/kiki-core-stack/pack/commit/05cc13e))
+- Add socket.io event constants and related type definitions ([545b457](https://github.com/kiki-core-stack/pack/commit/545b457))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([f782b32](https://github.com/kiki-core-stack/pack/commit/f782b32))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.18.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.17.1...v0.18.0)
