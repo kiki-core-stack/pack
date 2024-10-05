@@ -31,14 +31,17 @@ const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 		min: 128,
 		set: (password: string) => cryptoSha3256(password)
 	},
-	totpSecret: commonMongooseSchemas.string.private.trimmed.nonRequired,
+	totpSecret: {
+		...commonMongooseSchemas.string.private.trimmed.nonRequired,
+		sparse: true,
+		unique: true
+	},
 	twoFactorAuthenticationStatus: {
 		emailOtp: commonMongooseSchemas.boolean.defaultFalse.required,
 		totp: commonMongooseSchemas.boolean.defaultFalse.required
 	}
 });
 
-adminSchema.index({ totpSecret: 1 }, { sparse: true, unique: true });
 adminSchema.method('verifyPassword', function (password: string) {
 	return cryptoSha3256(password) === this.password;
 });
