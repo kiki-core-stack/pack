@@ -6,9 +6,16 @@ export default defineConfig({
 	builtInInputPluginOptions: {
 		nodeExternal: {
 			include: [
+				'ajv',
+				'ajv-formats',
+				'ajv-keywords',
+				'axios',
 				'date-fns',
 				'h3',
-				'mongoose'
+				'mongoose',
+				'nanoid',
+				'otp-io',
+				'otp-io/crypto'
 			]
 		}
 	}
