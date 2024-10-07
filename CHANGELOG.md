@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.22.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.21.0...v0.22.0)
+
+### 🚀 Enhancements
+
+- Add `acceptedImageMimeTypes` constant ([1941b4c](https://github.com/kiki-core-stack/pack/commit/1941b4c))
+- Add related dependencies and `isAcceptedImageFile` and `getFileMimeType` utilities ([823bfa0](https://github.com/kiki-core-stack/pack/commit/823bfa0))
+- Add `convertAndSaveImageFile` util and related dependencies ([9a156bc](https://github.com/kiki-core-stack/pack/commit/9a156bc))
+- Add image-related utilities for nitro ([21bcc8c](https://github.com/kiki-core-stack/pack/commit/21bcc8c))
+
+### 💅 Refactors
+
+- Move `emailOtpExpirationSeconds` and `sendEmailOtpCodeCoolingSeconds` constants to `constants/two-factor-authentication.ts` ([027b12d](https://github.com/kiki-core-stack/pack/commit/027b12d))
+- Remove constants export from `nitro/utils/index.ts` ([4bef3c3](https://github.com/kiki-core-stack/pack/commit/4bef3c3))
+
+### 🏡 Chore
+
+- Update `nodeExternal.include` list in build configuration ([2fcb5e9](https://github.com/kiki-core-stack/pack/commit/2fcb5e9))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.21.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.20.1...v0.21.0)
