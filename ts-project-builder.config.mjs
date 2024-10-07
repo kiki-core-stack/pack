@@ -6,6 +6,7 @@ export default defineConfig({
 	builtInInputPluginOptions: {
 		nodeExternal: {
 			include: [
+				'@kikiutils/fs-extra',
 				'ajv',
 				'ajv-formats',
 				'ajv-keywords',
@@ -15,7 +16,9 @@ export default defineConfig({
 				'mongoose',
 				'nanoid',
 				'otp-io',
-				'otp-io/crypto'
+				'otp-io/crypto',
+				'piscina',
+				'sharp'
 			]
 		}
 	}
