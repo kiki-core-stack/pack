@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.21.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.20.1...v0.21.0)
+
+### 💅 Refactors
+
+- ⚠️ Update exports in `nitro/utils/index.ts` ([e88eb87](https://github.com/kiki-core-stack/pack/commit/e88eb87))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Update exports in `nitro/utils/index.ts` ([e88eb87](https://github.com/kiki-core-stack/pack/commit/e88eb87))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.20.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.20.0...v0.20.1)
