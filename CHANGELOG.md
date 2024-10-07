@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.20.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.20.0...v0.20.1)
+
+### 🏡 Chore
+
+- Update devDependencies list ([bdaeb2b](https://github.com/kiki-core-stack/pack/commit/bdaeb2b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.20.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.19.0...v0.20.0)
