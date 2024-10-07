@@ -54,21 +54,12 @@ importers:
       ajv-keywords:
         specifier: ^5.1.0
         version: 5.1.0(ajv@8.17.1)
-      axios:
-        specifier: ^1.7.7
-        version: 1.7.7
       changelogen:
         specifier: ^0.5.7
         version: 0.5.7(magicast@0.3.5)
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       h3:
         specifier: ^1.13.0
         version: 1.13.0
-      mongoose:
-        specifier: ^8.7.0
-        version: 8.7.0
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
