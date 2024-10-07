@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.20.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.19.0...v0.20.0)
+
+### 💅 Refactors
+
+- Update `adminSchema.totpSecret` index configuration ([8f5b59e](https://github.com/kiki-core-stack/pack/commit/8f5b59e))
+
+### 🏡 Chore
+
+- Add .npmrc file ([849e457](https://github.com/kiki-core-stack/pack/commit/849e457))
+- ⚠️  Move some dependencies to devDependencies ([cf35154](https://github.com/kiki-core-stack/pack/commit/cf35154))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Move some dependencies to devDependencies ([cf35154](https://github.com/kiki-core-stack/pack/commit/cf35154))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.19.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.18.0...v0.19.0)
