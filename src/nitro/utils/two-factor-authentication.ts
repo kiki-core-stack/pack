@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import { importKey, totp as getTotpCode } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
-import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '../../constants';
+import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '../../constants/two-factor-authentication';
 import redisController from '../../controllers/redis';
 import type { AdminDocument } from '../../models';
 import { sendEmail } from '../../utils/email';
