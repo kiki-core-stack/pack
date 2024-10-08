@@ -3,7 +3,7 @@
   "version": "0.22.0",
   "type": "module",
   "scripts": {
-    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules",
+    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs",
     "bumplog": "changelogen --bump"
   },
   "dependencies": {
@@ -37,25 +37,17 @@
     "tslib": "^2.7.0"
   },
   "exports": {
-    "./constants": {
-      "import": "./constants/index.mjs",
-      "types": "./constants/index.d.ts"
-    },
-    "./constants/*": {
-      "import": "./constants/*.mjs",
-      "types": "./constants/*.d.ts"
-    },
-    "./controllers/*": {
-      "import": "./controllers/*.mjs",
-      "types": "./controllers/*.d.ts"
+    "./*": {
+      "import": "./*.mjs",
+      "types": "./*.d.ts"
     },
     "./models": {
       "import": "./models/index.mjs",
       "types": "./models/index.d.ts"
     },
-    "./nitro/*": {
-      "import": "./nitro/*.mjs",
-      "types": "./nitro/*.d.ts"
+    "./models/admin": {
+      "import": "./models/admin/index.mjs",
+      "types": "./models/admin/index.d.ts"
     },
     "./nitro/utils": {
       "import": "./nitro/utils/index.mjs",
@@ -64,19 +56,8 @@
     "./types": {
       "types": "./types/index.d.ts"
     },
-    "./types/*": {
-      "types": "./types/*.d.ts"
-    },
     "./types/data": {
       "types": "./types/data/index.d.ts"
-    },
-    "./utils": {
-      "import": "./utils/index.mjs",
-      "types": "./utils/index.d.ts"
-    },
-    "./utils/*": {
-      "import": "./utils/*.mjs",
-      "types": "./utils/*.d.ts"
     }
   },
   "prettier": "@kikiutils/prettierrc"
