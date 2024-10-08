@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.22.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.22.0...v0.22.1)
+
+### 🏡 Chore
+
+- Auto-generate `exports` configuration in package.json ([56a05fb](https://github.com/kiki-core-stack/pack/commit/56a05fb))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.22.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.21.0...v0.22.0)
