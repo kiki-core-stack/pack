@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.23.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.22.1...v0.23.0)
+
+### 🚀 Enhancements
+
+- Add hono devDependency ([6c85f0b](https://github.com/kiki-core-stack/pack/commit/6c85f0b))
+- Add basic server files for hono backend ([ce4a556](https://github.com/kiki-core-stack/pack/commit/ce4a556))
+- Add API utils for hono backend ([38b3512](https://github.com/kiki-core-stack/pack/commit/38b3512))
+- Add dynamic API loading for hono backend ([ac8ddf6](https://github.com/kiki-core-stack/pack/commit/ac8ddf6))
+
+### 💅 Refactors
+
+- Remove or migrate files from nitro folder to `hono-backend` ([b931ad5](https://github.com/kiki-core-stack/pack/commit/b931ad5))
+- Migrate `compileH3RequestDataValidator` utils to hono backend ([3fb40aa](https://github.com/kiki-core-stack/pack/commit/3fb40aa))
+- Migrate nitro image utils to hono backend ([5e3b3cf](https://github.com/kiki-core-stack/pack/commit/5e3b3cf))
+- Update usage of was magic ([42956bb](https://github.com/kiki-core-stack/pack/commit/42956bb))
+
+### 🏡 Chore
+
+- Remove h3 and nitro dependencies ([85d1073](https://github.com/kiki-core-stack/pack/commit/85d1073))
+- Remove all nitro-related files ([d1153ea](https://github.com/kiki-core-stack/pack/commit/d1153ea))
+- Update dependencies and rollup nodeExternal plugin include list ([d683f66](https://github.com/kiki-core-stack/pack/commit/d683f66))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.22.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.22.0...v0.22.1)
