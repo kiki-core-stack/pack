@@ -30,11 +30,11 @@
     "hono": "^4.6.3",
     "nanoid": "^5.0.7",
     "otp-io": "^1.2.6",
-    "piscina": "^4.7.0",
     "rollup-plugin-delete": "^2.1.0",
     "sharp": "^0.33.5",
     "ts-project-builder": "^3.1.0",
-    "tslib": "^2.7.0"
+    "tslib": "^2.7.0",
+    "wasmagic": "^1.0.2"
   },
   "exports": {
     "./*": {
