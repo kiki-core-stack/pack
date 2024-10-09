@@ -15,6 +15,7 @@ export default defineConfig({
 				'glob',
 				'hono',
 				'mongoose',
+				'nodemailer',
 				'otp-io',
 				'otp-io/crypto',
 				'sharp',

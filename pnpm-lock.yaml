@@ -23,18 +23,12 @@ importers:
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
-      '@types/nodemailer':
-        specifier: ^6.4.16
-        version: 6.4.16
       ioredis:
         specifier: ^5.4.1
         version: 5.4.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
-      nodemailer:
-        specifier: ^6.9.15
-        version: 6.9.15
       socket.io-client:
         specifier: ^4.8.0
         version: 4.8.0
@@ -51,6 +45,9 @@ importers:
       '@types/bun':
         specifier: ^1.1.11
         version: 1.1.11
+      '@types/nodemailer':
+        specifier: ^6.4.16
+        version: 6.4.16
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -66,6 +63,9 @@ importers:
       hono:
         specifier: ^4.6.3
         version: 4.6.3
+      nodemailer:
+        specifier: ^6.9.15
+        version: 6.9.15
       otp-io:
         specifier: ^1.2.6
         version: 1.2.6
@@ -1242,8 +1242,8 @@ packages:
     resolution: {integrity: sha512-kFxhot+yw9KmpAGSSrF/o+f00aC2uawgNUbhyaM0USS9L7dln1NA77/pLg4lgOaRgXMtfgCENamjqZwIM1Zrig==}
     engines: {node: '>=4.0.0'}
 
-  mongoose@8.7.0:
-    resolution: {integrity: sha512-rUCSF1mMYQXjXYdqEQLLlMD3xbcj2j1/hRn+9VnVj7ipzru/UoUZxlj/hWmteKMAh4EFnDZ+BIrmma9l/0Hi1g==}
+  mongoose@8.7.1:
+    resolution: {integrity: sha512-RpNMyhyzLVCVbf8xTVbrf/18G3MqQzNw5pJdvOJ60fzbCa3cOZzz9L+8XpqzBXtRlgZGWv0T7MmOtvrT8ocp1Q==}
     engines: {node: '>=16.20.1'}
 
   mpath@0.9.0:
@@ -1930,7 +1930,7 @@ snapshots:
     dependencies:
       decimal.js: 10.4.3
       lodash: 4.17.21
-      mongoose: 8.7.0
+      mongoose: 8.7.1
       mongoose-aggregate-paginate-v2: 1.1.2
       mongoose-paginate-v2: 1.8.5
     transitivePeerDependencies:
@@ -2761,7 +2761,7 @@ snapshots:
 
   mongoose-paginate-v2@1.8.5: {}
 
-  mongoose@8.7.0:
+  mongoose@8.7.1:
     dependencies:
       bson: 6.8.0
       kareem: 2.6.3
