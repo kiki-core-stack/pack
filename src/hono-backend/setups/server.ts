@@ -1,16 +1,7 @@
 import logger from '@kikiutils/node/consola';
-import { isError } from 'h3';
 import { mongo } from 'mongoose';
-// @ts-expect-error
-import type { NitroApp } from 'nitro/types';
-// @ts-expect-error
-import type { NitroApp } from 'nitropack';
-// @ts-expect-error
-import type { NitroApp } from 'nitropack-nightly/types';
 
-import ApiError from '../classes/api-error';
-
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string, number>>({
+const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	2: 400, // BadValue -> Bad Request
 	4: 404, // NoSuchKey -> Not Found
 	6: 503, // HostUnreachable -> Service Unavailable
@@ -36,16 +27,18 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<number | string
 	16755: 400 // Location16755 -> Bad Request
 });
 
-export default (nitroApp: NitroApp) => {
-	nitroApp.hooks.hook('error', (error: Error) => {
-		if (!isError(error)) return;
-		let apiError;
-		if (error.cause instanceof ApiError) apiError = error.cause;
-		else if (error.statusCode !== 404) logger.error(error);
-		if (error.cause instanceof mongo.MongoServerError && error.cause.code) error.statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.cause.code] || 500;
-		const newError = apiError || new ApiError(error.statusCode);
-		error.cause = newError.cause;
-		error.message = newError.message;
-		error.unhandled = false;
-	});
-};
+const internalServerError = new ApiError(500);
+const notFoundError = new ApiError(404);
+const responseHeaders = Object.freeze({ 'Content-Type': 'application/json' });
+honoApp.notFound((ctx) => ctx.text(notFoundError.message, notFoundError.statusCode, responseHeaders));
+honoApp.onError((error, ctx) => {
+	let apiError;
+	if (error instanceof ApiError) apiError = error;
+	else if (error instanceof mongo.MongoServerError && error.code) apiError = new ApiError(mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500);
+	if (!apiError) {
+		apiError = internalServerError;
+		logger.error(error);
+	}
+
+	return ctx.text(apiError.message, apiError.statusCode, responseHeaders);
+});

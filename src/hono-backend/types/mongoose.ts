@@ -1,16 +1,16 @@
-import type { H3Event } from 'h3';
+import type { Context } from 'hono';
 import type { HydratedDocument, ProjectionType, QueryOptions, RootFilterQuery } from 'mongoose';
 
 declare module '@kikiutils/mongoose/types' {
 	interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = {}, QueryHelpers = {}> {
 		findByRouteId(
-			event: H3Event,
+			ctx: Context,
 			projection?: Nullable<ProjectionType<RawDocType>>,
 			options?: Nullable<QueryOptions<RawDocType>>
 		): MongooseFindOneReturnType<RawDocType, HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>, QueryHelpers, InstanceMethodsAndOverrides>;
 
 		findByRouteIdOrThrowNotFoundError(
-			event: H3Event,
+			ctx: Context,
 			filterQuery?: RootFilterQuery<RawDocType>,
 			projection?: Nullable<ProjectionType<RawDocType>>,
 			options?: Nullable<QueryOptions<RawDocType>>
