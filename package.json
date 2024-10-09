@@ -28,11 +28,10 @@
     "ajv-keywords": "^5.1.0",
     "changelogen": "^0.5.7",
     "hono": "^4.6.3",
-    "nanoid": "^5.0.7",
     "otp-io": "^1.2.6",
     "rollup-plugin-delete": "^2.1.0",
     "sharp": "^0.33.5",
-    "ts-project-builder": "^3.1.0",
+    "ts-project-builder": "^3.1.1",
     "tslib": "^2.7.0",
     "wasmagic": "^1.0.2"
   },
@@ -41,6 +40,14 @@
       "import": "./*.mjs",
       "types": "./*.d.ts"
     },
+    "./hono-backend/globals": {
+      "import": "./hono-backend/globals/index.mjs",
+      "types": "./hono-backend/globals/index.d.ts"
+    },
+    "./hono-backend/types": {
+      "import": "./hono-backend/types/index.mjs",
+      "types": "./hono-backend/types/index.d.ts"
+    },
     "./models": {
       "import": "./models/index.mjs",
       "types": "./models/index.d.ts"
@@ -48,10 +55,6 @@
     "./models/admin": {
       "import": "./models/admin/index.mjs",
       "types": "./models/admin/index.d.ts"
-    },
-    "./nitro/utils": {
-      "import": "./nitro/utils/index.mjs",
-      "types": "./nitro/utils/index.d.ts"
     },
     "./types": {
       "types": "./types/index.d.ts"

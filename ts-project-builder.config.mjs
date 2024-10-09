@@ -12,13 +12,13 @@ export default defineConfig({
 				'ajv-keywords',
 				'axios',
 				'date-fns',
-				'h3',
+				'glob',
+				'hono',
 				'mongoose',
-				'nanoid',
 				'otp-io',
 				'otp-io/crypto',
-				'piscina',
-				'sharp'
+				'sharp',
+				'wasmagic'
 			]
 		}
 	}
