@@ -1,5 +1,5 @@
-import { AdminModel } from '../src/models';
-import { sendEmailOtpCode } from '../src/nitro/utils/two-factor-authentication';
+import { AdminModel } from '../src/models/admin';
+import { sendEmailOtpCode } from '../src/hono-backend/utils/two-factor-authentication';
 
 (async () => {
 	const admin = await AdminModel.findByAccount('');
