@@ -1,35 +1,37 @@
 import logger from '@kikiutils/node/consola';
-import { globSync } from 'glob';
-import path from 'path';
+import { glob } from 'glob';
+import { resolve } from 'path';
 
-type AllowedApiMethod = (typeof allowedApiMethods)[number];
-
-const allowedApiMethods = [
+const allowedMethods = [
 	'delete',
 	'get',
+	'head',
+	'link',
+	'options',
 	'patch',
 	'post',
-	'put'
+	'purge',
+	'put',
+	'unlink'
 ] as const;
 
-const apiFileEntries = globSync('src/apis/**/*.ts', { withFileTypes: true });
-const honoAppWithApisBasePath = honoApp.basePath('/api');
-const resolvedApisDirPath = path.resolve('./src/apis');
-for (const { name, parentPath } of apiFileEntries) {
+let apisCount = 0;
+const startAt = performance.now();
+const matchApiFilePathRegex = new RegExp(`^src/apis(.*?)(/index)?\\.(${allowedMethods.join('|')})\\.ts$`);
+const apiFilePaths = await glob(`src/apis/**/*.{${allowedMethods.join(',')}}.ts`);
+for (const apiFilePath of apiFilePaths) {
+	const realApiFilePath = resolve(apiFilePath);
 	try {
-		const modulePath = path.join(parentPath, name);
-		const apiModule = await import(modulePath);
-		if (!apiModule.default) continue;
-		const nameParts = path.parse(name).name.split('.');
-		if (nameParts.length < 2) continue;
-		const method = nameParts.pop()?.toLowerCase() as AllowedApiMethod;
-		if (!allowedApiMethods.includes(method)) continue;
-		let endpointName = nameParts.join('.').toLowerCase();
-		if (endpointName === 'index') endpointName = '';
-		const baseRoutePath = path.relative(resolvedApisDirPath, parentPath);
-		honoAppWithApisBasePath[method](`${baseRoutePath}/${endpointName}`.replace(/\/$/, ''), apiModule.default);
+		const apiModule = (await import(realApiFilePath)).default;
+		if (!apiModule) continue;
+		const matches = apiFilePath.match(matchApiFilePathRegex);
+		if (!matches) continue;
+		honoApp.on(matches[3]!, `/api${matches[1]!}`, apiModule);
+		apisCount++;
 	} catch (error) {
 		// @ts-expect-error
-		logger.error(`Loading api file ${parentPath}/${name} error:`, error?.message, error);
+		logger.error(`Error loading API file: ${realApiFilePath}`, error?.message, error);
 	}
 }
+
+logger.info(`Loaded ${apisCount} APIs in ${(performance.now() - startAt).toFixed(2)}ms`);
