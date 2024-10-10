@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.24.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.24.0...v0.24.1)
+
+### 🔥 Performance
+
+- **hono-backend:** Optimize error handling by reusing ApiError messages ([8eccef3](https://github.com/kiki-core-stack/pack/commit/8eccef3))
+
+### 🩹 Fixes
+
+- **hono-backend:** Fix incorrect route paths in automatic API route loading ([3c27ce0](https://github.com/kiki-core-stack/pack/commit/3c27ce0))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.24.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.23.0...v0.24.0)
