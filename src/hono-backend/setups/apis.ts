@@ -27,8 +27,9 @@ for (const { name, parentPath } of apiFileEntries) {
 		let endpointName = nameParts.join('.').toLowerCase();
 		if (endpointName === 'index') endpointName = '';
 		const baseRoutePath = path.relative(resolvedApisDirPath, parentPath);
-		honoAppWithApisBasePath[method](`${baseRoutePath}${endpointName}`, apiModule.default);
+		honoAppWithApisBasePath[method](`${baseRoutePath}/${endpointName}`.replace(/\/$/, ''), apiModule.default);
 	} catch (error) {
-		logger.error(`Loading api file ${parentPath}/${name} error:`, error);
+		// @ts-expect-error
+		logger.error(`Loading api file ${parentPath}/${name} error:`, error?.message, error);
 	}
 }
