@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.26.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.26.0...v0.26.1)
+
+### 💅 Refactors
+
+- **hono-backend:** Rewrite code for loading APIs ([12ce7e8](https://github.com/kiki-core-stack/pack/commit/12ce7e8))
+- **hono-backend:** Update handling of server hostname and port values ([ba8d4c6](https://github.com/kiki-core-stack/pack/commit/ba8d4c6))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.26.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.25.0...v0.26.0)
