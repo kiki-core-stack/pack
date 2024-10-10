@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.24.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.23.0...v0.24.0)
+
+### 🚀 Enhancements
+
+- Add two-factor authentication utils from nitro to hono backend utils ([941ef6b](https://github.com/kiki-core-stack/pack/commit/941ef6b))
+- Add `defineRouteHandler` util to hono-backend ([d09d223](https://github.com/kiki-core-stack/pack/commit/d09d223))
+
+### 💅 Refactors
+
+- Update import paths in `scripts/send-admin-email-otp-code.ts` ([d1773ba](https://github.com/kiki-core-stack/pack/commit/d1773ba))
+- **hono-backend:** Move mongoose-related type definitions to mongoose setup file ([0501562](https://github.com/kiki-core-stack/pack/commit/0501562))
+
+### 🏡 Chore
+
+- Move `nodemailer` to devDependencies ([ae2b5a4](https://github.com/kiki-core-stack/pack/commit/ae2b5a4))
+- Update example env and npm registry setup ([b66e554](https://github.com/kiki-core-stack/pack/commit/b66e554))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.23.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.22.1...v0.23.0)
