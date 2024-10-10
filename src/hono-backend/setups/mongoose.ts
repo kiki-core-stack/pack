@@ -1,8 +1,24 @@
 import { customMongooseOptions } from '@kikiutils/mongoose/options';
 import type { Context } from 'hono';
 import { Types } from 'mongoose';
-import type { Schema } from 'mongoose';
-import type { ProjectionType, QueryOptions, RootFilterQuery } from 'mongoose';
+import type { HydratedDocument, ProjectionType, QueryOptions, RootFilterQuery, Schema } from 'mongoose';
+
+declare module '@kikiutils/mongoose/types' {
+	interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = {}, QueryHelpers = {}> {
+		findByRouteId(
+			ctx: Context,
+			projection?: Nullable<ProjectionType<RawDocType>>,
+			options?: Nullable<QueryOptions<RawDocType>>
+		): MongooseFindOneReturnType<RawDocType, HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>, QueryHelpers, InstanceMethodsAndOverrides>;
+
+		findByRouteIdOrThrowNotFoundError(
+			ctx: Context,
+			filterQuery?: RootFilterQuery<RawDocType>,
+			projection?: Nullable<ProjectionType<RawDocType>>,
+			options?: Nullable<QueryOptions<RawDocType>>
+		): Promise<HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>>;
+	}
+}
 
 customMongooseOptions.beforeModelBuild = <DocType, Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>, InstanceMethodsAndOverrides = {}, QueryHelpers = {}>(
 	schema: Schema<DocType, Model, InstanceMethodsAndOverrides, QueryHelpers>
@@ -20,5 +36,3 @@ customMongooseOptions.beforeModelBuild = <DocType, Model extends BaseMongoosePag
 		return document;
 	});
 };
-
-export default () => {};
