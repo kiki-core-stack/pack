@@ -3,7 +3,7 @@ import type { Context } from 'hono';
 
 import { ajvValidator } from '../../utils/validator';
 
-export const compileH3RequestDataValidator = <T>(schema: JSONSchemaType<T>, isQuery: boolean = false) => {
+export const compileHonoRequestDataAjvValidator = <T>(schema: JSONSchemaType<T>, isQuery: boolean = false) => {
 	const validator = ajvValidator.compile(schema);
 	return async (ctx: Context) => {
 		let data;
