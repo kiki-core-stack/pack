@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.25.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.24.1...v0.25.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add `getClientIpFromXForwardedForHeader` global util ([92446e4](https://github.com/kiki-core-stack/pack/commit/92446e4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.24.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.24.0...v0.24.1)
