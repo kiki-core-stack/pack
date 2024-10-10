@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.26.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.25.0...v0.26.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add message for 413 status code in `statusCodeToMessageMap` ([490b9c6](https://github.com/kiki-core-stack/pack/commit/490b9c6))
+
+### 💅 Refactors
+
+- **hono-backend:** Rename `utils/validator.ts` to `utils/ajv-validator.ts` and fix incorrect function name ([2eeb36d](https://github.com/kiki-core-stack/pack/commit/2eeb36d))
+- ⚠️ Rename `constants/validator.ts` to `constants/ajv-validator.ts` and merge `utils/validator.ts` ([1b3695d](https://github.com/kiki-core-stack/pack/commit/1b3695d))
+
+### 🏡 Chore
+
+- Update vscode settings file and upgrade dependencies ([480cc2a](https://github.com/kiki-core-stack/pack/commit/480cc2a))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename `constants/validator.ts` to `constants/ajv-validator.ts` and merge `utils/validator.ts` ([1b3695d](https://github.com/kiki-core-stack/pack/commit/1b3695d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.25.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.24.1...v0.25.0)
