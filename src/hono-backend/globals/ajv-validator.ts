@@ -1,7 +1,7 @@
 import type { JSONSchemaType } from 'ajv';
 import type { Context } from 'hono';
 
-import { ajvValidator } from '../../utils/validator';
+import { ajvValidator } from '../../constants/ajv-validator';
 
 export const compileHonoRequestDataAjvValidator = <T>(schema: JSONSchemaType<T>, isQuery: boolean = false) => {
 	const validator = ajvValidator.compile(schema);
