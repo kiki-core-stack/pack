@@ -27,17 +27,17 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	16755: 400 // Location16755 -> Bad Request
 });
 
-const internalServerError = new ApiError(500);
-const notFoundError = new ApiError(404);
+const internalServerErrorMessage = new ApiError(500).message;
+const notFoundErrorMessage = new ApiError(404).message;
 const responseHeaders = Object.freeze({ 'Content-Type': 'application/json' });
-honoApp.notFound((ctx) => ctx.text(notFoundError.message, notFoundError.statusCode, responseHeaders));
+honoApp.notFound((ctx) => ctx.text(notFoundErrorMessage, 404, responseHeaders));
 honoApp.onError((error, ctx) => {
 	let apiError;
 	if (error instanceof ApiError) apiError = error;
 	else if (error instanceof mongo.MongoServerError && error.code) apiError = new ApiError(mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500);
 	if (!apiError) {
-		apiError = internalServerError;
 		logger.error(error);
+		return ctx.text(internalServerErrorMessage, 500, responseHeaders);
 	}
 
 	return ctx.text(apiError.message, apiError.statusCode, responseHeaders);
