@@ -4,7 +4,7 @@ declare global {
 	var ApiError: typeof _ApiError;
 }
 
-const statusCodeToMessageMap = Object.freeze<Dict<string>>({
+export const statusCodeToMessageMap = Object.freeze<Dict<string>>({
 	400: '資料格式錯誤或是非法操作！',
 	401: '尚未登入！',
 	403: '沒有權限！',
