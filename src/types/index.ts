@@ -1,5 +1,6 @@
 import type { JSONSchemaType } from 'ajv';
 
+export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';
 
 declare global {
