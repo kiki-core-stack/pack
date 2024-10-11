@@ -1,5 +1,48 @@
 # Changelog
 
+## v0.28.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.27.0...v0.28.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add 200 and 500 status codes to `statusCodeToMessageMap` ([4be1f1a](https://github.com/kiki-core-stack/pack/commit/4be1f1a))
+- **hono-backend:** Allow setting Context type parameter in `defineApiHandler` and `defineRouteHandler` ([5d59d52](https://github.com/kiki-core-stack/pack/commit/5d59d52))
+- **hono-backend:** Add response related constants ([bb65e10](https://github.com/kiki-core-stack/pack/commit/bb65e10))
+- **hono-backend:** Add global API utils ([16d10c8](https://github.com/kiki-core-stack/pack/commit/16d10c8))
+- **hono-backend:** Add `compileHonoRequestDataAjvValidator` global util ([bd66e09](https://github.com/kiki-core-stack/pack/commit/bd66e09))
+- **hono-backend:** Add global API error class ([d61c223](https://github.com/kiki-core-stack/pack/commit/d61c223))
+- **hono-backend:** Add zod-openapi related global utils ([f075f54](https://github.com/kiki-core-stack/pack/commit/f075f54))
+- Export types from `@kikiutils/mongoose/types` ([ca9fcbb](https://github.com/kiki-core-stack/pack/commit/ca9fcbb))
+- **hono-backend:** Add image utils ([7fb1a7c](https://github.com/kiki-core-stack/pack/commit/7fb1a7c))
+- **hono-backend:** Add setup error-handling file ([ba1993d](https://github.com/kiki-core-stack/pack/commit/ba1993d))
+- **hono-backend:** Add setup mongoose-model-statics file ([fe7fd1a](https://github.com/kiki-core-stack/pack/commit/fe7fd1a))
+
+### 🩹 Fixes
+
+- **hono-backend:** Resolve type error in `defineApiHandler` ([e0b1f9d](https://github.com/kiki-core-stack/pack/commit/e0b1f9d))
+
+### 💅 Refactors
+
+- **hono-backend:** Remove `defaultApiRouteConfig.request.headers` setting ([3399cb6](https://github.com/kiki-core-stack/pack/commit/3399cb6))
+- **hono-backend:** Update definition of `defaultApiRouteConfig` ([a7fbf4d](https://github.com/kiki-core-stack/pack/commit/a7fbf4d))
+- **hono-backend:** Remove server and APIs setup files ([be0eb89](https://github.com/kiki-core-stack/pack/commit/be0eb89))
+- **hono-backend:** Remove types-related files ([f689a1f](https://github.com/kiki-core-stack/pack/commit/f689a1f))
+- **hono-backend:** Move `statusCodeToMessageMap` to constants folder ([f687ae3](https://github.com/kiki-core-stack/pack/commit/f687ae3))
+- ⚠️ Move `mongooseConnections` export to `constants/mongoose.ts` ([6c43d17](https://github.com/kiki-core-stack/pack/commit/6c43d17))
+
+### 🏡 Chore
+
+- **hono-backend:** Remove all files and related dependencies ([89a5c4a](https://github.com/kiki-core-stack/pack/commit/89a5c4a))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Move `mongooseConnections` export to `constants/mongoose.ts` ([6c43d17](https://github.com/kiki-core-stack/pack/commit/6c43d17))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.27.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.26.1...v0.27.0)

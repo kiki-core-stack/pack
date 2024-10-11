@@ -6,6 +6,7 @@ export default defineConfig({
 	builtInInputPluginOptions: {
 		nodeExternal: {
 			include: [
+				'@hono/zod-openapi',
 				'@kikiutils/fs-extra',
 				'ajv',
 				'ajv-formats',
