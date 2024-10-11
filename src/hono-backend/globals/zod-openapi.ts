@@ -33,6 +33,5 @@ globalThis.createApiZodOpenApiJsonResponseConfig = (dataObject, message = 'æˆåŠ
 globalThis.createZodOpenApiRouteConfig = (operationId, description, tags, config) => defu({ ...config, description, operationId, tags }, defaultApiRouteConfig);
 globalThis.z = _z;
 const defaultApiRouteConfig: ApiRouteConfig = {
-	request: { headers: z.object({ session: z.string().optional() }) },
 	responses: Object.fromEntries(Object.entries(statusCodeToMessageMap).map(([code, message]) => [code, createApiZodOpenApiJsonResponseConfig(undefined, message, +code >= 400)]))
 };
