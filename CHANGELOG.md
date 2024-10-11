@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.27.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.26.1...v0.27.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add zod openapi dependencies and global utils ([b179bf7](https://github.com/kiki-core-stack/pack/commit/b179bf7))
+- **hono-backend:** Add `zod-openapi-server.ts` file ([fe5325b](https://github.com/kiki-core-stack/pack/commit/fe5325b))
+- **hono-backend:** Add zod openapi route handling in APIs setup ([23b1c1c](https://github.com/kiki-core-stack/pack/commit/23b1c1c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.26.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.26.0...v0.26.1)
