@@ -7,8 +7,8 @@ declare global {
 	function createApiErrorAndThrow<D extends object>(statusCode?: StatusCode, message?: string, data?: D): never;
 	function createApiSuccessResponseData<D extends object>(data?: D, message?: string): ApiResponseData<D>;
 	function createApiSuccessResponseData<D extends object>(message?: string, data?: D): ApiResponseData<D>;
-	function defineApiHandler<I extends Input = {}, E extends Env = any, P extends string = any>(
-		handler: <D extends object = {}>(ctx: Context<E, P, I>) => ApiResponseData<D> | Promise<ApiResponseData<D>> | Promise<void> | void
+	function defineApiHandler<I extends Input = {}, E extends Env = any, P extends string = any, D extends object = {}>(
+		handler: (ctx: Context<E, P, I>) => ApiResponseData<D> | Promise<ApiResponseData<D>> | Promise<void> | void
 	): (ctx: Context) => Promise<Response>;
 }
 
