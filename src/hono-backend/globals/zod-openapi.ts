@@ -2,6 +2,7 @@ import type { ResponseConfig } from '@asteasolutions/zod-to-openapi';
 import { z as _z } from '@hono/zod-openapi';
 import type { RouteConfig } from '@hono/zod-openapi';
 import { defu } from 'defu';
+import { mapValues } from 'lodash-es';
 import type { SetOptional } from 'type-fest';
 
 import { statusCodeToMessageMap } from './classes/api-error';
@@ -32,6 +33,4 @@ globalThis.createApiZodOpenApiJsonResponseConfig = (dataObject, message = 'æˆåŠ
 
 globalThis.createZodOpenApiRouteConfig = (operationId, description, tags, config) => defu({ ...config, description, operationId, tags }, defaultApiRouteConfig);
 globalThis.z = _z;
-const defaultApiRouteConfig: ApiRouteConfig = {
-	responses: Object.fromEntries(Object.entries(statusCodeToMessageMap).map(([code, message]) => [code, createApiZodOpenApiJsonResponseConfig(undefined, message, +code >= 400)]))
-};
+const defaultApiRouteConfig: ApiRouteConfig = { responses: mapValues(statusCodeToMessageMap, (message, code) => createApiZodOpenApiJsonResponseConfig(undefined, message, +code >= 400)) };
