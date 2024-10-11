@@ -2,10 +2,12 @@ import type { Serve } from 'bun';
 import { Hono } from 'hono';
 
 declare global {
+	// @ts-ignore
 	var honoApp: typeof _honoApp;
 }
 
 const _honoApp = new Hono();
+// @ts-ignore
 globalThis.honoApp = _honoApp;
 
 export default {
