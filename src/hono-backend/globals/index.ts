@@ -1,10 +1,10 @@
-import type { Context } from 'hono';
+import type { Context, Env, Input } from 'hono';
 
 import './api-utils';
 import './classes/api-error';
 
 declare global {
-	function defineRouteHandler(handler: (ctx: Context) => Promise<Response> | Response): (ctx: Context) => Promise<Response> | Response;
+	function defineRouteHandler<I extends Input = {}, E extends Env = any, P extends string = any>(handler: (ctx: Context<E, P, I>) => Promise<Response> | Response): (ctx: Context) => Promise<Response> | Response;
 	function getClientIpFromXForwardedForHeader(ctx: Context): string | undefined;
 }
 

@@ -1,4 +1,4 @@
-import type { Context } from 'hono';
+import type { Context, Env, Input } from 'hono';
 
 declare global {
 	function createApiError<D extends object>(statusCode?: StatusCode, data?: D, message?: string): ApiError<D>;
@@ -7,7 +7,9 @@ declare global {
 	function createApiErrorAndThrow<D extends object>(statusCode?: StatusCode, message?: string, data?: D): never;
 	function createApiSuccessResponseData<D extends object>(data?: D, message?: string): ApiResponseData<D>;
 	function createApiSuccessResponseData<D extends object>(message?: string, data?: D): ApiResponseData<D>;
-	function defineApiHandler<D extends object = {}>(handler: (ctx: Context) => ApiResponseData<D> | Promise<ApiResponseData<D>> | Promise<void> | void): (ctx: Context) => Promise<Response>;
+	function defineApiHandler<I extends Input = {}, E extends Env = any, P extends string = any>(
+		handler: <D extends object = {}>(ctx: Context<E, P, I>) => ApiResponseData<D> | Promise<ApiResponseData<D>> | Promise<void> | void
+	): (ctx: Context) => Promise<Response>;
 }
 
 globalThis.createApiError = (statusCode: StatusCode = 500, arg1: any, arg2?: any) => new ApiError(statusCode, arg1, arg2);
