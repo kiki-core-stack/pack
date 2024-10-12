@@ -1,7 +1,7 @@
 import logger from '@kikiutils/node/consola';
 import type { Hono } from 'hono';
 import type { StatusCode } from 'hono/utils/http-status';
-import { mongo } from 'mongoose';
+import { MongoServerError } from 'mongodb';
 
 import { jsonResponseHeaders } from '../constants/response';
 import { statusCodeToResponseTextMap } from '../constants/response/status-code-to-text-map';
@@ -37,7 +37,7 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 // @ts-expect-error
 (honoApp as Hono).onError((error, ctx) => {
 	if (error instanceof ApiError) return ctx.text(error.message, error.statusCode, jsonResponseHeaders);
-	if (error instanceof mongo.MongoServerError && error.code) {
+	if (error instanceof MongoServerError && error.code) {
 		const statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
 		return ctx.text(statusCodeToResponseTextMap[statusCode]!, statusCode, jsonResponseHeaders);
 	}
