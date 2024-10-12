@@ -37,6 +37,10 @@
       "import": "./*.mjs",
       "types": "./*.d.ts"
     },
+    "./constants/zod": {
+      "import": "./constants/zod/index.mjs",
+      "types": "./constants/zod/index.d.ts"
+    },
     "./hono-backend/constants/response": {
       "import": "./hono-backend/constants/response/index.mjs",
       "types": "./hono-backend/constants/response/index.d.ts"

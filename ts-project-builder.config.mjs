@@ -19,7 +19,8 @@ export default defineConfig({
 				'otp-io/crypto',
 				'sharp',
 				'wasmagic',
-				'zod'
+				'zod',
+				'zod/lib/external'
 			]
 		}
 	}
