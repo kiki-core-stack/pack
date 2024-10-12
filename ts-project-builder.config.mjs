@@ -18,7 +18,8 @@ export default defineConfig({
 				'otp-io',
 				'otp-io/crypto',
 				'sharp',
-				'wasmagic'
+				'wasmagic',
+				'zod'
 			]
 		}
 	}
