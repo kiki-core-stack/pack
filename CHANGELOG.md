@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.29.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.29.0...v0.29.1)
+
+### 🩹 Fixes
+
+- Modify zod extension to prevent emitting internal types during ts build ([49825c5](https://github.com/kiki-core-stack/pack/commit/49825c5))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.29.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.28.0...v0.29.0)
