@@ -7,6 +7,7 @@ export default defineConfig({
 		nodeExternal: {
 			include: [
 				'@hono/zod-openapi',
+				'@hono/zod-validator',
 				'@kikiutils/fs-extra',
 				'axios',
 				'date-fns',
@@ -19,8 +20,7 @@ export default defineConfig({
 				'otp-io/crypto',
 				'sharp',
 				'wasmagic',
-				'zod',
-				'zod/lib/external'
+				'zod'
 			]
 		}
 	}
