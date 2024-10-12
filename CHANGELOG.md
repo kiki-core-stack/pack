@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.29.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.28.0...v0.29.0)
+
+### 🚀 Enhancements
+
+- Add custom zod object extension in constants file ([c5d9484](https://github.com/kiki-core-stack/pack/commit/c5d9484))
+- **hono-backend:** Add zod global file ([9513d18](https://github.com/kiki-core-stack/pack/commit/9513d18))
+- **hono-backend:** Add two-factor authentication global utils ([41cb1ba](https://github.com/kiki-core-stack/pack/commit/41cb1ba))
+
+### 💅 Refactors
+
+- **hono-backend:** Replace mongoose mongo error handling with native mongodb package ([e4ed82f](https://github.com/kiki-core-stack/pack/commit/e4ed82f))
+
+### 🏡 Chore
+
+- Remove all ajv dependencies, constants, and utils ([e50f00c](https://github.com/kiki-core-stack/pack/commit/e50f00c))
+- Update import path for `AdminModel` in `scripts/create-admin.ts` ([07f06e1](https://github.com/kiki-core-stack/pack/commit/07f06e1))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.28.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.27.0...v0.28.0)
