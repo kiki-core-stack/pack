@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.31.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.30.0...v0.31.0)
+
+### 🩹 Fixes
+
+- Set ApiError instance message directly from input value or default value instead of response text ([ceba479](https://github.com/kiki-core-stack/pack/commit/ceba479))
+
+### 💅 Refactors
+
+- **hyper-express-backend:** Merge files in `constants/response` folder ([7d86e17](https://github.com/kiki-core-stack/pack/commit/7d86e17))
+- Migrate hono-backend error-handling setup to hyper-express-backend ([3b06431](https://github.com/kiki-core-stack/pack/commit/3b06431))
+- Migrate hono-backend image utils to hyper-express-backend ([68c2443](https://github.com/kiki-core-stack/pack/commit/68c2443))
+- Migrate hono-backend two-factor-authentication utils to hyper-express-backend globals ([b8ff90b](https://github.com/kiki-core-stack/pack/commit/b8ff90b))
+
+### 🏡 Chore
+
+- Update rollup nodeExternal list ([37daa07](https://github.com/kiki-core-stack/pack/commit/37daa07))
+- Move hono-backend folder to temporary storage folder ([52335b8](https://github.com/kiki-core-stack/pack/commit/52335b8))
+- Remove hono and bun dependencies ([6580d6d](https://github.com/kiki-core-stack/pack/commit/6580d6d))
+- Add @kikiutils/hyper-express dependency ([7933fa2](https://github.com/kiki-core-stack/pack/commit/7933fa2))
+- Migrate hono-backend constants to hyper-express-backend ([2d3f4d7](https://github.com/kiki-core-stack/pack/commit/2d3f4d7))
+- Migrate hono-backend api error class to hyper-express-backend ([cacddc5](https://github.com/kiki-core-stack/pack/commit/cacddc5))
+- **hyper-express-backend:** Remove `jsonResponseHeaders` constant ([b14879c](https://github.com/kiki-core-stack/pack/commit/b14879c))
+- Migrate hono-backend api utils to hyper-express-backend ([ec5c5fa](https://github.com/kiki-core-stack/pack/commit/ec5c5fa))
+- Migrate hono-backend mongoose-model-statics setup to hyper-express-backend ([12b0297](https://github.com/kiki-core-stack/pack/commit/12b0297))
+- Remove unused files ([5c97afb](https://github.com/kiki-core-stack/pack/commit/5c97afb))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.30.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.29.1...v0.30.0)

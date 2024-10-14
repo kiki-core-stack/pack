@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/kiki-core-stack-pack",
-  "version": "0.30.0",
+  "version": "0.31.0",
   "type": "module",
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs",
@@ -40,6 +40,10 @@
     "./constants/zod": {
       "import": "./constants/zod/index.mjs",
       "types": "./constants/zod/index.d.ts"
+    },
+    "./hyper-express-backend/globals": {
+      "import": "./hyper-express-backend/globals/index.mjs",
+      "types": "./hyper-express-backend/globals/index.d.ts"
     },
     "./models": {
       "import": "./models/index.mjs",

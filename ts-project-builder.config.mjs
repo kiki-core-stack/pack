@@ -7,6 +7,7 @@ export default defineConfig({
 		nodeExternal: {
 			include: [
 				'@kikiutils/fs-extra',
+				'@kikiutils/hyper-express',
 				'axios',
 				'date-fns',
 				'mongodb',
