@@ -1,12 +1,10 @@
+import { Server } from '@kikiutils/hyper-express';
 import logger from '@kikiutils/node/consola';
-import type { Hono } from 'hono';
-import type { StatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 
-import { jsonResponseHeaders } from '../constants/response';
-import { statusCodeToResponseTextMap } from '../constants/response/status-code-to-text-map';
+import { statusCodeToApiResponseTextMap } from '../constants/response';
 
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
+const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<number>>({
 	2: 400, // BadValue -> Bad Request
 	4: 404, // NoSuchKey -> Not Found
 	6: 503, // HostUnreachable -> Service Unavailable
@@ -32,16 +30,15 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	16755: 400 // Location16755 -> Bad Request
 });
 
-// @ts-expect-error
-(honoApp as Hono).notFound((ctx) => ctx.text(statusCodeToResponseTextMap[404]!, 404, jsonResponseHeaders));
-// @ts-expect-error
-(honoApp as Hono).onError((error, ctx) => {
-	if (error instanceof ApiError) return ctx.text(error.message, error.statusCode, jsonResponseHeaders);
-	if (error instanceof MongoServerError && error.code) {
-		const statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
-		return ctx.text(statusCodeToResponseTextMap[statusCode]!, statusCode, jsonResponseHeaders);
-	}
+export const setupServerErrorHandling = (server: Server) => {
+	server.set_error_handler((_, response, error) => {
+		response.header('Content-Type', 'application/json');
+		if (error instanceof ApiError) return response.status(error.statusCode).send(JSON.stringify({ data: error.data, message: error.message, success: false }));
+		let statusCode = 500;
+		logger.error(error);
+		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
+		return response.status(statusCode).send(statusCodeToApiResponseTextMap[statusCode]);
+	});
 
-	logger.error(error);
-	return ctx.text(statusCodeToResponseTextMap[500]!, 500, jsonResponseHeaders);
-});
+	server.set_not_found_handler((_, response) => response.header('Content-Type', 'application/json').status(404).send(statusCodeToApiResponseTextMap[404]));
+};
