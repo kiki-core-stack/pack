@@ -19,7 +19,7 @@ class _ApiError<D extends object> extends Error {
 			arg2 = message;
 		}
 
-		super(JSON.stringify({ data: arg1 || {}, message: arg2 ?? (statusCodeToMessageMap[statusCode] || '系統錯誤！'), success: false }));
+		super(arg2 ?? (statusCodeToMessageMap[statusCode] || '系統錯誤！'));
 		this.data = arg1;
 		this.statusCode = statusCode;
 		Error.captureStackTrace?.(this, this.constructor);
