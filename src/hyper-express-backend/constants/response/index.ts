@@ -1,7 +1,5 @@
-import type { StatusCode } from 'hono/utils/http-status';
-
 export const jsonResponseHeaders = Object.freeze({ 'Content-Type': 'application/json' });
-export const statusCodeToMessageMap = Object.freeze<Partial<Record<StatusCode, string>>>({
+export const statusCodeToMessageMap = Object.freeze<Record<number, string>>({
 	200: '成功',
 	400: '資料格式錯誤或是非法操作！',
 	401: '尚未登入！',
