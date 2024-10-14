@@ -6,13 +6,9 @@ export default defineConfig({
 	builtInInputPluginOptions: {
 		nodeExternal: {
 			include: [
-				'@hono/zod-openapi',
-				'@hono/zod-validator',
 				'@kikiutils/fs-extra',
 				'axios',
 				'date-fns',
-				'defu',
-				'glob',
 				'mongodb',
 				'mongoose',
 				'nodemailer',

@@ -17,11 +17,9 @@
     "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
-    "@hono/zod-openapi": "^0.16.4",
     "@kikiutils/classes": "^3.0.0",
     "@kikiutils/prettierrc": "^1.3.2",
     "@kikiutils/tsconfigs": "^3.0.1",
-    "@types/bun": "^1.1.11",
     "@types/nodemailer": "^6.4.16",
     "changelogen": "^0.5.7",
     "nodemailer": "^6.9.15",
@@ -30,7 +28,8 @@
     "sharp": "^0.33.5",
     "ts-project-builder": "^3.1.1",
     "tslib": "^2.7.0",
-    "wasmagic": "^1.0.2"
+    "wasmagic": "^1.0.2",
+    "zod": "^3.23.8"
   },
   "exports": {
     "./*": {
@@ -40,14 +39,6 @@
     "./constants/zod": {
       "import": "./constants/zod/index.mjs",
       "types": "./constants/zod/index.d.ts"
-    },
-    "./hono-backend/constants/response": {
-      "import": "./hono-backend/constants/response/index.mjs",
-      "types": "./hono-backend/constants/response/index.d.ts"
-    },
-    "./hono-backend/globals": {
-      "import": "./hono-backend/globals/index.mjs",
-      "types": "./hono-backend/globals/index.d.ts"
     },
     "./models": {
       "import": "./models/index.mjs",
