@@ -1,4 +1,4 @@
-import { statusCodeToMessageMap } from '../constants/response';
+import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
 	type ApiError<D extends object = any> = _ApiError<D>;
@@ -19,7 +19,7 @@ class _ApiError<D extends object> extends Error {
 			arg2 = message;
 		}
 
-		super(arg2 ?? (statusCodeToMessageMap[statusCode] || '系統錯誤！'));
+		super(arg2 ?? (statusCodeToResponseMessageMap[statusCode] || '系統錯誤！'));
 		this.data = arg1;
 		this.statusCode = statusCode;
 		Error.captureStackTrace?.(this, this.constructor);
