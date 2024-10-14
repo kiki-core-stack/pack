@@ -1,7 +1,7 @@
+import type { Request } from '@kikiutils/hyper-express';
 import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import { addSeconds } from 'date-fns';
-import type { Context } from 'hono';
 import { importKey, totp as getTotpCode } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
@@ -10,12 +10,15 @@ import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '../..
 import type { AdminDocument } from '../../models';
 import { sendEmail } from '../../utils/email';
 
-// TODO: 拆分與重構
+declare global {
+	function requireTwoFactorAuthentication(request: Request, emailOtp?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOtpCode?: boolean): Promise<void>;
+	function sendEmailOtpCode(admin: AdminDocument): Promise<boolean>;
+}
 
-export const requireTwoFactorAuthentication = async (ctx: Context, emailOtp: boolean = true, totp: boolean = true, admin?: AdminDocument, autoSendEmailOtpCode?: boolean) => {
+globalThis.requireTwoFactorAuthentication = async (request, emailOtp = true, totp = true, admin, autoSendEmailOtpCode) => {
 	// @ts-expect-error
-	if (!(admin = admin || ctx.admin)) throwApiError();
-	const { emailOtpCode, totpCode } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
+	if (!(admin = admin || request.locals.admin)) throwApiError();
+	const { emailOtpCode, totpCode } = await request.json<TwoFactorAuthenticationCodesData>();
 	const requiredTwoFactorAuthentications = {
 		emailOtp: !!(emailOtp && admin.twoFactorAuthenticationStatus.emailOtp && admin.email),
 		totp: !!(totp && admin.twoFactorAuthenticationStatus.totp && admin.totpSecret)
@@ -44,7 +47,7 @@ export const requireTwoFactorAuthentication = async (ctx: Context, emailOtp: boo
 	}
 };
 
-export const sendEmailOtpCode = async (admin: AdminDocument) => {
+globalThis.sendEmailOtpCode = async (admin: AdminDocument) => {
 	if (!admin.email) throwApiError(400, 'Email未綁定，無法發送OTP驗證碼！');
 	const emailOtpTTL = await redisController.twoFactorAuthentication.emailOtpCode.ttl(admin);
 	if (emailOtpTTL > 0 && emailOtpExpirationSeconds - emailOtpTTL < sendEmailOtpCodeCoolingSeconds) throwApiError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
