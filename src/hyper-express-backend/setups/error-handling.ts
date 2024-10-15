@@ -1,6 +1,7 @@
 import { Server } from '@kikiutils/hyper-express';
 import logger from '@kikiutils/node/consola';
 import { MongoServerError } from 'mongodb';
+import { ZodError } from 'zod';
 
 import { statusCodeToApiResponseTextMap } from '../constants/response';
 
@@ -34,8 +35,9 @@ export const setupServerErrorHandling = (server: Server) => {
 	server.set_error_handler((_, response, error) => {
 		response.header('Content-Type', 'application/json');
 		if (error instanceof ApiError) return response.status(error.statusCode).send(JSON.stringify({ data: error.data, message: error.message, success: false }));
-		let statusCode = 500;
 		logger.error(error);
+		if (error instanceof ZodError) return response.status(400).send(statusCodeToApiResponseTextMap[400]);
+		let statusCode = 500;
 		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
 		return response.status(statusCode).send(statusCodeToApiResponseTextMap[statusCode]);
 	});
