@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.32.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.31.0...v0.32.0)
+
+### 🚀 Enhancements
+
+- **hyper-express-backend:** Bind zod's z constant to globalThis when importing globals ([78b6700](https://github.com/kiki-core-stack/pack/commit/78b6700))
+- **hyper-express-backend:** Add handling for zod errors ([0c13fa4](https://github.com/kiki-core-stack/pack/commit/0c13fa4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.31.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.30.0...v0.31.0)
