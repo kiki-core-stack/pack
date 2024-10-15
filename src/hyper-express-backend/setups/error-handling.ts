@@ -1,4 +1,4 @@
-import { Server } from '@kikiutils/hyper-express';
+import type { Server } from '@kikiutils/hyper-express';
 import logger from '@kikiutils/node/consola';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
