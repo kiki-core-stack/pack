@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.33.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.32.0...v0.33.0)
+
+### 🚀 Enhancements
+
+- **hyper-express-backend:** Add `createApiSuccessResponseData` API utility ([689b02d](https://github.com/kiki-core-stack/pack/commit/689b02d))
+
+### 🩹 Fixes
+
+- Resolve unused imported types issue ([8423f72](https://github.com/kiki-core-stack/pack/commit/8423f72))
+
+### 💅 Refactors
+
+- **hyper-express-backend:** Rename ApiError class and update binding to globalThis ([cbaf643](https://github.com/kiki-core-stack/pack/commit/cbaf643))
+- Update regex pattern for validating telegramSuperGroupId in zod validator ([96ee34c](https://github.com/kiki-core-stack/pack/commit/96ee34c))
+- Change binding of constants or functions to globalThis to use `Object.defineProperty` ([72aab30](https://github.com/kiki-core-stack/pack/commit/72aab30))
+
+### 🏡 Chore
+
+- Remove unused imports ([d586b10](https://github.com/kiki-core-stack/pack/commit/d586b10))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.32.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.31.0...v0.32.0)
