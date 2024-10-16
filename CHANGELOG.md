@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.34.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.33.0...v0.34.0)
+
+### 🚀 Enhancements
+
+- Add global `ZodValidatorType` type ([396a2f7](https://github.com/kiki-core-stack/pack/commit/396a2f7))
+
+### 💅 Refactors
+
+- Use function to handle binding values to globalThis ([a1e719e](https://github.com/kiki-core-stack/pack/commit/a1e719e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.33.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.32.0...v0.33.0)
