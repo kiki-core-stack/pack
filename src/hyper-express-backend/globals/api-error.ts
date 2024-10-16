@@ -1,3 +1,5 @@
+import { setReadonlyConstantToGlobalThis } from '@kikiutils/node/object';
+
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
@@ -26,8 +28,4 @@ class LocalApiError<D extends object> extends Error {
 	}
 }
 
-Object.defineProperty(globalThis, 'ApiError', {
-	configurable: false,
-	value: LocalApiError,
-	writable: false
-});
+setReadonlyConstantToGlobalThis('ApiError', LocalApiError);

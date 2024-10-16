@@ -1,4 +1,5 @@
 import type { Response } from '@kikiutils/hyper-express';
+import { setReadonlyConstantToGlobalThis } from '@kikiutils/node/object';
 
 declare global {
 	const createApiSuccessResponseData: {
@@ -17,30 +18,17 @@ declare global {
 	};
 }
 
-Object.defineProperty(globalThis, 'createApiSuccessResponseData', {
-	configurable: false,
-	value(arg1: any, arg2?: any) {
-		if (typeof arg1 === 'string') {
-			let message = arg1;
-			arg1 = arg2;
-			arg2 = message;
-		}
+setReadonlyConstantToGlobalThis('createApiSuccessResponseData', (arg1: any, arg2?: any) => {
+	if (typeof arg1 === 'string') {
+		let message = arg1;
+		arg1 = arg2;
+		arg2 = message;
+	}
 
-		return { data: arg1 || {}, message: arg2 ?? '成功', success: true };
-	},
-	writable: false
+	return { data: arg1 || {}, message: arg2 ?? '成功', success: true };
 });
 
-Object.defineProperty(globalThis, 'sendApiSuccessResponse', {
-	configurable: false,
-	value: (response: Response, arg1: any, arg2?: any) => response.json(createApiSuccessResponseData(arg1, arg2)),
-	writable: false
-});
-
-Object.defineProperty(globalThis, 'throwApiError', {
-	configurable: false,
-	value(statusCode?: number, arg1?: any, arg2?: any) {
-		throw new ApiError(statusCode, arg1, arg2);
-	},
-	writable: false
+setReadonlyConstantToGlobalThis('sendApiSuccessResponse', (response: Response, arg1: any, arg2?: any) => response.json(createApiSuccessResponseData(arg1, arg2)));
+setReadonlyConstantToGlobalThis('throwApiError', (statusCode?: number, arg1?: any, arg2?: any) => {
+	throw new ApiError(statusCode, arg1, arg2);
 });
