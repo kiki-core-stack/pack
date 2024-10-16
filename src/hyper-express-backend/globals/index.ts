@@ -3,7 +3,11 @@ import './api-error';
 import './api-utils';
 
 declare global {
-	var z: typeof _z;
+	const z: typeof _z;
 }
 
-globalThis.z = _z;
+Object.defineProperty(globalThis, 'z', {
+	configurable: false,
+	value: _z,
+	writable: false
+});
