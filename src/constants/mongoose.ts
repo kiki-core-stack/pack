@@ -1,4 +1,3 @@
-import { commonMongooseSchemas as _commonMongooseSchemas } from '@kikiutils/mongoose/constants';
 import { createCommonMongooseSchemas, createMongooseObjectIdRefSchema } from '@kikiutils/mongoose/utils';
 
 export { mongooseConnections } from '@kikiutils/mongoose/constants';
