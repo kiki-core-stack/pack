@@ -1,12 +1,12 @@
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
-	type ApiError<D extends object = any> = _ApiError<D>;
+	type ApiError<D extends object = any> = LocalApiError<D>;
 
-	var ApiError: typeof _ApiError;
+	const ApiError: typeof LocalApiError;
 }
 
-class _ApiError<D extends object> extends Error {
+class LocalApiError<D extends object> extends Error {
 	data: D;
 	statusCode: number;
 
@@ -26,4 +26,8 @@ class _ApiError<D extends object> extends Error {
 	}
 }
 
-globalThis.ApiError = _ApiError;
+Object.defineProperty(globalThis, 'ApiError', {
+	configurable: false,
+	value: LocalApiError,
+	writable: false
+});
