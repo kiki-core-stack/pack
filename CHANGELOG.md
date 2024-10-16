@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.34.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.34.0...v0.34.1)
+
+### 🩹 Fixes
+
+- Resolve `ZodValidatorType` type errors ([d8405ef](https://github.com/kiki-core-stack/pack/commit/d8405ef))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.34.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.33.0...v0.34.0)
