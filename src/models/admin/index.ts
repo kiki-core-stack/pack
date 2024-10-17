@@ -11,7 +11,7 @@ export * from './log';
 export type Admin = BaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;
 
-interface AdminMethodsAndOverrides {
+export interface AdminMethodsAndOverrides {
 	password: string;
 	verifyPassword: (password: string) => boolean;
 }
