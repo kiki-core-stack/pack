@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.35.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.34.1...v0.35.0)
+
+### 🚀 Enhancements
+
+- Exclude `createdByAdmin` and `editedByAdmin` fields from ZodValidatorType keys ([e64957f](https://github.com/kiki-core-stack/pack/commit/e64957f))
+
+### 💅 Refactors
+
+- Change some relative import paths to use `@/` ([242e93c](https://github.com/kiki-core-stack/pack/commit/242e93c))
+
+### 🏡 Chore
+
+- Remove default export from redisController ([3920b3b](https://github.com/kiki-core-stack/pack/commit/3920b3b))
+- Run tsc-alias command after build ([04e8546](https://github.com/kiki-core-stack/pack/commit/04e8546))
+- Set paths field in tsconfig.json ([d12ee92](https://github.com/kiki-core-stack/pack/commit/d12ee92))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.34.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.34.0...v0.34.1)
