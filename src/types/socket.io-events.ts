@@ -1,4 +1,4 @@
-import type { SocketIoEvent } from '../constants/socket.io-event';
+import type { SocketIoEvent } from '@/constants/socket.io-event';
 
 export namespace SocketIoEvents {
 	export interface ToAdminBackend {}

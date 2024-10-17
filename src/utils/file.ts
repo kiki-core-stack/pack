@@ -1,6 +1,6 @@
 import { WASMagic } from 'wasmagic';
 
-import { acceptedImageMimeTypes } from '../constants/image';
+import { acceptedImageMimeTypes } from '@/constants/image';
 
 export const isAcceptedImageFile = async (file: Blob, acceptGif?: boolean) => {
 	const fileMimeType = await getFileMimeType(file);

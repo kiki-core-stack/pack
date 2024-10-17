@@ -6,10 +6,10 @@ import { addSeconds } from 'date-fns';
 import { importKey, totp as getTotpCode } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
-import { redisController } from '../../controllers/redis';
-import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '../../constants/two-factor-authentication';
-import type { AdminDocument } from '../../models';
-import { sendEmail } from '../../utils/email';
+import { redisController } from '@/controllers/redis';
+import { emailOtpExpirationSeconds, sendEmailOtpCodeCoolingSeconds } from '@/constants/two-factor-authentication';
+import type { AdminDocument } from '@/models';
+import { sendEmail } from '@/utils/email';
 
 declare global {
 	const requireTwoFactorAuthentication: (request: Request, emailOtp?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOtpCode?: boolean) => Promise<void>;

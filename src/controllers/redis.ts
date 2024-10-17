@@ -1,5 +1,5 @@
-import { redisInstance } from '../constants/redis';
-import type { AdminDocument } from '../models';
+import { redisInstance } from '@/constants/redis';
+import type { AdminDocument } from '@/models';
 
 export const redisController = (() => ({
 	twoFactorAuthentication: (() => {

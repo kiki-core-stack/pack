@@ -2,7 +2,7 @@ import { checkAndGetEnvValue } from '@kikiutils/node/env';
 import { createTransport } from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import type { SendEmailResult } from '../types/email';
+import type { SendEmailResult } from '@/types/email';
 
 const nodemailerTransporter = createTransport({
 	host: process.env.MAIL_SERVER_HOST || '127.0.0.1',

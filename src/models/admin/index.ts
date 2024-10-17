@@ -3,8 +3,8 @@ import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
 import type { ProjectionType, QueryOptions } from 'mongoose';
 
-import { commonMongooseSchemas } from '../../constants/mongoose';
-import type { AdminData } from '../../types/data/admin';
+import { commonMongooseSchemas } from '@/constants/mongoose';
+import type { AdminData } from '@/types/data/admin';
 
 export * from './log';
 

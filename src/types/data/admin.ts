@@ -1,4 +1,4 @@
-import type { AdminLogType } from '../../constants/admin';
+import type { AdminLogType } from '@/constants/admin';
 
 export interface AdminData extends BaseMongooseModelData {
 	account: string;
