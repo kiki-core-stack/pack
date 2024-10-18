@@ -37,7 +37,7 @@ const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 		unique: true
 	},
 	twoFactorAuthenticationStatus: {
-		emailOtp: commonMongooseSchemas.boolean.defaultFalse.required,
+		emailOTP: commonMongooseSchemas.boolean.defaultFalse.required,
 		totp: commonMongooseSchemas.boolean.defaultFalse.required
 	}
 });

@@ -14,8 +14,8 @@ export const redisController = (() => {
 
 	return {
 		twoFactorAuthentication: {
-			emailOtpCode: createOperateFunctions((admin: AdminDocument) => `admin:emailOtpCode:${admin.id}:${admin.email}`),
-			tempTotpSecret: createOperateFunctions((admin: AdminDocument) => `admin:tempTotpSecret:${admin.id}`)
+			emailOTPCode: createOperateFunctions((admin: AdminDocument) => `admin:emailOTPCode:${admin.id}:${admin.email}`),
+			tempTOTPSecret: createOperateFunctions((admin: AdminDocument) => `admin:tempTOTPSecret:${admin.id}`)
 		}
 	};
 })();

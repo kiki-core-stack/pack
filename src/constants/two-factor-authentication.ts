@@ -1,2 +1,2 @@
-export const emailOtpExpirationSeconds = 180;
-export const sendEmailOtpCodeCoolingSeconds = 60;
+export const emailOTPExpirationSeconds = 180;
+export const sendEmailOTPCodeCoolingSeconds = 60;
