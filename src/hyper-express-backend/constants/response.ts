@@ -13,4 +13,4 @@ export const statusCodeToResponseMessageMap = Object.freeze<Record<number, strin
 	504: '超時！'
 });
 
-export const statusCodeToApiResponseTextMap = Object.freeze<Record<number, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ data: {}, message, success: +code < 400 })));
+export const statusCodeToAPIResponseTextMap = Object.freeze<Record<number, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ data: {}, message, success: +code < 400 })));

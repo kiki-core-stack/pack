@@ -3,12 +3,12 @@ import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
-	type ApiError<D extends object = any> = LocalApiError<D>;
+	type APIError<D extends object = any> = LocalAPIError<D>;
 
-	const ApiError: typeof LocalApiError;
+	const APIError: typeof LocalAPIError;
 }
 
-class LocalApiError<D extends object> extends Error {
+class LocalAPIError<D extends object> extends Error {
 	data: D;
 	statusCode: number;
 
@@ -28,4 +28,4 @@ class LocalApiError<D extends object> extends Error {
 	}
 }
 
-setReadonlyConstantToGlobalThis('ApiError', LocalApiError);
+setReadonlyConstantToGlobalThis('APIError', LocalAPIError);

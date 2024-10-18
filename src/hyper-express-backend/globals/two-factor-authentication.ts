@@ -18,7 +18,7 @@ declare global {
 
 setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (request: Request, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => {
 	// @ts-expect-error
-	if (!(admin = admin || request.locals.admin)) throwApiError();
+	if (!(admin = admin || request.locals.admin)) throwAPIError();
 	const { emailOTPCode, totpCode } = await request.json<TwoFactorAuthenticationCodesData>();
 	const requiredTwoFactorAuthentications = {
 		emailOTP: !!(emailOTP && admin.twoFactorAuthenticationStatus.emailOTP && admin.email),
@@ -31,27 +31,27 @@ setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (request
 				try {
 					await sendEmailOTPCode(admin);
 				} catch (error) {
-					if (!(error instanceof ApiError) || error.statusCode !== 429) throwApiError(500, '發送Email OTP驗證碼失敗！', { requiredTwoFactorAuthentications });
+					if (!(error instanceof APIError) || error.statusCode !== 429) throwAPIError(500, '發送Email OTP驗證碼失敗！', { requiredTwoFactorAuthentications });
 				}
 			}
 
-			throwApiError(400, '請輸入Email OTP驗證碼！', { requiredTwoFactorAuthentications });
+			throwAPIError(400, '請輸入Email OTP驗證碼！', { requiredTwoFactorAuthentications });
 		}
 
-		if (emailOTPCode !== (await redisController.twoFactorAuthentication.emailOTPCode.get(admin))) throwApiError(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+		if (emailOTPCode !== (await redisController.twoFactorAuthentication.emailOTPCode.get(admin))) throwAPIError(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
 		await redisController.twoFactorAuthentication.emailOTPCode.del(admin);
 	}
 
 	if (requiredTwoFactorAuthentications.totp) {
-		if (!totpCode) throwApiError(400, '請輸入TOTP驗證碼！', { requiredTwoFactorAuthentications });
-		if (totpCode !== (await getTOTPCode(hmac, { secret: importKey(admin.totpSecret!) }))) throwApiError(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+		if (!totpCode) throwAPIError(400, '請輸入TOTP驗證碼！', { requiredTwoFactorAuthentications });
+		if (totpCode !== (await getTOTPCode(hmac, { secret: importKey(admin.totpSecret!) }))) throwAPIError(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
 	}
 });
 
 setReadonlyConstantToGlobalThis('sendEmailOTPCode', async (admin: AdminDocument) => {
-	if (!admin.email) throwApiError(400, 'Email未綁定，無法發送OTP驗證碼！');
+	if (!admin.email) throwAPIError(400, 'Email未綁定，無法發送OTP驗證碼！');
 	const emailOTPTTL = await redisController.twoFactorAuthentication.emailOTPCode.ttl(admin);
-	if (emailOTPTTL > 0 && emailOTPExpirationSeconds - emailOTPTTL < sendEmailOTPCodeCoolingSeconds) throwApiError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
+	if (emailOTPTTL > 0 && emailOTPExpirationSeconds - emailOTPTTL < sendEmailOTPCodeCoolingSeconds) throwAPIError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
 	const emailOTPCode = randomAlphabeticString(6);
 	const htmlContentTexts = [
 		`您的Email OTP驗證碼為：<strong>${emailOTPCode}</strong>`,

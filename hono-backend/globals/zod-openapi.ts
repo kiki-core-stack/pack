@@ -7,14 +7,14 @@ import type { SetOptional } from 'type-fest';
 import { statusCodeToMessageMap } from '../constants/response';
 import './zod';
 
-type ApiRouteConfig = SetOptional<Omit<RouteConfig, 'path' | 'method'>, 'responses'>;
+type APIRouteConfig = SetOptional<Omit<RouteConfig, 'path' | 'method'>, 'responses'>;
 
 declare global {
-	function createApiZodOpenApiJsonResponseConfig(dataObject?: ReturnType<(typeof z)['object']>, message?: string, isError?: boolean): ResponseConfig;
-	function createApiZodOpenApiRouteConfig(operationId: string, description: string, tags?: string[], config?: ApiRouteConfig): ApiRouteConfig;
+	function createAPIZodOpenAPIJsonResponseConfig(dataObject?: ReturnType<(typeof z)['object']>, message?: string, isError?: boolean): ResponseConfig;
+	function createAPIZodOpenAPIRouteConfig(operationId: string, description: string, tags?: string[], config?: APIRouteConfig): APIRouteConfig;
 }
 
-globalThis.createApiZodOpenApiJsonResponseConfig = (dataObject, message = '成功', isError) => ({
+globalThis.createAPIZodOpenAPIJsonResponseConfig = (dataObject, message = '成功', isError) => ({
 	description: message,
 	content: {
 		'application/json': {
@@ -27,5 +27,5 @@ globalThis.createApiZodOpenApiJsonResponseConfig = (dataObject, message = '成�
 	}
 });
 
-globalThis.createApiZodOpenApiRouteConfig = (operationId, description, tags, config) => defu({ ...config, description, operationId, tags }, defaultApiRouteConfig);
-const defaultApiRouteConfig: ApiRouteConfig = { responses: mapValues(statusCodeToMessageMap, (message, code) => createApiZodOpenApiJsonResponseConfig(undefined, message, +code >= 400)) };
+globalThis.createAPIZodOpenAPIRouteConfig = (operationId, description, tags, config) => defu({ ...config, description, operationId, tags }, defaultAPIRouteConfig);
+const defaultAPIRouteConfig: APIRouteConfig = { responses: mapValues(statusCodeToMessageMap, (message, code) => createAPIZodOpenAPIJsonResponseConfig(undefined, message, +code >= 400)) };

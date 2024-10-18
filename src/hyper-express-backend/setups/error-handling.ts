@@ -3,7 +3,7 @@ import logger from '@kikiutils/node/consola';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
-import { statusCodeToApiResponseTextMap } from '../constants/response';
+import { statusCodeToAPIResponseTextMap } from '../constants/response';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<number>>({
 	2: 400, // BadValue -> Bad Request
@@ -34,13 +34,13 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<number>>({
 export const setupServerErrorHandling = (server: Server) => {
 	server.set_error_handler((_, response, error) => {
 		response.header('Content-Type', 'application/json');
-		if (error instanceof ApiError) return response.status(error.statusCode).send(JSON.stringify({ data: error.data, message: error.message, success: false }));
+		if (error instanceof APIError) return response.status(error.statusCode).send(JSON.stringify({ data: error.data, message: error.message, success: false }));
 		logger.error(error);
-		if (error instanceof ZodError) return response.status(400).send(statusCodeToApiResponseTextMap[400]);
+		if (error instanceof ZodError) return response.status(400).send(statusCodeToAPIResponseTextMap[400]);
 		let statusCode = 500;
 		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
-		return response.status(statusCode).send(statusCodeToApiResponseTextMap[statusCode]);
+		return response.status(statusCode).send(statusCodeToAPIResponseTextMap[statusCode]);
 	});
 
-	server.set_not_found_handler((_, response) => response.header('Content-Type', 'application/json').status(404).send(statusCodeToApiResponseTextMap[404]));
+	server.set_not_found_handler((_, response) => response.header('Content-Type', 'application/json').status(404).send(statusCodeToAPIResponseTextMap[404]));
 };

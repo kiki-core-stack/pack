@@ -29,10 +29,10 @@ customMongooseOptions.beforeModelBuild = <DocType, Model extends BaseMongoosePag
 
 	schema.static('findByRouteIdOrThrowNotFoundError', async function (request: Request, filterQuery?: RootFilterQuery<DocType>, projection?: Nullable<ProjectionType<DocType>>, options?: Nullable<QueryOptions<DocType>>) {
 		const id = request.param('id');
-		if (!id) throwApiError(404);
-		if (!Types.ObjectId.isValid(id)) throwApiError(400);
+		if (!id) throwAPIError(404);
+		if (!Types.ObjectId.isValid(id)) throwAPIError(400);
 		const document = await this.findOne({ ...filterQuery, _id: id }, projection, options);
-		if (!document) throwApiError(404);
+		if (!document) throwAPIError(404);
 		return document;
 	});
 };

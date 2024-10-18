@@ -2,23 +2,23 @@ import type { Response } from '@kikiutils/hyper-express';
 import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 
 declare global {
-	const createApiSuccessResponseData: {
-		<D extends object>(data?: D, message?: string): ApiResponseData<D>;
-		<D extends object>(message?: string, data?: D): ApiResponseData<D>;
+	const createAPISuccessResponseData: {
+		<D extends object>(data?: D, message?: string): APIResponseData<D>;
+		<D extends object>(message?: string, data?: D): APIResponseData<D>;
 	};
 
-	const sendApiSuccessResponse: {
+	const sendAPISuccessResponse: {
 		<D extends object>(response: Response, data?: D, message?: string): boolean;
 		<D extends object>(response: Response, message?: string, data?: D): boolean;
 	};
 
-	const throwApiError: {
+	const throwAPIError: {
 		<D extends object>(statusCode?: number, data?: D, message?: string): never;
 		<D extends object>(statusCode?: number, message?: string, data?: D): never;
 	};
 }
 
-setReadonlyConstantToGlobalThis('createApiSuccessResponseData', (arg1: any, arg2?: any) => {
+setReadonlyConstantToGlobalThis('createAPISuccessResponseData', (arg1: any, arg2?: any) => {
 	if (typeof arg1 === 'string') {
 		let message = arg1;
 		arg1 = arg2;
@@ -28,7 +28,7 @@ setReadonlyConstantToGlobalThis('createApiSuccessResponseData', (arg1: any, arg2
 	return { data: arg1 || {}, message: arg2 ?? '成功', success: true };
 });
 
-setReadonlyConstantToGlobalThis('sendApiSuccessResponse', (response: Response, arg1: any, arg2?: any) => response.json(createApiSuccessResponseData(arg1, arg2)));
-setReadonlyConstantToGlobalThis('throwApiError', (statusCode?: number, arg1?: any, arg2?: any) => {
-	throw new ApiError(statusCode, arg1, arg2);
+setReadonlyConstantToGlobalThis('sendAPISuccessResponse', (response: Response, arg1: any, arg2?: any) => response.json(createAPISuccessResponseData(arg1, arg2)));
+setReadonlyConstantToGlobalThis('throwAPIError', (statusCode?: number, arg1?: any, arg2?: any) => {
+	throw new APIError(statusCode, arg1, arg2);
 });
