@@ -3,6 +3,7 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
     "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"]
