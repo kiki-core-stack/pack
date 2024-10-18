@@ -3,22 +3,5 @@ import { defineConfig } from 'ts-project-builder';
 
 export default defineConfig({
 	additionalInputPlugins: { afterBuiltIns: [del({ hook: 'writeBundle', targets: './dist/types/**/*.mjs' })] },
-	builtInInputPluginOptions: {
-		nodeExternal: {
-			include: [
-				'@kikiutils/fs-extra',
-				'@kikiutils/hyper-express',
-				'axios',
-				'date-fns',
-				'mongodb',
-				'mongoose',
-				'nodemailer',
-				'otp-io',
-				'otp-io/crypto',
-				'sharp',
-				'wasmagic',
-				'zod'
-			]
-		}
-	}
+	builtInInputPluginOptions: { nodeExternal: { devDeps: true } }
 });
