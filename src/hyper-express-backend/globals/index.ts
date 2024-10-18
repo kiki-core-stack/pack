@@ -1,4 +1,4 @@
-import { setReadonlyConstantToGlobalThis } from '@kikiutils/node/object';
+import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 
 import { z as _z } from '@/constants/zod';
 import './api-error';

@@ -1,6 +1,6 @@
 import type { Request } from '@kikiutils/hyper-express';
 import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
-import { setReadonlyConstantToGlobalThis } from '@kikiutils/node/object';
+import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import { addSeconds } from 'date-fns';
 import { importKey, totp as getTotpCode } from 'otp-io';

@@ -1,5 +1,5 @@
 import type { Response } from '@kikiutils/hyper-express';
-import { setReadonlyConstantToGlobalThis } from '@kikiutils/node/object';
+import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 
 declare global {
 	const createApiSuccessResponseData: {
