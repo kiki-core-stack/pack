@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.36.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.35.0...v0.36.0)
+
+### 🚀 Enhancements
+
+- Export `AdminMethodsAndOverrides` interface ([cc9d001](https://github.com/kiki-core-stack/pack/commit/cc9d001))
+
+### 💅 Refactors
+
+- Modify the instantiation method of `redisController` ([51f09dd](https://github.com/kiki-core-stack/pack/commit/51f09dd))
+- Rename cryptoSha3256 to cryptoSHA3256 ([2da2622](https://github.com/kiki-core-stack/pack/commit/2da2622))
+- Change Totp and Otp to uppercase naming ([e104923](https://github.com/kiki-core-stack/pack/commit/e104923))
+- Change Api to uppercase naming ([bf8b163](https://github.com/kiki-core-stack/pack/commit/bf8b163))
+- Update method for handling port value when using `createTransport` ([60952bf](https://github.com/kiki-core-stack/pack/commit/60952bf))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([549e036](https://github.com/kiki-core-stack/pack/commit/549e036))
+- Update import path for `setReadonlyConstantToGlobalThis` ([a33a2ff](https://github.com/kiki-core-stack/pack/commit/a33a2ff))
+- Remove .npmrc and refresh dependencies list ([37acf67](https://github.com/kiki-core-stack/pack/commit/37acf67))
+- Modify rollup node external config ([5ab3115](https://github.com/kiki-core-stack/pack/commit/5ab3115))
+- Switch changelog generation package and upgrade dependencies ([3ef527d](https://github.com/kiki-core-stack/pack/commit/3ef527d))
+- Add release script to package.json ([4d82d80](https://github.com/kiki-core-stack/pack/commit/4d82d80))
+- Modify tsconfig.json ([d66917d](https://github.com/kiki-core-stack/pack/commit/d66917d))
+- Remove tslib ([da6a141](https://github.com/kiki-core-stack/pack/commit/da6a141))
+- Move some dependencies to devDependencies ([99b6ef2](https://github.com/kiki-core-stack/pack/commit/99b6ef2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.35.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.34.1...v0.35.0)
