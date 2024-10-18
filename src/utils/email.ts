@@ -6,7 +6,7 @@ import type { SendEmailResult } from '@/types/email';
 
 const nodemailerTransporter = createTransport({
 	host: process.env.MAIL_SERVER_HOST || '127.0.0.1',
-	port: +(process.env.MAIL_SERVER_PORT || 25) || 25,
+	port: Number(process.env.MAIL_SERVER_PORT) || 25,
 	secure: process.env.NODEMAILER_USE_SECURE === 'true',
 	tls: { rejectUnauthorized: false }
 } as SMTPTransport.Options);
