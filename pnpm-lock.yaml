@@ -17,24 +17,18 @@ importers:
       '@kikiutils/types':
         specifier: ^3.0.0
         version: 3.0.0
-      '@socket.io/component-emitter':
-        specifier: ^3.1.2
-        version: 3.1.2
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
-      ioredis:
-        specifier: ^5.4.1
-        version: 5.4.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       mongodb:
         specifier: ^6.9.0
         version: 6.9.0
-      socket.io-client:
-        specifier: ^4.8.0
-        version: 4.8.0
+      mongoose:
+        specifier: ^8.7.2
+        version: 8.7.2
     devDependencies:
       '@kikiutils/changelogen':
         specifier: ^0.6.0
@@ -54,6 +48,9 @@ importers:
       '@kikiutils/tsconfigs':
         specifier: ^3.0.1
         version: 3.0.1
+      '@socket.io/component-emitter':
+        specifier: ^3.1.2
+        version: 3.1.2
       '@types/nodemailer':
         specifier: ^6.4.16
         version: 6.4.16
@@ -66,6 +63,9 @@ importers:
       glob:
         specifier: ^11.0.0
         version: 11.0.0
+      ioredis:
+        specifier: ^5.4.1
+        version: 5.4.1
       nodemailer:
         specifier: ^6.9.15
         version: 6.9.15
@@ -78,6 +78,9 @@ importers:
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
+      socket.io-client:
+        specifier: ^4.8.0
+        version: 4.8.0
       ts-project-builder:
         specifier: ^3.2.4
         version: 3.2.4(esbuild@0.24.0)(typescript@5.6.3)
