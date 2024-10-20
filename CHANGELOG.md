@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.37.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.36.0...v0.37.0)
+
+### 💅 Refactors
+
+- Replace `Partial<Record` with `PartialRecord` ([aef6899](https://github.com/kiki-core-stack/pack/commit/aef6899))
+
+### 🏡 Chore
+
+- Update import order ([f80029a](https://github.com/kiki-core-stack/pack/commit/f80029a))
+- Upgrade dependencies and modify release script ([912687d](https://github.com/kiki-core-stack/pack/commit/912687d))
+- ⚠️ Move mongoose-related dependencies to devDependencies ([915d7fa](https://github.com/kiki-core-stack/pack/commit/915d7fa))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Move mongoose-related dependencies to devDependencies ([915d7fa](https://github.com/kiki-core-stack/pack/commit/915d7fa))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.36.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.35.0...v0.36.0)
