@@ -5,11 +5,11 @@
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs && tsc-alias",
     "bumplog": "changelogen --bump",
-    "release": "pnpm run build && changelogen --release && sh ./build-and-publish.sh"
+    "release": "pnpm run build && changelogen --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
     "@kikiutils/mongoose": "^1.4.1",
-    "@kikiutils/node": "^5.0.0",
+    "@kikiutils/node": "^5.0.1",
     "@kikiutils/types": "^3.0.0",
     "@types/lodash-es": "^4.17.12",
     "lodash-es": "^4.17.21",
@@ -17,7 +17,7 @@
     "mongoose": "^8.7.2"
   },
   "devDependencies": {
-    "@kikiutils/changelogen": "^0.6.0",
+    "@kikiutils/changelogen": "^0.7.0",
     "@kikiutils/classes": "^4.0.0",
     "@kikiutils/fs-extra": "^2.3.6",
     "@kikiutils/hyper-express": "^6.22.0",
@@ -34,7 +34,7 @@
     "rollup-plugin-delete": "^2.1.0",
     "sharp": "^0.33.5",
     "socket.io-client": "^4.8.0",
-    "ts-project-builder": "^3.2.4",
+    "ts-project-builder": "^3.3.0",
     "tsc-alias": "^1.8.10",
     "wasmagic": "^1.0.2",
     "zod": "^3.23.8"
