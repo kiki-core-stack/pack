@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.38.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.37.0...v0.38.0)
+
+### 🚀 Enhancements
+
+- Add 429 status to `statusCodeToResponseMessageMap` ([024a4ed](https://github.com/kiki-core-stack/pack/commit/024a4ed))
+
+### 💅 Refactors
+
+- ⚠️ Migrate from hyper-express-backend to hono-backend ([7ad324a](https://github.com/kiki-core-stack/pack/commit/7ad324a))
+
+### 🏡 Chore
+
+- Remove zod-openapi file ([92bd76c](https://github.com/kiki-core-stack/pack/commit/92bd76c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Migrate from hyper-express-backend to hono-backend ([7ad324a](https://github.com/kiki-core-stack/pack/commit/7ad324a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.37.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.36.0...v0.37.0)
