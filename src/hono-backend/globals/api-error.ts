@@ -1,4 +1,5 @@
 import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
+import type { StatusCode } from 'hono/utils/http-status';
 
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
@@ -10,11 +11,11 @@ declare global {
 
 class LocalAPIError<D extends object> extends Error {
 	data: D;
-	statusCode: number;
+	statusCode: StatusCode;
 
-	constructor(statusCode?: number, data?: D, message?: string);
-	constructor(statusCode?: number, message?: string, data?: D);
-	constructor(statusCode: number = 500, arg1: any, arg2?: any) {
+	constructor(statusCode?: StatusCode, data?: D, message?: string);
+	constructor(statusCode?: StatusCode, message?: string, data?: D);
+	constructor(statusCode: StatusCode = 500, arg1: any, arg2?: any) {
 		if (typeof arg1 === 'string') {
 			let message = arg1;
 			arg1 = arg2;

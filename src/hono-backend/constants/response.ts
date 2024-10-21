@@ -1,6 +1,7 @@
+import type { StatusCode } from 'hono/utils/http-status';
 import { mapValues } from 'lodash-es';
 
-export const statusCodeToResponseMessageMap = Object.freeze<Record<number, string>>({
+export const statusCodeToResponseMessageMap = Object.freeze<PartialRecord<StatusCode, string>>({
 	200: '成功',
 	400: '資料格式錯誤或是非法操作！',
 	401: '尚未登入！',
@@ -14,4 +15,4 @@ export const statusCodeToResponseMessageMap = Object.freeze<Record<number, strin
 	504: '超時！'
 });
 
-export const statusCodeToAPIResponseTextMap = Object.freeze<Record<number, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ data: {}, message, success: +code < 400 })));
+export const statusCodeToAPIResponseTextMap = Object.freeze<PartialRecord<StatusCode, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ data: {}, message, success: +code < 400 })));

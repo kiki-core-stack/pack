@@ -1,11 +1,12 @@
-import type { Server } from '@kikiutils/hyper-express';
 import logger from '@kikiutils/node/consola';
+import type { Hono } from 'hono';
+import type { StatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
 import { statusCodeToAPIResponseTextMap } from '../constants/response';
 
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<number>>({
+const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	2: 400, // BadValue -> Bad Request
 	4: 404, // NoSuchKey -> Not Found
 	6: 503, // HostUnreachable -> Service Unavailable
@@ -31,16 +32,15 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<number>>({
 	16755: 400 // Location16755 -> Bad Request
 });
 
-export const setupServerErrorHandling = (server: Server) => {
-	server.set_error_handler((_, response, error) => {
-		response.header('Content-Type', 'application/json');
-		if (error instanceof APIError) return response.status(error.statusCode).send(JSON.stringify({ data: error.data, message: error.message, success: false }));
+export const setupHonoAppErrorHandling = (honoApp: Hono) => {
+	honoApp.notFound((ctx) => ctx.json(statusCodeToAPIResponseTextMap[404], 404));
+	honoApp.onError((error, ctx) => {
+		ctx.header('content-type', 'application/json');
+		if (error instanceof APIError) return ctx.text(JSON.stringify({ data: error.data, message: error.message, success: false }), error.statusCode);
 		logger.error(error);
-		if (error instanceof ZodError) return response.status(400).send(statusCodeToAPIResponseTextMap[400]);
-		let statusCode = 500;
+		if (error instanceof ZodError) return ctx.text(statusCodeToAPIResponseTextMap[400]!, 400);
+		let statusCode: StatusCode = 500;
 		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
-		return response.status(statusCode).send(statusCodeToAPIResponseTextMap[statusCode]);
+		return ctx.text(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
 	});
-
-	server.set_not_found_handler((_, response) => response.header('Content-Type', 'application/json').status(404).send(statusCodeToAPIResponseTextMap[404]));
 };
