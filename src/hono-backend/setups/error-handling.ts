@@ -33,14 +33,18 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 });
 
 export const setupHonoAppErrorHandling = (honoApp: Hono) => {
-	honoApp.notFound((ctx) => ctx.json(statusCodeToAPIResponseTextMap[404], 404));
+	honoApp.notFound((ctx) => {
+		ctx.header('content-type', 'application/json');
+		return ctx.body(statusCodeToAPIResponseTextMap[404]!, 404);
+	});
+
 	honoApp.onError((error, ctx) => {
 		ctx.header('content-type', 'application/json');
-		if (error instanceof APIError) return ctx.text(JSON.stringify({ data: error.data, message: error.message, success: false }), error.statusCode);
+		if (error instanceof APIError) return ctx.body(JSON.stringify({ data: error.data, message: error.message, success: false }), error.statusCode);
 		logger.error(error);
-		if (error instanceof ZodError) return ctx.text(statusCodeToAPIResponseTextMap[400]!, 400);
+		if (error instanceof ZodError) return ctx.body(statusCodeToAPIResponseTextMap[400]!, 400);
 		let statusCode: StatusCode = 500;
 		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
-		return ctx.text(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
+		return ctx.body(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
 	});
 };
