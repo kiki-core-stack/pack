@@ -1,8 +1,8 @@
-import type { Request } from '@kikiutils/hyper-express';
 import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
 import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import { addSeconds } from 'date-fns';
+import type { Context } from 'hono';
 import { importKey, totp as getTOTPCode } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
@@ -12,14 +12,14 @@ import type { AdminDocument } from '@/models';
 import { sendEmail } from '@/utils/email';
 
 declare global {
-	const requireTwoFactorAuthentication: (request: Request, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => Promise<void>;
+	const requireTwoFactorAuthentication: (ctx: Context, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => Promise<void>;
 	const sendEmailOTPCode: (admin: AdminDocument) => Promise<boolean>;
 }
 
-setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (request: Request, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => {
+setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (ctx: Context, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => {
 	// @ts-expect-error
-	if (!(admin = admin || request.locals.admin)) throwAPIError();
-	const { emailOTPCode, totpCode } = await request.json<TwoFactorAuthenticationCodesData>();
+	if (!admin && !(admin = ctx.admin)) throwAPIError();
+	const { emailOTPCode, totpCode } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
 	const requiredTwoFactorAuthentications = {
 		emailOTP: !!(emailOTP && admin.twoFactorAuthenticationStatus.emailOTP && admin.email),
 		totp: !!(totp && admin.twoFactorAuthenticationStatus.totp && admin.totpSecret)
