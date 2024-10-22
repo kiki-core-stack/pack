@@ -8,6 +8,7 @@
     "release": "pnpm run build && changelogen --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
+    "@kikiutils/classes": "^4.0.0",
     "@kikiutils/node": "^5.0.1",
     "@kikiutils/types": "^3.0.0",
     "@types/lodash-es": "^4.17.12",
@@ -15,7 +16,6 @@
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.7.0",
-    "@kikiutils/classes": "^4.0.0",
     "@kikiutils/fs-extra": "^2.3.6",
     "@kikiutils/mongoose": "^1.4.1",
     "@kikiutils/prettierrc": "^1.3.2",
