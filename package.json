@@ -1,6 +1,6 @@
 {
   "name": "@kikiutils/kiki-core-stack-pack",
-  "version": "0.38.0",
+  "version": "0.38.1",
   "type": "module",
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs && tsc-alias",
@@ -27,7 +27,7 @@
     "glob": "^11.0.0",
     "hono": "^4.6.5",
     "ioredis": "^5.4.1",
-    "mongodb": "^6.9.0",
+    "mongodb": "^6.10.0",
     "mongoose": "^8.7.2",
     "nodemailer": "^6.9.15",
     "otp-io": "^1.2.6",

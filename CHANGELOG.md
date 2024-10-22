@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.38.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.0...v0.38.1)
+
+### 🩹 Fixes
+
+- **hono-backend:** Resolve response error handling issue ([9c6371c](https://github.com/kiki-core-stack/pack/commit/9c6371c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.38.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.37.0...v0.38.0)
