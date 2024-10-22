@@ -20,7 +20,7 @@ setReadonlyConstantToGlobalThis('createAPISuccessResponseData', (arg1: any, arg2
 		arg2 = message;
 	}
 
-	return { data: arg1 || {}, message: arg2 ?? '成功', success: true };
+	return { data: arg1, message: arg2 ?? '成功', success: true };
 });
 
 setReadonlyConstantToGlobalThis('throwAPIError', (statusCode?: StatusCode, arg1?: any, arg2?: any) => {

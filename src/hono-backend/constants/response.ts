@@ -15,4 +15,4 @@ export const statusCodeToResponseMessageMap = Object.freeze<PartialRecord<Status
 	504: '超時！'
 });
 
-export const statusCodeToAPIResponseTextMap = Object.freeze<PartialRecord<StatusCode, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ data: {}, message, success: +code < 400 })));
+export const statusCodeToAPIResponseTextMap = Object.freeze<PartialRecord<StatusCode, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ message, success: +code < 400 })));
