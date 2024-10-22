@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.38.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.1...v0.38.2)
+
+### 💅 Refactors
+
+- Make data field in API response optional ([69bc2d8](https://github.com/kiki-core-stack/pack/commit/69bc2d8))
+- Migrate two-factor authentication related global utilities ([7c45119](https://github.com/kiki-core-stack/pack/commit/7c45119))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.38.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.0...v0.38.1)
