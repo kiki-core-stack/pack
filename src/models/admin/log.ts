@@ -1,3 +1,4 @@
+import s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
@@ -16,10 +17,10 @@ export interface AdminLog extends BaseMongooseDocType<Omit<AdminLogData, 'admin'
 
 const adminLogSchema = new Schema<AdminLog, AdminLogModel>({
 	admin: commonMongooseSchemas.ref.admin.required,
-	content: commonMongooseSchemas.string.trimmed.nonRequired,
-	fingerprint: commonMongooseSchemas.string.trimmed.nonRequired,
-	ip: commonMongooseSchemas.string.trimmed.nonRequired,
-	type: { ...commonMongooseSchemas.number.required, enum: getEnumNumberValues(AdminLogType) }
+	content: s.string().trim.nonRequired,
+	fingerprint: s.string().trim.nonRequired,
+	ip: s.string().trim.nonRequired,
+	type: s.number().enum(getEnumNumberValues(AdminLogType)).required
 });
 
 adminLogSchema.index({ createdAt: -1 });

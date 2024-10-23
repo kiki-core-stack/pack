@@ -1,9 +1,9 @@
+import s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { cryptoSHA3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
 import type { ProjectionType, QueryOptions } from 'mongoose';
 
-import { commonMongooseSchemas } from '@/constants/mongoose';
 import type { AdminData } from '@/types/data/admin';
 
 export * from './log';
@@ -21,24 +21,15 @@ interface AdminModel extends BaseMongoosePaginateModel<Admin, AdminMethodsAndOve
 }
 
 const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
-	account: commonMongooseSchemas.string.short.trimmed.unique.required,
-	email: { ...commonMongooseSchemas.string.trimmed.nonRequired, lowercase: true },
-	enabled: commonMongooseSchemas.boolean.defaultFalse.required,
-	name: commonMongooseSchemas.string.short.trimmed.required,
-	password: {
-		...commonMongooseSchemas.string.private.trimmed.required,
-		max: 128,
-		min: 128,
-		set: (password: string) => cryptoSHA3256(password)
-	},
-	totpSecret: {
-		...commonMongooseSchemas.string.private.trimmed.nonRequired,
-		sparse: true,
-		unique: true
-	},
+	account: s.string().maxlength(16).trim.unique.required,
+	email: s.string().lowercase.trim.nonRequired,
+	enabled: s.boolean().default(false).required,
+	name: s.string().maxlength(16).trim.required,
+	password: { ...s.string().length(128).private.required, set: (password: string) => cryptoSHA3256(password) },
+	totpSecret: s.string().private.sparse.trim.unique.nonRequired,
 	twoFactorAuthenticationStatus: {
-		emailOTP: commonMongooseSchemas.boolean.defaultFalse.required,
-		totp: commonMongooseSchemas.boolean.defaultFalse.required
+		emailOTP: s.boolean().default(false).required,
+		totp: s.boolean().default(false).required
 	}
 });
 
