@@ -5,7 +5,7 @@ import { Schema } from 'mongoose';
 import type { Types } from 'mongoose';
 
 import { AdminLogType } from '@/constants/admin';
-import { commonMongooseSchemas } from '@/constants/mongoose';
+import { mongooseRefSchemas } from '@/constants/mongoose';
 import type { AdminLogData } from '@/types/data/admin';
 
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
@@ -16,7 +16,7 @@ export interface AdminLog extends BaseMongooseDocType<Omit<AdminLogData, 'admin'
 }
 
 const adminLogSchema = new Schema<AdminLog, AdminLogModel>({
-	admin: commonMongooseSchemas.ref.admin.required,
+	admin: mongooseRefSchemas.admin.required,
 	content: s.string().trim.nonRequired,
 	fingerprint: s.string().trim.nonRequired,
 	ip: s.string().trim.nonRequired,
