@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.39.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.39.0...v0.39.1)
+
+### 🩹 Fixes
+
+- Resolve error in password field of admin schema ([acbcbcc](https://github.com/kiki-core-stack/pack/commit/acbcbcc))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.39.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.2...v0.39.0)
