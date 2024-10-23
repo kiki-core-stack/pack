@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.40.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.39.1...v0.40.0)
+
+### 🚀 Enhancements
+
+- Export all from log.ts in models/admin/index.ts ([6593143](https://github.com/kiki-core-stack/pack/commit/6593143))
+
+### 💅 Refactors
+
+- Change `commonMongooseSchemas` to `mongooseRefSchemas` ([e1fb49f](https://github.com/kiki-core-stack/pack/commit/e1fb49f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.39.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.39.0...v0.39.1)
