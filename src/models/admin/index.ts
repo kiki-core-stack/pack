@@ -23,7 +23,7 @@ const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 	email: s.string().lowercase.trim.nonRequired,
 	enabled: s.boolean().default(false).required,
 	name: s.string().maxlength(16).trim.required,
-	password: { ...s.string().length(128).private.required, set: (password: string) => cryptoSHA3256(password) },
+	password: { ...s.string().length(64).private.required, set: (password: string) => cryptoSHA3256(password) },
 	totpSecret: s.string().private.sparse.trim.unique.nonRequired,
 	twoFactorAuthenticationStatus: {
 		emailOTP: s.boolean().default(false).required,
