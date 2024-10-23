@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.39.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.2...v0.39.0)
+
+### 💅 Refactors
+
+- Modify the way mongoose schemas are defined ([a6724cd](https://github.com/kiki-core-stack/pack/commit/a6724cd))
+- ⚠️ Remove main export file for models entry point ([2058ee4](https://github.com/kiki-core-stack/pack/commit/2058ee4))
+
+### 🏡 Chore
+
+- Move `@kikiutils/classes` to dependencies ([560d481](https://github.com/kiki-core-stack/pack/commit/560d481))
+- Upgrade dependencies ([cf73b42](https://github.com/kiki-core-stack/pack/commit/cf73b42))
+- Modify build-and-publish.sh ([cdd5db4](https://github.com/kiki-core-stack/pack/commit/cdd5db4))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove main export file for models entry point ([2058ee4](https://github.com/kiki-core-stack/pack/commit/2058ee4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.38.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.38.1...v0.38.2)
