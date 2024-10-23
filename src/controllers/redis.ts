@@ -1,5 +1,5 @@
 import { redisInstance } from '@/constants/redis';
-import type { AdminDocument } from '@/models';
+import type { AdminDocument } from '@/models/admin';
 
 export const redisController = (() => {
 	const createOperateFunctions = <T>(getKeyFunction: (input: T) => string) => ({

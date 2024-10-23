@@ -53,10 +53,6 @@
       "import": "./hono-backend/globals/index.mjs",
       "types": "./hono-backend/globals/index.d.ts"
     },
-    "./models": {
-      "import": "./models/index.mjs",
-      "types": "./models/index.d.ts"
-    },
     "./models/admin": {
       "import": "./models/admin/index.mjs",
       "types": "./models/admin/index.d.ts"

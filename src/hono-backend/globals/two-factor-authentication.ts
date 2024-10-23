@@ -8,7 +8,7 @@ import { hmac } from 'otp-io/crypto';
 
 import { redisController } from '@/controllers/redis';
 import { emailOTPExpirationSeconds, sendEmailOTPCodeCoolingSeconds } from '@/constants/two-factor-authentication';
-import type { AdminDocument } from '@/models';
+import type { AdminDocument } from '@/models/admin';
 import { sendEmail } from '@/utils/email';
 
 declare global {
