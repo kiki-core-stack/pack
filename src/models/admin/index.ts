@@ -6,6 +6,8 @@ import type { ProjectionType, QueryOptions } from 'mongoose';
 
 import type { AdminData } from '@/types/data/admin';
 
+export * from './log';
+
 export type Admin = BaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;
 
