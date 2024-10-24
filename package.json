@@ -1,6 +1,12 @@
 {
   "name": "@kikiutils/kiki-core-stack-pack",
   "version": "0.41.0",
+  "license": "MIT",
+  "author": "kiki-kanri",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiki-core-stack/pack.git"
+  },
   "type": "module",
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs && tsc-alias",
