@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.41.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.40.0...v0.41.0)
+
+### 🚀 Enhancements
+
+- Add `inputOptions` parameter to `convertAndSaveImageFile` ([9783a6b](https://github.com/kiki-core-stack/pack/commit/9783a6b))
+
+### 💅 Refactors
+
+- Rename `isAcceptedImageFile` to `getAcceptedImageFileMimeType` and enhance functionality ([35cdefb](https://github.com/kiki-core-stack/pack/commit/35cdefb))
+- Rename `validateImageFile` to `validateImageFileMimeTypeAndSize` and enhance functionality ([a413b66](https://github.com/kiki-core-stack/pack/commit/a413b66))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.40.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.39.1...v0.40.0)
