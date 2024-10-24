@@ -4,7 +4,9 @@ import { acceptedImageMimeTypes } from '@/constants/image';
 
 export const getAcceptedImageFileMimeType = async (file: Blob, acceptGif?: boolean) => {
 	const fileMimeType = await getFileMimeType(file);
-	if ((fileMimeType === 'image/gif' && !acceptGif) || !acceptedImageMimeTypes.includes(fileMimeType)) return;
+	if (fileMimeType === 'image/gif') {
+		if (!acceptGif) return;
+	} else if (!acceptedImageMimeTypes.includes(fileMimeType)) return;
 	return fileMimeType;
 };
 
