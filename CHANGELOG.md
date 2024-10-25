@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.41.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.0...v0.41.1)
+
+### 🩹 Fixes
+
+- Resolve logic error in `getAcceptedImageFileMimeType` ([c73bdbf](https://github.com/kiki-core-stack/pack/commit/c73bdbf))
+- Resolve errors in create-admin script ([17da682](https://github.com/kiki-core-stack/pack/commit/17da682))
+
+### 💅 Refactors
+
+- Move `createOperateFunctions` from `redisController` to outer scope ([6f1b5dd](https://github.com/kiki-core-stack/pack/commit/6f1b5dd))
+- **hono-backend:** Update the method for configuring `customMongooseOptions` ([1cfa4f5](https://github.com/kiki-core-stack/pack/commit/1cfa4f5))
+
+### 🏡 Chore
+
+- Modify package.json ([bb4aca6](https://github.com/kiki-core-stack/pack/commit/bb4aca6))
+- Add fetch-and-merge script ([8dad913](https://github.com/kiki-core-stack/pack/commit/8dad913))
+- Modify script permissions ([e726cff](https://github.com/kiki-core-stack/pack/commit/e726cff))
+- Upgrade dependencies ([c29165d](https://github.com/kiki-core-stack/pack/commit/c29165d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.41.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.40.0...v0.41.0)
