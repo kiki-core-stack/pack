@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.41.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.1...v0.41.2)
+
+### 💅 Refactors
+
+- Update custom Zod validation rule definition method ([725046a](https://github.com/kiki-core-stack/pack/commit/725046a))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([fc2e05e](https://github.com/kiki-core-stack/pack/commit/fc2e05e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.41.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.0...v0.41.1)
