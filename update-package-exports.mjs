@@ -4,7 +4,11 @@ import { fromPairs, merge, sortBy, toPairs } from 'lodash-es';
 import { dirname } from 'path';
 
 (async () => {
-	const exports = { './*': { import: './*.mjs', types: './*.d.ts' } };
+	const exports = {
+		'./*': { import: './*.mjs', types: './*.d.ts' },
+		'./types/*': { types: './*.d.ts' }
+	};
+
 	const filePaths = await glob(['**/index.d.ts', '**/index.mjs'], { cwd: './dist' });
 	filePaths.forEach((filePath) => {
 		const dirPath = dirname(filePath);
