@@ -15,7 +15,7 @@ export interface AdminLog extends BaseMongooseDocType<Omit<AdminLogData, 'admin'
 	admin: Types.ObjectId;
 }
 
-const adminLogSchema = new Schema<AdminLog, AdminLogModel>({
+const schema = new Schema<AdminLog, AdminLogModel>({
 	admin: mongooseRefSchemas.admin.required,
 	content: s.string().trim.nonRequired,
 	fingerprint: s.string().trim.nonRequired,
@@ -23,5 +23,5 @@ const adminLogSchema = new Schema<AdminLog, AdminLogModel>({
 	type: s.number().enum(getEnumNumberValues(AdminLogType)).required
 });
 
-adminLogSchema.index({ createdAt: -1 });
-export const AdminLogModel = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', adminLogSchema, { timestamps: { createdAt: true, updatedAt: false } });
+schema.index({ createdAt: -1 });
+export const AdminLogModel = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', schema, { timestamps: { createdAt: true, updatedAt: false } });

@@ -20,7 +20,7 @@ interface AdminModel extends BaseMongoosePaginateModel<Admin, AdminMethodsAndOve
 	findByAccount(account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>): MongooseFindOneReturnType<Admin, AdminDocument, {}, AdminMethodsAndOverrides>;
 }
 
-const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
+const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 	account: s.string().maxlength(16).trim.unique.required,
 	email: s.string().lowercase.trim.nonRequired,
 	enabled: s.boolean().default(false).required,
@@ -33,12 +33,12 @@ const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 	}
 });
 
-adminSchema.method('verifyPassword', function (password: string) {
+schema.method('verifyPassword', function (password: string) {
 	return cryptoSHA3256(password) === this.password;
 });
 
-adminSchema.static('findByAccount', function (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) {
+schema.static('findByAccount', function (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) {
 	return this.findOne({ account }, projection, options);
 });
 
-export const AdminModel = buildMongooseModel<Admin, AdminModel, AdminMethodsAndOverrides>('admin.admins', 'Admin', adminSchema);
+export const AdminModel = buildMongooseModel<Admin, AdminModel, AdminMethodsAndOverrides>('admin.admins', 'Admin', schema);
