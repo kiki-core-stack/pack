@@ -6,7 +6,7 @@ import { dirname } from 'path';
 (async () => {
 	const exports = {
 		'./*': { import: './*.mjs', types: './*.d.ts' },
-		'./types/*': { types: './*.d.ts' }
+		'./types/*': { types: './types/*.d.ts' }
 	};
 
 	const filePaths = await glob(['**/index.d.ts', '**/index.mjs'], { cwd: './dist' });

@@ -67,7 +67,7 @@
       "types": "./types/index.d.ts"
     },
     "./types/*": {
-      "types": "./*.d.ts"
+      "types": "./types/*.d.ts"
     },
     "./types/data": {
       "types": "./types/data/index.d.ts"
