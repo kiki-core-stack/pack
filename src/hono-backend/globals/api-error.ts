@@ -29,4 +29,4 @@ class LocalAPIError<D extends object> extends Error {
 	}
 }
 
-setReadonlyConstantToGlobalThis('APIError', LocalAPIError);
+setReadonlyConstantToGlobalThis<typeof APIError>('APIError', LocalAPIError);

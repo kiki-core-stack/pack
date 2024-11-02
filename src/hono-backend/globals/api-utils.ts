@@ -13,7 +13,7 @@ declare global {
 	};
 }
 
-setReadonlyConstantToGlobalThis('createAPISuccessResponseData', (arg1: any, arg2?: any) => {
+setReadonlyConstantToGlobalThis<typeof createAPISuccessResponseData>('createAPISuccessResponseData', (arg1, arg2) => {
 	if (typeof arg1 === 'string') {
 		let message = arg1;
 		arg1 = arg2;
@@ -23,6 +23,7 @@ setReadonlyConstantToGlobalThis('createAPISuccessResponseData', (arg1: any, arg2
 	return { data: arg1, message: arg2 ?? '成功', success: true };
 });
 
-setReadonlyConstantToGlobalThis('throwAPIError', (statusCode?: StatusCode, arg1?: any, arg2?: any) => {
+setReadonlyConstantToGlobalThis<typeof throwAPIError>('throwAPIError', (statusCode, arg1, arg2) => {
+	// @ts-expect-error
 	throw new APIError(statusCode, arg1, arg2);
 });

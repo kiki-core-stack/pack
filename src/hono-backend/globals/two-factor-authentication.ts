@@ -16,7 +16,7 @@ declare global {
 	const sendEmailOTPCode: (admin: AdminDocument) => Promise<boolean>;
 }
 
-setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (ctx: Context, emailOTP?: boolean, totp?: boolean, admin?: AdminDocument, autoSendEmailOTPCode?: boolean) => {
+setReadonlyConstantToGlobalThis<typeof requireTwoFactorAuthentication>('requireTwoFactorAuthentication', async (ctx, emailOTP, totp, admin, autoSendEmailOTPCode) => {
 	// @ts-expect-error
 	if (!admin && !(admin = ctx.admin)) throwAPIError();
 	const { emailOTPCode, totpCode } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
@@ -48,7 +48,7 @@ setReadonlyConstantToGlobalThis('requireTwoFactorAuthentication', async (ctx: Co
 	}
 });
 
-setReadonlyConstantToGlobalThis('sendEmailOTPCode', async (admin: AdminDocument) => {
+setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', async (admin) => {
 	if (!admin.email) throwAPIError(400, 'Email未綁定，無法發送OTP驗證碼！');
 	const emailOTPTTL = await redisController.twoFactorAuthentication.emailOTPCode.ttl(admin);
 	if (emailOTPTTL > 0 && emailOTPExpirationSeconds - emailOTPTTL < sendEmailOTPCodeCoolingSeconds) throwAPIError(429, 'Email OTP驗證碼已發送過，請稍後再試！');

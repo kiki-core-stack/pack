@@ -8,4 +8,4 @@ declare global {
 	const z: typeof _z;
 }
 
-setReadonlyConstantToGlobalThis('z', _z);
+setReadonlyConstantToGlobalThis<typeof z>('z', _z);
