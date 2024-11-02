@@ -2,6 +2,7 @@ import type { ZodType, ZodTypeDef } from 'zod';
 
 export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';
+export type {} from '@kikiutils/types/type-fest';
 
 declare global {
 	type TwoFactorAuthenticationMethod = 'emailOTP' | 'totp';
