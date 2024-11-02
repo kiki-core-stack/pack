@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.42.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.2...v0.42.0)
+
+### 🚀 Enhancements
+
+- Export types from `@kikiutils/types/type-fest` ([615e2eb](https://github.com/kiki-core-stack/pack/commit/615e2eb))
+
+### 🩹 Fixes
+
+- Correct erroneous exports configuration in package.json ([6342003](https://github.com/kiki-core-stack/pack/commit/6342003))
+
+### 💅 Refactors
+
+- Remove `createRedisInstance` utils ([35a0978](https://github.com/kiki-core-stack/pack/commit/35a0978))
+- Standardize schema names in model files ([94d5f63](https://github.com/kiki-core-stack/pack/commit/94d5f63))
+- Set input value type when using `setReadonlyConstantToGlobalThis` ([62d6718](https://github.com/kiki-core-stack/pack/commit/62d6718))
+- **examples:** Replace some `Omit` type with type-fest's `Except` type ([3542723](https://github.com/kiki-core-stack/pack/commit/3542723))
+- Split validation logic inside `requireTwoFactorAuthentication` ([5076894](https://github.com/kiki-core-stack/pack/commit/5076894))
+
+### 🏡 Chore
+
+- Modify exports configuration in package.json ([3b20f89](https://github.com/kiki-core-stack/pack/commit/3b20f89))
+- Upgrade dependencies ([2ba16d4](https://github.com/kiki-core-stack/pack/commit/2ba16d4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.41.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.1...v0.41.2)
