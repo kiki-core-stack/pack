@@ -11,7 +11,7 @@ import type { AdminLogData } from '@/types/data/admin';
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 
-export interface AdminLog extends BaseMongooseDocType<Omit<AdminLogData, 'admin'>, true, false> {
+export interface AdminLog extends BaseMongooseDocType<Except<AdminLogData, 'admin'>, true, false> {
 	admin: Types.ObjectId;
 }
 
