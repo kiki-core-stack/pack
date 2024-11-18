@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.42.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.0...v0.42.1)
+
+### 🏡 Chore
+
+- Update CHANGELOG ([9f0d6a8](https://github.com/kiki-core-stack/pack/commit/9f0d6a8))
+- Upgrade dependencies ([6f9ffb9](https://github.com/kiki-core-stack/pack/commit/6f9ffb9))
+- Replace Prettier with ESLint, add related files, and update VSCode settings ([9eb90dc](https://github.com/kiki-core-stack/pack/commit/9eb90dc))
+- Modify scripts in package.json ([9ec46cd](https://github.com/kiki-core-stack/pack/commit/9ec46cd))
+
+### 🎨 Styles
+
+- Format and lint all files ([09b479e](https://github.com/kiki-core-stack/pack/commit/09b479e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.42.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.41.2...v0.42.0)
