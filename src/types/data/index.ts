@@ -4,7 +4,7 @@ declare global {
 	type TwoFactorAuthenticationCodesData = PartialRecord<`${TwoFactorAuthenticationMethod}Code`, string>;
 
 	interface APIResponseData<D extends object = object> {
-		data?: D & { requiredTwoFactorAuthentications?: TwoFactorAuthenticationStatus };
+		data?: { requiredTwoFactorAuthentications?: TwoFactorAuthenticationStatus } & D;
 		message?: string;
 		success: boolean;
 	}

@@ -6,7 +6,6 @@ import { ZodError } from 'zod';
 
 import { statusCodeToAPIResponseTextMap } from '../constants/response';
 
-/* eslint sort-keys-plus/sort-keys: ['error', 'asc', { caseSensitive: true, natural: true }] */
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	2: 400, // BadValue -> Bad Request
 	4: 404, // NoSuchKey -> Not Found

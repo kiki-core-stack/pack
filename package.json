@@ -10,20 +10,20 @@
   },
   "exports": {
     "./*": {
-      "import": "./*.mjs",
-      "types": "./*.d.ts"
+      "types": "./*.d.ts",
+      "import": "./*.mjs"
     },
     "./constants/zod": {
-      "import": "./constants/zod/index.mjs",
-      "types": "./constants/zod/index.d.ts"
+      "types": "./constants/zod/index.d.ts",
+      "import": "./constants/zod/index.mjs"
     },
     "./hono-backend/globals": {
-      "import": "./hono-backend/globals/index.mjs",
-      "types": "./hono-backend/globals/index.d.ts"
+      "types": "./hono-backend/globals/index.d.ts",
+      "import": "./hono-backend/globals/index.mjs"
     },
     "./models/admin": {
-      "import": "./models/admin/index.mjs",
-      "types": "./models/admin/index.d.ts"
+      "types": "./models/admin/index.d.ts",
+      "import": "./models/admin/index.mjs"
     },
     "./types": {
       "types": "./types/index.d.ts"
@@ -45,13 +45,13 @@
   "dependencies": {
     "@kikiutils/classes": "^4.0.1",
     "@kikiutils/node": "^5.1.1",
-    "@kikiutils/types": "^3.2.1",
+    "@kikiutils/types": "^3.2.2",
     "@types/lodash-es": "^4.17.12",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@kikiutils/changelogen": "^0.7.0",
-    "@kikiutils/eslint-config": "^0.3.1",
+    "@kikiutils/eslint-config": "^0.4.0",
     "@kikiutils/fs-extra": "^2.3.8",
     "@kikiutils/mongoose": "2.1.1",
     "@kikiutils/tsconfigs": "^3.0.2",

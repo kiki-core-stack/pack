@@ -3,7 +3,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'a
 
 export { AxiosError } from 'axios';
 
-export type APIRequestData = FormData | APIRequestParams;
+export type APIRequestData = APIRequestParams | FormData;
 export type APIRequestParams = Dict<any>;
 
 export const apiInstance: AxiosInstance = axios.create();
