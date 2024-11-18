@@ -17,7 +17,7 @@ export interface AdminMethodsAndOverrides {
 }
 
 interface AdminModel extends BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides> {
-	findByAccount(account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>): MongooseFindOneReturnType<Admin, AdminDocument, {}, AdminMethodsAndOverrides>;
+	findByAccount: (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) => MongooseFindOneReturnType<Admin, AdminDocument, object, AdminMethodsAndOverrides>;
 }
 
 const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
@@ -29,8 +29,8 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 	totpSecret: s.string().private.sparse.trim.unique.nonRequired,
 	twoFactorAuthenticationStatus: {
 		emailOTP: s.boolean().default(false).required,
-		totp: s.boolean().default(false).required
-	}
+		totp: s.boolean().default(false).required,
+	},
 });
 
 schema.method('verifyPassword', function (password: string) {

@@ -12,7 +12,7 @@ export const statusCodeToResponseMessageMap = Object.freeze<PartialRecord<Status
 	429: '請求過於頻繁！',
 	500: '系統錯誤！',
 	503: '系統維護中！',
-	504: '超時！'
+	504: '超時！',
 });
 
 export const statusCodeToAPIResponseTextMap = Object.freeze<PartialRecord<StatusCode, string>>(mapValues(statusCodeToResponseMessageMap, (message, code) => JSON.stringify({ message, success: +code < 400 })));

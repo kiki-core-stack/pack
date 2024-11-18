@@ -1,13 +1,40 @@
 {
   "name": "@kikiutils/kiki-core-stack-pack",
+  "type": "module",
   "version": "0.42.0",
-  "license": "MIT",
   "author": "kiki-kanri",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kiki-core-stack/pack.git"
   },
-  "type": "module",
+  "exports": {
+    "./*": {
+      "types": "./*.d.ts",
+      "import": "./*.mjs"
+    },
+    "./constants/zod": {
+      "types": "./constants/zod/index.d.ts",
+      "import": "./constants/zod/index.mjs"
+    },
+    "./hono-backend/globals": {
+      "types": "./hono-backend/globals/index.d.ts",
+      "import": "./hono-backend/globals/index.mjs"
+    },
+    "./models/admin": {
+      "types": "./models/admin/index.d.ts",
+      "import": "./models/admin/index.mjs"
+    },
+    "./types": {
+      "types": "./types/index.d.ts"
+    },
+    "./types/*": {
+      "types": "./types/*.d.ts"
+    },
+    "./types/data": {
+      "types": "./types/data/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs && tsc-alias",
     "bumplog": "changelogen --bump",
@@ -45,32 +72,5 @@
     "tslib": "^2.8.1",
     "wasmagic": "^1.0.2",
     "zod": "^3.23.8"
-  },
-  "exports": {
-    "./*": {
-      "import": "./*.mjs",
-      "types": "./*.d.ts"
-    },
-    "./constants/zod": {
-      "import": "./constants/zod/index.mjs",
-      "types": "./constants/zod/index.d.ts"
-    },
-    "./hono-backend/globals": {
-      "import": "./hono-backend/globals/index.mjs",
-      "types": "./hono-backend/globals/index.d.ts"
-    },
-    "./models/admin": {
-      "import": "./models/admin/index.mjs",
-      "types": "./models/admin/index.d.ts"
-    },
-    "./types": {
-      "types": "./types/index.d.ts"
-    },
-    "./types/*": {
-      "types": "./types/*.d.ts"
-    },
-    "./types/data": {
-      "types": "./types/data/index.d.ts"
-    }
   }
 }

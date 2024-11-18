@@ -17,7 +17,7 @@ class LocalAPIError<D extends object> extends Error {
 	constructor(statusCode?: StatusCode, message?: string, data?: D);
 	constructor(statusCode: StatusCode = 500, arg1: any, arg2?: any) {
 		if (typeof arg1 === 'string') {
-			let message = arg1;
+			const message = arg1;
 			arg1 = arg2;
 			arg2 = message;
 		}

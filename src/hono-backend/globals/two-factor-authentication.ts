@@ -3,11 +3,11 @@ import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import { addSeconds } from 'date-fns';
 import type { Context } from 'hono';
-import { importKey, totp as getTOTPCode } from 'otp-io';
+import { totp as getTOTPCode, importKey } from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
-import { redisController } from '@/controllers/redis';
 import { emailOTPExpirationSeconds, sendEmailOTPCodeCoolingSeconds } from '@/constants/two-factor-authentication';
+import { redisController } from '@/controllers/redis';
 import type { AdminDocument } from '@/models/admin';
 import { sendEmail } from '@/utils/email';
 
@@ -39,12 +39,13 @@ async function verifyTOTPCode(admin: AdminDocument, requiredTwoFactorAuthenticat
 }
 
 setReadonlyConstantToGlobalThis<typeof requireTwoFactorAuthentication>('requireTwoFactorAuthentication', async (ctx, emailOTP, totp, admin, autoSendEmailOTPCode) => {
-	// @ts-expect-error
-	if (!admin && !(admin = ctx.admin)) throwAPIError();
+	// @ts-expect-error Ignore this error.
+	admin = admin || ctx.admin;
+	if (!admin) throwAPIError();
 	const { emailOTPCode, totpCode } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
 	const requiredTwoFactorAuthentications = {
 		emailOTP: !!(emailOTP && admin.twoFactorAuthenticationStatus.emailOTP && admin.email),
-		totp: !!(totp && admin.twoFactorAuthenticationStatus.totp && admin.totpSecret)
+		totp: !!(totp && admin.twoFactorAuthenticationStatus.totp && admin.totpSecret),
 	};
 
 	if (requiredTwoFactorAuthentications.emailOTP) await verifyEmailOTPCode(admin, requiredTwoFactorAuthentications, emailOTPCode, autoSendEmailOTPCode);
@@ -59,7 +60,7 @@ setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', asy
 	const htmlContentTexts = [
 		`您的Email OTP驗證碼為：<strong>${emailOTPCode}</strong>`,
 		`此驗證碼在 ${formatDateOrTimestamp(addSeconds(new Date(), emailOTPExpirationSeconds), `yyyy-MM-dd HH:mm:ss '(UTC'XXX')'`)} 前有效。`,
-		'請注意，一旦此驗證碼通過驗證，即使後續操作失敗（如登入失敗），驗證碼也會立即失效。'
+		'請注意，一旦此驗證碼通過驗證，即使後續操作失敗（如登入失敗），驗證碼也會立即失效。',
 	];
 
 	const sendResult = (await sendEmail(admin.email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'), undefined, admin.account)).success;

@@ -1,14 +1,14 @@
 {
   "extends": "@kikiutils/tsconfigs/esnext/esnext.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "./dist",
-    "emitDeclarationOnly": true,
-    "outDir": "./dist",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "rootDir": "./src"
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "outDir": "./dist"
   },
   "include": [
     "./scripts",

@@ -5,5 +5,5 @@ export const acceptedImageMimeTypes = Object.freeze([
 	'image/heif',
 	'image/png',
 	'image/tiff',
-	'image/webp'
+	'image/webp',
 ]);

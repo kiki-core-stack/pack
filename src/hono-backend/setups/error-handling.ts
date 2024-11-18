@@ -6,6 +6,7 @@ import { ZodError } from 'zod';
 
 import { statusCodeToAPIResponseTextMap } from '../constants/response';
 
+/* eslint sort-keys-plus/sort-keys: ['error', 'asc', { caseSensitive: true, natural: true }] */
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	2: 400, // BadValue -> Bad Request
 	4: 404, // NoSuchKey -> Not Found
@@ -29,10 +30,10 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
 	13297: 409, // DatabaseDifferCase -> Conflict
 	13436: 503, // NotPrimaryOrSecondary -> Service Unavailable
 	14031: 507, // OutOfDiskSpace -> Insufficient Storage
-	16755: 400 // Location16755 -> Bad Request
+	16755: 400, // Location16755 -> Bad Request
 });
 
-export const setupHonoAppErrorHandling = (honoApp: Hono) => {
+export function setupHonoAppErrorHandling(honoApp: Hono) {
 	honoApp.notFound((ctx) => {
 		ctx.header('content-type', 'application/json');
 		return ctx.body(statusCodeToAPIResponseTextMap[404]!, 404);
@@ -47,4 +48,4 @@ export const setupHonoAppErrorHandling = (honoApp: Hono) => {
 		if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
 		return ctx.body(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
 	});
-};
+}

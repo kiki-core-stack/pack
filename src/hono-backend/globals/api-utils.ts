@@ -15,7 +15,7 @@ declare global {
 
 setReadonlyConstantToGlobalThis<typeof createAPISuccessResponseData>('createAPISuccessResponseData', (arg1, arg2) => {
 	if (typeof arg1 === 'string') {
-		let message = arg1;
+		const message = arg1;
 		arg1 = arg2;
 		arg2 = message;
 	}
@@ -24,6 +24,6 @@ setReadonlyConstantToGlobalThis<typeof createAPISuccessResponseData>('createAPIS
 });
 
 setReadonlyConstantToGlobalThis<typeof throwAPIError>('throwAPIError', (statusCode, arg1, arg2) => {
-	// @ts-expect-error
+	// @ts-expect-error Ignore this error.
 	throw new APIError(statusCode, arg1, arg2);
 });

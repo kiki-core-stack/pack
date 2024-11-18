@@ -20,7 +20,7 @@ const schema = new Schema<AdminLog, AdminLogModel>({
 	content: s.string().trim.nonRequired,
 	fingerprint: s.string().trim.nonRequired,
 	ip: s.string().trim.nonRequired,
-	type: s.number().enum(getEnumNumberValues(AdminLogType)).required
+	type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
 });
 
 schema.index({ createdAt: -1 });
