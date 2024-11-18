@@ -38,7 +38,9 @@
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node ./update-package-exports.mjs && tsc-alias",
     "bumplog": "changelogen --bump",
-    "release": "pnpm run build && changelogen --push --release && sh ./build-and-publish.sh"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "release": "pnpm run lint && pnpm run build && changelogen --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
     "@kikiutils/classes": "^4.0.1",
