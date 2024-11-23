@@ -19,5 +19,5 @@ export const putAPI = async <T extends object = object>(url: string, data?: APIR
 export const $putAPI = async <T extends object = object>(url: string, data?: APIRequestData, config?: AxiosRequestConfig<APIRequestData>) => (await putAPI<T>(url, data, config))?.data;
 
 export async function requestAPI<T extends object = object, R extends AxiosResponse<APIResponseData<T>> | undefined = AxiosResponse<APIResponseData<T>> | undefined, D extends APIRequestData = any>(url: string,	method: Method,	params?: APIRequestData,	data?: D,	config?: AxiosRequestConfig) {
-	return await apiInstance.request<T, R, D>({ ...config, data, method, params, url });
+    return await apiInstance.request<T, R, D>({ ...config, data, method, params, url });
 }

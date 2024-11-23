@@ -10,23 +10,23 @@ declare global {
 }
 
 class LocalAPIError<D extends object> extends Error {
-	data: D;
-	statusCode: StatusCode;
+    data: D;
+    statusCode: StatusCode;
 
-	constructor(statusCode?: StatusCode, data?: D, message?: string);
-	constructor(statusCode?: StatusCode, message?: string, data?: D);
-	constructor(statusCode: StatusCode = 500, arg1: any, arg2?: any) {
-		if (typeof arg1 === 'string') {
-			const message = arg1;
-			arg1 = arg2;
-			arg2 = message;
-		}
+    constructor(statusCode?: StatusCode, data?: D, message?: string);
+    constructor(statusCode?: StatusCode, message?: string, data?: D);
+    constructor(statusCode: StatusCode = 500, arg1: any, arg2?: any) {
+        if (typeof arg1 === 'string') {
+            const message = arg1;
+            arg1 = arg2;
+            arg2 = message;
+        }
 
-		super(arg2 ?? (statusCodeToResponseMessageMap[statusCode] || '系統錯誤！'));
-		this.data = arg1;
-		this.statusCode = statusCode;
-		Error.captureStackTrace?.(this, this.constructor);
-	}
+        super(arg2 ?? (statusCodeToResponseMessageMap[statusCode] || '系統錯誤！'));
+        this.data = arg1;
+        this.statusCode = statusCode;
+        Error.captureStackTrace?.(this, this.constructor);
+    }
 }
 
 setReadonlyConstantToGlobalThis<typeof APIError>('APIError', LocalAPIError);

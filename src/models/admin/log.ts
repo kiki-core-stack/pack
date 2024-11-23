@@ -12,15 +12,15 @@ export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 
 export interface AdminLog extends BaseMongooseDocType<Except<AdminLogData, 'admin'>, true, false> {
-	admin: Types.ObjectId;
+    admin: Types.ObjectId;
 }
 
 const schema = new Schema<AdminLog, AdminLogModel>({
-	admin: mongooseRefSchemas.admin.required,
-	content: s.string().trim.nonRequired,
-	fingerprint: s.string().trim.nonRequired,
-	ip: s.string().trim.nonRequired,
-	type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
+    admin: mongooseRefSchemas.admin.required,
+    content: s.string().trim.nonRequired,
+    fingerprint: s.string().trim.nonRequired,
+    ip: s.string().trim.nonRequired,
+    type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
 });
 
 schema.index({ createdAt: -1 });
