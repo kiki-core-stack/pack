@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.42.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.1...v0.42.2)
+
+### 💅 Refactors
+
+- Simplify wrapper functions by removing async/await ([2b12681](https://github.com/kiki-core-stack/pack/commit/2b12681))
+- Initialize `WASMagic` instance only on first use ([968d840](https://github.com/kiki-core-stack/pack/commit/968d840))
+
+### 🏡 Chore
+
+- Update eslint-config and format codes ([be04868](https://github.com/kiki-core-stack/pack/commit/be04868))
+- Add `eslint --fix ./package.json` command at the end of build script in package.json ([56e745a](https://github.com/kiki-core-stack/pack/commit/56e745a))
+- Upgrade dependencies ([e420a90](https://github.com/kiki-core-stack/pack/commit/e420a90))
+- Upgrade dependencies ([cbaab4a](https://github.com/kiki-core-stack/pack/commit/cbaab4a))
+
+### 🎨 Styles
+
+- Format and lint all files ([0e76832](https://github.com/kiki-core-stack/pack/commit/0e76832))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.42.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.0...v0.42.1)
