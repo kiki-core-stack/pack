@@ -10,12 +10,12 @@ export const redisController = {
 
 function createOperateFunctions<T>(getKeyFunction: (input: T) => string) {
     return {
-        del: async (input: T) => await redisInstance.del(getKeyFunction(input)),
-        get: async (input: T) => await redisInstance.get(getKeyFunction(input)),
+        del: (input: T) => redisInstance.del(getKeyFunction(input)),
+        get: (input: T) => redisInstance.get(getKeyFunction(input)),
         async set(input: T, value: string, seconds?: number) {
             if (seconds) await redisInstance.setex(getKeyFunction(input), seconds, value);
             else await redisInstance.set(getKeyFunction(input), value);
         },
-        ttl: async (input: T) => await redisInstance.ttl(getKeyFunction(input)),
+        ttl: (input: T) => redisInstance.ttl(getKeyFunction(input)),
     };
 }
