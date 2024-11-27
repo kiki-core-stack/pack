@@ -4,9 +4,9 @@ import type { StatusCode } from 'hono/utils/http-status';
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
-	type APIError<D extends object = any> = LocalAPIError<D>;
+    type APIError<D extends object = any> = LocalAPIError<D>;
 
-	const APIError: typeof LocalAPIError;
+    const APIError: typeof LocalAPIError;
 }
 
 class LocalAPIError<D extends object> extends Error {

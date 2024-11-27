@@ -29,13 +29,13 @@ async function verifyEmailOTPCode(admin: AdminDocument, requiredTwoFactorAuthent
         throwAPIError(400, '請輸入Email OTP驗證碼！', { requiredTwoFactorAuthentications });
     }
 
-    if (emailOTPCode !== (await redisController.twoFactorAuthentication.emailOTPCode.get(admin))) throwAPIError(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+    if (emailOTPCode !== await redisController.twoFactorAuthentication.emailOTPCode.get(admin)) throwAPIError(400, 'Email OTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
     await redisController.twoFactorAuthentication.emailOTPCode.del(admin);
 }
 
 async function verifyTOTPCode(admin: AdminDocument, requiredTwoFactorAuthentications: TwoFactorAuthenticationStatus, totpCode?: string) {
     if (!totpCode) throwAPIError(400, '請輸入TOTP驗證碼！', { requiredTwoFactorAuthentications });
-    if (totpCode !== (await getTOTPCode(hmac, { secret: importKey(admin.totpSecret!) }))) throwAPIError(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
+    if (totpCode !== await getTOTPCode(hmac, { secret: importKey(admin.totpSecret!) })) throwAPIError(400, 'TOTP驗證碼錯誤！', { requiredTwoFactorAuthentications });
 }
 
 setReadonlyConstantToGlobalThis<typeof requireTwoFactorAuthentication>('requireTwoFactorAuthentication', async (ctx, emailOTP, totp, admin, autoSendEmailOTPCode) => {
