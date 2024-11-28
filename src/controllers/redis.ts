@@ -12,6 +12,10 @@ function createOperateFunctions<T>(getKeyFunction: (input: T) => string) {
     return {
         del: (input: T) => redisInstance.del(getKeyFunction(input)),
         get: (input: T) => redisInstance.get(getKeyFunction(input)),
+        getBuffer: (input: T) => redisInstance.getBuffer(getKeyFunction(input)),
+        getdel: (input: T) => redisInstance.getdel(getKeyFunction(input)),
+        getdelBuffer: (input: T) => redisInstance.getdelBuffer(getKeyFunction(input)),
+        getex: (input: T) => redisInstance.getex(getKeyFunction(input)),
         async set(input: T, value: string, seconds?: number) {
             if (seconds) await redisInstance.setex(getKeyFunction(input), seconds, value);
             else await redisInstance.set(getKeyFunction(input), value);
