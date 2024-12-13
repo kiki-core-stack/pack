@@ -12,10 +12,16 @@ import type {
 
 export async function convertAndSaveImageFile(file: Blob, savePath: PathLike, inputOptions?: SharpOptions, outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp', outputOptions?: Parameters<Sharp['toFormat']>[1]) {
     try {
-        await sharp(await file.arrayBuffer(), inputOptions).toFormat(outputFormat, {
-            quality: 75,
-            ...outputOptions,
-        }).toFile(savePath.toString());
+        await sharp(await file.arrayBuffer(), inputOptions)
+            .toFormat(
+                outputFormat,
+                {
+                    quality: 75,
+                    ...outputOptions,
+                },
+            )
+            .toFile(savePath.toString());
+
         if (await chmod(savePath.toString(), 0o644)) return true;
     } catch (error) {
         logger.error(error);

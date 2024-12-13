@@ -11,13 +11,16 @@ import type {
 } from 'socket.io-client';
 
 export function createSocketIoClient<ListenEvents extends EventsMap = DefaultEventsMap, EmitEvents extends EventsMap = ListenEvents>(uri: string, auth?: Partial<ManagerOptions & SocketOptions>['auth'], options?: Partial<ManagerOptions & SocketOptions>) {
-    const socketIoClient = io(uri, {
-        auth,
-        autoConnect: false,
-        reconnectionDelayMax: 250,
-        rejectUnauthorized: false,
-        ...options,
-    }) as Socket<ListenEvents, EmitEvents>;
+    const socketIoClient = io(
+        uri,
+        {
+            auth,
+            autoConnect: false,
+            reconnectionDelayMax: 250,
+            rejectUnauthorized: false,
+            ...options,
+        },
+    ) as Socket<ListenEvents, EmitEvents>;
 
     socketIoClient.on('connect', () => logger.info('socket.io已連線'));
     socketIoClient.on('connect_error', (error) => logger.error('socket.io連線錯誤：', error));

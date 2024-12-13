@@ -31,12 +31,15 @@ import { dirname } from 'node:path';
     filePaths.forEach((filePath) => {
         const dirPath = dirname(filePath);
         const isDts = filePath.endsWith('index.d.ts');
-        merge(exports, {
-            [`./${dirPath}`]: {
-                import: !isDts ? `./${filePath}` : undefined,
-                types: isDts ? `./${dirPath}/index.d.ts` : undefined,
+        merge(
+            exports,
+            {
+                [`./${dirPath}`]: {
+                    import: !isDts ? `./${filePath}` : undefined,
+                    types: isDts ? `./${dirPath}/index.d.ts` : undefined,
+                },
             },
-        });
+        );
     });
 
     const packageJson = await readJson('./package.json');
