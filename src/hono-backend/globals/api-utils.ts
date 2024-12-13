@@ -20,7 +20,11 @@ setReadonlyConstantToGlobalThis<typeof createAPISuccessResponseData>('createAPIS
         arg2 = message;
     }
 
-    return { data: arg1, message: arg2 ?? '成功', success: true };
+    return {
+        data: arg1,
+        message: arg2 ?? '成功',
+        success: true,
+    };
 });
 
 setReadonlyConstantToGlobalThis<typeof throwAPIError>('throwAPIError', (statusCode, arg1, arg2) => {

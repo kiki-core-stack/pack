@@ -40,7 +40,17 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
 
     honoApp.onError((error, ctx) => {
         ctx.header('content-type', 'application/json');
-        if (error instanceof APIError) return ctx.body(JSON.stringify({ data: error.data, message: error.message, success: false }), error.statusCode);
+        if (error instanceof APIError) {
+            return ctx.body(
+                JSON.stringify({
+                    data: error.data,
+                    message: error.message,
+                    success: false,
+                }),
+                error.statusCode,
+            );
+        }
+
         logger.error(error);
         if (error instanceof ZodError) return ctx.body(statusCodeToAPIResponseTextMap[400]!, 400);
         let statusCode: StatusCode = 500;

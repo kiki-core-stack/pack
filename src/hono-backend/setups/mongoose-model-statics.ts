@@ -1,7 +1,13 @@
 import { setCustomMongooseOptions } from '@kikiutils/mongoose/options';
 import type { Context } from 'hono';
 import { Types } from 'mongoose';
-import type { HydratedDocument, ProjectionType, QueryOptions, RootFilterQuery, Schema } from 'mongoose';
+import type {
+    HydratedDocument,
+    ProjectionType,
+    QueryOptions,
+    RootFilterQuery,
+    Schema,
+} from 'mongoose';
 
 declare module '@kikiutils/mongoose/types' {
     interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
@@ -31,7 +37,15 @@ setCustomMongooseOptions(
             const id = ctx.req.param('id');
             if (!id) throwAPIError(404);
             if (!Types.ObjectId.isValid(id)) throwAPIError(400);
-            const document = await this.findOne({ ...filterQuery, _id: id }, projection, options);
+            const document = await this.findOne(
+                {
+                    ...filterQuery,
+                    _id: id,
+                },
+                projection,
+                options,
+            );
+
             if (!document) throwAPIError(404);
             return document;
         });

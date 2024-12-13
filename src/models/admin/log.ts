@@ -24,4 +24,9 @@ const schema = new Schema<AdminLog, AdminLogModel>({
 });
 
 schema.index({ createdAt: -1 });
-export const AdminLogModel = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', schema, { timestamps: { createdAt: true, updatedAt: false } });
+export const AdminLogModel = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', schema, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: false,
+    },
+});

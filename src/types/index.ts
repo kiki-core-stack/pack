@@ -1,4 +1,7 @@
-import type { ZodType, ZodTypeDef } from 'zod';
+import type {
+    ZodType,
+    ZodTypeDef,
+} from 'zod';
 
 export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';

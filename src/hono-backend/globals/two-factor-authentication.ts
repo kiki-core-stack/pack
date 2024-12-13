@@ -3,10 +3,16 @@ import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import { addSeconds } from 'date-fns';
 import type { Context } from 'hono';
-import { totp as getTOTPCode, importKey } from 'otp-io';
+import {
+    totp as getTOTPCode,
+    importKey,
+} from 'otp-io';
 import { hmac } from 'otp-io/crypto';
 
-import { emailOTPExpirationSeconds, sendEmailOTPCodeCoolingSeconds } from '@/constants/two-factor-authentication';
+import {
+    emailOTPExpirationSeconds,
+    sendEmailOTPCodeCoolingSeconds,
+} from '@/constants/two-factor-authentication';
 import { redisController } from '@/controllers/redis';
 import type { AdminDocument } from '@/models/admin';
 import { sendEmail } from '@/utils/email';
@@ -42,7 +48,11 @@ setReadonlyConstantToGlobalThis<typeof requireTwoFactorAuthentication>('requireT
     // @ts-expect-error Ignore this error.
     admin = admin || ctx.admin;
     if (!admin) throwAPIError();
-    const { emailOTPCode, totpCode } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
+    const {
+        emailOTPCode,
+        totpCode,
+    } = await ctx.req.json<TwoFactorAuthenticationCodesData>();
+
     const requiredTwoFactorAuthentications = {
         emailOTP: !!(emailOTP && admin.twoFactorAuthenticationStatus.emailOTP && admin.email),
         totp: !!(totp && admin.twoFactorAuthenticationStatus.totp && admin.totpSecret),

@@ -1,5 +1,10 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+import type {
+    AxiosInstance,
+    AxiosRequestConfig,
+    AxiosResponse,
+    Method,
+} from 'axios';
 
 export { AxiosError } from 'axios';
 
@@ -19,5 +24,11 @@ export const putAPI = <T extends object = object>(url: string, data?: APIRequest
 export const $putAPI = async <T extends object = object>(url: string, data?: APIRequestData, config?: AxiosRequestConfig<APIRequestData>) => (await putAPI<T>(url, data, config))?.data;
 
 export function requestAPI<T extends object = object, R extends AxiosResponse<APIResponseData<T>> | undefined = AxiosResponse<APIResponseData<T>> | undefined, D extends APIRequestData = any>(url: string, method: Method, params?: APIRequestData, data?: D, config?: AxiosRequestConfig) {
-    return apiInstance.request<T, R, D>({ ...config, data, method, params, url });
+    return apiInstance.request<T, R, D>({
+        ...config,
+        data,
+        method,
+        params,
+        url,
+    });
 }

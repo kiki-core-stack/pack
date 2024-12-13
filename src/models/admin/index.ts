@@ -2,7 +2,10 @@ import s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { cryptoSHA3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
-import type { ProjectionType, QueryOptions } from 'mongoose';
+import type {
+    ProjectionType,
+    QueryOptions,
+} from 'mongoose';
 
 import type { AdminData } from '@/types/data/admin';
 
@@ -25,7 +28,10 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     email: s.string().lowercase.trim.nonRequired,
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(16).trim.required,
-    password: { ...s.string().length(64).private.required, set: (password: string) => cryptoSHA3256(password) },
+    password: {
+        ...s.string().length(64).private.required,
+        set: (password: string) => cryptoSHA3256(password),
+    },
     totpSecret: s.string().private.sparse.trim.unique.nonRequired,
     twoFactorAuthenticationStatus: {
         emailOTP: s.boolean().default(false).required,

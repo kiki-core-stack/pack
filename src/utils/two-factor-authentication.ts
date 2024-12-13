@@ -1,5 +1,9 @@
 import { random } from 'lodash-es';
-import { exportKey, generateKey, getKeyUri } from 'otp-io';
+import {
+    exportKey,
+    generateKey,
+    getKeyUri,
+} from 'otp-io';
 import { randomBytes } from 'otp-io/crypto';
 
 export function generateTOTPSecretData(issuer: string, name: string) {
@@ -11,5 +15,8 @@ export function generateTOTPSecretData(issuer: string, name: string) {
         type: 'totp',
     });
 
-    return { secret: exportKey(secretKey), url };
+    return {
+        secret: exportKey(secretKey),
+        url,
+    };
 }

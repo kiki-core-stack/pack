@@ -23,8 +23,14 @@ export async function sendEmail(bccRecipients: string | string[], subject: strin
             to: to ?? env.SEND_MAIL_TO,
         });
 
-        return { ...sendResult, success: true };
+        return {
+            ...sendResult,
+            success: true,
+        };
     } catch (error) {
-        return { error: error as Error, success: false };
+        return {
+            error: error as Error,
+            success: false,
+        };
     }
 }

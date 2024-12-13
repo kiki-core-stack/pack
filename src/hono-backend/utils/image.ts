@@ -1,5 +1,8 @@
 import type { PathLike } from '@kikiutils/classes/path';
-import type { Sharp, SharpOptions } from 'sharp';
+import type {
+    Sharp,
+    SharpOptions,
+} from 'sharp';
 
 import { getAcceptedImageFileMimeType } from '@/utils/file';
 import { convertAndSaveImageFile } from '@/utils/image';
