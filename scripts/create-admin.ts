@@ -1,6 +1,5 @@
 import logger from '@kikiutils/node/consola';
 import { cryptoSHA3512 } from '@kikiutils/node/crypto-hash';
-import { exit } from 'node:process';
 
 import { AdminModel } from '../src/models/admin';
 
@@ -13,5 +12,5 @@ import { AdminModel } from '../src/models/admin';
     });
 
     logger.success(`Successfully created admin account: '${admin.account}'`);
-    exit();
+    process.exit();
 })();

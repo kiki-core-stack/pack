@@ -1,4 +1,3 @@
 import Redis from 'ioredis';
-import { env } from 'node:process';
 
-export const redisInstance = new Redis(env.REDIS_URI || 'redis://127.0.0.1:6379');
+export const redisInstance = new Redis(process.env.REDIS_URI || 'redis://127.0.0.1:6379');
