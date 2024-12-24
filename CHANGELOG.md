@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.43.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.2...v0.43.0)
+
+### 🚀 Enhancements
+
+- Add `getBuffer`, `getdel`, `getdelBuffer`, and `getex` methods to `createOperateFunctions` in redis controller ([d9f94cf](https://github.com/kiki-core-stack/pack/commit/d9f94cf))
+
+### 💅 Refactors
+
+- Remove && from scripts and add set -e at the top ([ea0c5af](https://github.com/kiki-core-stack/pack/commit/ea0c5af))
+- Remove process import statement ([e95b0b2](https://github.com/kiki-core-stack/pack/commit/e95b0b2))
+- Update `redisController` ([76790bc](https://github.com/kiki-core-stack/pack/commit/76790bc))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([1ebe28a](https://github.com/kiki-core-stack/pack/commit/1ebe28a))
+- Rename package to @kiki-core-stack/pack ([b982bc1](https://github.com/kiki-core-stack/pack/commit/b982bc1))
+- Change permission value to `0o644` for `convertAndSaveImageFile` and add error log ([8c6b8ad](https://github.com/kiki-core-stack/pack/commit/8c6b8ad))
+- Upgrade dependencies ([81bb06b](https://github.com/kiki-core-stack/pack/commit/81bb06b))
+- Upgrade dependencies ([3d85343](https://github.com/kiki-core-stack/pack/commit/3d85343))
+
+### 🎨 Styles
+
+- Format and lint codes ([81d70aa](https://github.com/kiki-core-stack/pack/commit/81d70aa))
+- Format and lint all files ([d461e0b](https://github.com/kiki-core-stack/pack/commit/d461e0b))
+- Format codes ([f9f1194](https://github.com/kiki-core-stack/pack/commit/f9f1194))
+- Format codes ([9165e67](https://github.com/kiki-core-stack/pack/commit/9165e67))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.42.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.1...v0.42.2)
