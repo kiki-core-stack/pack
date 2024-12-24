@@ -74,6 +74,6 @@ setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', asy
     ];
 
     const sendResult = (await sendEmail(admin.email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'), undefined, admin.account)).success;
-    if (sendResult) await redisController.twoFactorAuthentication.emailOTPCode.set(admin, emailOTPCode, emailOTPExpirationSeconds);
+    if (sendResult) await redisController.twoFactorAuthentication.emailOTPCode.setex(emailOTPCode, emailOTPExpirationSeconds, admin);
     return sendResult;
 });

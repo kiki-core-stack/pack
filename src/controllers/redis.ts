@@ -8,18 +8,16 @@ export const redisController = {
     },
 };
 
-function createOperateFunctions<T>(getKeyFunction: (input: T) => string) {
+function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunction: F) {
     return {
-        del: (input: T) => redisInstance.del(getKeyFunction(input)),
-        get: (input: T) => redisInstance.get(getKeyFunction(input)),
-        getBuffer: (input: T) => redisInstance.getBuffer(getKeyFunction(input)),
-        getdel: (input: T) => redisInstance.getdel(getKeyFunction(input)),
-        getdelBuffer: (input: T) => redisInstance.getdelBuffer(getKeyFunction(input)),
-        getex: (input: T) => redisInstance.getex(getKeyFunction(input)),
-        async set(input: T, value: string, seconds?: number) {
-            if (seconds) await redisInstance.setex(getKeyFunction(input), seconds, value);
-            else await redisInstance.set(getKeyFunction(input), value);
-        },
-        ttl: (input: T) => redisInstance.ttl(getKeyFunction(input)),
+        del: (...args: Parameters<F>) => redisInstance.del(getKeyFunction(...args)),
+        get: (...args: Parameters<F>) => redisInstance.get(getKeyFunction(...args)),
+        getBuffer: (...args: Parameters<F>) => redisInstance.getBuffer(getKeyFunction(...args)),
+        getdel: (...args: Parameters<F>) => redisInstance.getdel(getKeyFunction(...args)),
+        getdelBuffer: (...args: Parameters<F>) => redisInstance.getdelBuffer(getKeyFunction(...args)),
+        getex: (...args: Parameters<F>) => redisInstance.getex(getKeyFunction(...args)),
+        set: (value: string, ...args: Parameters<F>) => redisInstance.set(getKeyFunction(...args), value),
+        setex: (value: string, seconds: number, ...args: Parameters<F>) => redisInstance.setex(getKeyFunction(...args), seconds, value),
+        ttl: (...args: Parameters<F>) => redisInstance.ttl(getKeyFunction(...args)),
     };
 }
