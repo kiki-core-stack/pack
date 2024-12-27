@@ -4,6 +4,7 @@ import {
     remove,
 } from '@kikiutils/fs-extra';
 import logger from '@kikiutils/node/consola';
+import type { Blob } from 'node:buffer';
 import sharp from 'sharp';
 import type {
     Sharp,

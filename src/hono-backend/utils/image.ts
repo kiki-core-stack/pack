@@ -1,4 +1,5 @@
 import type { PathLike } from '@kikiutils/classes/path';
+import type { Blob } from 'node:buffer';
 import type {
     Sharp,
     SharpOptions,

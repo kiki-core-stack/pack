@@ -1,3 +1,4 @@
+import type { Blob } from 'node:buffer';
 import { WASMagic } from 'wasmagic';
 
 import { acceptedImageMimeTypes } from '@/constants/image';
