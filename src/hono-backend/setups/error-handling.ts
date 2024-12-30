@@ -1,12 +1,12 @@
 import logger from '@kikiutils/node/consola';
 import type { Hono } from 'hono';
-import type { StatusCode } from 'hono/utils/http-status';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
 import { statusCodeToAPIResponseTextMap } from '../constants/response';
 
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<StatusCode>>({
+const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusCode>>({
     2: 400, // BadValue -> Bad Request
     4: 404, // NoSuchKey -> Not Found
     6: 503, // HostUnreachable -> Service Unavailable
@@ -53,7 +53,7 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
 
         logger.error(error);
         if (error instanceof ZodError) return ctx.body(statusCodeToAPIResponseTextMap[400]!, 400);
-        let statusCode: StatusCode = 500;
+        let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
         return ctx.body(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
     });

@@ -1,5 +1,5 @@
 import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
-import type { StatusCode } from 'hono/utils/http-status';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
 declare global {
     const createAPISuccessResponseData: {
@@ -8,8 +8,8 @@ declare global {
     };
 
     const throwAPIError: {
-        <D extends object>(statusCode?: StatusCode, data?: D, message?: string): never;
-        <D extends object>(statusCode?: StatusCode, message?: string, data?: D): never;
+        <D extends object>(statusCode?: ContentfulStatusCode, data?: D, message?: string): never;
+        <D extends object>(statusCode?: ContentfulStatusCode, message?: string, data?: D): never;
     };
 }
 
@@ -27,7 +27,6 @@ setReadonlyConstantToGlobalThis<typeof createAPISuccessResponseData>('createAPIS
     };
 });
 
-setReadonlyConstantToGlobalThis<typeof throwAPIError>('throwAPIError', (statusCode, arg1, arg2) => {
-    // @ts-expect-error Ignore this error.
+setReadonlyConstantToGlobalThis<typeof throwAPIError>('throwAPIError', (statusCode, arg1: any, arg2: any) => {
     throw new APIError(statusCode, arg1, arg2);
 });
