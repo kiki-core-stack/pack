@@ -1,7 +1,9 @@
 import { setReadonlyConstantToGlobalThis } from '@kikiutils/node';
-import { formatDateOrTimestamp } from '@kikiutils/node/datetime';
 import { randomAlphabeticString } from '@kikiutils/node/string';
-import { addSeconds } from 'date-fns';
+import {
+    addSeconds,
+    format,
+} from 'date-fns';
 import type { Context } from 'hono';
 import {
     totp as getTOTPCode,
@@ -69,7 +71,7 @@ setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', asy
     const emailOTPCode = randomAlphabeticString(6);
     const htmlContentTexts = [
         `您的Email OTP驗證碼為：<strong>${emailOTPCode}</strong>`,
-        `此驗證碼在 ${formatDateOrTimestamp(addSeconds(new Date(), emailOTPExpirationSeconds), `yyyy-MM-dd HH:mm:ss '(UTC'XXX')'`)} 前有效。`,
+        `此驗證碼在 ${format(addSeconds(new Date(), emailOTPExpirationSeconds), `yyyy-MM-dd HH:mm:ss '(UTC'XXX')'`)} 前有效。`,
         '請注意，一旦此驗證碼通過驗證，即使後續操作失敗（如登入失敗），驗證碼也會立即失效。',
     ];
 
