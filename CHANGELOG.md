@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.44.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.43.0...v0.44.0)
+
+### 🩹 Fixes
+
+- Fix the problem that `getFileMimeType` method return type is not `Promise<string>` ([e4da948](https://github.com/kiki-core-stack/pack/commit/e4da948))
+
+### 💅 Refactors
+
+- Explicitly import from buffer module when using Blob ([4765ba1](https://github.com/kiki-core-stack/pack/commit/4765ba1))
+- Replace `formatDateOrTimestamp` with date-fns `format` in `sendEmailOTPCode` ([9f7f2ee](https://github.com/kiki-core-stack/pack/commit/9f7f2ee))
+- Change `StatusCode` parameter type to `ContentfulStatusCode` in hono api-error/utils ([5029619](https://github.com/kiki-core-stack/pack/commit/5029619))
+- Merge duplicate definitions in ZodValidatorType ([83d9053](https://github.com/kiki-core-stack/pack/commit/83d9053))
+- ⚠️ Modify parameter order and types of setex method in redis controller ([8c796bc](https://github.com/kiki-core-stack/pack/commit/8c796bc))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([bb7b139](https://github.com/kiki-core-stack/pack/commit/bb7b139))
+- Upgrade dependencies ([efac7e6](https://github.com/kiki-core-stack/pack/commit/efac7e6))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Modify parameter order and types of setex method in redis controller ([8c796bc](https://github.com/kiki-core-stack/pack/commit/8c796bc))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.43.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.42.2...v0.43.0)
