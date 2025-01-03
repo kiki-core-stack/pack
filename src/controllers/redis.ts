@@ -1,3 +1,5 @@
+import type { Buffer } from 'node:buffer';
+
 import { redisInstance } from '@/constants/redis';
 import type { AdminDocument } from '@/models/admin';
 
@@ -15,9 +17,10 @@ function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunc
         getBuffer: (...args: Parameters<F>) => redisInstance.getBuffer(getKeyFunction(...args)),
         getdel: (...args: Parameters<F>) => redisInstance.getdel(getKeyFunction(...args)),
         getdelBuffer: (...args: Parameters<F>) => redisInstance.getdelBuffer(getKeyFunction(...args)),
+        // TODO: overloads
         getex: (...args: Parameters<F>) => redisInstance.getex(getKeyFunction(...args)),
         set: (value: string, ...args: Parameters<F>) => redisInstance.set(getKeyFunction(...args), value),
-        setex: (value: string, seconds: number, ...args: Parameters<F>) => redisInstance.setex(getKeyFunction(...args), seconds, value),
+        setex: (seconds: number, value: Buffer | number | string, ...args: Parameters<F>) => redisInstance.setex(getKeyFunction(...args), seconds, value),
         ttl: (...args: Parameters<F>) => redisInstance.ttl(getKeyFunction(...args)),
     };
 }
