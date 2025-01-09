@@ -75,7 +75,8 @@ setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', asy
         '請注意，一旦此驗證碼通過驗證，即使後續操作失敗（如登入失敗），驗證碼也會立即失效。',
     ];
 
-    const sendResult = (await sendEmail(admin.email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'), undefined, admin.account)).success;
-    if (sendResult) await redisController.twoFactorAuthentication.emailOTPCode.setex(emailOTPExpirationSeconds, emailOTPCode, admin);
-    return sendResult;
+    const sendResult = await sendEmail(admin.email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'), undefined, admin.account);
+    if (sendResult.success) await redisController.twoFactorAuthentication.emailOTPCode.setex(emailOTPExpirationSeconds, emailOTPCode, admin);
+    else console.error('發送Email OTP驗證碼失敗：', sendResult.error);
+    return sendResult.success;
 });
