@@ -1,13 +1,11 @@
 import type { Buffer } from 'node:buffer';
 
 import { redisInstance } from '@/constants/redis';
-import type { AdminDocument } from '@/models/admin';
+import type { EmailOTPCodeType } from '@/types/otp';
 
 export const redisController = {
-    twoFactorAuthentication: {
-        emailOTPCode: createOperateFunctions((admin: AdminDocument) => `admin:emailOTPCode:${admin.id}:${admin.email}`),
-        tempTOTPSecret: createOperateFunctions((admin: AdminDocument) => `admin:tempTOTPSecret:${admin.id}`),
-    },
+    emailOTPCode: createOperateFunctions((type: EmailOTPCodeType, key: string) => `emailOTPCode:${type}:${key}`),
+    tempTOTPSecret: createOperateFunctions((key: string) => `tempTOTPSecret:${key}`),
 };
 
 function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunction: F) {
