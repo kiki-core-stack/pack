@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.45.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.44.0...v0.45.0)
+
+### 💅 Refactors
+
+- ⚠️ Update redis controller ([e58d0d2](https://github.com/kiki-core-stack/pack/commit/e58d0d2))
+- ⚠️ Update `hono-backend/globals/two-factor-authentication.ts` ([7015a6e](https://github.com/kiki-core-stack/pack/commit/7015a6e))
+- ⚠️ Rename `src/utils/two-factor-authentication.ts` to `src/utils/otp.ts` ([cd4ac64](https://github.com/kiki-core-stack/pack/commit/cd4ac64))
+- ⚠️ Rename `src/constants/two-factor-authentication.ts` to `src/constants/otp.ts` ([989560c](https://github.com/kiki-core-stack/pack/commit/989560c))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([3f39a73](https://github.com/kiki-core-stack/pack/commit/3f39a73))
+- Set `tsconfig.json.moduleResolution` to bundler ([f03ca83](https://github.com/kiki-core-stack/pack/commit/f03ca83))
+- Log error using `console.error` when `sendEmailOTPCode` fails ([c1b8fe4](https://github.com/kiki-core-stack/pack/commit/c1b8fe4))
+- Upgrade dependencies ([e6b351a](https://github.com/kiki-core-stack/pack/commit/e6b351a))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Update redis controller ([e58d0d2](https://github.com/kiki-core-stack/pack/commit/e58d0d2))
+- ⚠️ Update `hono-backend/globals/two-factor-authentication.ts` ([7015a6e](https://github.com/kiki-core-stack/pack/commit/7015a6e))
+- ⚠️ Rename `src/utils/two-factor-authentication.ts` to `src/utils/otp.ts` ([cd4ac64](https://github.com/kiki-core-stack/pack/commit/cd4ac64))
+- ⚠️ Rename `src/constants/two-factor-authentication.ts` to `src/constants/otp.ts` ([989560c](https://github.com/kiki-core-stack/pack/commit/989560c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.44.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.43.0...v0.44.0)
