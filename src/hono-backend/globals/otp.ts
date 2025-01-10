@@ -14,7 +14,7 @@ import { hmac } from 'otp-io/crypto';
 import {
     emailOTPExpirationSeconds,
     sendEmailOTPCodeCoolingSeconds,
-} from '@/constants/two-factor-authentication';
+} from '@/constants/otp';
 import { redisController } from '@/controllers/redis';
 import type { EmailOTPCodeType } from '@/types/otp';
 import { sendEmail } from '@/utils/email';
