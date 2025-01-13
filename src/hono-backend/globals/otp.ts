@@ -20,13 +20,13 @@ import type { EmailOTPCodeType } from '@/types/otp';
 import { sendEmail } from '@/utils/email';
 
 declare global {
-    const sendEmailOTPCode: (email: string, type: EmailOTPCodeType, redisKey: string) => Promise<boolean>;
-    const verifyEmailOTPCode: (codeOrCtx: Context | string, type: EmailOTPCodeType, redisKey: string) => Promise<boolean>;
+    const sendEmailOTPCode: (type: EmailOTPCodeType, email: string, redisAdditionalKey?: string) => Promise<boolean>;
+    const verifyEmailOTPCode: (codeOrCtx: Context | string, type: EmailOTPCodeType, email: string, redisAdditionalKey: string) => Promise<boolean>;
     const verifyTOTPCode: (codeOrCtx: Context | string, secret: string) => Promise<boolean>;
 }
 
-setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', async (email, type, redisKey) => {
-    const emailOTPCodeTTL = await redisController.emailOTPCode.ttl(type, redisKey);
+setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', async (type, email, redisAdditionalKey) => {
+    const emailOTPCodeTTL = await redisController.emailOTPCode.ttl(type, email, redisAdditionalKey);
     if (emailOTPCodeTTL > 0 && emailOTPExpirationSeconds - emailOTPCodeTTL < sendEmailOTPCodeCoolingSeconds) throwAPIError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
     const emailOTPCode = randomAlphabeticString(6);
     const htmlContentTexts = [
@@ -36,16 +36,16 @@ setReadonlyConstantToGlobalThis<typeof sendEmailOTPCode>('sendEmailOTPCode', asy
     ];
 
     const sendResult = await sendEmail(email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'));
-    if (sendResult.success) await redisController.emailOTPCode.setex(emailOTPExpirationSeconds, emailOTPCode, type, redisKey);
+    if (sendResult.success) await redisController.emailOTPCode.setex(emailOTPExpirationSeconds, emailOTPCode, type, email, redisAdditionalKey);
     else console.error('發送Email OTP驗證碼失敗：', sendResult.error);
     return sendResult.success;
 });
 
-setReadonlyConstantToGlobalThis<typeof verifyEmailOTPCode>('verifyEmailOTPCode', async (codeOrCtx, type, redisKey) => {
+setReadonlyConstantToGlobalThis<typeof verifyEmailOTPCode>('verifyEmailOTPCode', async (codeOrCtx, type, email, redisAdditionalKey) => {
     const emailOTPCode = typeof codeOrCtx === 'string' ? codeOrCtx : (await codeOrCtx.req.json<{ emailOTPCode?: string }>()).emailOTPCode;
     if (!emailOTPCode) return false;
-    const isVerified = emailOTPCode === await redisController.emailOTPCode.get(type, redisKey);
-    if (isVerified) await redisController.emailOTPCode.del(type, redisKey);
+    const isVerified = emailOTPCode === await redisController.emailOTPCode.get(type, email, redisAdditionalKey);
+    if (isVerified) await redisController.emailOTPCode.del(type, email, redisAdditionalKey);
     return isVerified;
 });
 

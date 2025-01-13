@@ -4,7 +4,7 @@ import { redisInstance } from '@/constants/redis';
 import type { EmailOTPCodeType } from '@/types/otp';
 
 export const redisController = {
-    emailOTPCode: createOperateFunctions((type: EmailOTPCodeType, key: string) => `emailOTPCode:${type}:${key}`),
+    emailOTPCode: createOperateFunctions((type: EmailOTPCodeType, email: string, additionalKey?: string) => `emailOTPCode:${type}:${additionalKey ? `${additionalKey}:` : ''}${email}`),
     tempTOTPSecret: createOperateFunctions((key: string) => `tempTOTPSecret:${key}`),
 };
 
