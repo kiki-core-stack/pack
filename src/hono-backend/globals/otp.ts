@@ -21,7 +21,7 @@ import { sendEmail } from '@/utils/email';
 
 declare global {
     const sendEmailOTPCode: (type: EmailOTPCodeType, email: string, redisAdditionalKey?: string) => Promise<boolean>;
-    const verifyEmailOTPCode: (codeOrCtx: Context | string, type: EmailOTPCodeType, email: string, redisAdditionalKey: string) => Promise<boolean>;
+    const verifyEmailOTPCode: (codeOrCtx: Context | string, type: EmailOTPCodeType, email: string, redisAdditionalKey?: string) => Promise<boolean>;
     const verifyTOTPCode: (codeOrCtx: Context | string, secret: string) => Promise<boolean>;
 }
 
