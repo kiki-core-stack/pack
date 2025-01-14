@@ -1,3 +1,4 @@
+import logger from '@kikiutils/node/consola';
 import { randomAlphabeticString } from '@kikiutils/node/string';
 import {
     addSeconds,
@@ -24,6 +25,6 @@ export async function sendEmailOTPCode(type: EmailOTPCodeType, email: string, re
 
     const sendResult = await sendEmail(email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'));
     if (sendResult.success) await redisController.emailOTPCode.setex(emailOTPExpirationSeconds, emailOTPCode, type, email, redisAdditionalKey);
-    else console.error('發送Email OTP驗證碼失敗：', sendResult.error);
+    else logger.error('發送Email OTP驗證碼失敗：', sendResult.error);
     return sendResult.success;
 }
