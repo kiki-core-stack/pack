@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.46.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.45.2...v0.46.0)
+
+### 💅 Refactors
+
+- ⚠️ Reorganize and split code ([c8c3529](https://github.com/kiki-core-stack/pack/commit/c8c3529))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([e164a39](https://github.com/kiki-core-stack/pack/commit/e164a39))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Reorganize and split code ([c8c3529](https://github.com/kiki-core-stack/pack/commit/c8c3529))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.45.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.45.1...v0.45.2)
