@@ -14,8 +14,9 @@ import { dirname } from 'node:path';
 (async () => {
     const exports = {
         './*': {
-            import: './dist/*.mjs',
             types: './dist/*.d.ts',
+            // eslint-disable-next-line perfectionist/sort-objects
+            import: './dist/*.mjs',
         },
         './types/*': { types: './dist/types/*.d.ts' },
     };
@@ -35,8 +36,9 @@ import { dirname } from 'node:path';
             exports,
             {
                 [`./${dirPath}`]: {
-                    import: !isDts ? `./dist/${filePath}` : undefined,
                     types: isDts ? `./dist/${dirPath}/index.d.ts` : undefined,
+                    // eslint-disable-next-line perfectionist/sort-objects
+                    import: !isDts ? `./dist/${filePath}` : undefined,
                 },
             },
         );
