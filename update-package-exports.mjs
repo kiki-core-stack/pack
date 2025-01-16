@@ -14,10 +14,10 @@ import { dirname } from 'node:path';
 (async () => {
     const exports = {
         './*': {
-            import: './*.mjs',
-            types: './*.d.ts',
+            import: './dist/*.mjs',
+            types: './dist/*.d.ts',
         },
-        './types/*': { types: './types/*.d.ts' },
+        './types/*': { types: './dist/types/*.d.ts' },
     };
 
     const filePaths = await glob(
@@ -35,8 +35,8 @@ import { dirname } from 'node:path';
             exports,
             {
                 [`./${dirPath}`]: {
-                    import: !isDts ? `./${filePath}` : undefined,
-                    types: isDts ? `./${dirPath}/index.d.ts` : undefined,
+                    import: !isDts ? `./dist/${filePath}` : undefined,
+                    types: isDts ? `./dist/${dirPath}/index.d.ts` : undefined,
                 },
             },
         );

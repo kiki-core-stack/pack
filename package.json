@@ -10,31 +10,35 @@
   },
   "exports": {
     "./*": {
-      "types": "./*.d.ts",
-      "import": "./*.mjs"
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs"
     },
     "./constants/zod": {
-      "types": "./constants/zod/index.d.ts",
-      "import": "./constants/zod/index.mjs"
+      "types": "./dist/constants/zod/index.d.ts",
+      "import": "./dist/constants/zod/index.mjs"
     },
     "./hono-backend/globals": {
-      "types": "./hono-backend/globals/index.d.ts",
-      "import": "./hono-backend/globals/index.mjs"
+      "types": "./dist/hono-backend/globals/index.d.ts",
+      "import": "./dist/hono-backend/globals/index.mjs"
     },
     "./models/admin": {
-      "types": "./models/admin/index.d.ts",
-      "import": "./models/admin/index.mjs"
+      "types": "./dist/models/admin/index.d.ts",
+      "import": "./dist/models/admin/index.mjs"
     },
     "./types": {
-      "types": "./types/index.d.ts"
+      "types": "./dist/types/index.d.ts"
     },
     "./types/*": {
-      "types": "./types/*.d.ts"
+      "types": "./dist/types/*.d.ts"
     },
     "./types/data": {
-      "types": "./types/data/index.d.ts"
+      "types": "./dist/types/data/index.d.ts"
     }
   },
+  "files": [
+    "./dist",
+    "./src"
+  ],
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules --sourcemaps && node ./update-package-exports.mjs && tsc-alias && eslint --fix ./package.json",
     "bumplog": "changelogen --bump",
