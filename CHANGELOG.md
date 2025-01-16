@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.47.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.46.0...v0.47.0)
+
+### 🚀 Enhancements
+
+- Add `adminBindEmail` to `EmailOTPCodeType` ([39a10c7](https://github.com/kiki-core-stack/pack/commit/39a10c7))
+
+### 💅 Refactors
+
+- Replace logger with consola in `sendEmailOTPCode` ([66ed16b](https://github.com/kiki-core-stack/pack/commit/66ed16b))
+- Modify definition and implementation of `SocketIoEvent` constant ([cf6ffb1](https://github.com/kiki-core-stack/pack/commit/cf6ffb1))
+- Modify key order in `update-package-exports.mjs` and remove lint `package.json` command after build ([ceb1199](https://github.com/kiki-core-stack/pack/commit/ceb1199))
+
+### 📦 Build
+
+- Enable sourcemap output in build process ([f933af1](https://github.com/kiki-core-stack/pack/commit/f933af1))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([cd741e3](https://github.com/kiki-core-stack/pack/commit/cd741e3))
+- Modify pack file structure and update package.json.exports configuration ([ed9e822](https://github.com/kiki-core-stack/pack/commit/ed9e822))
+
+### 🎨 Styles
+
+- Format `EmailOTPCodeType` code ([b87d44a](https://github.com/kiki-core-stack/pack/commit/b87d44a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.46.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.45.2...v0.46.0)
