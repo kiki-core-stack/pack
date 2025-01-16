@@ -6,7 +6,10 @@ export default defineConfig({
         afterBuiltIns: [
             del({
                 hook: 'writeBundle',
-                targets: './dist/types/**/*.mjs',
+                targets: [
+                    './dist/types/**/*.mjs',
+                    './dist/types/**/*.mjs.map',
+                ],
             }),
         ],
     },
