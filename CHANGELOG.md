@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.47.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.47.0...v0.47.1)
+
+### 🏡 Chore
+
+- Remove unused `.map` files after build ([a248da7](https://github.com/kiki-core-stack/pack/commit/a248da7))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.47.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.46.0...v0.47.0)
