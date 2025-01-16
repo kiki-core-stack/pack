@@ -1,1 +1,1 @@
-export type EmailOTPCodeType = 'adminChangePassword' | 'adminLogin' | 'adminToggleTwoFactorAuthenticationStatus';
+export type EmailOTPCodeType = 'adminBindEmail' | 'adminChangePassword' | 'adminLogin' | 'adminToggleTwoFactorAuthenticationStatus';
