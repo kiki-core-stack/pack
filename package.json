@@ -50,7 +50,7 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@kikiutils/changelogen": "^0.7.0",
+    "@kikiutils/changelogen": "^0.7.1",
     "@kikiutils/eslint-config": "^0.7.3",
     "@kikiutils/fs-extra": "^2.3.11",
     "@kikiutils/mongoose": "2.1.4",
