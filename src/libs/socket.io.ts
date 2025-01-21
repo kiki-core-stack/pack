@@ -21,7 +21,6 @@ export function createSocketIoClient<ListenEvents extends EventsMap = DefaultEve
             ...options,
         },
     ) as Socket<ListenEvents, EmitEvents>;
-
     socketIoClient.on('connect', () => logger.info('socket.io已連線'));
     socketIoClient.on('connect_error', (error) => logger.error('socket.io連線錯誤：', error));
     socketIoClient.on('disconnect', () => logger.info('socket.io已斷線'));
