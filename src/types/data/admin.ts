@@ -13,6 +13,14 @@ export interface AdminData extends BaseMongooseModelData {
     twoFactorAuthenticationStatus: TwoFactorAuthenticationStatus;
 }
 
+export interface AdminGroupData extends BaseMongooseModelData {
+    adminCount?: number;
+    createdByAdmin: Partial<AdminData>;
+    editedByAdmin?: Partial<AdminData>;
+    name: string;
+    permissions: Partial<AdminPermissionData>[];
+}
+
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
     admin: Partial<AdminData>;
     content?: string;

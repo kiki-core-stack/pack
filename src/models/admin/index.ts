@@ -9,6 +9,7 @@ import type {
 
 import type { AdminData } from '@/types/data/admin';
 
+export * from './group';
 export * from './log';
 export * from './permission';
 
