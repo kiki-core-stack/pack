@@ -10,6 +10,7 @@ import type {
 import type { AdminData } from '@/types/data/admin';
 
 export * from './log';
+export * from './permission';
 
 export type Admin = BaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;

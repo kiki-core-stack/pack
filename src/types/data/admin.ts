@@ -1,4 +1,7 @@
-import type { AdminLogType } from '@/constants/admin';
+import type {
+    AdminLogType,
+    AdminPermissionMode,
+} from '@/constants/admin';
 
 export interface AdminData extends BaseMongooseModelData {
     account: string;
@@ -22,4 +25,11 @@ export interface AdminLoginFormData extends TwoFactorAuthenticationCodesData {
     account: string;
     password: string;
     verCode: string;
+}
+
+export interface AdminPermissionData extends BaseMongooseModelData {
+    createdByAdmin: Partial<AdminData>;
+    editedByAdmin?: Partial<AdminData>;
+    mode: AdminPermissionMode;
+    name: string;
 }
