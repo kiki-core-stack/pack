@@ -21,6 +21,7 @@ const schema = new Schema<AdminGroup, AdminGroupModel>({
     name: s.string().maxlength(16).trim.unique.required,
     permissions: {
         default: () => [],
+        required: true,
         type: [mongooseRefSchemas.admin.permission.required],
     },
 });
