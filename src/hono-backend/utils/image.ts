@@ -8,7 +8,13 @@ import type {
 import { getAcceptedImageFileMimeType } from '@/utils/file';
 import { convertAndSaveImageFile } from '@/utils/image';
 
-export async function convertAndSaveImageFileOrThrowError(file: Blob, savePath: PathLike, inputOptions?: SharpOptions, outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp', outputOptions?: Parameters<Sharp['toFormat']>[1]) {
+export async function convertAndSaveImageFileOrThrowError(
+    file: Blob,
+    savePath: PathLike,
+    inputOptions?: SharpOptions,
+    outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
+    outputOptions?: Parameters<Sharp['toFormat']>[1],
+) {
     if (!await convertAndSaveImageFile(file, savePath, inputOptions, outputFormat, outputOptions)) throwAPIError(500);
 }
 

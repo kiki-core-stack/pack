@@ -10,7 +10,14 @@ import type {
     SocketOptions,
 } from 'socket.io-client';
 
-export function createSocketIoClient<ListenEvents extends EventsMap = DefaultEventsMap, EmitEvents extends EventsMap = ListenEvents>(uri: string, auth?: Partial<ManagerOptions & SocketOptions>['auth'], options?: Partial<ManagerOptions & SocketOptions>) {
+export function createSocketIoClient<
+    ListenEvents extends EventsMap = DefaultEventsMap,
+    EmitEvents extends EventsMap = ListenEvents,
+>(
+    uri: string,
+    auth?: Partial<ManagerOptions & SocketOptions>['auth'],
+    options?: Partial<ManagerOptions & SocketOptions>,
+) {
     const socketIoClient = io(
         uri,
         {

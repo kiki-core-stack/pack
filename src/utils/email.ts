@@ -11,7 +11,13 @@ const nodemailerTransporter = createTransport({
     tls: { rejectUnauthorized: false },
 } as SMTPTransport.Options);
 
-export async function sendEmail(bccRecipients: string | string[], subject: string, html: string, from?: string, to?: string): Promise<SendEmailResult> {
+export async function sendEmail(
+    bccRecipients: string | string[],
+    subject: string,
+    html: string,
+    from?: string,
+    to?: string,
+): Promise<SendEmailResult> {
     if (!from) from = checkAndGetEnvValue('SEND_MAIL_FROM');
     try {
         const sendResult = await nodemailerTransporter.sendMail({

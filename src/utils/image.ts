@@ -11,7 +11,13 @@ import type {
     SharpOptions,
 } from 'sharp';
 
-export async function convertAndSaveImageFile(file: Blob, savePath: PathLike, inputOptions?: SharpOptions, outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp', outputOptions?: Parameters<Sharp['toFormat']>[1]) {
+export async function convertAndSaveImageFile(
+    file: Blob,
+    savePath: PathLike,
+    inputOptions?: SharpOptions,
+    outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
+    outputOptions?: Parameters<Sharp['toFormat']>[1],
+) {
     try {
         await sharp(await file.arrayBuffer(), inputOptions)
             .toFormat(
