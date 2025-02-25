@@ -15,7 +15,7 @@ export async function convertAndSaveImageFileOrThrowError(
     outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
     outputOptions?: Parameters<Sharp['toFormat']>[1],
 ) {
-    if (!await convertAndSaveImageFile(file, savePath, inputOptions, outputFormat, outputOptions)) throwAPIError(500);
+    if (!await convertAndSaveImageFile(file, savePath, inputOptions, outputFormat, outputOptions)) throwAPIError();
 }
 
 export async function validateImageFileMimeTypeAndSize(file: Blob, acceptGif?: boolean, ignoreFileSize?: boolean) {
