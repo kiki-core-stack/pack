@@ -31,6 +31,9 @@ export class LocalStorageProvider implements StorageProvider {
 
     async uploadFile(filePath: PathLike, buffer: Buffer) {
         filePath = this.#basePath.join(filePath);
+        const fileDir = filePath.parent;
+        await fileDir.mkdirp();
+        await fileDir.chmod(0o755);
         await writeFile(filePath.toString(), buffer);
         await chmod(filePath.toString(), 0o644);
         return filePath.toString().replace(this.#basePath.toString(), '');
