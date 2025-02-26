@@ -21,6 +21,10 @@
       "types": "./dist/hono-backend/globals/index.d.ts",
       "import": "./dist/hono-backend/globals/index.mjs"
     },
+    "./libs/storage": {
+      "types": "./dist/libs/storage/index.d.ts",
+      "import": "./dist/libs/storage/index.mjs"
+    },
     "./models/admin": {
       "types": "./dist/models/admin/index.d.ts",
       "import": "./dist/models/admin/index.mjs"

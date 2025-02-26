@@ -3,13 +3,16 @@ import type { PathLike } from '@kikiutils/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/node/env';
 import type { Buffer } from 'node:buffer';
 
-import type { StorageProvider } from './base';
+import type {
+    LocalStorageProviderConfig,
+    StorageProvider,
+} from '../types';
 
 export class LocalStorageProvider implements StorageProvider {
     #basePath: Path;
 
-    constructor() {
-        this.#basePath = Path.resolve(checkAndGetEnvValue('STORAGE_LOCAL_PATH'));
+    constructor(config?: LocalStorageProviderConfig) {
+        this.#basePath = Path.resolve((config || { basePath: checkAndGetEnvValue('STORAGE_LOCAL_BASE_PATH') }).basePath);
         if (!this.#basePath.mkdirpSync()) throw new Error(`Failed to create or write to the storage directory: "${this.#basePath.toString()}". Please check permissions or ensure the path is correct.`);
     }
 
