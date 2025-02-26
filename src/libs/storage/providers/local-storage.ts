@@ -25,6 +25,10 @@ export class LocalStorageProvider implements StorageProvider {
         await remove(this.#basePath.join(filePath).toString());
     }
 
+    async fileExists(filePath: PathLike) {
+        return await this.#basePath.join(filePath).access();
+    }
+
     async uploadFile(filePath: PathLike, buffer: Buffer) {
         filePath = this.#basePath.join(filePath);
         await writeFile(filePath.toString(), buffer);
