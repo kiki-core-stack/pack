@@ -44,7 +44,7 @@
     "./src"
   ],
   "scripts": {
-    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules --sourcemaps && tsc-alias && node ./update-package-exports.mjs",
+    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && tsc-alias && node ./update-package-exports.mjs",
     "bumplog": "changelogen --bump",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
