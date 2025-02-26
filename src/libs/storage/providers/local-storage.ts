@@ -1,7 +1,12 @@
 import Path from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/node/env';
+import { remove } from 'fs-extra';
 import type { Buffer } from 'node:buffer';
+import {
+    chmod,
+    writeFile,
+} from 'node:fs/promises';
 
 import type {
     LocalStorageProviderConfig,
@@ -17,13 +22,13 @@ export class LocalStorageProvider implements StorageProvider {
     }
 
     async deleteFile(filePath: PathLike) {
-        await this.#basePath.join(filePath).remove();
+        await remove(this.#basePath.join(filePath).toString());
     }
 
     async uploadFile(filePath: PathLike, buffer: Buffer) {
         filePath = this.#basePath.join(filePath);
-        await filePath.writeFile(buffer);
-        await filePath.chmod(0o644);
+        await writeFile(filePath.toString(), buffer);
+        await chmod(filePath.toString(), 0o644);
         return filePath.toString().replace(this.#basePath.toString(), '');
     }
 }
