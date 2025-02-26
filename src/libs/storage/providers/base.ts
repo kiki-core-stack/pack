@@ -11,5 +11,5 @@ export abstract class BaseStorageProvider {
 
     abstract deleteFile(filePath: PathLike): Promise<void>;
     abstract fileExists(filePath: PathLike): Promise<boolean>;
-    abstract uploadFile(filePath: PathLike, buffer: Buffer): Promise<string>;
+    abstract uploadFile(buffer: Buffer, filePath?: PathLike, extension?: string): Promise<string>;
 }
