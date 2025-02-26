@@ -7,8 +7,8 @@ export default defineConfig({
             del({
                 hook: 'writeBundle',
                 targets: [
+                    './dist/libs/storage/types.mjs',
                     './dist/types/**/*.mjs',
-                    './dist/types/**/*.mjs.map',
                 ],
             }),
         ],
