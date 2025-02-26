@@ -1,25 +1,22 @@
+import Path from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
-import {
-    chmod,
-    remove,
-} from '@kikiutils/fs-extra';
 import logger from '@kikiutils/node/consola';
-import type { Blob } from 'node:buffer';
+import { Blob } from 'node:buffer';
+import type { Buffer } from 'node:buffer';
 import sharp from 'sharp';
 import type {
     Sharp,
     SharpOptions,
 } from 'sharp';
 
-export async function convertAndSaveImageFile(
-    file: Blob,
-    savePath: PathLike,
+export async function convertImage(
+    input: Blob | Buffer,
     inputOptions?: SharpOptions,
     outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
     outputOptions?: Parameters<Sharp['toFormat']>[1],
 ) {
     try {
-        await sharp(await file.arrayBuffer(), inputOptions)
+        return await sharp(input instanceof Blob ? await input.arrayBuffer() : input, inputOptions)
             .toFormat(
                 outputFormat,
                 {
@@ -27,13 +24,27 @@ export async function convertAndSaveImageFile(
                     ...outputOptions,
                 },
             )
-            .toFile(savePath.toString());
+            .toBuffer();
+    } catch (error) {
+        logger.error(error);
+    }
+}
 
-        if (await chmod(savePath.toString(), 0o644)) return true;
+export async function saveConvertedImage(
+    input: Blob | Buffer,
+    savePath: PathLike,
+    inputOptions?: SharpOptions,
+    outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
+    outputOptions?: Parameters<Sharp['toFormat']>[1],
+) {
+    try {
+        savePath = Path.resolve(savePath);
+        const buffer = await convertImage(input, inputOptions, outputFormat, outputOptions);
+        if (buffer && await savePath.writeFile(buffer) && await savePath.chmod(0o644)) return true;
+        savePath.remove();
     } catch (error) {
         logger.error(error);
     }
 
-    remove(savePath.toString());
     return false;
 }
