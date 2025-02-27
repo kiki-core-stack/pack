@@ -7,9 +7,9 @@ import { writeFile } from 'node:fs/promises';
 
 import type { LocalStorageProviderConfig } from '../types';
 
-import { BaseStorageProvider } from './base';
+import { AbstractStorageProvider } from './base';
 
-export class LocalStorageProvider extends BaseStorageProvider {
+export class LocalStorageProvider extends AbstractStorageProvider {
     #basePath: Path;
 
     constructor(config?: LocalStorageProviderConfig) {
