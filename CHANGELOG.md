@@ -1,5 +1,67 @@
 # Changelog
 
+## v0.48.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.47.1...v0.48.0)
+
+### 🚀 Enhancements
+
+- Add models and types related to admin permission ([404b2be](https://github.com/kiki-core-stack/pack/commit/404b2be))
+- Add models and types related to admin group ([cf21213](https://github.com/kiki-core-stack/pack/commit/cf21213))
+- Add storage abstraction layer with providers and factory functionality ([ab79cb6](https://github.com/kiki-core-stack/pack/commit/ab79cb6))
+- Add `getDefaultStorage` function ([6093230](https://github.com/kiki-core-stack/pack/commit/6093230))
+- Add `fileExists` method to `StorageProvider` ([df1cea3](https://github.com/kiki-core-stack/pack/commit/df1cea3))
+- Add automatic creation of parent directories and permission setting in LocalStorageProvider's `uploadFile` method ([9dea933](https://github.com/kiki-core-stack/pack/commit/9dea933))
+
+### 🩹 Fixes
+
+- Modify LocalStorageProvider's `deleteFile` and `uploadFile` methods to throw errors on failure ([831b893](https://github.com/kiki-core-stack/pack/commit/831b893))
+- Resolve parameter and type errors in `BaseStorageProvider.uploadFile` ([a6a2297](https://github.com/kiki-core-stack/pack/commit/a6a2297))
+- Resolve filename extension concatenation issue in `AbstractStorageProvider.generateFilePath` ([3a05957](https://github.com/kiki-core-stack/pack/commit/3a05957))
+
+### 💅 Refactors
+
+- Refactor string concatenation in `redisController.emailOTPCode` to avoid nested string templates ([4174437](https://github.com/kiki-core-stack/pack/commit/4174437))
+- Remove unnecessary parameter assignments when using `throwAPIError` in `convertAndSaveImageFileOrThrowError` ([c02bdbe](https://github.com/kiki-core-stack/pack/commit/c02bdbe))
+- ⚠️ Modify image processing functions ([637fb77](https://github.com/kiki-core-stack/pack/commit/637fb77))
+- ⚠️ Modify storage-related code ([5c1164f](https://github.com/kiki-core-stack/pack/commit/5c1164f))
+- ⚠️ Modify StorageProvider-related code ([a402e36](https://github.com/kiki-core-stack/pack/commit/a402e36))
+- Rename `BaseStorageProvider` to `AbstractStorageProvider` ([a0558ed](https://github.com/kiki-core-stack/pack/commit/a0558ed))
+- ⚠️ Remove static `findByAccount` method from `AdminModel` ([cb53275](https://github.com/kiki-core-stack/pack/commit/cb53275))
+- ⚠️ Enforce camelCase naming for all variables, classes, methods, types, etc., ignoring abbreviations ([b428a00](https://github.com/kiki-core-stack/pack/commit/b428a00))
+
+### 📦 Build
+
+- Disable sourcemap output in build process ([593a60f](https://github.com/kiki-core-stack/pack/commit/593a60f))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([a3d53c3](https://github.com/kiki-core-stack/pack/commit/a3d53c3))
+- Upgrade dependencies and set `pnpm.onlyBuiltDependencies` in `package.json` ([f1bf714](https://github.com/kiki-core-stack/pack/commit/f1bf714))
+- Set `AdminGroupModel` field `permissions` to required ([b7a70ce](https://github.com/kiki-core-stack/pack/commit/b7a70ce))
+- Upgrade dependencies ([5ab50fd](https://github.com/kiki-core-stack/pack/commit/5ab50fd))
+- Update list of files to delete after build ([31052f8](https://github.com/kiki-core-stack/pack/commit/31052f8))
+- Upgrade dependencies ([e11261d](https://github.com/kiki-core-stack/pack/commit/e11261d))
+- Update code due to dependency updates ([3a7ff9e](https://github.com/kiki-core-stack/pack/commit/3a7ff9e))
+
+### 🎨 Styles
+
+- Format `src/libs/socket.io.ts` ([85bba39](https://github.com/kiki-core-stack/pack/commit/85bba39))
+- Format and lint codes ([ef496fc](https://github.com/kiki-core-stack/pack/commit/ef496fc))
+- Format codes ([72071da](https://github.com/kiki-core-stack/pack/commit/72071da))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Modify image processing functions ([637fb77](https://github.com/kiki-core-stack/pack/commit/637fb77))
+- ⚠️ Modify storage-related code ([5c1164f](https://github.com/kiki-core-stack/pack/commit/5c1164f))
+- ⚠️ Modify StorageProvider-related code ([a402e36](https://github.com/kiki-core-stack/pack/commit/a402e36))
+- ⚠️ Remove static `findByAccount` method from `AdminModel` ([cb53275](https://github.com/kiki-core-stack/pack/commit/cb53275))
+- ⚠️ Enforce camelCase naming for all variables, classes, methods, types, etc., ignoring abbreviations ([b428a00](https://github.com/kiki-core-stack/pack/commit/b428a00))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.47.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.47.0...v0.47.1)
