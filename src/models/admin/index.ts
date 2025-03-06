@@ -1,6 +1,6 @@
 import s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
-import { cryptoSHA3256 } from '@kikiutils/node/crypto-hash';
+import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
 import type {
     ProjectionType,
@@ -32,7 +32,7 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     name: s.string().maxlength(16).trim.required,
     password: {
         ...s.string().length(64).private.required,
-        set: (password: string) => cryptoSHA3256(password),
+        set: (password: string) => cryptoSha3256(password),
     },
     totpSecret: s.string().private.sparse.trim.unique.nonRequired,
     twoFactorAuthenticationStatus: {
@@ -42,7 +42,7 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 });
 
 schema.method('verifyPassword', function (password: string) {
-    return cryptoSHA3256(password) === this.password;
+    return cryptoSha3256(password) === this.password;
 });
 
 schema.static('findByAccount', function (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) {
