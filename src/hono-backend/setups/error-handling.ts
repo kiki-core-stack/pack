@@ -4,7 +4,7 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
-import { statusCodeToAPIResponseTextMap } from '../constants/response';
+import { statusCodeToApiResponseTextMap } from '../constants/response';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusCode>>({
     2: 400, // BadValue -> Bad Request
@@ -35,12 +35,12 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusC
 export function setupHonoAppErrorHandling(honoApp: Hono) {
     honoApp.notFound((ctx) => {
         ctx.header('content-type', 'application/json');
-        return ctx.body(statusCodeToAPIResponseTextMap[404]!, 404);
+        return ctx.body(statusCodeToApiResponseTextMap[404]!, 404);
     });
 
     honoApp.onError((error, ctx) => {
         ctx.header('content-type', 'application/json');
-        if (error instanceof APIError) {
+        if (error instanceof ApiError) {
             return ctx.body(
                 JSON.stringify({
                     data: error.data,
@@ -52,9 +52,9 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
         }
 
         logger.error(error);
-        if (error instanceof ZodError) return ctx.body(statusCodeToAPIResponseTextMap[400]!, 400);
+        if (error instanceof ZodError) return ctx.body(statusCodeToApiResponseTextMap[400]!, 400);
         let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
-        return ctx.body(statusCodeToAPIResponseTextMap[statusCode]!, statusCode);
+        return ctx.body(statusCodeToApiResponseTextMap[statusCode]!, statusCode);
     });
 }

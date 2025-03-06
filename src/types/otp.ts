@@ -1,4 +1,4 @@
-export type EmailOTPCodeType =
+export type EmailOtpCodeType =
   | 'adminBindEmail'
   | 'adminChangePassword'
   | 'adminLogin'

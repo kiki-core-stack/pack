@@ -3,7 +3,7 @@ import {
     exportKey,
     generateKey,
     getKeyUri,
-    totp as getTOTPCode,
+    totp as getTotpCode,
     importKey,
 } from 'otp-io';
 import {
@@ -12,11 +12,11 @@ import {
 } from 'otp-io/crypto';
 
 import { redisController } from '@/controllers/redis';
-import type { EmailOTPCodeType } from '@/types/otp';
+import type { EmailOtpCodeType } from '@/types/otp';
 
-export const verifyTOTPCode = async (code: string, secret: string) => code === await getTOTPCode(hmac, { secret: importKey(secret) });
+export const verifyTotpCode = async (code: string, secret: string) => code === await getTotpCode(hmac, { secret: importKey(secret) });
 
-export function generateTOTPSecretData(issuer: string, name: string) {
+export function generateTotpSecretData(issuer: string, name: string) {
     const secretKey = generateKey(randomBytes, random(16, 20));
     const url = getKeyUri({
         issuer,
@@ -31,8 +31,8 @@ export function generateTOTPSecretData(issuer: string, name: string) {
     };
 }
 
-export async function verifyEmailOTPCode(code: string, type: EmailOTPCodeType, email: string, redisAdditionalKey?: string) {
-    const isVerified = code === await redisController.emailOTPCode.get(type, email, redisAdditionalKey);
-    if (isVerified) await redisController.emailOTPCode.del(type, email, redisAdditionalKey);
+export async function verifyEmailOtpCode(code: string, type: EmailOtpCodeType, email: string, redisAdditionalKey?: string) {
+    const isVerified = code === await redisController.emailOtpCode.get(type, email, redisAdditionalKey);
+    if (isVerified) await redisController.emailOtpCode.del(type, email, redisAdditionalKey);
     return isVerified;
 }

@@ -14,7 +14,7 @@ type ZodValidatorTypeExcludeField =
   | keyof TwoFactorAuthenticationCodesData;
 
 declare global {
-    type TwoFactorAuthenticationMethod = 'emailOTP' | 'totp';
+    type TwoFactorAuthenticationMethod = 'emailOtp' | 'totp';
     type TwoFactorAuthenticationStatus = Record<TwoFactorAuthenticationMethod, boolean>;
     type ZodValidatorType<
         Output = any,

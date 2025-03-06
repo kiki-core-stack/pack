@@ -4,12 +4,12 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { statusCodeToResponseMessageMap } from '../constants/response';
 
 declare global {
-    type APIError<D extends object = any> = LocalAPIError<D>;
+    type ApiError<D extends object = any> = LocalApiError<D>;
 
-    const APIError: typeof LocalAPIError;
+    const ApiError: typeof LocalApiError;
 }
 
-class LocalAPIError<D extends object> extends Error {
+class LocalApiError<D extends object> extends Error {
     data: D;
     statusCode: ContentfulStatusCode;
 
@@ -29,4 +29,4 @@ class LocalAPIError<D extends object> extends Error {
     }
 }
 
-setReadonlyConstantToGlobalThis<typeof APIError>('APIError', LocalAPIError);
+setReadonlyConstantToGlobalThis<typeof ApiError>('ApiError', LocalApiError);

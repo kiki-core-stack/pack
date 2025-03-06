@@ -1,15 +1,15 @@
 import type { Buffer } from 'node:buffer';
 
 import { redisInstance } from '@/constants/redis';
-import type { EmailOTPCodeType } from '@/types/otp';
+import type { EmailOtpCodeType } from '@/types/otp';
 
 export const redisController = {
-    emailOTPCode: createOperateFunctions((type: EmailOTPCodeType, email: string, additionalKey?: string) => {
-        let key = `emailOTPCode:${type}:`;
+    emailOtpCode: createOperateFunctions((type: EmailOtpCodeType, email: string, additionalKey?: string) => {
+        let key = `emailOtpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
         return `${key}${email}`;
     }),
-    tempTOTPSecret: createOperateFunctions((key: string) => `tempTOTPSecret:${key}`),
+    tempTotpSecret: createOperateFunctions((key: string) => `tempTotpSecret:${key}`),
 };
 
 function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunction: F) {

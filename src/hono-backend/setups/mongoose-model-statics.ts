@@ -45,8 +45,8 @@ setCustomMongooseOptions(
 
         schema.static('findByRouteIdOrThrowNotFoundError', async function (ctx: Context, filterQuery?: RootFilterQuery<DocType>, projection?: Nullable<ProjectionType<DocType>>, options?: Nullable<QueryOptions<DocType>>) {
             const id = ctx.req.param('id');
-            if (!id) throwAPIError(404);
-            if (!Types.ObjectId.isValid(id)) throwAPIError(400);
+            if (!id) throwApiError(404);
+            if (!Types.ObjectId.isValid(id)) throwApiError(400);
             const document = await this.findOne(
                 {
                     ...filterQuery,
@@ -56,7 +56,7 @@ setCustomMongooseOptions(
                 options,
             );
 
-            if (!document) throwAPIError(404);
+            if (!document) throwApiError(404);
             return document;
         });
     },

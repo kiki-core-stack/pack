@@ -29,7 +29,7 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     },
     totpSecret: s.string().private.sparse.trim.unique.nonRequired,
     twoFactorAuthenticationStatus: {
-        emailOTP: s.boolean().default(false).required,
+        emailOtp: s.boolean().default(false).required,
         totp: s.boolean().default(false).required,
     },
 });
