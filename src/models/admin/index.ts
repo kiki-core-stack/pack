@@ -2,10 +2,6 @@ import s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 import { Schema } from 'mongoose';
-import type {
-    ProjectionType,
-    QueryOptions,
-} from 'mongoose';
 
 import type { AdminData } from '@/types/data/admin';
 
@@ -15,14 +11,11 @@ export * from './permission';
 
 export type Admin = BaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;
+type AdminModel = BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides>;
 
 export interface AdminMethodsAndOverrides {
     password: string;
     verifyPassword: (password: string) => boolean;
-}
-
-interface AdminModel extends BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides> {
-    findByAccount: (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) => MongooseFindOneReturnType<Admin, AdminDocument, object, AdminMethodsAndOverrides>;
 }
 
 const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
@@ -43,10 +36,6 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 
 schema.method('verifyPassword', function (password: string) {
     return cryptoSha3256(password) === this.password;
-});
-
-schema.static('findByAccount', function (account: string, projection?: Nullable<ProjectionType<Admin>>, options?: Nullable<QueryOptions<Admin>>) {
-    return this.findOne({ account }, projection, options);
 });
 
 export const AdminModel = buildMongooseModel<Admin, AdminModel, AdminMethodsAndOverrides>('admin.admins', 'Admin', schema);
