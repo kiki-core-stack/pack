@@ -64,7 +64,7 @@
     "bumplog": "changelogen --bump",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "release": "pnpm run lint && pnpm run build && changelogen --push --release && sh ./build-and-publish.sh"
+    "release": "pnpm run lint && pnpm run build && changelogen --hideAuthorEmail --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
     "@kikiutils/classes": "^5.0.1",
