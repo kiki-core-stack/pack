@@ -6,6 +6,8 @@ import type {
     AdminLogModel,
 } from './types';
 
+export type * from './types';
+
 const model = buildMongooseModel<AdminLog, AdminLogModel>(
     'admin.logs',
     'AdminLog',

@@ -7,5 +7,7 @@ import type {
     AdminModel,
 } from './types';
 
+export type * from './types';
+
 const model = buildMongooseModel<Admin, AdminModel, AdminMethodsAndOverrides>('admin.admins', 'Admin', adminSchema);
 export { model as AdminModel };
