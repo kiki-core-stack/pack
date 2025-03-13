@@ -1,14 +1,14 @@
 import {
-    readJson,
-    writeJson,
-} from '@kikiutils/fs-extra';
-import { glob } from 'glob';
-import {
     fromPairs,
     merge,
     sortBy,
     toPairs,
 } from 'lodash-es';
+import {
+    glob,
+    readFile,
+    writeFile,
+} from 'node:fs/promises';
 import { dirname } from 'node:path';
 
 (async () => {
@@ -21,7 +21,7 @@ import { dirname } from 'node:path';
         './types/*': { types: './dist/types/*.d.ts' },
     };
 
-    const filePaths = await glob(
+    const filePathsIterator = glob(
         [
             '**/index.d.ts',
             '**/index.mjs',
@@ -29,7 +29,7 @@ import { dirname } from 'node:path';
         { cwd: './dist' },
     );
 
-    filePaths.forEach((filePath) => {
+    for await (const filePath of filePathsIterator) {
         const dirPath = dirname(filePath);
         const isDts = filePath.endsWith('index.d.ts');
         merge(
@@ -42,9 +42,9 @@ import { dirname } from 'node:path';
                 },
             },
         );
-    });
+    }
 
-    const packageJson = await readJson('./package.json');
+    const packageJson = JSON.parse(await readFile('./package.json', 'utf-8'));
     packageJson.exports = fromPairs(sortBy(toPairs(exports), [0]));
-    await writeJson('./package.json', packageJson, { spaces: 2 });
+    await writeFile('./package.json', JSON.stringify(packageJson, null, 2));
 })();

@@ -30,9 +30,6 @@ importers:
       '@kikiutils/eslint-config':
         specifier: ^0.8.3
         version: 0.8.3(@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(jiti@2.4.2)(tailwindcss@3.4.17)(typescript@5.8.2)
-      '@kikiutils/fs-extra':
-        specifier: ^3.0.1
-        version: 3.0.1
       '@kikiutils/mongoose':
         specifier: 2.1.8
         version: 2.1.8
@@ -54,9 +51,6 @@ importers:
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
-      glob:
-        specifier: ^11.0.1
-        version: 11.0.1
       hono:
         specifier: ^4.7.4
         version: 4.7.4
@@ -571,10 +565,6 @@ packages:
     engines: {node: '>=18.12.0'}
     peerDependencies:
       tailwindcss: ^3.4.0
-
-  '@kikiutils/fs-extra@3.0.1':
-    resolution: {integrity: sha512-r4MC/SYK7HYl7eH3K7swtzW0Vy9ZWEaKCH+k6HDeIwpOreW8dixTMmKWyMYF3kjJclozysBLTvUg1EHdkaL8sg==}
-    engines: {node: '>=18.12.1'}
 
   '@kikiutils/mongoose@2.1.8':
     resolution: {integrity: sha512-8RGy//WhdgkCobyPekdXo0LnpeTCM1fEJwjJvpQyPmDsnhe3VYs7xIAHtwf9mriPR+YRiBq0YkFcnXmGqy3L7Q==}
@@ -1543,10 +1533,6 @@ packages:
     resolution: {integrity: sha512-hGfm/slu0ZabnNt4oaRZ6uREyfCj6P4fT/n6A1rGV+Z0VdGXjfOhVUpkn6qVQONHGIFwmveGXyDs75+nr6FM8w==}
     engines: {node: '>= 6'}
 
-  fs-extra@11.3.0:
-    resolution: {integrity: sha512-Z4XaCL6dUDHfP/jT25jJKMmtxvuwbkrD1vNSMFlo9lNLY2c5FHYSQgHPRZUjAB26TpDEoW9HCOgplrdbaPV/ew==}
-    engines: {node: '>=14.14'}
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -1763,9 +1749,6 @@ packages:
   jsonc-eslint-parser@2.4.0:
     resolution: {integrity: sha512-WYDyuc/uFcGp6YtM2H0uKmUwieOuzeE/5YocFJLnLfclZ4inf3mRn8ZVy1s7Hxji7Jxm6Ss8gqpexD/GlKoGgg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
-  jsonfile@6.1.0:
-    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
 
   kareem@2.6.3:
     resolution: {integrity: sha512-C3iHfuGUXK2u8/ipq9LfjFfXFxAZMQJJq7vLS45r3D9Y2xQ/m4S8zaR4zMLFWh9AsNPXmcFfUDhTEO8UIC/V6Q==}
@@ -2601,10 +2584,6 @@ packages:
   unist-util-visit@5.0.0:
     resolution: {integrity: sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==}
 
-  universalify@2.0.1:
-    resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
-    engines: {node: '>= 10.0.0'}
-
   unplugin-utils@0.2.4:
     resolution: {integrity: sha512-8U/MtpkPkkk3Atewj1+RcKIjb5WBimZ/WSLhhR3w6SsIj8XJuKTacSP8g+2JhfSGw0Cb125Y+2zA/IzJZDVbhA==}
     engines: {node: '>=18.12.0'}
@@ -3116,12 +3095,6 @@ snapshots:
       fast-glob: 3.3.3
       postcss: 8.5.3
       tailwindcss: 3.4.17
-
-  '@kikiutils/fs-extra@3.0.1':
-    dependencies:
-      '@types/fs-extra': 11.0.4
-      '@types/jsonfile': 6.1.4
-      fs-extra: 11.3.0
 
   '@kikiutils/mongoose@2.1.8':
     dependencies:
@@ -4165,12 +4138,6 @@ snapshots:
       es-set-tostringtag: 2.1.0
       mime-types: 2.1.35
 
-  fs-extra@11.3.0:
-    dependencies:
-      graceful-fs: 4.2.11
-      jsonfile: 6.1.0
-      universalify: 2.0.1
-
   fsevents@2.3.3:
     optional: true
 
@@ -4379,12 +4346,6 @@ snapshots:
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
       semver: 7.7.1
-
-  jsonfile@6.1.0:
-    dependencies:
-      universalify: 2.0.1
-    optionalDependencies:
-      graceful-fs: 4.2.11
 
   kareem@2.6.3: {}
 
@@ -5427,8 +5388,6 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.0
       unist-util-visit-parents: 6.0.1
-
-  universalify@2.0.1: {}
 
   unplugin-utils@0.2.4:
     dependencies:
