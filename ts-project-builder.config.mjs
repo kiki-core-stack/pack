@@ -1,18 +1,22 @@
-import del from 'rollup-plugin-delete';
+import {
+    readFile,
+    rm,
+} from 'node:fs/promises';
+import { join } from 'node:path';
 import { defineConfig } from 'ts-project-builder';
 
+function cleanEmptyMjsFiles() {
+    const processFile = async (filePath) => !(await readFile(filePath, 'utf-8')).trim() && rm(filePath, { force: true });
+    return {
+        name: 'clean-empty-mjs',
+        async writeBundle(_, bundle) {
+            const promises = Object.keys(bundle).map((fileName) => fileName.endsWith('.mjs') && processFile(join('./dist', fileName)).catch(() => {}));
+            await Promise.all(promises);
+        },
+    };
+}
+
 export default defineConfig({
-    additionalInputPlugins: {
-        afterBuiltIns: [
-            del({
-                hook: 'writeBundle',
-                targets: [
-                    './dist/libs/storage/types.mjs',
-                    './dist/models/**/types.mjs',
-                    './dist/types/**/*.mjs',
-                ],
-            }),
-        ],
-    },
+    additionalInputPlugins: { afterBuiltIns: [cleanEmptyMjsFiles()] },
     builtInInputPluginOptions: { nodeExternal: { devDeps: true } },
 });
