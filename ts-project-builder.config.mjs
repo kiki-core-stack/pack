@@ -8,6 +8,7 @@ export default defineConfig({
                 hook: 'writeBundle',
                 targets: [
                     './dist/libs/storage/types.mjs',
+                    './dist/models/**/types.mjs',
                     './dist/types/**/*.mjs',
                 ],
             }),
