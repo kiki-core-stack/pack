@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.49.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.49.0...v0.49.1)
+
+### 🩹 Fixes
+
+- Add missing type exports ([78bccb5](https://github.com/kiki-core-stack/pack/commit/78bccb5))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.49.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.48.0...v0.49.0)
