@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.49.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.48.0...v0.49.0)
+
+### 💅 Refactors
+
+- ⚠️ Change model definition approach ([a2e77c0](https://github.com/kiki-core-stack/pack/commit/a2e77c0))
+- Remove `rollup-plugin-delete` and add custom `clean-empty-mjs` plugin ([ae95467](https://github.com/kiki-core-stack/pack/commit/ae95467))
+- Modify `update-package-exports` to remove dependencies on `glob` and `@kikiutils/fs-extra` ([d1551f3](https://github.com/kiki-core-stack/pack/commit/d1551f3))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([3ddd0a5](https://github.com/kiki-core-stack/pack/commit/3ddd0a5))
+- Set `hideAuthorEmail` arg in changelogen command ([0afbffb](https://github.com/kiki-core-stack/pack/commit/0afbffb))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Change model definition approach ([a2e77c0](https://github.com/kiki-core-stack/pack/commit/a2e77c0))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.48.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.47.1...v0.48.0)
