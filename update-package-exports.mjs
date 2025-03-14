@@ -46,5 +46,5 @@ import { dirname } from 'node:path';
 
     const packageJson = JSON.parse(await readFile('./package.json', 'utf-8'));
     packageJson.exports = fromPairs(sortBy(toPairs(exports), [0]));
-    await writeFile('./package.json', JSON.stringify(packageJson, null, 2));
+    await writeFile('./package.json', `${JSON.stringify(packageJson, null, 2)}\n`);
 })();
