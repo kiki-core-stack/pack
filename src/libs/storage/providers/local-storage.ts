@@ -15,8 +15,10 @@ export class LocalStorageProvider extends AbstractStorageProvider {
 
     constructor(config?: LocalStorageProviderConfig) {
         super();
+        // eslint-disable-next-line style/max-len
         this.#basePath = Path.resolve((config || { basePath: checkAndGetEnvValue('STORAGE_LOCAL_BASE_PATH') }).basePath);
         if (!this.#basePath.mkdirpSync()) {
+            // eslint-disable-next-line style/max-len
             throw new Error(`Failed to create or write to the storage directory: "${this.#basePath.toString()}". Please check permissions or ensure the path is correct.`);
         }
     }

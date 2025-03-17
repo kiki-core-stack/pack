@@ -8,6 +8,7 @@ import type {
 
 let defaultStorageInstance: Nullable<AbstractStorageProvider> = null;
 
+// eslint-disable-next-line style/max-len
 export async function createStorage(provider?: 'local-storage', config?: LocalStorageProviderConfig): Promise<AbstractStorageProvider>;
 export async function createStorage(provider?: StorageProviderName, config?: any): Promise<AbstractStorageProvider> {
     const storageProvider = provider || checkAndGetEnvValue('STORAGE_PROVIDER');
