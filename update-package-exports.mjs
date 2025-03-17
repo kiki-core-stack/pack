@@ -1,15 +1,16 @@
 import {
-    fromPairs,
-    merge,
-    sortBy,
-    toPairs,
-} from 'lodash-es';
-import {
     glob,
     readFile,
     writeFile,
 } from 'node:fs/promises';
 import { dirname } from 'node:path';
+
+import {
+    fromPairs,
+    merge,
+    sortBy,
+    toPairs,
+} from 'lodash-es';
 
 (async () => {
     const exports = {

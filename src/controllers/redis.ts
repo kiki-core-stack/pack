@@ -22,7 +22,9 @@ function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunc
         // TODO: overloads
         getex: (...args: Parameters<F>) => redisInstance.getex(getKeyFunction(...args)),
         set: (value: string, ...args: Parameters<F>) => redisInstance.set(getKeyFunction(...args), value),
-        setex: (seconds: number, value: Buffer | number | string, ...args: Parameters<F>) => redisInstance.setex(getKeyFunction(...args), seconds, value),
+        setex: (seconds: number, value: Buffer | number | string, ...args: Parameters<F>) => {
+            return redisInstance.setex(getKeyFunction(...args), seconds, value);
+        },
         ttl: (...args: Parameters<F>) => redisInstance.ttl(getKeyFunction(...args)),
     };
 }

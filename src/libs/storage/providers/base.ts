@@ -1,6 +1,7 @@
+import type { Buffer } from 'node:buffer';
+
 import type { PathLike } from '@kikiutils/classes/path';
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
-import type { Buffer } from 'node:buffer';
 
 export abstract class AbstractStorageProvider {
     protected generateFilePath(buffer: Buffer, extension?: string) {

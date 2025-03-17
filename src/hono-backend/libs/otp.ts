@@ -15,7 +15,10 @@ import { sendEmail } from '@/utils/email';
 
 export async function sendEmailOtpCode(type: EmailOtpCodeType, email: string, redisAdditionalKey?: string) {
     const emailOtpCodeTtl = await redisController.emailOtpCode.ttl(type, email, redisAdditionalKey);
-    if (emailOtpCodeTtl > 0 && emailOtpExpirationSeconds - emailOtpCodeTtl < sendEmailOtpCodeCoolingSeconds) throwApiError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
+    if (emailOtpCodeTtl > 0 && emailOtpExpirationSeconds - emailOtpCodeTtl < sendEmailOtpCodeCoolingSeconds) {
+        throwApiError(429, 'Email OTP驗證碼已發送過，請稍後再試！');
+    }
+
     const emailOtpCode = randomAlphabeticString(6);
     const htmlContentTexts = [
         `您的Email OTP驗證碼為：<strong>${emailOtpCode}</strong>`,
@@ -24,7 +27,14 @@ export async function sendEmailOtpCode(type: EmailOtpCodeType, email: string, re
     ];
 
     const sendResult = await sendEmail(email, 'Email OTP驗證碼', htmlContentTexts.join('<br />'));
-    if (sendResult.success) await redisController.emailOtpCode.setex(emailOtpExpirationSeconds, emailOtpCode, type, email, redisAdditionalKey);
-    else logger.error('發送Email OTP驗證碼失敗：', sendResult.error);
+    if (sendResult.success) {
+        await redisController.emailOtpCode.setex(
+            emailOtpExpirationSeconds,
+            emailOtpCode,
+            type,
+            email,
+            redisAdditionalKey,
+        );
+    } else logger.error('發送Email OTP驗證碼失敗：', sendResult.error);
     return sendResult.success;
 }

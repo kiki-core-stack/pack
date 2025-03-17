@@ -54,7 +54,10 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
         logger.error(error);
         if (error instanceof ZodError) return ctx.body(statusCodeToApiResponseTextMap[400]!, 400);
         let statusCode: ContentfulStatusCode = 500;
-        if (error instanceof MongoServerError && error.code) statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
+        if (error instanceof MongoServerError && error.code) {
+            statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
+        }
+
         return ctx.body(statusCodeToApiResponseTextMap[statusCode]!, statusCode);
     });
 }

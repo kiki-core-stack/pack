@@ -1,8 +1,9 @@
+import { Blob } from 'node:buffer';
+import type { Buffer } from 'node:buffer';
+
 import Path from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import logger from '@kikiutils/node/consola';
-import { Blob } from 'node:buffer';
-import type { Buffer } from 'node:buffer';
 import sharp from 'sharp';
 import type {
     Sharp,

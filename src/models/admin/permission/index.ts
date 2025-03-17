@@ -8,5 +8,10 @@ import type {
 
 export type * from './types';
 
-const model = buildMongooseModel<AdminPermission, AdminPermissionModel>('admin.permissions', 'AdminPermission', adminPermissionSchema);
+const model = buildMongooseModel<AdminPermission, AdminPermissionModel>(
+    'admin.permissions',
+    'AdminPermission',
+    adminPermissionSchema,
+);
+
 export { model as AdminPermissionModel };

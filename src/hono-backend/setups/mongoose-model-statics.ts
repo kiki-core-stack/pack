@@ -39,25 +39,40 @@ setCustomMongooseOptions(
         InstanceMethodsAndOverrides = object,
         QueryHelpers = object,
     >(schema: Schema<DocType, Model, InstanceMethodsAndOverrides, QueryHelpers>) => {
-        schema.static('findByRouteId', function (ctx: Context, projection?: Nullable<ProjectionType<DocType>>, options?: Nullable<QueryOptions<DocType>>) {
-            return this.findById(ctx.req.param('id'), projection, options);
-        });
+        schema.static(
+            'findByRouteId',
+            function (
+                ctx: Context,
+                projection?: Nullable<ProjectionType<DocType>>,
+                options?: Nullable<QueryOptions<DocType>>,
+            ) {
+                return this.findById(ctx.req.param('id'), projection, options);
+            },
+        );
 
-        schema.static('findByRouteIdOrThrowNotFoundError', async function (ctx: Context, filterQuery?: RootFilterQuery<DocType>, projection?: Nullable<ProjectionType<DocType>>, options?: Nullable<QueryOptions<DocType>>) {
-            const id = ctx.req.param('id');
-            if (!id) throwApiError(404);
-            if (!Types.ObjectId.isValid(id)) throwApiError(400);
-            const document = await this.findOne(
-                {
-                    ...filterQuery,
-                    _id: id,
-                },
-                projection,
-                options,
-            );
+        schema.static(
+            'findByRouteIdOrThrowNotFoundError',
+            async function (
+                ctx: Context,
+                filterQuery?: RootFilterQuery<DocType>,
+                projection?: Nullable<ProjectionType<DocType>>,
+                options?: Nullable<QueryOptions<DocType>>,
+            ) {
+                const id = ctx.req.param('id');
+                if (!id) throwApiError(404);
+                if (!Types.ObjectId.isValid(id)) throwApiError(400);
+                const document = await this.findOne(
+                    {
+                        ...filterQuery,
+                        _id: id,
+                    },
+                    projection,
+                    options,
+                );
 
-            if (!document) throwApiError(404);
-            return document;
-        });
+                if (!document) throwApiError(404);
+                return document;
+            },
+        );
     },
 );
