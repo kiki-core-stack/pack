@@ -10,12 +10,18 @@ import type {
     AdminLogModel,
 } from './types';
 
-export const adminLogSchema = new Schema<AdminLog, AdminLogModel>({
-    admin: mongooseRefSchemas.admin.required,
-    content: s.string().trim.nonRequired,
-    fingerprint: s.string().trim.nonRequired,
-    ip: s.string().trim.nonRequired,
-    type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
-});
-
-adminLogSchema.index({ createdAt: -1 });
+export const adminLogSchema = new Schema<AdminLog, AdminLogModel>(
+    {
+        admin: mongooseRefSchemas.admin.required,
+        content: s.string().trim.nonRequired,
+        fingerprint: s.string().trim.nonRequired,
+        ip: s.string().trim.nonRequired,
+        type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
+    },
+    {
+        timestamps: {
+            createdAt: true,
+            updatedAt: false,
+        },
+    },
+);

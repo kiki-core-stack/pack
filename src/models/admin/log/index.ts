@@ -8,16 +8,5 @@ import type {
 
 export type * from './types';
 
-const model = buildMongooseModel<AdminLog, AdminLogModel>(
-    'admin.logs',
-    'AdminLog',
-    adminLogSchema,
-    {
-        timestamps: {
-            createdAt: true,
-            updatedAt: false,
-        },
-    },
-);
-
+const model = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', adminLogSchema);
 export { model as AdminLogModel };
