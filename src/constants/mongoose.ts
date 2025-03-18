@@ -13,3 +13,8 @@ export const mongooseRefSchemas = {
         required: refSchemaBuilder('Admin').required,
     },
 };
+
+export const schemaTimestampsConfigOnlyCreatedAt = Object.freeze({
+    createdAt: true,
+    updatedAt: false,
+});

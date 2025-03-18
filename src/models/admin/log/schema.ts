@@ -3,7 +3,10 @@ import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
 
 import { AdminLogType } from '@/constants/admin';
-import { mongooseRefSchemas } from '@/constants/mongoose';
+import {
+    mongooseRefSchemas,
+    schemaTimestampsConfigOnlyCreatedAt,
+} from '@/constants/mongoose';
 
 import type {
     AdminLog,
@@ -18,10 +21,5 @@ export const adminLogSchema = new Schema<AdminLog, AdminLogModel>(
         ip: s.string().trim.nonRequired,
         type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
     },
-    {
-        timestamps: {
-            createdAt: true,
-            updatedAt: false,
-        },
-    },
+    { timestamps: schemaTimestampsConfigOnlyCreatedAt },
 );
