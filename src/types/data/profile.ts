@@ -1,10 +1,5 @@
-export interface ProfileSecurityChangePasswordFormData extends TwoFactorAuthenticationCodesData {
+export interface ProfileSecurityChangePasswordFormData {
     conformPassword: string;
     newPassword: string;
     oldPassword: string;
-}
-
-export interface ProfileSecurityTotpSecretData {
-    secret: string;
-    url: string;
 }

@@ -10,12 +10,9 @@ export type {} from '@kikiutils/types/type-fest';
 type ZodValidatorTypeExcludeField =
   | 'createdByAdmin'
   | 'editedByAdmin'
-  | 'id'
-  | keyof TwoFactorAuthenticationCodesData;
+  | 'id';
 
 declare global {
-    type TwoFactorAuthenticationMethod = 'emailOtp' | 'totp';
-    type TwoFactorAuthenticationStatus = Record<TwoFactorAuthenticationMethod, boolean>;
     type ZodValidatorType<
         Output = any,
         O extends Exclude<keyof Output, ZodValidatorTypeExcludeField> = never,

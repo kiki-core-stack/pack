@@ -17,11 +17,6 @@ export const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverride
         ...s.string().length(64).private.required,
         set: (password: string) => cryptoSha3256(password),
     },
-    totpSecret: s.string().private.sparse.trim.unique.nonRequired,
-    twoFactorAuthenticationStatus: {
-        emailOtp: s.boolean().default(false).required,
-        totp: s.boolean().default(false).required,
-    },
 });
 
 adminSchema.method('verifyPassword', function (password: string) {

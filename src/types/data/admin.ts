@@ -9,8 +9,6 @@ export interface AdminData extends BaseMongooseModelData {
     enabled: boolean;
     name: string;
     password?: string;
-    totpSecret?: string;
-    twoFactorAuthenticationStatus: TwoFactorAuthenticationStatus;
 }
 
 export interface AdminGroupData extends BaseMongooseModelData {
@@ -29,7 +27,7 @@ export interface AdminLogData extends BaseMongooseModelData<true, false> {
     type: AdminLogType;
 }
 
-export interface AdminLoginFormData extends TwoFactorAuthenticationCodesData {
+export interface AdminLoginFormData {
     account: string;
     password: string;
     verCode: string;

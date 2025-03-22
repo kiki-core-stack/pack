@@ -1,17 +1,11 @@
 import type { Buffer } from 'node:buffer';
 
 import { redisInstance } from '@/constants/redis';
-import type { EmailOtpCodeType } from '@/types/otp';
 
-export const redisController = {
-    emailOtpCode: createOperateFunctions((type: EmailOtpCodeType, email: string, additionalKey?: string) => {
-        let key = `emailOtpCode:${type}:`;
-        if (additionalKey) key += `${additionalKey}:`;
-        return `${key}${email}`;
-    }),
-    tempTotpSecret: createOperateFunctions((key: string) => `tempTotpSecret:${key}`),
-};
+export const redisController = {};
 
+// @ts-expect-error Ignore this error.
+// eslint-disable-next-line unused-imports/no-unused-vars
 function createOperateFunctions<F extends (...args: any[]) => string>(getKeyFunction: F) {
     return {
         del: (...args: Parameters<F>) => redisInstance.del(getKeyFunction(...args)),
