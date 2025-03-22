@@ -43,6 +43,8 @@ export interface AdminPermissionData extends BaseMongooseModelData {
 export interface AdminSessionData extends BaseMongooseModelData {
     admin: Partial<AdminData>;
     lastActiveAt: string;
+    lastActiveIp: string;
+    loginIP: string;
     token: string;
-    userAgent: string;
+    userAgent?: string;
 }
