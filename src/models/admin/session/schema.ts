@@ -13,7 +13,7 @@ export const adminSessionSchema = new Schema<AdminSession, AdminSessionModel, Ad
     admin: mongooseRefSchemas.admin.required,
     lastActiveAt: s.date().required,
     lastActiveIp: s.string().trim.required,
-    loginIP: s.string().trim.required,
+    loginIp: s.string().trim.required,
     token: s.string().private.trim.unique.required,
     userAgent: s.string().trim.nonRequired,
 });

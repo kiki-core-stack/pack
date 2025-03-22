@@ -45,7 +45,7 @@ export interface AdminSessionData extends BaseMongooseModelData {
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;
-    loginIP: string;
+    loginIp: string;
     token?: string;
     userAgent?: string;
 }
