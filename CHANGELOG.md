@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.50.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.49.1...v0.50.0)
+
+### 🚀 Enhancements
+
+- Add `schemaTimestampsConfigOnlyCreatedAt` mongoose constants ([ca2ccc2](https://github.com/kiki-core-stack/pack/commit/ca2ccc2))
+- Add AdminSession model and types files ([39e2c79](https://github.com/kiki-core-stack/pack/commit/39e2c79))
+
+### 🩹 Fixes
+
+- Resolve missing newline in `package.json` after running `update-package-exports` ([f744a6f](https://github.com/kiki-core-stack/pack/commit/f744a6f))
+
+### 💅 Refactors
+
+- Move `timestamps` setting for `AdminLog` from `buildMongooseModel` parameters to schema definition ([5bf9e35](https://github.com/kiki-core-stack/pack/commit/5bf9e35))
+
+### 🏡 Chore
+
+- Ignore some eslint max-len warning ([b7a9bec](https://github.com/kiki-core-stack/pack/commit/b7a9bec))
+- ⚠️ Remove all OTP and two-factor authentication related code ([e485de7](https://github.com/kiki-core-stack/pack/commit/e485de7))
+
+### 🎨 Styles
+
+- Format and lint codes ([f4be25c](https://github.com/kiki-core-stack/pack/commit/f4be25c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove all OTP and two-factor authentication related code ([e485de7](https://github.com/kiki-core-stack/pack/commit/e485de7))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.49.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.49.0...v0.49.1)
