@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.51.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.50.0...v0.51.0)
+
+### 🚀 Enhancements
+
+- Add `baseSetCookieOptions` constant ([3b4670a](https://github.com/kiki-core-stack/pack/commit/3b4670a))
+- Update `AdminSession` ([fcd4512](https://github.com/kiki-core-stack/pack/commit/fcd4512))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.50.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.49.1...v0.50.0)
