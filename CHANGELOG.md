@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.52.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.52.0...v0.52.1)
+
+### 🩹 Fixes
+
+- Rename `AdminSession` field `loginIP` to `loginIp` ([69dc4ed](https://github.com/kiki-core-stack/pack/commit/69dc4ed))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.52.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.51.0...v0.52.0)
