@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.53.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.52.1...v0.53.0)
+
+### 🚀 Enhancements
+
+- Add `assertUpdateOneByRouteId` to hono backend mongoose model statics ([ae52aed](https://github.com/kiki-core-stack/pack/commit/ae52aed))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([5fa88a2](https://github.com/kiki-core-stack/pack/commit/5fa88a2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.52.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.52.0...v0.52.1)
