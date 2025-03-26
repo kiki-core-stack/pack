@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.53.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.53.0...v0.53.1)
+
+### 💅 Refactors
+
+- Rename fields in some admin models ([a93d777](https://github.com/kiki-core-stack/pack/commit/a93d777))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.53.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.52.1...v0.53.0)
