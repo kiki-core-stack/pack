@@ -15,10 +15,10 @@ import type {
 
 export const adminLogSchema = new Schema<AdminLog, AdminLogModel>(
     {
-        admin: mongooseRefSchemas.admin.required,
-        content: s.string().trim.nonRequired,
+        a: mongooseRefSchemas.admin.required,
         fingerprint: s.string().trim.nonRequired,
         ip: s.string().trim.nonRequired,
+        note: s.string().trim.nonRequired,
         type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
     },
     { timestamps: schemaTimestampsConfigOnlyCreatedAt },

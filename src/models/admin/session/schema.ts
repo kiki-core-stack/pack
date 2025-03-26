@@ -10,7 +10,7 @@ import type {
 } from './types';
 
 export const adminSessionSchema = new Schema<AdminSession, AdminSessionModel, AdminSessionMethodsAndOverrides>({
-    admin: mongooseRefSchemas.admin.required,
+    a: mongooseRefSchemas.admin.required,
     lastActiveAt: s.date().required,
     lastActiveIp: s.string().trim.required,
     loginIp: s.string().trim.required,
