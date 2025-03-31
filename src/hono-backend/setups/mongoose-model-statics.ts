@@ -12,6 +12,8 @@ import type {
     UpdateQuery,
 } from 'mongoose';
 
+import { throwApiError } from '../libs/api';
+
 declare module '@kikiutils/mongoose/types' {
     interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
         assertUpdateOneByRouteId: (

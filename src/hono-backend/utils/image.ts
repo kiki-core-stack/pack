@@ -2,6 +2,8 @@ import type { Blob } from 'node:buffer';
 
 import { getAcceptedImageFileMimeType } from '@/utils/file';
 
+import { throwApiError } from '../libs/api';
+
 export async function validateImageFileMimeTypeAndSize(file: Blob, acceptGif?: boolean, ignoreFileSize?: boolean) {
     const fileMimeType = await getAcceptedImageFileMimeType(file, acceptGif);
     if (!fileMimeType) throwApiError(400);

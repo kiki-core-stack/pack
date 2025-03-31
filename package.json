@@ -17,9 +17,9 @@
       "types": "./dist/constants/zod/index.d.ts",
       "import": "./dist/constants/zod/index.mjs"
     },
-    "./hono-backend/globals": {
-      "types": "./dist/hono-backend/globals/index.d.ts",
-      "import": "./dist/hono-backend/globals/index.mjs"
+    "./hono-backend/libs/api": {
+      "types": "./dist/hono-backend/libs/api/index.d.ts",
+      "import": "./dist/hono-backend/libs/api/index.mjs"
     },
     "./libs/storage": {
       "types": "./dist/libs/storage/index.d.ts",

@@ -5,6 +5,7 @@ import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
 import { statusCodeToApiResponseTextMap } from '../constants/response';
+import { ApiError } from '../libs/api/error';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusCode>>({
     2: 400, // BadValue -> Bad Request
