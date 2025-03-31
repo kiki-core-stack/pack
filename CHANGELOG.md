@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.54.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.53.1...v0.54.0)
+
+### 💅 Refactors
+
+- **hono-backend:** ⚠️ Remove `globals` folder and switch to `export/import` for module management ([50df68b](https://github.com/kiki-core-stack/pack/commit/50df68b))
+
+#### ⚠️ Breaking Changes
+
+- **hono-backend:** ⚠️ Remove `globals` folder and switch to `export/import` for module management ([50df68b](https://github.com/kiki-core-stack/pack/commit/50df68b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.53.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.53.0...v0.53.1)
