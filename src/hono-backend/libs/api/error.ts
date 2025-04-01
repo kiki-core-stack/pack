@@ -10,7 +10,7 @@ export class ApiError<
     readonly errorCode: E;
     readonly statusCode: ContentfulStatusCode;
 
-    constructor(statusCode: ContentfulStatusCode, message?: string, errorCode?: E, data?: D) {
+    constructor(statusCode: ContentfulStatusCode = 500, message?: string, errorCode?: E, data?: D) {
         super(message ?? statusCodeToResponseMessageMap[statusCode] ?? '系統錯誤！');
         this.data = data as D;
         this.errorCode = errorCode as E;
