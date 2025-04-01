@@ -19,9 +19,16 @@ export function createApiSuccessResponseData(arg1?: any, arg2?: any) {
     };
 }
 
-export function throwApiError(statusCode?: ContentfulStatusCode): never;
-export function throwApiError<D extends object>(statusCode: ContentfulStatusCode, data: D, message?: string): never;
-export function throwApiError<D extends object>(statusCode: ContentfulStatusCode, message: string, data?: D): never;
-export function throwApiError(statusCode?: ContentfulStatusCode, arg1?: any, arg2?: any) {
-    throw new ApiError(statusCode, arg1, arg2);
+export function throwApiError(): never;
+export function throwApiError(statusCode: ContentfulStatusCode): never;
+export function throwApiError<
+    D extends object | undefined = undefined,
+    E extends string | undefined = undefined,
+>(statusCode: ContentfulStatusCode, data: D, message?: string, errorCode?: E): never;
+export function throwApiError<
+    D extends object | undefined = undefined,
+    E extends string | undefined = undefined,
+>(statusCode: ContentfulStatusCode, message?: string, data?: D, errorCode?: E): never;
+export function throwApiError(statusCode: ContentfulStatusCode = 500, arg1?: any, arg2?: any, errorCode?: string) {
+    throw new ApiError(statusCode, arg1, arg2, errorCode);
 }
