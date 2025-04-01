@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.55.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.54.0...v0.55.0)
+
+### 🚀 Enhancements
+
+- Optimize `ApiResponseData` type for correct field presence and add `errorCode` field ([61932c0](https://github.com/kiki-core-stack/pack/commit/61932c0))
+- Add `errorCode` parameter to `ApiError` and `throwApiError` ([d649ad7](https://github.com/kiki-core-stack/pack/commit/d649ad7))
+- Add `emailOtpCode` control group to `redisController` ([355e750](https://github.com/kiki-core-stack/pack/commit/355e750))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.54.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.53.1...v0.54.0)
