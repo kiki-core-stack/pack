@@ -22,4 +22,17 @@ export class ApiError<D extends object | undefined = undefined, E extends string
         this.statusCode = statusCode;
         Error.captureStackTrace?.(this, this.constructor);
     }
+
+    get responseData() {
+        return this.toResponseData();
+    }
+
+    toResponseData() {
+        return {
+            data: this.data,
+            errorCode: this.errorCode,
+            message: this.message,
+            success: false,
+        };
+    }
 }
