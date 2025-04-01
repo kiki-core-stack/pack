@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.57.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.2...v0.57.3)
+
+### 🩹 Fixes
+
+- Set return type of `throwApiError` to `never` ([81b37f4](https://github.com/kiki-core-stack/pack/commit/81b37f4))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.57.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.1...v0.57.2)
