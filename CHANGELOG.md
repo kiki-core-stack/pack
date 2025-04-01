@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.57.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.56.0...v0.57.0)
+
+### 🚀 Enhancements
+
+- Add `errorCode` field to response message when handling `ApiError` in Hono app onError ([36ecb4d](https://github.com/kiki-core-stack/pack/commit/36ecb4d))
+
+### 💅 Refactors
+
+- Simplify `ApiError` and `throwApiError` ([0618d28](https://github.com/kiki-core-stack/pack/commit/0618d28))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.56.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.55.0...v0.56.0)
