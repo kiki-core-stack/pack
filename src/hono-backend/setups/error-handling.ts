@@ -1,10 +1,12 @@
 import logger from '@kikiutils/node/consola';
-import type { Hono } from 'hono';
+import type {
+    Context,
+    Hono,
+} from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
-import { statusCodeToApiResponseTextMap } from '../constants/response';
 import { ApiError } from '../libs/api/error';
 
 const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusCode>>({
@@ -33,33 +35,30 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusC
     16755: 400, // Location16755 -> Bad Request
 });
 
+// TODO: Use string perf for response
 export function setupHonoAppErrorHandling(honoApp: Hono) {
-    honoApp.notFound((ctx) => {
-        ctx.header('content-type', 'application/json');
-        return ctx.body(statusCodeToApiResponseTextMap[404]!, 404);
-    });
+    function apiErrorToResponse(ctx: Context, error: ApiError) {
+        return ctx.json(
+            {
+                data: error.data,
+                errorCode: error.errorCode,
+                message: error.message,
+                success: false,
+            },
+            error.statusCode,
+        );
+    }
 
+    honoApp.notFound((ctx) => apiErrorToResponse(ctx, new ApiError(404)));
     honoApp.onError((error, ctx) => {
-        ctx.header('content-type', 'application/json');
-        if (error instanceof ApiError) {
-            return ctx.body(
-                JSON.stringify({
-                    data: error.data,
-                    errorCode: error.errorCode,
-                    message: error.message,
-                    success: false,
-                }),
-                error.statusCode,
-            );
-        }
-
+        if (error instanceof ApiError) return apiErrorToResponse(ctx, error);
         logger.error(error);
-        if (error instanceof ZodError) return ctx.body(statusCodeToApiResponseTextMap[400]!, 400);
+        if (error instanceof ZodError) return apiErrorToResponse(ctx, new ApiError(400));
         let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) {
             statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
         }
 
-        return ctx.body(statusCodeToApiResponseTextMap[statusCode]!, statusCode);
+        return apiErrorToResponse(ctx, new ApiError(statusCode));
     });
 }
