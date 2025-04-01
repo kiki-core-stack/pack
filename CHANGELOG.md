@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.57.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.1...v0.57.2)
+
+### 💅 Refactors
+
+- Simplify `createApiSuccessResponseData` ([964f882](https://github.com/kiki-core-stack/pack/commit/964f882))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.57.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.0...v0.57.1)
