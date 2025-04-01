@@ -1,0 +1,1 @@
+export type EmailOtpCodeType = undefined;
