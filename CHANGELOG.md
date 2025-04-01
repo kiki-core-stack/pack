@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.56.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.55.0...v0.56.0)
+
+### 🚀 Enhancements
+
+- Update `ApiResponseData` type and modify `api-requests` functions to support `errorCode` field type configuration ([26d74b1](https://github.com/kiki-core-stack/pack/commit/26d74b1))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.55.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.54.0...v0.55.0)
