@@ -19,6 +19,6 @@ export function throwApiError<D extends object | undefined = undefined, E extend
     message?: string,
     errorCode?: E,
     data?: D,
-) {
+): never {
     throw new ApiError(statusCode, message, errorCode, data);
 }
