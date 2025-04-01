@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.57.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.0...v0.57.1)
+
+### 🩹 Fixes
+
+- Make `statusCode` parameter optional in `ApiError` and `throwApiError` ([357e8e3](https://github.com/kiki-core-stack/pack/commit/357e8e3))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.57.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.56.0...v0.57.0)
