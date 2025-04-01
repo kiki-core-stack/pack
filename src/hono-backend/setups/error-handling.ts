@@ -45,6 +45,7 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
             return ctx.body(
                 JSON.stringify({
                     data: error.data,
+                    errorCode: error.errorCode,
                     message: error.message,
                     success: false,
                 }),
