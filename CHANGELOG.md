@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.58.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.3...v0.58.0)
+
+### 🚀 Enhancements
+
+- Add `statusCodeToResponseErrorCodeMap` constant and update `ApiError` structure ([81dbe44](https://github.com/kiki-core-stack/pack/commit/81dbe44))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.57.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.2...v0.57.3)
