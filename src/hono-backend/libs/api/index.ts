@@ -6,10 +6,11 @@ import type {
 
 import { ApiError } from './error';
 
+// TODO: 若使用率過低則移除
 export function createApiSuccessResponseData<D extends object | undefined = undefined>(data?: D, message?: string) {
     return {
         data,
-        message: message ?? '成功',
+        message: message ?? '成功！',
         success: true,
     } as SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'>;
 }

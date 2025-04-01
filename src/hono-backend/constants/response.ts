@@ -15,7 +15,7 @@ export const statusCodeToResponseErrorCodeMap = Object.freeze<PartialRecord<Cont
 });
 
 export const statusCodeToResponseMessageMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
-    200: '成功',
+    200: '成功！',
     400: '資料格式錯誤或是非法操作！',
     401: '尚未登入！',
     403: '沒有權限！',
