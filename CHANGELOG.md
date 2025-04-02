@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.59.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.58.0...v0.59.0)
+
+### 🚀 Enhancements
+
+- Add `toResponseData` method and getter to `ApiError` ([5aeaf9c](https://github.com/kiki-core-stack/pack/commit/5aeaf9c))
+
+### 💅 Refactors
+
+- Update api error mappings and default value check ([054e003](https://github.com/kiki-core-stack/pack/commit/054e003))
+
+### 🏡 Chore
+
+- Add punctuation to default message for response 200 ([7220fa8](https://github.com/kiki-core-stack/pack/commit/7220fa8))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.58.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.57.3...v0.58.0)
