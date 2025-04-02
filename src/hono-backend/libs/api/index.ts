@@ -14,6 +14,12 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
     } as SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'>;
 }
 
+export function defineApiErrorMapByErrorCode<Errors extends ApiError<any>[]>(errorList: Errors) {
+    const errorMap: any = {};
+    for (const error of errorList) errorMap[error.errorCode] = error;
+    return Object.freeze<{ [Error in Errors[number] as Error['errorCode']]: Error }>(errorMap);
+}
+
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
     statusCode: ContentfulStatusCode = 500,
     message?: string,
