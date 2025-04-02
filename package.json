@@ -79,6 +79,7 @@
     "type-fest": "^4.38.0"
   },
   "devDependencies": {
+    "@hono/zod-validator": "^0.4.3",
     "@kikiutils/changelogen": "^0.8.0",
     "@kikiutils/eslint-config": "^0.12.0",
     "@kikiutils/mongoose": "2.3.1",
