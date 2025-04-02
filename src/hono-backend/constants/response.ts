@@ -1,6 +1,6 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
-export const statusCodeToResponseErrorCodeMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
+export const statusCodeToApiResponseErrorCodeMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
     400: 'badRequest',
     401: 'unauthorized',
     403: 'forbidden',
@@ -14,7 +14,7 @@ export const statusCodeToResponseErrorCodeMap = Object.freeze<PartialRecord<Cont
     504: 'gatewayTimeout',
 });
 
-export const statusCodeToResponseMessageMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
+export const statusCodeToApiResponseMessageMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
     200: '成功！',
     400: '資料格式錯誤或是非法操作！',
     401: '尚未登入！',

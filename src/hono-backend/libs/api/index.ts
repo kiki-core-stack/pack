@@ -6,7 +6,6 @@ import type {
 
 import { ApiError } from './error';
 
-// TODO: 若使用率過低則移除
 export function createApiSuccessResponseData<D extends object | undefined = undefined>(data?: D, message?: string) {
     return {
         data,
