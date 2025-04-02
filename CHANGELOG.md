@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.60.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.59.0...v0.60.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add `defineApiErrorMapByErrorCode` lib ([3aa3bcf](https://github.com/kiki-core-stack/pack/commit/3aa3bcf))
+- **hono-backend:** Add `apiZValidator` lib ([8f97e17](https://github.com/kiki-core-stack/pack/commit/8f97e17))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.59.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.58.0...v0.59.0)
