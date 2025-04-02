@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.60.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.60.0...v0.60.1)
+
+### 💅 Refactors
+
+- Move `src/hono-backend/libs/zod-validator.ts` to `src/hono-backend/libs/api/zod-validator.ts` ([052402c](https://github.com/kiki-core-stack/pack/commit/052402c))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.60.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.59.0...v0.60.0)
