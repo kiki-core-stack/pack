@@ -12,7 +12,7 @@ import type {
     UpdateQuery,
 } from 'mongoose';
 
-import { throwApiError } from '../libs/api';
+import { defaultApiErrors } from '../constants/api';
 
 declare module '@kikiutils/mongoose/types' {
     interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
@@ -62,7 +62,7 @@ setCustomMongooseOptions(
                 expectedModifiedCount: number = 1,
             ) {
                 const id = ctx.req.param('id');
-                if (!id) throwApiError(404);
+                if (!id) throw defaultApiErrors.notFound;
                 const updateResult = await this.updateOne(
                     {
                         ...filterQuery,
@@ -73,7 +73,7 @@ setCustomMongooseOptions(
                 );
 
                 if (!updateResult.acknowledged) throw new Error('Update was not acknowledged.');
-                if (updateResult.matchedCount !== 1) throwApiError(404);
+                if (updateResult.matchedCount !== 1) throw defaultApiErrors.notFound;
                 if (updateResult.modifiedCount < expectedModifiedCount) {
                     // eslint-disable-next-line style/max-len
                     throw new Error(`Expected to modify at least ${expectedModifiedCount} document(s), but modified ${updateResult.modifiedCount}.`);
@@ -101,8 +101,8 @@ setCustomMongooseOptions(
                 options?: Nullable<QueryOptions<DocType>>,
             ) {
                 const id = ctx.req.param('id');
-                if (!id) throwApiError(404);
-                if (!Types.ObjectId.isValid(id)) throwApiError(400);
+                if (!id) throw defaultApiErrors.notFound;
+                if (!Types.ObjectId.isValid(id)) throw defaultApiErrors.badRequest;
                 const document = await this.findOne(
                     {
                         ...filterQuery,
@@ -112,7 +112,7 @@ setCustomMongooseOptions(
                     options,
                 );
 
-                if (!document) throwApiError(404);
+                if (!document) throw defaultApiErrors.notFound;
                 return document;
             },
         );

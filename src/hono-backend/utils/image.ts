@@ -2,11 +2,11 @@ import type { Blob } from 'node:buffer';
 
 import { getAcceptedImageFileMimeType } from '@/utils/file';
 
-import { throwApiError } from '../libs/api';
+import { defaultApiErrors } from '../constants/api';
 
 export async function validateImageFileMimeTypeAndSize(file: Blob, acceptGif?: boolean, ignoreFileSize?: boolean) {
     const fileMimeType = await getAcceptedImageFileMimeType(file, acceptGif);
-    if (!fileMimeType) throwApiError(400);
-    if (!ignoreFileSize && file.size > 1048576 * 16) throwApiError(413); // Max 16MB
+    if (!fileMimeType) throw defaultApiErrors.notFound;
+    if (!ignoreFileSize && file.size > 1048576 * 16) throw defaultApiErrors.payloadTooLarge; // Max 16MB
     return fileMimeType;
 }
