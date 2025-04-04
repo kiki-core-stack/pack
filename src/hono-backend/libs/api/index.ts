@@ -14,10 +14,17 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
     } as SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'>;
 }
 
-export function defineApiErrorMapByErrorCode<Errors extends ApiError<any>[]>(errorList: Errors) {
+export function defineApiErrorMapByErrorCode<Error extends ApiError<any>>(
+    error: Error
+): { [errorCode in Error['errorCode']]: Error };
+export function defineApiErrorMapByErrorCode<Errors extends ApiError<any>[]>(
+    errorList: Errors,
+): { [Error in Errors[number] as Error['errorCode']]: Error };
+export function defineApiErrorMapByErrorCode(input: Arrayable<ApiError<any>>) {
+    const errors = Array.isArray(input) ? input : [input];
     const errorMap: any = {};
-    for (const error of errorList) errorMap[error.errorCode] = error;
-    return Object.freeze<{ [Error in Errors[number] as Error['errorCode']]: Error }>(errorMap);
+    for (const error of errors) errorMap[error.errorCode] = error;
+    return Object.freeze(errorMap);
 }
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
