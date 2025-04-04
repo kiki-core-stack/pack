@@ -17,5 +17,8 @@ declare global {
         Output = any,
         O extends Exclude<keyof Output, ZodValidatorTypeExcludeField> = never,
         Def extends ZodTypeDef = ZodTypeDef,
-    > = ZodType<OmitMongooseTimestampAndOtherFields<Output, O | ZodValidatorTypeExcludeField>, Def>;
+    > = ZodType<
+        OmitMongooseTimestampAndOtherFields<Output, O | ZodValidatorTypeExcludeField>,
+        Def
+    >;
 }
