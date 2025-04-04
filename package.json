@@ -88,7 +88,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/nodemailer": "^6.4.17",
     "axios": "^1.8.4",
-    "date-fns": "^4.1.0",
     "hono": "^4.7.5",
     "ioredis": "^5.6.0",
     "mongodb": "^6.15.0",
@@ -98,7 +97,6 @@
     "socket.io-client": "^4.8.1",
     "ts-project-builder": "^3.4.3",
     "tsc-alias": "^1.8.13",
-    "tslib": "^2.8.1",
     "typescript": "^5.8.2",
     "wasmagic": "^1.0.3",
     "zod": "^3.24.2"
