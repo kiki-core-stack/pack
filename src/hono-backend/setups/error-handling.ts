@@ -35,11 +35,12 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusC
 });
 
 // TODO: Use string perf for response
-export function setupHonoAppErrorHandling(honoApp: Hono) {
+export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...args: any[]) => any }) {
     const apiErrorToResponse = (ctx: Context, error: ApiError) => ctx.json(error.responseData, error.statusCode);
     honoApp.notFound((ctx) => apiErrorToResponse(ctx, new ApiError(404)));
     honoApp.onError((error, ctx) => {
         if (error instanceof ApiError) return apiErrorToResponse(ctx, error);
+        logger.error(error);
         if (error instanceof ZodError) return apiErrorToResponse(ctx, new ApiError(400));
         let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) {
