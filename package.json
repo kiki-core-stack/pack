@@ -33,10 +33,6 @@
       "types": "./dist/models/admin/group/index.d.ts",
       "import": "./dist/models/admin/group/index.mjs"
     },
-    "./models/admin/index": {
-      "types": "./dist/models/admin/index/index.d.ts",
-      "import": "./dist/models/admin/index/index.mjs"
-    },
     "./models/admin/log": {
       "types": "./dist/models/admin/log/index.d.ts",
       "import": "./dist/models/admin/log/index.mjs"
