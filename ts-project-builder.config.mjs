@@ -8,7 +8,7 @@ import { defineConfig } from 'ts-project-builder';
 
 function cleanEmptyMjsFiles() {
     const processFile = async (filePath) => {
-        if (!(await readFile(filePath, 'utf-8')).trim()) rm(filePath, { force: true });
+        if (!(await readFile(filePath, 'utf-8')).trim()) await rm(filePath, { force: true });
     };
 
     return {
