@@ -1,4 +1,3 @@
-import logger from '@kikiutils/node/consola';
 import type {
     DefaultEventsMap,
     EventsMap,
@@ -18,7 +17,7 @@ export function createSocketIoClient<
     auth?: Partial<ManagerOptions & SocketOptions>['auth'],
     options?: Partial<ManagerOptions & SocketOptions>,
 ) {
-    const socketIoClient = io(
+    const socketIoClient: Socket<ListenEvents, EmitEvents> = io(
         uri,
         {
             auth,
@@ -27,9 +26,7 @@ export function createSocketIoClient<
             rejectUnauthorized: false,
             ...options,
         },
-    ) as Socket<ListenEvents, EmitEvents>;
-    socketIoClient.on('connect', () => logger.info('socket.io已連線'));
-    socketIoClient.on('connect_error', (error) => logger.error('socket.io連線錯誤：', error));
-    socketIoClient.on('disconnect', () => logger.info('socket.io已斷線'));
+    );
+
     return socketIoClient;
 }

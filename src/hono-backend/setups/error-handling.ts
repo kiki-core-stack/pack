@@ -1,4 +1,3 @@
-import logger from '@kikiutils/node/consola';
 import type {
     Context,
     Hono,
@@ -41,7 +40,6 @@ export function setupHonoAppErrorHandling(honoApp: Hono) {
     honoApp.notFound((ctx) => apiErrorToResponse(ctx, new ApiError(404)));
     honoApp.onError((error, ctx) => {
         if (error instanceof ApiError) return apiErrorToResponse(ctx, error);
-        logger.error(error);
         if (error instanceof ZodError) return apiErrorToResponse(ctx, new ApiError(400));
         let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) {

@@ -3,7 +3,6 @@ import type { Buffer } from 'node:buffer';
 
 import Path from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
-import logger from '@kikiutils/node/consola';
 import sharp from 'sharp';
 import type {
     Sharp,
@@ -26,9 +25,7 @@ export async function convertImage(
                 },
             )
             .toBuffer();
-    } catch (error) {
-        logger.error(error);
-    }
+    } catch {}
 }
 
 export async function saveConvertedImage(
@@ -43,9 +40,6 @@ export async function saveConvertedImage(
         const buffer = await convertImage(input, inputOptions, outputFormat, outputOptions);
         if (buffer && await savePath.writeFile(buffer) && await savePath.chmod(0o644)) return true;
         savePath.remove();
-    } catch (error) {
-        logger.error(error);
-    }
-
+    } catch {}
     return false;
 }
