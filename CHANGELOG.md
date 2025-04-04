@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.61.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.60.1...v0.61.0)
+
+### 🚀 Enhancements
+
+- **hono-backend:** Add `defaultApiErrors` constant ([9ad0dce](https://github.com/kiki-core-stack/pack/commit/9ad0dce))
+- Allow `defineApiErrorMapByErrorCode` to accept a single `ApiError` instead of an array ([c739b3e](https://github.com/kiki-core-stack/pack/commit/c739b3e))
+- Add `logger` parameter to `setupHonoAppErrorHandling` ([6981414](https://github.com/kiki-core-stack/pack/commit/6981414))
+- `defaultApiErrors` add `404` and `413` errors ([8d66899](https://github.com/kiki-core-stack/pack/commit/8d66899))
+
+### 🩹 Fixes
+
+- Add missing await for `rm` in `processFile` of `ts-project-builder.config` ([bdda2c6](https://github.com/kiki-core-stack/pack/commit/bdda2c6))
+
+### 💅 Refactors
+
+- Move files from `src/models/admin/index` to its parent directory ([1b4b340](https://github.com/kiki-core-stack/pack/commit/1b4b340))
+- Omit `message` when creating `ApiError` in `defaultApiErrors` to use internal default ([f2b6dec](https://github.com/kiki-core-stack/pack/commit/f2b6dec))
+- Change `throwApiError` to throw predefined error instance ([8ae0cdb](https://github.com/kiki-core-stack/pack/commit/8ae0cdb))
+
+### 🏡 Chore
+
+- Format code ([0fb46e2](https://github.com/kiki-core-stack/pack/commit/0fb46e2))
+- ⚠️ Upgrade dependencies ([8c18480](https://github.com/kiki-core-stack/pack/commit/8c18480))
+- Temporarily remove all loggers ([e082e85](https://github.com/kiki-core-stack/pack/commit/e082e85))
+- Remove `date-fns` and `tslib` devDependencies ([e5d3321](https://github.com/kiki-core-stack/pack/commit/e5d3321))
+- Format code ([c8e1d53](https://github.com/kiki-core-stack/pack/commit/c8e1d53))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Upgrade dependencies ([8c18480](https://github.com/kiki-core-stack/pack/commit/8c18480))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.60.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.60.0...v0.60.1)
