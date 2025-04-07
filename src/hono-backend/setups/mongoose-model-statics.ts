@@ -20,7 +20,7 @@ declare module '@kikiutils/mongoose/types' {
             ctx: Context,
             updateQuery: UpdateQuery<RawDocType>,
             options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<RawDocType>)>,
-            filterQuery?: RootFilterQuery<RawDocType>,
+            filter?: RootFilterQuery<RawDocType>,
             expectedModifiedCount?: number
         ) => Promise<void>;
 
@@ -37,7 +37,7 @@ declare module '@kikiutils/mongoose/types' {
 
         findByRouteIdOrThrowNotFoundError: (
             ctx: Context,
-            filterQuery?: RootFilterQuery<RawDocType>,
+            filter?: RootFilterQuery<RawDocType>,
             projection?: Nullable<ProjectionType<RawDocType>>,
             options?: Nullable<QueryOptions<RawDocType>>
         ) => Promise<HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>>;
@@ -58,14 +58,14 @@ setCustomMongooseOptions(
                 ctx: Context,
                 updateQuery: UpdateQuery<DocType>,
                 options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<DocType>)>,
-                filterQuery?: RootFilterQuery<DocType>,
+                filter?: RootFilterQuery<DocType>,
                 expectedModifiedCount: number = 1,
             ) {
                 const id = ctx.req.param('id');
                 if (!id) throw defaultApiErrors.notFound;
                 const updateResult = await this.updateOne(
                     {
-                        ...filterQuery,
+                        ...filter,
                         _id: id,
                     },
                     updateQuery,
@@ -96,7 +96,7 @@ setCustomMongooseOptions(
             'findByRouteIdOrThrowNotFoundError',
             async function (
                 ctx: Context,
-                filterQuery?: RootFilterQuery<DocType>,
+                filter?: RootFilterQuery<DocType>,
                 projection?: Nullable<ProjectionType<DocType>>,
                 options?: Nullable<QueryOptions<DocType>>,
             ) {
@@ -105,7 +105,7 @@ setCustomMongooseOptions(
                 if (!Types.ObjectId.isValid(id)) throw defaultApiErrors.badRequest;
                 const document = await this.findOne(
                     {
-                        ...filterQuery,
+                        ...filter,
                         _id: id,
                     },
                     projection,
