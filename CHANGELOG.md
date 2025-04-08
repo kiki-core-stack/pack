@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.63.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.62.0...v0.63.0)
+
+### 💅 Refactors
+
+- ⚠️ Rename `ProfileSecurityChangePasswordFormData` to `AdminChangePasswordData` and move to `src/types/data/admin.ts` file ([074b117](https://github.com/kiki-core-stack/pack/commit/074b117))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename `ProfileSecurityChangePasswordFormData` to `AdminChangePasswordData` and move to `src/types/data/admin.ts` file ([074b117](https://github.com/kiki-core-stack/pack/commit/074b117))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.62.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.61.0...v0.62.0)
