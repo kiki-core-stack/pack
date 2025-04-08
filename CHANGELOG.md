@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.62.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.61.0...v0.62.0)
+
+### 🚀 Enhancements
+
+- Add `adminQrCodeLoginData` group to `redisController` ([9cb9dc1](https://github.com/kiki-core-stack/pack/commit/9cb9dc1))
+
+### 💅 Refactors
+
+- Rename `filterQuery` to `filter` ([9735691](https://github.com/kiki-core-stack/pack/commit/9735691))
+- ⚠️ Remove `confirmPassword` field from `ProfileSecurityChangePasswordFormData` ([cc0f298](https://github.com/kiki-core-stack/pack/commit/cc0f298))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([d432a32](https://github.com/kiki-core-stack/pack/commit/d432a32))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `confirmPassword` field from `ProfileSecurityChangePasswordFormData` ([cc0f298](https://github.com/kiki-core-stack/pack/commit/cc0f298))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.61.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.60.1...v0.61.0)
