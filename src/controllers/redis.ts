@@ -4,6 +4,7 @@ import { redisInstance } from '@/constants/redis';
 import type { EmailOtpCodeType } from '@/types/otp';
 
 export const redisController = {
+    adminQrCodeLoginData: createOperateFunctions((token: string) => `adminQrCodeLoginData:${token}`),
     emailOtpCode: createOperateFunctions((type: EmailOtpCodeType, email: string, additionalKey?: string) => {
         let key = `emailOtpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
