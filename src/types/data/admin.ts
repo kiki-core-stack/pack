@@ -3,6 +3,11 @@ import type {
     AdminPermissionMode,
 } from '@/constants/admin';
 
+export interface AdminChangePasswordData {
+    newPassword: string;
+    oldPassword: string;
+}
+
 export interface AdminData extends BaseMongooseModelData {
     account: string;
     email?: string;
