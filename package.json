@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/kiki-core-stack/pack.git"
   },
+  "sideEffects": false,
   "exports": {
     "./*": {
       "types": "./dist/*.d.ts",
