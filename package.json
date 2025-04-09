@@ -55,10 +55,7 @@
       "types": "./dist/types/data/index.d.ts"
     }
   },
-  "files": [
-    "./dist",
-    "./src"
-  ],
+  "files": ["./dist"],
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && tsc-alias && node ./update-package-exports.mjs",
     "bumplog": "changelogen --bump",
