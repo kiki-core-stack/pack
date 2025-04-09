@@ -1,7 +1,7 @@
 import { Blob } from 'node:buffer';
 import type { Buffer } from 'node:buffer';
 
-import Path from '@kikiutils/classes/path';
+import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import sharp from 'sharp';
 import type {

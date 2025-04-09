@@ -1,7 +1,7 @@
 import type { Buffer } from 'node:buffer';
 import { writeFile } from 'node:fs/promises';
 
-import Path from '@kikiutils/classes/path';
+import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/node/env';
 import { remove } from 'fs-extra';
