@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.63.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.1...v0.63.2)
+
+### 💅 Refactors
+
+- Update schema builder imports to support optimized tree-shaking ([7d57bf2](https://github.com/kiki-core-stack/pack/commit/7d57bf2))
+- Update `LocalStorageProvider.fileExists` to directly return a `Promise` ([07829a8](https://github.com/kiki-core-stack/pack/commit/07829a8))
+- Remove explicit return type from `getDefaultStorage` ([fa4bed9](https://github.com/kiki-core-stack/pack/commit/fa4bed9))
+- Update schema builder imports ([fa8cd91](https://github.com/kiki-core-stack/pack/commit/fa8cd91))
+
+### 🏡 Chore
+
+- Refresh pnpm lockfile and add missing dependencies ([77f0006](https://github.com/kiki-core-stack/pack/commit/77f0006))
+- Changing the script because it depends on an update ([6992ea5](https://github.com/kiki-core-stack/pack/commit/6992ea5))
+- Update tsconfig.json ([3431cab](https://github.com/kiki-core-stack/pack/commit/3431cab))
+- Set `sideEffects` to false in package.json ([255d378](https://github.com/kiki-core-stack/pack/commit/255d378))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.63.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.0...v0.63.1)
