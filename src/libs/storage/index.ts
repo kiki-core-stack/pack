@@ -22,7 +22,7 @@ export async function createStorage(provider?: StorageProviderName, config?: any
     throw new Error(`Unsupported STORAGE_PROVIDER: "${storageProvider}". Supported providers: local-storage`);
 }
 
-export async function getDefaultStorage(): Promise<AbstractStorageProvider> {
+export async function getDefaultStorage() {
     if (!defaultStorageInstance) defaultStorageInstance = await createStorage();
     return defaultStorageInstance;
 }
