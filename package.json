@@ -55,7 +55,9 @@
       "types": "./dist/types/data/index.d.ts"
     }
   },
-  "files": ["./dist"],
+  "files": [
+    "./dist"
+  ],
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && tsc-alias && node ./update-package-exports.mjs",
     "bumplog": "changelogen --bump",
@@ -64,8 +66,8 @@
     "release": "pnpm run lint && pnpm run build && changelogen --hideAuthorEmail --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
-    "@kikiutils/classes": "^5.0.1",
-    "@kikiutils/node": "^7.1.0",
+    "@kikiutils/classes": "^6.0.0",
+    "@kikiutils/node": "^8.0.0",
     "@kikiutils/types": "^4.0.0",
     "type-fest": "^4.39.1"
   },
@@ -73,7 +75,7 @@
     "@hono/zod-validator": "^0.4.3",
     "@kikiutils/changelogen": "^0.8.0",
     "@kikiutils/eslint-config": "^0.12.0",
-    "@kikiutils/mongoose": "2.3.1",
+    "@kikiutils/mongoose": "3.0.0",
     "@kikiutils/tsconfigs": "^4.0.0",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
@@ -88,7 +90,7 @@
     "nodemailer": "^6.10.0",
     "sharp": "^0.34.1",
     "socket.io-client": "^4.8.1",
-    "ts-project-builder": "^3.4.3",
+    "ts-project-builder": "^4.0.0",
     "tsc-alias": "^1.8.14",
     "typescript": "^5.8.3",
     "wasmagic": "^1.0.3",
