@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.63.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.0...v0.63.1)
+
+### 📦 Build
+
+- Remove src folder from npm pack target (files in package.json) ([ff65868](https://github.com/kiki-core-stack/pack/commit/ff65868))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([1e8b2d2](https://github.com/kiki-core-stack/pack/commit/1e8b2d2))
+- Remove `moduleResolution` setting from tsconfig ([66a8dcb](https://github.com/kiki-core-stack/pack/commit/66a8dcb))
+- Modify `Redis` import path ([08d6065](https://github.com/kiki-core-stack/pack/commit/08d6065))
+- Move `lodash-es` to devDependencies ([73fe097](https://github.com/kiki-core-stack/pack/commit/73fe097))
+- Upgrade dependencies ([61b71c5](https://github.com/kiki-core-stack/pack/commit/61b71c5))
+- Update `Path` class import style ([d043772](https://github.com/kiki-core-stack/pack/commit/d043772))
+- Update mongoose schema builds import style ([9a7cea6](https://github.com/kiki-core-stack/pack/commit/9a7cea6))
+- Tidy dependencies and move some to devDependencies ([f8c32bd](https://github.com/kiki-core-stack/pack/commit/f8c32bd))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.63.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.62.0...v0.63.0)
