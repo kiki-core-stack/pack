@@ -79,7 +79,7 @@
     "@kikiutils/changelogen": "^0.8.0",
     "@kikiutils/eslint-config": "^0.12.0",
     "@kikiutils/mongoose": "2.3.1",
-    "@kikiutils/tsconfigs": "^3.0.3",
+    "@kikiutils/tsconfigs": "^4.0.0",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
     "@types/nodemailer": "^6.4.17",
@@ -92,7 +92,7 @@
     "sharp": "^0.34.1",
     "socket.io-client": "^4.8.1",
     "ts-project-builder": "^3.4.3",
-    "tsc-alias": "^1.8.13",
+    "tsc-alias": "^1.8.14",
     "typescript": "^5.8.3",
     "wasmagic": "^1.0.3",
     "zod": "^3.24.2"
