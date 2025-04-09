@@ -1,16 +1,16 @@
-import * as s from '@kikiutils/mongoose/schema-builders';
+import { ref } from '@kikiutils/mongoose/schema-builders';
 
 export { mongooseConnections } from '@kikiutils/mongoose/constants';
 
 export const mongooseRefSchemas = {
     admin: {
         group: {
-            nonRequired: s.ref('AdminGroup').nonRequired,
-            required: s.ref('AdminGroup').required,
+            nonRequired: ref('AdminGroup').nonRequired,
+            required: ref('AdminGroup').required,
         },
-        nonRequired: s.ref('Admin').nonRequired,
-        permission: { required: s.ref('AdminPermission').required },
-        required: s.ref('Admin').required,
+        nonRequired: ref('Admin').nonRequired,
+        permission: { required: ref('AdminPermission').required },
+        required: ref('Admin').required,
     },
 };
 
