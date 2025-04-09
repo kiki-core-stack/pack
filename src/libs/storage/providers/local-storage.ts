@@ -29,8 +29,8 @@ export class LocalStorageProvider extends AbstractStorageProvider {
         await remove(this.#basePath.join(filePath).toString());
     }
 
-    async fileExists(filePath: PathLike) {
-        return await this.#basePath.join(filePath).access();
+    fileExists(filePath: PathLike) {
+        return this.#basePath.join(filePath).access();
     }
 
     async uploadFile(buffer: Buffer, filePath?: PathLike, extension?: string) {
