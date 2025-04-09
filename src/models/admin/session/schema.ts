@@ -1,4 +1,4 @@
-import s from '@kikiutils/mongoose/schema-builders';
+import * as s from '@kikiutils/mongoose/schema-builders';
 import { Schema } from 'mongoose';
 
 import { mongooseRefSchemas } from '@/constants/mongoose';

@@ -1,4 +1,4 @@
-import s from '@kikiutils/mongoose/schema-builders';
+import * as s from '@kikiutils/mongoose/schema-builders';
 import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
 
