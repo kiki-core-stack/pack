@@ -8,18 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@kikiutils/classes':
-        specifier: ^6.0.0
-        version: 6.0.0
-      '@kikiutils/node':
-        specifier: ^8.0.0
-        version: 8.0.0
       '@kikiutils/types':
         specifier: ^4.0.0
         version: 4.0.0
-      type-fest:
-        specifier: ^4.39.1
-        version: 4.39.1
     devDependencies:
       '@hono/zod-validator':
         specifier: ^0.4.3
@@ -27,12 +18,18 @@ importers:
       '@kikiutils/changelogen':
         specifier: ^0.8.0
         version: 0.8.0
+      '@kikiutils/classes':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@kikiutils/eslint-config':
         specifier: ^0.12.0
         version: 0.12.0(@vue/compiler-sfc@3.5.13)(jiti@2.4.2)(tailwindcss@3.4.17)(typescript@5.8.3)(vue-eslint-parser@10.1.3(eslint@9.24.0(jiti@2.4.2)))
       '@kikiutils/mongoose':
         specifier: 3.0.0
         version: 3.0.0
+      '@kikiutils/node':
+        specifier: ^8.0.0
+        version: 8.0.0
       '@kikiutils/tsconfigs':
         specifier: ^4.0.0
         version: 4.0.0
@@ -81,6 +78,9 @@ importers:
       tsc-alias:
         specifier: ^1.8.14
         version: 1.8.14
+      type-fest:
+        specifier: ^4.39.1
+        version: 4.39.1
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
