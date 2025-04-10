@@ -1,8 +1,5 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import type {
-    SetFieldType,
-    SetRequired,
-} from 'type-fest';
+import type { SetFieldType } from 'type-fest';
 
 import { ApiError } from './error';
 
