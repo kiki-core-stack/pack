@@ -3,6 +3,7 @@ import type { Buffer } from 'node:buffer';
 
 import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
+// @ts-expect-error Ignore this error.
 import sharp from 'sharp';
 import type {
     Sharp,
