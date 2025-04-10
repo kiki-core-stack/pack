@@ -1,4 +1,4 @@
-import type { SocketIoEvent } from '@/constants/socket.io-event';
+import type { ToServer } from '@/constants/socket.io-events';
 
 // eslint-disable-next-line ts/no-namespace
 export namespace SocketIoEvents {
@@ -7,6 +7,6 @@ export namespace SocketIoEvents {
     export interface ToAdminFrontend {}
 
     export interface ToServer {
-        [SocketIoEvent.ToServer.Test]: () => void;
+        [ToServer.Test]: () => void;
     }
 }

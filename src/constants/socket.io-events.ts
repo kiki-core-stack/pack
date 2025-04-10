@@ -23,9 +23,3 @@ export const ToServer = createEnumObject(
     'ToServer',
     ['Test'] as const,
 );
-
-export const SocketIoEvent = {
-    ToAdminBackend,
-    ToAdminFrontend,
-    ToServer,
-};
