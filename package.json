@@ -67,16 +67,16 @@
     "release": "pnpm run lint && pnpm run build && changelogen --hideAuthorEmail --push --release && sh ./build-and-publish.sh"
   },
   "dependencies": {
-    "@kikiutils/types": "^4.0.0"
+    "@kikiutils/types": "^4.1.0"
   },
   "devDependencies": {
     "@hono/zod-validator": "^0.4.3",
     "@kikiutils/changelogen": "^0.8.0",
-    "@kikiutils/classes": "^6.0.0",
-    "@kikiutils/eslint-config": "^0.12.0",
-    "@kikiutils/mongoose": "3.0.0",
-    "@kikiutils/node": "^8.0.0",
-    "@kikiutils/tsconfigs": "^4.0.0",
+    "@kikiutils/classes": "^6.0.2",
+    "@kikiutils/eslint-config": "^0.12.2",
+    "@kikiutils/mongoose": "3.0.3",
+    "@kikiutils/node": "^8.0.1",
+    "@kikiutils/tsconfigs": "^4.0.1",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash-es": "^4.17.12",
@@ -90,7 +90,7 @@
     "nodemailer": "^6.10.0",
     "sharp": "^0.34.1",
     "socket.io-client": "^4.8.1",
-    "ts-project-builder": "^4.0.0",
+    "ts-project-builder": "^4.0.1",
     "tsc-alias": "^1.8.14",
     "type-fest": "^4.39.1",
     "typescript": "^5.8.3",
