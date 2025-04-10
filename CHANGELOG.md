@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.64.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.2...v0.64.0)
+
+### 🩹 Fixes
+
+- Correct import style for types ([9959c20](https://github.com/kiki-core-stack/pack/commit/9959c20))
+
+### 💅 Refactors
+
+- Remove import of `SetRequired` type from type-fest ([6c5eedc](https://github.com/kiki-core-stack/pack/commit/6c5eedc))
+- Remove redundant `/index` from import paths ([abe2b05](https://github.com/kiki-core-stack/pack/commit/abe2b05))
+- ⚠️ Remove `SocketIoEvent` constant and rename `socket.io-event` constant file to `socket.io-events` ([9b033ee](https://github.com/kiki-core-stack/pack/commit/9b033ee))
+- Remove alias used in zod import ([aab8de5](https://github.com/kiki-core-stack/pack/commit/aab8de5))
+- Update return type definition in `createApiSuccessResponseData` ([e4c3bcf](https://github.com/kiki-core-stack/pack/commit/e4c3bcf))
+
+### 📦 Build
+
+- Remove `declarationMap` setting from tsconfig ([a2620c2](https://github.com/kiki-core-stack/pack/commit/a2620c2))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([ec51385](https://github.com/kiki-core-stack/pack/commit/ec51385))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `SocketIoEvent` constant and rename `socket.io-event` constant file to `socket.io-events` ([9b033ee](https://github.com/kiki-core-stack/pack/commit/9b033ee))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.63.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.1...v0.63.2)
