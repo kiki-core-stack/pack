@@ -3,12 +3,15 @@ import type { SetFieldType } from 'type-fest';
 
 import { ApiError } from './error';
 
-export function createApiSuccessResponseData<D extends object | undefined = undefined>(data?: D, message?: string) {
+export function createApiSuccessResponseData<D extends object | undefined = undefined>(
+    data?: D,
+    message?: string,
+): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'> {
     return {
-        data,
+        data: data!,
         message: message ?? '成功！',
         success: true,
-    } as SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'>;
+    };
 }
 
 export function defineApiErrorMapByErrorCode<Error extends ApiError<any>>(
