@@ -9,7 +9,7 @@ import type {
 export { AxiosError } from 'axios';
 
 export type ApiRequestData = ApiRequestParams | FormData;
-export type ApiRequestParams = Dict<any>;
+export type ApiRequestParams = Record<string, any>;
 
 export const apiInstance: AxiosInstance = axios.create();
 

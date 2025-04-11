@@ -8,7 +8,7 @@ import { ZodError } from 'zod';
 
 import { ApiError } from '../libs/api/error';
 
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Dict<ContentfulStatusCode>>({
+const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<string, ContentfulStatusCode>>({
     2: 400, // BadValue -> Bad Request
     4: 404, // NoSuchKey -> Not Found
     6: 503, // HostUnreachable -> Service Unavailable
