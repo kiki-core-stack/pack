@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/kiki-core-stack/pack.git"
   },
-  "sideEffects": false,
+  "sideEffects": ["./dist/hono-backend/setups/mongoose-model-statics.mjs"],
   "exports": {
     "./*": {
       "types": "./dist/*.d.ts",
