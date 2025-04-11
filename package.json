@@ -1,14 +1,16 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.64.0",
+  "version": "0.64.1",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kiki-core-stack/pack.git"
   },
-  "sideEffects": ["./dist/hono-backend/setups/mongoose-model-statics.mjs"],
+  "sideEffects": [
+    "./dist/hono-backend/setups/mongoose-model-statics.mjs"
+  ],
   "exports": {
     "./*": {
       "types": "./dist/*.d.ts",

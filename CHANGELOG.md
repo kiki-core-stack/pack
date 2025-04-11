@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.64.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.0...v0.64.1)
+
+### 🩹 Fixes
+
+- Mark `hono-backend mongoose-model-statics` as a module with sideEffects ([d9d86e0](https://github.com/kiki-core-stack/pack/commit/d9d86e0))
+
+### 💅 Refactors
+
+- Replace `Dict` type with `Record` ([5456453](https://github.com/kiki-core-stack/pack/commit/5456453))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.64.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.63.2...v0.64.0)
