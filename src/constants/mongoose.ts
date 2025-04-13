@@ -14,7 +14,7 @@ export const mongooseRefSchemas = {
     },
 };
 
-export const schemaTimestampsConfigOnlyCreatedAt = Object.freeze({
+export const schemaTimestampsConfigOnlyCreatedAt = {
     createdAt: true,
     updatedAt: false,
-});
+} as const;

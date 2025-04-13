@@ -8,7 +8,7 @@ import { ZodError } from 'zod';
 
 import { ApiError } from '../libs/api/error';
 
-const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<string, ContentfulStatusCode>>({
+const mongodbErrorCodeToHttpStatusCodeMap: ReadonlyRecord<string, ContentfulStatusCode> = {
     2: 400, // BadValue -> Bad Request
     4: 404, // NoSuchKey -> Not Found
     6: 503, // HostUnreachable -> Service Unavailable
@@ -32,7 +32,7 @@ const mongodbErrorCodeToHttpStatusCodeMap = Object.freeze<Record<string, Content
     13436: 503, // NotPrimaryOrSecondary -> Service Unavailable
     14031: 507, // OutOfDiskSpace -> Insufficient Storage
     16755: 400, // Location16755 -> Bad Request
-});
+};
 
 // TODO: Use string perf for response
 export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...args: any[]) => any }) {

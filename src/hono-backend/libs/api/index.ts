@@ -16,15 +16,15 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
 
 export function defineApiErrorMapByErrorCode<Error extends ApiError<any>>(
     error: Error
-): { [errorCode in Error['errorCode']]: Error };
+): Readonly<{ [errorCode in Error['errorCode']]: Error }>;
 export function defineApiErrorMapByErrorCode<Errors extends ApiError<any>[]>(
     errorList: Errors,
-): { [Error in Errors[number] as Error['errorCode']]: Error };
+): Readonly<{ [Error in Errors[number] as Error['errorCode']]: Error }>;
 export function defineApiErrorMapByErrorCode(input: Arrayable<ApiError<any>>) {
     const errors = Array.isArray(input) ? input : [input];
     const errorMap: any = {};
     for (const error of errors) errorMap[error.errorCode] = error;
-    return Object.freeze(errorMap);
+    return errorMap;
 }
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(

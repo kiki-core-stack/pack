@@ -1,6 +1,6 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
-export const statusCodeToApiResponseErrorCodeMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
+export const statusCodeToApiResponseErrorCodeMap: Readonly<PartialRecord<ContentfulStatusCode, string>> = {
     400: 'badRequest',
     401: 'unauthorized',
     403: 'forbidden',
@@ -12,9 +12,9 @@ export const statusCodeToApiResponseErrorCodeMap = Object.freeze<PartialRecord<C
     500: 'internalServerError',
     503: 'serviceUnavailable',
     504: 'gatewayTimeout',
-});
+};
 
-export const statusCodeToApiResponseMessageMap = Object.freeze<PartialRecord<ContentfulStatusCode, string>>({
+export const statusCodeToApiResponseMessageMap: Readonly<PartialRecord<ContentfulStatusCode, string>> = {
     200: '成功！',
     400: '資料格式錯誤或是非法操作！',
     401: '尚未登入！',
@@ -27,4 +27,4 @@ export const statusCodeToApiResponseMessageMap = Object.freeze<PartialRecord<Con
     500: '系統錯誤！',
     503: '系統維護中！',
     504: '超時！',
-});
+};
