@@ -5,7 +5,6 @@ import type {
 
 export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';
-export type {} from '@kikiutils/types/type-fest';
 
 type ZodValidatorTypeExcludeField =
   | 'createdByAdmin'
