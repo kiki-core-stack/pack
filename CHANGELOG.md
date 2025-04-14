@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.64.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.1...v0.64.2)
+
+### 💅 Refactors
+
+- Replace `Object.freeze` with `readonly` type definitions for constants and variables ([a26c33d](https://github.com/kiki-core-stack/pack/commit/a26c33d))
+- Update type definition method for zod `z` constant ([e98bcd4](https://github.com/kiki-core-stack/pack/commit/e98bcd4))
+- Remove export of `@kikiutils/types/type-fest` types ([6de1067](https://github.com/kiki-core-stack/pack/commit/6de1067))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([5c3842b](https://github.com/kiki-core-stack/pack/commit/5c3842b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.64.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.0...v0.64.1)
