@@ -92,6 +92,7 @@
     "nodemailer": "^6.10.1",
     "sharp": "^0.34.1",
     "socket.io-client": "^4.8.1",
+    "superjson": "^2.2.2",
     "ts-project-builder": "^5.0.0",
     "tsc-alias": "^1.8.15",
     "type-fest": "^4.40.0",
