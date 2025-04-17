@@ -1,7 +1,8 @@
-import { createRedisStoreKeyHandler } from '@/storages/redis/factory';
+import { createRedisStoreKeyHandler } from '@/libs/storages/redis/factory';
+import { redisStorage } from '@/storages/redis';
 import type { EmailOtpCodeType } from '@/types/otp';
 
-export const emailOtpCode = createRedisStoreKeyHandler<string>()(
+export const emailOtpCode = createRedisStoreKeyHandler<string>(redisStorage)(
     (type: EmailOtpCodeType, email: string, additionalKey?: string) => {
         let key = `emailOtpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
