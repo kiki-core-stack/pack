@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { z } from 'zod';
+import * as z from 'zod';
 
 export * from 'zod';
 
