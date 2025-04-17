@@ -25,7 +25,7 @@ export interface AdminGroupData extends BaseMongooseModelData {
 }
 
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
-    admin: Partial<AdminData>;
+    a: Partial<AdminData>;
     fingerprint?: string;
     ip?: string;
     note?: string;
@@ -46,7 +46,7 @@ export interface AdminPermissionData extends BaseMongooseModelData {
 }
 
 export interface AdminSessionData extends BaseMongooseModelData {
-    admin: Partial<AdminData>;
+    a: Partial<AdminData>;
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;

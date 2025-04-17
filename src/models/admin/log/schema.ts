@@ -15,7 +15,7 @@ import type {
 
 export const adminLogSchema = new Schema<AdminLog, AdminLogModel>(
     {
-        admin: mongooseRefSchemas.admin.required,
+        a: mongooseRefSchemas.admin.required,
         fingerprint: s.string().trim.nonRequired,
         ip: s.string().trim.nonRequired,
         note: s.string().trim.nonRequired,
