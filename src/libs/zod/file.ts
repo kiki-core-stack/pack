@@ -21,8 +21,8 @@ export function file() {
     const zodFile = z
         .instanceof(Blob)
         .superRefine(async (file, ctx) => {
-            detectedMimeType = (await getFileMimeType(file)).toLowerCase();
-            if (!allowedMimeTypes.has(detectedMimeType)) {
+            detectedMimeType = await getFileMimeType(file);
+            if (!detectedMimeType || !allowedMimeTypes.has(detectedMimeType)) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: `Invalid MIME type: ${detectedMimeType}.`,

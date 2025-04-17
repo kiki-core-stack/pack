@@ -1,9 +1,7 @@
-import type { Blob } from 'node:buffer';
+import type { Blob as BufferBlob } from 'node:buffer';
 
-import { WASMagic } from 'wasmagic';
+import { fileTypeFromBlob } from 'file-type';
 
-let wasMagic: undefined | WASMagic;
-
-export async function getFileMimeType(file: Blob) {
-    return (wasMagic ||= await WASMagic.create()).detect(new Uint8Array(await file.slice(0, 2048).arrayBuffer()));
+export async function getFileMimeType(file: Blob | BufferBlob) {
+    return (await fileTypeFromBlob(file as Blob))?.mime.toLowerCase();
 }
