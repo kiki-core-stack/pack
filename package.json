@@ -20,6 +20,10 @@
       "types": "./dist/hono-backend/libs/api/index.d.ts",
       "import": "./dist/hono-backend/libs/api/index.mjs"
     },
+    "./libs/zod": {
+      "types": "./dist/libs/zod/index.d.ts",
+      "import": "./dist/libs/zod/index.mjs"
+    },
     "./models/admin": {
       "types": "./dist/models/admin/index.d.ts",
       "import": "./dist/models/admin/index.mjs"
