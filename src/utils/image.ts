@@ -7,8 +7,12 @@ import type { PathLike } from '@kikiutils/classes/path';
 import sharp from 'sharp';
 import type {
     Sharp,
+    SharpInput,
     SharpOptions,
 } from 'sharp';
+
+declare function sharp(options?: SharpOptions): Sharp;
+declare function sharp(input?: SharpInput | SharpInput[], options?: SharpOptions): Sharp;
 
 export async function convertImage(
     input: Blob | Buffer,
