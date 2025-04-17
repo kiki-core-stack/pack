@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.65.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.2...v0.65.0)
+
+### 🚀 Enhancements
+
+- Allow `createRedisStorage` to accept either an ioredis instance or URI ([584c6f0](https://github.com/kiki-core-stack/pack/commit/584c6f0))
+- Add `FileModel` and related files ([c9a3a6a](https://github.com/kiki-core-stack/pack/commit/c9a3a6a))
+- Add `lruStore` and related files and `fileData` lru key handler ([22f6edf](https://github.com/kiki-core-stack/pack/commit/22f6edf))
+- Add `fileData` key handler to `redisStore` ([5f6254b](https://github.com/kiki-core-stack/pack/commit/5f6254b))
+- Add file operation libs ([bd41ee5](https://github.com/kiki-core-stack/pack/commit/bd41ee5))
+
+### 💅 Refactors
+
+- ⚠️ Replace redisController with redisStore ([bcf499d](https://github.com/kiki-core-stack/pack/commit/bcf499d))
+- Import mongoose schema builders using `* as s` style ([88f1319](https://github.com/kiki-core-stack/pack/commit/88f1319))
+- ⚠️ Move custom Zod validators to src/libs and update structure and import style ([8bb726e](https://github.com/kiki-core-stack/pack/commit/8bb726e))
+- Move redis storage factory and create functions to `src/libs/storage/redis`, keep only instance in `src/storages/redis` ([1d16133](https://github.com/kiki-core-stack/pack/commit/1d16133))
+- ⚠️ Overhaul file storage architecture ([ff4660b](https://github.com/kiki-core-stack/pack/commit/ff4660b))
+- ⚠️ Rename all abbreviated database fields to full names ([dc5a2a0](https://github.com/kiki-core-stack/pack/commit/dc5a2a0))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([c91d194](https://github.com/kiki-core-stack/pack/commit/c91d194))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Replace redisController with redisStore ([bcf499d](https://github.com/kiki-core-stack/pack/commit/bcf499d))
+- ⚠️ Move custom Zod validators to src/libs and update structure and import style ([8bb726e](https://github.com/kiki-core-stack/pack/commit/8bb726e))
+- ⚠️ Overhaul file storage architecture ([ff4660b](https://github.com/kiki-core-stack/pack/commit/ff4660b))
+- ⚠️ Rename all abbreviated database fields to full names ([dc5a2a0](https://github.com/kiki-core-stack/pack/commit/dc5a2a0))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.64.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.1...v0.64.2)
