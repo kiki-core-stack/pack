@@ -20,23 +20,23 @@ const customValueHeader = Buffer.of(
 
 const customValueHeaderLength = 4;
 
-export function createRedisStorage(uri: string) {
-    const redisInstance = new Redis(uri);
+export function createRedisStorage(ioRedisInstanceOrUri: Redis | string) {
+    const instance = ioRedisInstanceOrUri instanceof Redis ? ioRedisInstanceOrUri : new Redis(ioRedisInstanceOrUri);
     return {
-        disconnect: () => redisInstance.disconnect(),
+        disconnect: () => instance.disconnect(),
         async getItem<T>(key: string) {
-            const rawValue = await redisInstance.getBuffer(key);
+            const rawValue = await instance.getBuffer(key);
             return rawValue ? decodeBufferValue(rawValue) as T : null;
         },
-        getItemTtl: (key: string) => redisInstance.ttl(key),
-        hasItem: (key: string) => redisInstance.exists(key),
+        getItemTtl: (key: string) => instance.ttl(key),
+        hasItem: (key: string) => instance.exists(key),
         get instance() {
-            return redisInstance;
+            return instance;
         },
-        removeItem: (key: string) => redisInstance.del(key),
-        setItem: (key: string, value: any) => redisInstance.set(key, encodeValueToBuffer(value)),
+        removeItem: (key: string) => instance.del(key),
+        setItem: (key: string, value: any) => instance.set(key, encodeValueToBuffer(value)),
         setItemWithTtl: (key: string, seconds: number, value: any) => {
-            return redisInstance.setex(key, seconds, encodeValueToBuffer(value));
+            return instance.setex(key, seconds, encodeValueToBuffer(value));
         },
     };
 }
