@@ -1,4 +1,4 @@
-import { string } from '@kikiutils/mongoose/schema-builders';
+import * as s from '@kikiutils/mongoose/schema-builders';
 import { Schema } from 'mongoose';
 
 import { mongooseRefSchemas } from '@/constants/mongoose';
@@ -11,7 +11,7 @@ import type {
 export const adminGroupSchema = new Schema<AdminGroup, AdminGroupModel>({
     createdByAdmin: mongooseRefSchemas.admin.required,
     editedByAdmin: mongooseRefSchemas.admin.nonRequired,
-    name: string().maxlength(16).trim.unique.required,
+    name: s.string().maxlength(16).trim.unique.required,
     permissions: {
         default: () => [],
         required: true,
