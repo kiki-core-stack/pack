@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.65.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.65.0...v0.65.1)
+
+### 💅 Refactors
+
+- Abbreviate database field `admin` to `a` ([ce2fc43](https://github.com/kiki-core-stack/pack/commit/ce2fc43))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.65.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.64.2...v0.65.0)
