@@ -20,10 +20,6 @@
       "types": "./dist/hono-backend/libs/api/index.d.ts",
       "import": "./dist/hono-backend/libs/api/index.mjs"
     },
-    "./libs/storage": {
-      "types": "./dist/libs/storage/index.d.ts",
-      "import": "./dist/libs/storage/index.mjs"
-    },
     "./models/admin": {
       "types": "./dist/models/admin/index.d.ts",
       "import": "./dist/models/admin/index.mjs"
@@ -43,10 +39,6 @@
     "./models/admin/session": {
       "types": "./dist/models/admin/session/index.d.ts",
       "import": "./dist/models/admin/session/index.mjs"
-    },
-    "./storages/redis": {
-      "types": "./dist/storages/redis/index.d.ts",
-      "import": "./dist/storages/redis/index.mjs"
     },
     "./types": {
       "types": "./dist/types/index.d.ts"
@@ -74,8 +66,9 @@
   "devDependencies": {
     "@hono/zod-validator": "^0.4.3",
     "@kikiutils/changelogen": "^0.8.0",
-    "@kikiutils/classes": "^6.0.2",
+    "@kikiutils/classes": "^6.0.3",
     "@kikiutils/eslint-config": "^0.12.2",
+    "@kikiutils/fs-extra": "^4.0.2",
     "@kikiutils/mongoose": "3.1.0",
     "@kikiutils/node": "^8.0.1",
     "@kikiutils/tsconfigs": "^4.1.1",
