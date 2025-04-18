@@ -5,13 +5,13 @@ import type {
     WebpOptions,
 } from 'sharp';
 
-import { uploadFileAndCreateRecord } from '@/libs/file';
+import { uploadFileAndCreateDocument } from '@/libs/file';
 import type { BaseFileStorage } from '@/libs/storages/files/base';
 import { convertImage } from '@/utils/image';
 
 import { throwApiError } from './api';
 
-export async function uploadImageAndCreateRecord(
+export async function uploadImageAndCreateFileDocument(
     imageFile: Blob,
     storage: BaseFileStorage,
     convertImageInputOptions?: SharpOptions,
@@ -29,7 +29,6 @@ export async function uploadImageAndCreateRecord(
 
     const convertedImage = await convertImage(imageFile, convertImageInputOptions, 'webp', convertImageOutputOptions);
     if (!convertedImage) throwApiError(500);
-    const file = await uploadFileAndCreateRecord(convertedImage, storage);
-    if (!file) throwApiError(500);
+    const file = await uploadFileAndCreateDocument(convertedImage, storage).catch(() => throwApiError(500));
     return file;
 }
