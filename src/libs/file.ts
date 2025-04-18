@@ -60,7 +60,10 @@ export function populateMongooseDocumentFileFields<Paths = object>() {
                     // @ts-expect-error Ignore this error.
                     await Promise.all(value.map((id) => getFileDataWithCache(id, onlySelectBaseFields))),
                 );
-            } else document.set(field, await getFileDataWithCache(value));
+            } else {
+                // @ts-expect-error Ignore this error.
+                document.set(field, await getFileDataWithCache(value, onlySelectBaseFields));
+            }
         });
 
         await Promise.all(promises);
