@@ -5,10 +5,11 @@ import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 
 import type { FileStorageProvider } from '@/constants/file';
 
-import type {
-    FileStorageUploadResult,
-    Result,
-} from './types';
+import type { FileStorageUploadResult } from './types';
+
+type Result<T = undefined> =
+  | (T extends undefined ? unknown : { value: T }) & { ok: true }
+  | { error: unknown; ok: false };
 
 export abstract class BaseFileStorage {
     abstract readonly provider: FileStorageProvider;
