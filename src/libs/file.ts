@@ -31,7 +31,7 @@ export async function getFileDataWithCache(id: string | Types.ObjectId, onlySele
     if (data) return data;
     const file = await FileModel.findById(id).lean();
     if (!file) return null;
-    const fileData = onlySelectBaseFields ? pick(file, 'provider', 'path') : file;
+    const fileData = onlySelectBaseFields ? pick(file, 'id', 'path', 'provider') : file;
     // @ts-expect-error Ignore this error.
     lruKeyHandler.setItem(fileData, id);
     // @ts-expect-error Ignore this error.
