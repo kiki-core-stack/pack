@@ -21,7 +21,7 @@ export async function getFileDataWithCache(id: string | Types.ObjectId) {
     if (!file) return null;
     const fileData = omit(file.toJSON() as unknown as FileData, 'createdAt');
     lruStore.fileData.setItem(fileData, id);
-    redisStore.fileData.setItem(fileData, id).catch(() => {});
+    redisStore.fileData.setItemWithTtl(3600, fileData, id).catch(() => {});
     return fileData;
 }
 
@@ -35,7 +35,7 @@ export function populateMongooseDocumentFileFields<Paths = object>() {
         fields = Array.isArray(fields) ? fields : [fields];
         const promises = [...new Set(fields)].map(async (field) => {
             const value = document.get(field);
-            if (!field) return;
+            if (!value) return;
             if (Array.isArray(value)) document.set(field, await Promise.all(value.map(getFileDataWithCache)));
             else document.set(field, await getFileDataWithCache(value));
         });
