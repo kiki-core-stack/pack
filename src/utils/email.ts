@@ -1,7 +1,8 @@
 import { checkAndGetEnvValue } from '@kikiutils/node/env';
 import { createTransport } from 'nodemailer';
+import type { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 
-import type { SendEmailResult } from '@/types/email';
+type SendEmailResult = { error: unknown; ok: false } | { ok: true; value: SentMessageInfo };
 
 const nodemailerTransporter = createTransport({
     host: process.env.MAIL_SERVER_HOST || '127.0.0.1',
@@ -19,22 +20,20 @@ export async function sendEmail(
 ): Promise<SendEmailResult> {
     if (!from) from = checkAndGetEnvValue('SEND_MAIL_FROM');
     try {
-        const sendResult = await nodemailerTransporter.sendMail({
-            bcc: [bccRecipients].flat().join(', '),
-            from,
-            html,
-            subject,
-            to: to ?? process.env.SEND_MAIL_TO,
-        });
-
         return {
-            ...sendResult,
-            success: true,
+            ok: true,
+            value: await nodemailerTransporter.sendMail({
+                bcc: [bccRecipients].flat().join(', '),
+                from,
+                html,
+                subject,
+                to: to ?? process.env.SEND_MAIL_TO,
+            }),
         };
     } catch (error) {
         return {
-            error: error as Error,
-            success: false,
+            error,
+            ok: false,
         };
     }
 }
