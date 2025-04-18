@@ -1,7 +1,6 @@
 import type { Buffer } from 'node:buffer';
 
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
-import { pick } from 'lodash-es';
 import { Types } from 'mongoose';
 
 import { FileModel } from '@/models/file';
@@ -24,14 +23,26 @@ export async function getFileDataWithCache(
 export async function getFileDataWithCache(id: string | Types.ObjectId, onlySelectBaseFields?: boolean) {
     id = id instanceof Types.ObjectId ? id.toHexString() : id;
     const lruKeyHandler = onlySelectBaseFields ? lruStore.baseFileData : lruStore.fileData;
+    const redisKeyHandler = onlySelectBaseFields ? redisStore.baseFileData : redisStore.fileData;
     let data = lruKeyHandler.getItem(id);
     if (data) return data;
-    const redisKeyHandler = onlySelectBaseFields ? redisStore.baseFileData : redisStore.fileData;
     data = await redisKeyHandler.getItem(id);
-    if (data) return data;
-    const file = (await FileModel.findById(id))?.toJSON();
+    if (data) {
+        // @ts-expect-error Ignore this error.
+        lruKeyHandler.setItem(data, id);
+        return data;
+    }
+
+    const file = await FileModel.findById(id).lean();
     if (!file) return null;
-    const fileData = onlySelectBaseFields ? pick(file, 'id', 'path', 'provider') : file;
+    const fileData = onlySelectBaseFields
+        ? {
+            id: file._id.toHexString(),
+            path: file.path,
+            provider: file.provider,
+        }
+        : file;
+
     // @ts-expect-error Ignore this error.
     lruKeyHandler.setItem(fileData, id);
     // @ts-expect-error Ignore this error.
