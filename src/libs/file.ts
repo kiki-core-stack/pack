@@ -45,11 +45,11 @@ export function populateMongooseDocumentFileFields<Paths = object>() {
     };
 }
 
-export async function uploadFileAndCreateRecord(buffer: Buffer, storage: BaseFileStorage) {
+export async function uploadFileAndCreateDocument(buffer: Buffer, storage: BaseFileStorage) {
     const hash = cryptoSha3256(buffer);
     const file = await FileModel.findOne({ hash });
     if (file) return file;
     const uploadResult = await storage.upload(buffer);
-    if (!uploadResult.ok) return;
+    if (!uploadResult.ok) throw uploadResult.error;
     return await FileModel.create(uploadResult.value);
 }
