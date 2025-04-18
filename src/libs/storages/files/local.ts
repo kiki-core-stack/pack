@@ -17,8 +17,7 @@ export class LocalFileStorage extends BaseFileStorage {
 
     constructor(config?: LocalFileStorageConfig) {
         super();
-        const basePath = config?.basePath ?? checkAndGetEnvValue('FILE_STORAGE_LOCAL_BASE_PATH');
-        this.#basePath = Path.resolve(basePath);
+        this.#basePath = Path.resolve(config?.basePath ?? checkAndGetEnvValue('FILE_STORAGE_LOCAL_BASE_PATH'));
         if (!this.#basePath.mkdirpSync()) {
             throw new Error(
                 `Failed to initialize storage directory: "${this.#basePath}".\n`
@@ -53,9 +52,8 @@ export class LocalFileStorage extends BaseFileStorage {
         const hash = this.getFileHash(buffer);
         if (!filePath) filePath = this.buildFilePathFromHash(hash, extension);
         filePath = this.#basePath.join(filePath);
-        const fileDir = filePath.parent;
-        if (!await fileDir.mkdirp({ mode: 0o755 })) {
-            return this.createResult(new Error(`Failed to create directory: "${fileDir}".`));
+        if (!await filePath.parent.mkdirp({ mode: 0o755 })) {
+            return this.createResult(new Error(`Failed to create directory: "${filePath.parent}".`));
         }
 
         if (!await filePath.writeFile(buffer, { mode: 0o644 })) {
