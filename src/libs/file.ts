@@ -29,7 +29,7 @@ export async function getFileDataWithCache(id: string | Types.ObjectId, onlySele
     const redisKeyHandler = onlySelectBaseFields ? redisStore.baseFileData : redisStore.fileData;
     data = await redisKeyHandler.getItem(id);
     if (data) return data;
-    const file = await FileModel.findById(id).lean();
+    const file = (await FileModel.findById(id))?.toJSON();
     if (!file) return null;
     const fileData = onlySelectBaseFields ? pick(file, 'id', 'path', 'provider') : file;
     // @ts-expect-error Ignore this error.
