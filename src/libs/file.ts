@@ -25,7 +25,7 @@ export async function getFileDataWithCache(id: string | Types.ObjectId) {
     return fileData;
 }
 
-export function populateFileFields<Paths = object>() {
+export function populateMongooseDocumentFileFields<Paths = object>() {
     return async function <
         D extends MongooseHydratedDocument<DocType, InstanceMethodsAndOverrides, QueryHelpers>,
         DocType,
