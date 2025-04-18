@@ -4,6 +4,7 @@ import * as z from 'zod';
 import type {
     ZodEffects,
     ZodType,
+    ZodTypeAny,
     ZodTypeDef,
 } from 'zod';
 
@@ -60,51 +61,72 @@ export function file() {
             return new Blob([file], { type: detectedMimeType });
         });
 
-    Object.assign(
-        zodFile,
-        {
+    function decorate(schema: ZodTypeAny): ZodFile {
+        const proxy = new Proxy(
+            schema,
+            {
+                get(target, prop, receiver) {
+                    // eslint-disable-next-line ts/no-use-before-define
+                    if (prop in customMethods) return customMethods[prop as keyof typeof customMethods];
+                    const originalProperty = Reflect.get(target, prop, receiver);
+                    if (typeof originalProperty === 'function') {
+                        return (...args: any[]) => {
+                            const result = originalProperty.apply(target, args);
+                            if (result instanceof z.ZodType) return decorate(result);
+                            return result;
+                        };
+                    }
+
+                    return originalProperty;
+                },
+            },
+        );
+
+        const customMethods = {
             commonImages() {
                 commonImageMimeTypes.forEach((mimeType) => allowedMimeTypes.add(mimeType));
-                return zodFile;
+                return proxy;
             },
             gif() {
                 allowedMimeTypes.add('image/gif');
-                return zodFile;
+                return proxy;
             },
             jpeg() {
                 allowedMimeTypes.add('image/jpeg');
-                return zodFile;
+                return proxy;
             },
             maxSize(bytes: number) {
                 maxBytes = bytes;
-                return zodFile;
+                return proxy;
             },
             maxSizeKb(kb: number) {
                 maxBytes = kb * 1024;
-                return zodFile;
+                return proxy;
             },
             maxSizeMb(mb: number) {
                 maxBytes = mb * 1024 * 1024;
-                return zodFile;
+                return proxy;
             },
             mimeType(mimeType: string) {
                 allowedMimeTypes.add(mimeType.toLowerCase());
-                return zodFile;
+                return proxy;
             },
             mimeTypes(mimeTypes: string[]) {
                 mimeTypes.forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
-                return zodFile;
+                return proxy;
             },
             png() {
                 allowedMimeTypes.add('image/png');
-                return zodFile;
+                return proxy;
             },
             webp() {
                 allowedMimeTypes.add('image/webp');
-                return zodFile;
+                return proxy;
             },
-        },
-    );
+        };
 
-    return zodFile as ZodFile;
+        return proxy as ZodFile;
+    }
+
+    return decorate(zodFile);
 }
