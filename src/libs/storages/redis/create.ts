@@ -29,13 +29,13 @@ export function createRedisStorage(ioRedisInstanceOrUri: Redis | string) {
             return rawValue ? decodeBufferValue(rawValue) as T : null;
         },
         getItemTtl: (key: string) => instance.ttl(key),
-        hasItem: (key: string) => instance.exists(key),
+        hasItem: async (key: string) => await instance.exists(key) === 1,
         get instance() {
             return instance;
         },
         removeItem: (key: string) => instance.del(key),
         setItem: (key: string, value: any) => instance.set(key, encodeValueToBuffer(value)),
-        setItemWithTtl: (key: string, seconds: number, value: any) => {
+        setItemWithTtl(key: string, seconds: number, value: any) {
             return instance.setex(key, seconds, encodeValueToBuffer(value));
         },
     };

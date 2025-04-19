@@ -25,10 +25,6 @@ export class ApiError<D extends object | undefined = undefined, E extends string
     }
 
     get responseData() {
-        return this.toResponseData();
-    }
-
-    toResponseData() {
         return {
             data: this.data,
             errorCode: this.errorCode,
