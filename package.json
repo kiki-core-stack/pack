@@ -79,7 +79,7 @@
     "@kikiutils/fs-extra": "^4.0.2",
     "@kikiutils/mongoose": "3.1.0",
     "@kikiutils/node": "^8.0.1",
-    "@kikiutils/tsconfigs": "^4.1.1",
+    "@kikiutils/tsconfigs": "^5.0.1",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash-es": "^4.17.12",
