@@ -1,1 +1,1 @@
-# @kikiutils/kiki-core-stack-pack
+# @kiki-core-stack/pack
