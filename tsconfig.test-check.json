@@ -1,6 +1,9 @@
 {
   "extends": "@kikiutils/tsconfigs/esnext/es2022.json",
   "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "noEmit": true
   },
   "include": [
