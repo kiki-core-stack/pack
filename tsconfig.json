@@ -6,8 +6,7 @@
     },
     "declaration": true,
     "declarationDir": "./dist",
-    "emitDeclarationOnly": true,
-    "isolatedDeclarations": true
+    "emitDeclarationOnly": true
   },
   "include": ["./src"]
 }
