@@ -1,5 +1,81 @@
 # Changelog
 
+## v0.66.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.65.1...v0.66.0)
+
+### 🚀 Enhancements
+
+- ⚠️ Update Zod and image validators ([c6efe7c](https://github.com/kiki-core-stack/pack/commit/c6efe7c))
+- Add `uploadImageAndCreateRecord` hono-backend libs ([662ce18](https://github.com/kiki-core-stack/pack/commit/662ce18))
+- Add `BaseFileData` type ([f446d1e](https://github.com/kiki-core-stack/pack/commit/f446d1e))
+- Update `getFileDataWithCache` and `populateMongooseDocumentFileFields` ([d60d999](https://github.com/kiki-core-stack/pack/commit/d60d999))
+- Allow `populateMongooseDocumentFileFields`'s `document` param is array ([61190f4](https://github.com/kiki-core-stack/pack/commit/61190f4))
+- Add id field to `BaseFileData` ([6f44c46](https://github.com/kiki-core-stack/pack/commit/6f44c46))
+
+### 🔥 Performance
+
+- Optimize `getFileDataWithCache` ([a300ddc](https://github.com/kiki-core-stack/pack/commit/a300ddc))
+
+### 🩹 Fixes
+
+- Resolve missing Sharp types issue ([d0ccbf0](https://github.com/kiki-core-stack/pack/commit/d0ccbf0))
+- Set ttl when set file data to `redisStore` ([63194ef](https://github.com/kiki-core-stack/pack/commit/63194ef))
+- Preserve types for custom Zod file schema builder after build ([b7599df](https://github.com/kiki-core-stack/pack/commit/b7599df))
+- Use Proxy to retain custom methods after calling native methods on Zod file schema builder ([c65ceb2](https://github.com/kiki-core-stack/pack/commit/c65ceb2))
+- Pass `onlySelectBaseFields` to `getFileDataWithCache` when field is not an array in `populateMongooseDocumentFileFields` ([4bb24da](https://github.com/kiki-core-stack/pack/commit/4bb24da))
+- Correct id field selection when using lean in `getFileDataWithCache` ([3debb1f](https://github.com/kiki-core-stack/pack/commit/3debb1f))
+
+### 💅 Refactors
+
+- Replace `wasmagic` with `file-type` for detecting file mime types ([20ffcab](https://github.com/kiki-core-stack/pack/commit/20ffcab))
+- ⚠️ Rename `populateFileFields` to `populateMongooseDocumentFileFields` ([459ee1a](https://github.com/kiki-core-stack/pack/commit/459ee1a))
+- ⚠️ Remove `saveConvertedImage` utils ([159b2f6](https://github.com/kiki-core-stack/pack/commit/159b2f6))
+- Remove redundant variable declarations in `LocalFileStorage` ([13db9e9](https://github.com/kiki-core-stack/pack/commit/13db9e9))
+- Change `REDIS_URI` to `REDIS_URL` ([4d76cc8](https://github.com/kiki-core-stack/pack/commit/4d76cc8))
+- ⚠️ Rename `uploadFileAndCreateRecord` to `uploadFileAndCreateDocument` and throw error if upload failed ([c4cd3d7](https://github.com/kiki-core-stack/pack/commit/c4cd3d7))
+- ⚠️ Rename `uploadImageAndCreateRecord` to `uploadImageAndCreateFileDocument` ([15822d4](https://github.com/kiki-core-stack/pack/commit/15822d4))
+- ⚠️ Change `sendEmail` return value to Rust-like `Result` structure and move types to `src/utils/email.ts` ([cb65968](https://github.com/kiki-core-stack/pack/commit/cb65968))
+- Move file storage `Result` type to `base.ts` ([a6445ae](https://github.com/kiki-core-stack/pack/commit/a6445ae))
+- Update codebase ([0d9b08e](https://github.com/kiki-core-stack/pack/commit/0d9b08e))
+- Split mongoose-model-statics for on-demand imports ([8943aee](https://github.com/kiki-core-stack/pack/commit/8943aee))
+- Update `src/libs/storages/redis/create.ts` ([3d8180b](https://github.com/kiki-core-stack/pack/commit/3d8180b))
+
+### 🏡 Chore
+
+- Format script ([16ca049](https://github.com/kiki-core-stack/pack/commit/16ca049))
+- Update file permissions after installing or updating dependencies ([d141f76](https://github.com/kiki-core-stack/pack/commit/d141f76))
+- Add `--hideAuthorEmail` flag to bumplog command ([382091b](https://github.com/kiki-core-stack/pack/commit/382091b))
+- Add typecheck command to package.json scripts ([2a1f7e0](https://github.com/kiki-core-stack/pack/commit/2a1f7e0))
+- Upgrade dependencies ([0067d72](https://github.com/kiki-core-stack/pack/commit/0067d72))
+- Rename `jest.config.js` to `jest.config.mjs` ([76371a1](https://github.com/kiki-core-stack/pack/commit/76371a1))
+- Reorder lint, test, and build steps in release command ([b63dcb4](https://github.com/kiki-core-stack/pack/commit/b63dcb4))
+- Disable `isolatedDeclarations` in tsconfig ([8d4e5c6](https://github.com/kiki-core-stack/pack/commit/8d4e5c6))
+- Update `tsconfig.test-check.json` to configure paths ([e6bf61d](https://github.com/kiki-core-stack/pack/commit/e6bf61d))
+- Disable `isolatedDeclarations` in tsconfig ([ed1636f](https://github.com/kiki-core-stack/pack/commit/ed1636f))
+- Upgrade dependencies ([9313985](https://github.com/kiki-core-stack/pack/commit/9313985))
+
+### ✅ Tests
+
+- Add pass test unit ([d7b98bd](https://github.com/kiki-core-stack/pack/commit/d7b98bd))
+
+### 🤖 CI
+
+- Add test github workflow config file ([dd421d1](https://github.com/kiki-core-stack/pack/commit/dd421d1))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Update Zod and image validators ([c6efe7c](https://github.com/kiki-core-stack/pack/commit/c6efe7c))
+- ⚠️ Rename `populateFileFields` to `populateMongooseDocumentFileFields` ([459ee1a](https://github.com/kiki-core-stack/pack/commit/459ee1a))
+- ⚠️ Remove `saveConvertedImage` utils ([159b2f6](https://github.com/kiki-core-stack/pack/commit/159b2f6))
+- ⚠️ Rename `uploadFileAndCreateRecord` to `uploadFileAndCreateDocument` and throw error if upload failed ([c4cd3d7](https://github.com/kiki-core-stack/pack/commit/c4cd3d7))
+- ⚠️ Rename `uploadImageAndCreateRecord` to `uploadImageAndCreateFileDocument` ([15822d4](https://github.com/kiki-core-stack/pack/commit/15822d4))
+- ⚠️ Change `sendEmail` return value to Rust-like `Result` structure and move types to `src/utils/email.ts` ([cb65968](https://github.com/kiki-core-stack/pack/commit/cb65968))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.65.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.65.0...v0.65.1)
