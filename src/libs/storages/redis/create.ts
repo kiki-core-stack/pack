@@ -6,19 +6,19 @@ import {
     serialize,
 } from 'superjson';
 
-enum RedisValueEncodingType {
+enum StorageValueEncodingType {
     Buffer = 0,
     Json = 1,
     String = 2,
 }
 
 const customValueHeader = Buffer.of(
-    0xAB,
-    0x01,
-    0x01,
+    0xE2,
+    0x81,
+    0xA0,
 );
 
-const customValueHeaderLength = 4;
+const customValueHeaderLength = customValueHeader.byteLength + 1;
 
 export function createRedisStorage(ioRedisInstanceOrUri: Redis | string) {
     const instance = ioRedisInstanceOrUri instanceof Redis ? ioRedisInstanceOrUri : new Redis(ioRedisInstanceOrUri);
@@ -26,7 +26,7 @@ export function createRedisStorage(ioRedisInstanceOrUri: Redis | string) {
         disconnect: () => instance.disconnect(),
         async getItem<T>(key: string) {
             const rawValue = await instance.getBuffer(key);
-            return rawValue ? decodeBufferValue(rawValue) as T : null;
+            return rawValue ? decodeStorageValue(rawValue) as T : null;
         },
         getItemTtl: (key: string) => instance.ttl(key),
         hasItem: async (key: string) => await instance.exists(key) === 1,
@@ -34,32 +34,32 @@ export function createRedisStorage(ioRedisInstanceOrUri: Redis | string) {
             return instance;
         },
         removeItem: (key: string) => instance.del(key),
-        setItem: (key: string, value: any) => instance.set(key, encodeValueToBuffer(value)),
+        setItem: (key: string, value: any) => instance.set(key, encodeToStorageValue(value)),
         setItemWithTtl(key: string, seconds: number, value: any) {
-            return instance.setex(key, seconds, encodeValueToBuffer(value));
+            return instance.setex(key, seconds, encodeToStorageValue(value));
         },
     };
 }
 
-function encodeValueToBuffer(value: any) {
-    if (Buffer.isBuffer(value)) return toCustomValue(RedisValueEncodingType.Buffer, value);
-    if (typeof value === 'string') return toCustomValue(RedisValueEncodingType.String, Buffer.from(value));
-    return toCustomValue(RedisValueEncodingType.Json, Buffer.from(JSON.stringify(serialize(value))));
+function encodeToStorageValue(value: any) {
+    if (Buffer.isBuffer(value)) return toCustomValue(StorageValueEncodingType.Buffer, value);
+    if (typeof value === 'string') return toCustomValue(StorageValueEncodingType.String, Buffer.from(value));
+    return toCustomValue(StorageValueEncodingType.Json, Buffer.from(JSON.stringify(serialize(value))));
 }
 
-function decodeBufferValue(buffer: Buffer) {
+function decodeStorageValue(buffer: Buffer) {
     if (!isCustomFormat(buffer)) return buffer;
     const payload = buffer.subarray(customValueHeaderLength);
-    const type = buffer[3];
+    const type = buffer[customValueHeader.byteLength];
     switch (type) {
-        case RedisValueEncodingType.Buffer: return payload;
-        case RedisValueEncodingType.Json:
+        case StorageValueEncodingType.Buffer: return payload;
+        case StorageValueEncodingType.Json:
             try {
                 return deserialize(JSON.parse(payload.toString()));
             } catch {
                 throw new Error('[RedisStorage] Failed to parse JSON payload.');
             }
-        case RedisValueEncodingType.String: return payload.toString();
+        case StorageValueEncodingType.String: return payload.toString();
         default:
             throw new Error(`[RedisStorage] Unknown encoding type: ${type}.`);
     }
@@ -74,7 +74,7 @@ function isCustomFormat(buffer: Buffer) {
     );
 }
 
-function toCustomValue(type: RedisValueEncodingType, payload: Buffer) {
+function toCustomValue(type: StorageValueEncodingType, payload: Buffer) {
     return Buffer.concat([
         customValueHeader,
         Buffer.of(type),
