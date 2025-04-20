@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.66.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.1...v0.66.2)
+
+### 💅 Refactors
+
+- Remove tsc-alias and tsconfig paths configuration, update all related imports ([316e3da](https://github.com/kiki-core-stack/pack/commit/316e3da))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.66.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.0...v0.66.1)

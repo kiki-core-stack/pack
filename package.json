@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.66.1",
+  "version": "0.66.2",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
