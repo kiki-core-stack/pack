@@ -2,11 +2,11 @@ import * as s from '@kikiutils/mongoose/schema-builders';
 import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
 
-import { AdminLogType } from '@/constants/admin';
+import { AdminLogType } from '../../../constants/admin';
 import {
     mongooseRefSchemas,
     schemaTimestampsConfigOnlyCreatedAt,
-} from '@/constants/mongoose';
+} from '../../../constants/mongoose';
 
 import type {
     AdminLog,

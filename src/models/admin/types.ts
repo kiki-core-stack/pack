@@ -1,4 +1,4 @@
-import type { AdminData } from '@/types/data/admin';
+import type { AdminData } from '../../types/data/admin';
 
 export type Admin = BaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;

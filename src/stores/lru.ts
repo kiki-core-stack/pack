@@ -1,9 +1,9 @@
-import { createLruStoreKeyHandler } from '@/libs/storages/lru/factory';
-import { lruStorage } from '@/storages/lru';
+import { createLruStoreKeyHandler } from '../libs/storages/lru/factory';
+import { lruStorage } from '../storages/lru';
 import type {
     BaseFileData,
     FileData,
-} from '@/types/data/file';
+} from '../types/data/file';
 
 export const baseFileData = createLruStoreKeyHandler<BaseFileData>(lruStorage)(
     (id: string) => `baseFileData:${id}`,

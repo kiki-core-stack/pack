@@ -8,7 +8,7 @@ import type {
     ZodTypeDef,
 } from 'zod';
 
-import { getFileMimeType } from '@/utils/file';
+import { getFileMimeType } from '../../utils/file';
 
 interface ZodFile extends ZodEffects<ZodEffects<ZodType<Blob, ZodTypeDef, Blob>, Blob, Blob>, Blob, Blob> {
     commonImages: () => ZodFile;

@@ -1,6 +1,6 @@
 import type { Types } from 'mongoose';
 
-import type { AdminPermissionData } from '@/types/data/admin';
+import type { AdminPermissionData } from '../../../types/data/admin';
 
 export type AdminPermissionDocument = MongooseHydratedDocument<AdminPermission>;
 export type AdminPermissionModel = BaseMongoosePaginateModel<AdminPermission>;

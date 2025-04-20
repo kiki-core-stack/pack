@@ -2,8 +2,8 @@ import * as s from '@kikiutils/mongoose/schema-builders';
 import { getEnumNumberValues } from '@kikiutils/node/enum';
 import { Schema } from 'mongoose';
 
-import { FileStorageProvider } from '@/constants/file';
-import { schemaTimestampsConfigOnlyCreatedAt } from '@/constants/mongoose';
+import { FileStorageProvider } from '../../constants/file';
+import { schemaTimestampsConfigOnlyCreatedAt } from '../../constants/mongoose';
 
 import type {
     File,

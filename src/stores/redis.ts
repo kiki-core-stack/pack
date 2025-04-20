@@ -1,10 +1,10 @@
-import { createRedisStoreKeyHandler } from '@/libs/storages/redis/factory';
-import { redisStorage } from '@/storages/redis';
+import { createRedisStoreKeyHandler } from '../libs/storages/redis/factory';
+import { redisStorage } from '../storages/redis';
 import type {
     BaseFileData,
     FileData,
-} from '@/types/data/file';
-import type { EmailOtpCodeType } from '@/types/otp';
+} from '../types/data/file';
+import type { EmailOtpCodeType } from '../types/otp';
 
 export const baseFileData = createRedisStoreKeyHandler<BaseFileData>(redisStorage)(
     (id: string) => `baseFileData:${id}`,

@@ -5,7 +5,7 @@ import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/node/env';
 
-import { FileStorageProvider } from '@/constants/file';
+import { FileStorageProvider } from '../../../constants/file';
 
 import { BaseFileStorage } from './base';
 import type { LocalFileStorageConfig } from './types';

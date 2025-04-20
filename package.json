@@ -109,7 +109,6 @@
     "superjson": "^2.2.2",
     "ts-jest": "^29.3.2",
     "ts-project-builder": "^5.0.0",
-    "tsc-alias": "^1.8.15",
     "type-fest": "^4.40.0",
     "typescript": "^5.8.3",
     "zod": "^3.24.3"

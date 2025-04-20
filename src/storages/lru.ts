@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
 
-import { createLruStorage } from '@/libs/storages/lru/create';
+import { createLruStorage } from '../libs/storages/lru/create';
 
 const lruCache = new LRUCache<string, object, unknown>({
     allowStale: false,

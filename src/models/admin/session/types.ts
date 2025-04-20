@@ -1,6 +1,6 @@
 import type { Types } from 'mongoose';
 
-import type { AdminSessionData } from '@/types/data/admin';
+import type { AdminSessionData } from '../../../types/data/admin';
 
 export type AdminSessionDocument = MongooseHydratedDocument<AdminSession, AdminSessionMethodsAndOverrides>;
 export type AdminSessionModel = BaseMongoosePaginateModel<AdminSession, AdminSessionMethodsAndOverrides>;

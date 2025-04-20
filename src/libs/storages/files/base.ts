@@ -3,7 +3,7 @@ import type { Buffer } from 'node:buffer';
 import type { PathLike } from '@kikiutils/classes/path';
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 
-import type { FileStorageProvider } from '@/constants/file';
+import type { FileStorageProvider } from '../../../constants/file';
 
 import type { FileStorageUploadResult } from './types';
 

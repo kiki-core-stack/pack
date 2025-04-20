@@ -1,7 +1,7 @@
 import type {
     AdminLogType,
     AdminPermissionMode,
-} from '@/constants/admin';
+} from '../../constants/admin';
 
 export interface AdminChangePasswordData {
     newPassword: string;

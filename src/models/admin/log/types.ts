@@ -1,6 +1,6 @@
 import type { Types } from 'mongoose';
 
-import type { AdminLogData } from '@/types/data/admin';
+import type { AdminLogData } from '../../../types/data/admin';
 
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 export type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;

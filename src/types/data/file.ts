@@ -1,4 +1,4 @@
-import type { FileStorageProvider } from '@/constants/file';
+import type { FileStorageProvider } from '../../constants/file';
 
 export type BaseFileData = Pick<FileData, 'id' | 'path' | 'provider'>;
 

@@ -1,4 +1,4 @@
-import type { ToServer } from '@/constants/socket.io-events';
+import type { ToServer } from '../constants/socket.io-events';
 
 // eslint-disable-next-line ts/no-namespace
 export namespace SocketIoEvents {

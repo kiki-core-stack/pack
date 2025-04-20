@@ -3,13 +3,13 @@ import type { Buffer } from 'node:buffer';
 import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
 import { Types } from 'mongoose';
 
-import { FileModel } from '@/models/file';
-import * as lruStore from '@/stores/lru';
-import * as redisStore from '@/stores/redis';
+import { FileModel } from '../models/file';
+import * as lruStore from '../stores/lru';
+import * as redisStore from '../stores/redis';
 import type {
     BaseFileData,
     FileData,
-} from '@/types/data/file';
+} from '../types/data/file';
 
 import type { BaseFileStorage } from './storages/files/base';
 
