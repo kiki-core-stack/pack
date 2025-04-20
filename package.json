@@ -65,7 +65,7 @@
     "./dist"
   ],
   "scripts": {
-    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules",
+    "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node --experimental-strip-types ./update-package-exports.ts",
     "bumplog": "changelogen --bump --hideAuthorEmail",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
