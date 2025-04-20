@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.66.0",
+  "version": "0.66.1",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
@@ -22,6 +22,10 @@
     "./hono-backend/libs/api": {
       "types": "./dist/hono-backend/libs/api/index.d.ts",
       "import": "./dist/hono-backend/libs/api/index.mjs"
+    },
+    "./hono-backend/setups/mongoose-model-statics": {
+      "types": "./dist/hono-backend/setups/mongoose-model-statics/index.d.ts",
+      "import": "./dist/hono-backend/setups/mongoose-model-statics/index.mjs"
     },
     "./libs/zod": {
       "types": "./dist/libs/zod/index.d.ts",

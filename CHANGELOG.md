@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.66.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.0...v0.66.1)
+
+### 🩹 Fixes
+
+- Run `update-package-exports` after build and convert `update-package-exports` to TypeScript ([c2343f1](https://github.com/kiki-core-stack/pack/commit/c2343f1))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.66.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.65.1...v0.66.0)
