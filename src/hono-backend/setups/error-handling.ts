@@ -9,9 +9,9 @@ import {
     ZodIssueCode,
 } from 'zod';
 
-import { defaultApiErrors } from '../constants/api';
 import { ApiError } from '../libs/api/error';
 
+const badRequestError = new ApiError(400);
 const isDebugMode = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
 const mongodbErrorCodeToHttpStatusCodeMap: ReadonlyRecord<string, ContentfulStatusCode> = {
     2: 400, // BadValue -> Bad Request
@@ -39,10 +39,13 @@ const mongodbErrorCodeToHttpStatusCodeMap: ReadonlyRecord<string, ContentfulStat
     16755: 400, // Location16755 -> Bad Request
 };
 
+const notFoundError = new ApiError(404);
+const payloadTooLargeError = new ApiError(413);
+
 // TODO: Use string perf for response
 export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...args: any[]) => any }) {
     const apiErrorToResponse = (ctx: Context, error: ApiError) => ctx.json(error.responseData, error.statusCode);
-    honoApp.notFound((ctx) => apiErrorToResponse(ctx, defaultApiErrors.notFound));
+    honoApp.notFound((ctx) => apiErrorToResponse(ctx, notFoundError));
     honoApp.onError((error, ctx) => {
         if (error instanceof ApiError) {
             if (isDebugMode) logger.error(error);
@@ -56,8 +59,8 @@ export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...ar
                 && issue.params?.reason === 'file_too_large',
             );
 
-            if (isPayloadTooLarge) return apiErrorToResponse(ctx, defaultApiErrors.payloadTooLarge);
-            return apiErrorToResponse(ctx, defaultApiErrors.badRequest);
+            if (isPayloadTooLarge) return apiErrorToResponse(ctx, payloadTooLargeError);
+            return apiErrorToResponse(ctx, badRequestError);
         }
 
         logger.error(error);
