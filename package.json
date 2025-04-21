@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.66.2",
+  "version": "0.66.3",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
@@ -84,7 +84,7 @@
     "@hono/zod-validator": "^0.4.3",
     "@kikiutils/changelogen": "^0.8.0",
     "@kikiutils/classes": "^6.0.3",
-    "@kikiutils/eslint-config": "^0.12.2",
+    "@kikiutils/eslint-config": "^0.12.3",
     "@kikiutils/fs-extra": "^4.0.2",
     "@kikiutils/mongoose": "3.1.0",
     "@kikiutils/node": "^8.0.1",

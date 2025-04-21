@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.66.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.2...v0.66.3)
+
+### 💅 Refactors
+
+- Update hono-backend error handling ([e39b920](https://github.com/kiki-core-stack/pack/commit/e39b920))
+- Remove `defaultApiErrors` to ensure error sources can be properly traced ([7c1820e](https://github.com/kiki-core-stack/pack/commit/7c1820e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.66.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.1...v0.66.2)
