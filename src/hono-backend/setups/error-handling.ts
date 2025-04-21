@@ -12,6 +12,7 @@ import {
 import { defaultApiErrors } from '../constants/api';
 import { ApiError } from '../libs/api/error';
 
+const isDebugMode = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
 const mongodbErrorCodeToHttpStatusCodeMap: ReadonlyRecord<string, ContentfulStatusCode> = {
     2: 400, // BadValue -> Bad Request
     4: 404, // NoSuchKey -> Not Found
@@ -43,9 +44,13 @@ export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...ar
     const apiErrorToResponse = (ctx: Context, error: ApiError) => ctx.json(error.responseData, error.statusCode);
     honoApp.notFound((ctx) => apiErrorToResponse(ctx, defaultApiErrors.notFound));
     honoApp.onError((error, ctx) => {
-        if (error instanceof ApiError) return apiErrorToResponse(ctx, error);
-        logger.error(error);
+        if (error instanceof ApiError) {
+            if (isDebugMode) logger.error(error);
+            return apiErrorToResponse(ctx, error);
+        }
+
         if (error instanceof ZodError) {
+            if (isDebugMode) logger.error(error);
             const isPayloadTooLarge = error.issues.some((issue) =>
                 issue.code === ZodIssueCode.custom
                 && issue.params?.reason === 'file_too_large',
@@ -55,6 +60,7 @@ export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...ar
             return apiErrorToResponse(ctx, defaultApiErrors.badRequest);
         }
 
+        logger.error(error);
         let statusCode: ContentfulStatusCode = 500;
         if (error instanceof MongoServerError && error.code) {
             statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
