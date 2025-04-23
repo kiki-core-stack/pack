@@ -7,7 +7,6 @@ import { AdminModel } from '../src/models/admin';
     const admin = await AdminModel.create({
         account: 'account',
         enabled: true,
-        name: 'name',
         password: cryptoSha3512('password'),
     });
 

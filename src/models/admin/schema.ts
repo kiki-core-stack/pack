@@ -12,7 +12,6 @@ export const adminSchema = new Schema<Admin, AdminModel, AdminMethodsAndOverride
     account: s.string().maxlength(16).trim.unique.required,
     email: s.string().lowercase.trim.nonRequired,
     enabled: s.boolean().default(false).required,
-    name: s.string().maxlength(16).trim.required,
     password: {
         ...s.string().length(64).private.required,
         set: (password: string) => cryptoSha3256(password),

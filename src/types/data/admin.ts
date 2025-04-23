@@ -12,7 +12,6 @@ export interface AdminData extends BaseMongooseModelData {
     account: string;
     email?: string;
     enabled: boolean;
-    name: string;
     password?: string;
 }
 
