@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.67.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.3...v0.67.0)
+
+### 💅 Refactors
+
+- ⚠️ Remove name field from admin ([e9dba9f](https://github.com/kiki-core-stack/pack/commit/e9dba9f))
+
+### 🏡 Chore
+
+- Update `modify-files-permissions.sh` ([89f72e3](https://github.com/kiki-core-stack/pack/commit/89f72e3))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove name field from admin ([e9dba9f](https://github.com/kiki-core-stack/pack/commit/e9dba9f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.66.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.2...v0.66.3)
