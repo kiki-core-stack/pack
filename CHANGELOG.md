@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.68.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.67.0...v0.68.0)
+
+### 💅 Refactors
+
+- ⚠️ Update storage related files ([ed89cb3](https://github.com/kiki-core-stack/pack/commit/ed89cb3))
+
+### 📖 Documentation
+
+- Update README badges urls ([499bc71](https://github.com/kiki-core-stack/pack/commit/499bc71))
+- Replace `%2F` with `/` in badge URLs in README ([4aaf916](https://github.com/kiki-core-stack/pack/commit/4aaf916))
+
+### 🏡 Chore
+
+- Add option to `upgrade-dependencies.sh` to clean `node_modules` and `pnpm-lock.yaml` before upgrading ([e542b14](https://github.com/kiki-core-stack/pack/commit/e542b14))
+- Upgrade dependencies ([d3ee5a7](https://github.com/kiki-core-stack/pack/commit/d3ee5a7))
+- Ensure all scripts change to their own directory before execution ([9be5fbf](https://github.com/kiki-core-stack/pack/commit/9be5fbf))
+- Update ignore files ([c81c294](https://github.com/kiki-core-stack/pack/commit/c81c294))
+- Upgrade dependencies ([0c5c536](https://github.com/kiki-core-stack/pack/commit/0c5c536))
+- Replace `@kikiutils/node` with `@kikiutils/shared` ([18e5cdb](https://github.com/kiki-core-stack/pack/commit/18e5cdb))
+- ⚠️ Remove `api-requests.ts` ([47c1d48](https://github.com/kiki-core-stack/pack/commit/47c1d48))
+- Tidy up dependencies ([f377a88](https://github.com/kiki-core-stack/pack/commit/f377a88))
+- Clean up error messages in `LocalFileStorage` ([3e5d41d](https://github.com/kiki-core-stack/pack/commit/3e5d41d))
+
+### 🤖 CI
+
+- Update test workflow ([1519e46](https://github.com/kiki-core-stack/pack/commit/1519e46))
+- Update condition for uploading to Codecov in workflow job ([39851ac](https://github.com/kiki-core-stack/pack/commit/39851ac))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Update storage related files ([ed89cb3](https://github.com/kiki-core-stack/pack/commit/ed89cb3))
+- ⚠️ Remove `api-requests.ts` ([47c1d48](https://github.com/kiki-core-stack/pack/commit/47c1d48))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.67.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.66.3...v0.67.0)
