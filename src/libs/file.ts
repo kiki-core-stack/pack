@@ -4,8 +4,8 @@ import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import { Types } from 'mongoose';
 
 import { FileModel } from '../models/file';
+import * as enhancedRedisStore from '../stores/enhanced/redis';
 import * as lruStore from '../stores/lru';
-import * as redisStore from '../stores/redis';
 import type {
     BaseFileData,
     FileData,
@@ -22,14 +22,13 @@ export async function getFileDataWithCache(
 ): Promise<Nullable<FileData>>;
 export async function getFileDataWithCache(id: string | Types.ObjectId, onlySelectBaseFields?: boolean) {
     id = id instanceof Types.ObjectId ? id.toHexString() : id;
-    const lruKeyHandler = onlySelectBaseFields ? lruStore.baseFileData : lruStore.fileData;
-    const redisKeyHandler = onlySelectBaseFields ? redisStore.baseFileData : redisStore.fileData;
-    let data = lruKeyHandler.getItem(id);
+    const lruKeyStore = onlySelectBaseFields ? lruStore.baseFileData : lruStore.fileData;
+    const redisKeyStore = onlySelectBaseFields ? enhancedRedisStore.baseFileData : enhancedRedisStore.fileData;
+    let data = lruKeyStore.getItem(id);
     if (data) return data;
-    data = await redisKeyHandler.getItem(id);
+    data = await redisKeyStore.getItem(id);
     if (data) {
-        // @ts-expect-error Ignore this error.
-        lruKeyHandler.setItem(data, id);
+        lruKeyStore.setItem(data, id);
         return data;
     }
 
@@ -44,9 +43,9 @@ export async function getFileDataWithCache(id: string | Types.ObjectId, onlySele
         : file;
 
     // @ts-expect-error Ignore this error.
-    lruKeyHandler.setItem(fileData, id);
+    lruKeyStore.setItem(fileData, id);
     // @ts-expect-error Ignore this error.
-    redisKeyHandler.setItemWithTtl(3600, fileData, id).catch(() => {});
+    redisKeyStore.setItemWithTtl(3600, fileData, id).catch(() => {});
     return fileData;
 }
 
