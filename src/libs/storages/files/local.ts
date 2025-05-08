@@ -3,7 +3,7 @@ import { access } from 'node:fs/promises';
 
 import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
-import { checkAndGetEnvValue } from '@kikiutils/node/env';
+import { checkAndGetEnvValue } from '@kikiutils/shared/env';
 
 import { FileStorageProvider } from '../../../constants/file';
 

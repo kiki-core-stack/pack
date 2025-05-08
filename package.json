@@ -87,7 +87,7 @@
     "@kikiutils/eslint-config": "^1.0.2",
     "@kikiutils/fs-extra": "^4.0.2",
     "@kikiutils/mongoose": "3.1.0",
-    "@kikiutils/node": "^8.0.2",
+    "@kikiutils/shared": "^10.0.0",
     "@kikiutils/tsconfigs": "^5.0.1",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",

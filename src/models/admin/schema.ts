@@ -1,5 +1,5 @@
 import * as s from '@kikiutils/mongoose/schema-builders';
-import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
+import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import { Schema } from 'mongoose';
 
 import type {

@@ -1,5 +1,5 @@
 import * as s from '@kikiutils/mongoose/schema-builders';
-import { getEnumNumberValues } from '@kikiutils/node/enum';
+import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
 import { FileStorageProvider } from '../../constants/file';

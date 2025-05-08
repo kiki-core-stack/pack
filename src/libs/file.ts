@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer';
 
-import { cryptoSha3256 } from '@kikiutils/node/crypto-hash';
+import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import { Types } from 'mongoose';
 
 import { FileModel } from '../models/file';

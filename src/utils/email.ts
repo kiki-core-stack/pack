@@ -1,4 +1,4 @@
-import { checkAndGetEnvValue } from '@kikiutils/node/env';
+import { checkAndGetEnvValue } from '@kikiutils/shared/env';
 import { createTransport } from 'nodemailer';
 import type { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 
