@@ -71,8 +71,8 @@
   "scripts": {
     "build": "ts-project-builder './src/**/*.ts' -f esm --clean --preserve-modules && node --experimental-strip-types ./update-package-exports.ts",
     "bumplog": "changelogen --bump --hideAuthorEmail",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
+    "lint": "eslint --max-warnings 0",
+    "lint:fix": "eslint --fix --max-warnings 0",
     "release": "pnpm run lint && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && sh ./build-and-publish.sh",
     "test": "tsc -p ./tsconfig.test-check.json && jest --coverage",
     "typecheck": "tsc --noEmit"
