@@ -6,5 +6,8 @@ import type {
     FileData,
 } from '../types/data/file';
 
-export const baseFileData = createKeyedLruStore<BaseFileData>(lruCache)((id: string) => `baseFileData:${id}`);
-export const fileData = createKeyedLruStore<FileData>(lruCache)((id: string) => `fileData:${id}`);
+export const baseFileData = /* @__PURE__ */ createKeyedLruStore<BaseFileData>(lruCache)(
+    (id: string) => `baseFileData:${id}`,
+);
+
+export const fileData = /* @__PURE__ */ createKeyedLruStore<FileData>(lruCache)((id: string) => `fileData:${id}`);
