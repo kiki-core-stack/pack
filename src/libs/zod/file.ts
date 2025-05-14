@@ -52,7 +52,7 @@ export function file() {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: `File size must be less than ${maxBytes} bytes.`,
-                    params: { reason: 'file_too_large' },
+                    params: { reason: 'fileTooLarge' },
                 });
             }
         })

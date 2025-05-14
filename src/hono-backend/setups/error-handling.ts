@@ -54,10 +54,9 @@ export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...ar
 
         if (error instanceof ZodError) {
             if (isDebugMode) logger.error(error);
-            const isPayloadTooLarge = error.issues.some((issue) =>
-                issue.code === ZodIssueCode.custom
-                && issue.params?.reason === 'file_too_large',
-            );
+            const isPayloadTooLarge = error.issues.some((issue) => {
+                return issue.code === ZodIssueCode.custom && issue.params?.reason === 'fileTooLarge';
+            });
 
             if (isPayloadTooLarge) return apiErrorToResponse(ctx, payloadTooLargeError);
             return apiErrorToResponse(ctx, badRequestError);
