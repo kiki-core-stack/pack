@@ -35,22 +35,6 @@
       "types": "./dist/models/admin/index.d.ts",
       "import": "./dist/models/admin/index.mjs"
     },
-    "./models/admin/group": {
-      "types": "./dist/models/admin/group/index.d.ts",
-      "import": "./dist/models/admin/group/index.mjs"
-    },
-    "./models/admin/log": {
-      "types": "./dist/models/admin/log/index.d.ts",
-      "import": "./dist/models/admin/log/index.mjs"
-    },
-    "./models/admin/permission": {
-      "types": "./dist/models/admin/permission/index.d.ts",
-      "import": "./dist/models/admin/permission/index.mjs"
-    },
-    "./models/admin/session": {
-      "types": "./dist/models/admin/session/index.d.ts",
-      "import": "./dist/models/admin/session/index.mjs"
-    },
     "./models/file": {
       "types": "./dist/models/file/index.d.ts",
       "import": "./dist/models/file/index.mjs"
