@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.69.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.68.0...v0.69.0)
+
+### 🚀 Enhancements
+
+- Add `transform` to `objectId` and `objectIdOrEmptyString` Zod schema builder to convert to `ObjectId` ([794ed37](https://github.com/kiki-core-stack/pack/commit/794ed37))
+
+### 💅 Refactors
+
+- Rename `file_too_large` to `fileTooLarge` ([3ebdb68](https://github.com/kiki-core-stack/pack/commit/3ebdb68))
+- ⚠️ Merge previously split `models` files and remove `adminGroup` and `adminPermission` models ([bf2a1c5](https://github.com/kiki-core-stack/pack/commit/bf2a1c5))
+- Remove unnecessary exports ([7e3a942](https://github.com/kiki-core-stack/pack/commit/7e3a942))
+
+### 🏡 Chore
+
+- **scripts:** Ensure all scripts `cd` to their current directory correctly ([5362c3b](https://github.com/kiki-core-stack/pack/commit/5362c3b))
+- Set `--max-warnings=0` for `lint` and `lint:fix` ([bffe476](https://github.com/kiki-core-stack/pack/commit/bffe476))
+- Update example env file ([ae86308](https://github.com/kiki-core-stack/pack/commit/ae86308))
+- Add `/* @__PURE__ */` annotation to each keyed store in stores ([251a868](https://github.com/kiki-core-stack/pack/commit/251a868))
+- Add `/* @__PURE__ */` annotation to each export in `socket.io-events` constants file ([7a8196c](https://github.com/kiki-core-stack/pack/commit/7a8196c))
+- Update `objectId` and `objectIdOrEmptyString` Zod schema refine messages to include periods ([31d0af8](https://github.com/kiki-core-stack/pack/commit/31d0af8))
+- Set eslint config to enable `lib` mode ([59e03e4](https://github.com/kiki-core-stack/pack/commit/59e03e4))
+- Disable `ts/explicit-function-return-type` eslint rule ([5190f6b](https://github.com/kiki-core-stack/pack/commit/5190f6b))
+- Lint code ([f8f0974](https://github.com/kiki-core-stack/pack/commit/f8f0974))
+- **test:** Migrate from `jest` to `vitest` ([9a9d869](https://github.com/kiki-core-stack/pack/commit/9a9d869))
+- Split `tsconfig` and create build-specific config for production builds ([564b6d2](https://github.com/kiki-core-stack/pack/commit/564b6d2))
+- **vitest:** Configure coverage to collect files only under `src/` ([e2c7f65](https://github.com/kiki-core-stack/pack/commit/e2c7f65))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Merge previously split `models` files and remove `adminGroup` and `adminPermission` models ([bf2a1c5](https://github.com/kiki-core-stack/pack/commit/bf2a1c5))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.68.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.67.0...v0.68.0)
