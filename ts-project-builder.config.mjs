@@ -25,5 +25,8 @@ function cleanEmptyMjsFiles() {
 
 export default defineConfig({
     additionalInputPlugins: { afterBuiltIns: [cleanEmptyMjsFiles()] },
-    builtInInputPluginOptions: { nodeExternal: { devDeps: true } },
+    builtInInputPluginOptions: {
+        nodeExternal: { devDeps: true },
+        typescript: { tsconfig: './tsconfig.build.json' },
+    },
 });
