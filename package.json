@@ -35,10 +35,6 @@
       "types": "./dist/models/admin/index.d.ts",
       "import": "./dist/models/admin/index.mjs"
     },
-    "./models/file": {
-      "types": "./dist/models/file/index.d.ts",
-      "import": "./dist/models/file/index.mjs"
-    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.mjs"
