@@ -49,47 +49,6 @@ export async function getFileDataWithCache(id: string | Types.ObjectId, onlySele
     return fileData;
 }
 
-export function populateMongooseDocumentFileFields<Paths = object>() {
-    return async function <
-        D extends
-        | MongooseHydratedDocument<DocType, InstanceMethodsAndOverrides, QueryHelpers>
-        | MongooseHydratedDocument<DocType, InstanceMethodsAndOverrides, QueryHelpers>[],
-        DocType,
-        InstanceMethodsAndOverrides,
-        QueryHelpers,
-    >(
-        document: D,
-        fields: Arrayable<string>,
-        onlySelectBaseFields: boolean = true,
-    ): Promise<D extends any[] ? (Omit<D[number], keyof Paths> & Paths)[] : (Omit<D, keyof Paths> & Paths)> {
-        fields = Array.isArray(fields) ? fields : [fields];
-        const documents = Array.isArray(document) ? document : [document];
-        const documentPromises = documents.map(async (document) => {
-            const promises = [...new Set(fields)].map(async (field) => {
-                const value = document.get(field);
-                if (!value) return;
-                if (Array.isArray(value)) {
-                    document.set(
-                        field,
-                        // @ts-expect-error Ignore this error.
-                        await Promise.all(value.map((id) => getFileDataWithCache(id, onlySelectBaseFields))),
-                    );
-                } else {
-                    // @ts-expect-error Ignore this error.
-                    document.set(field, await getFileDataWithCache(value, onlySelectBaseFields));
-                }
-            });
-
-            await Promise.all(promises);
-            return document;
-        });
-
-        const results = await Promise.all(documentPromises);
-        // @ts-expect-error Ignore this error.
-        return Array.isArray(document) ? results : results[0];
-    };
-}
-
 export async function uploadFileAndCreateDocument(buffer: Buffer, storage: BaseFileStorage) {
     const hash = cryptoSha3256(buffer);
     const file = await FileModel.findOne({ hash });
