@@ -88,6 +88,7 @@ schema.pre(
 schema.post(
     'findOne',
     async function (result) {
+        if (!result) return;
         if (!isEligibleIdQueryWithoutProjection(this, 'single')) return;
 
         const fileDocumentData = result.toObject();
