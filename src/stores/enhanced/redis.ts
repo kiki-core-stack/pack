@@ -13,5 +13,9 @@ export const emailOtpCode = /* @__PURE__ */ createKeyedEnhancedRedisStore<string
 );
 
 export const fileDocumentData = /* @__PURE__ */ createKeyedEnhancedRedisStore<FileDocumentData>(enhancedRedisStorage)(
-    (id: string) => `fileDocumentData:${id}`,
+    (id: string, additionalKey?: string) => {
+        let key = `fileDocumentData:${id}`;
+        if (additionalKey) key += `:${additionalKey}`;
+        return key;
+    },
 );

@@ -5,7 +5,10 @@ import {
     Schema,
     Types,
 } from 'mongoose';
-import type { Query } from 'mongoose';
+import type {
+    ProjectionFields,
+    Query,
+} from 'mongoose';
 
 import { FileStorageProvider } from '../constants/file';
 import { schemaTimestampsConfigOnlyCreatedAt } from '../constants/mongoose';
@@ -26,12 +29,9 @@ const schema = new Schema<File, FileModel>(
     { timestamps: schemaTimestampsConfigOnlyCreatedAt },
 );
 
-function isEligibleIdQueryWithoutProjection(query: Query<any, any>, mode: 'in' | 'single') {
+function isEligibleIdQuery(query: Query<any, any>, mode: 'in' | 'single') {
     const filter = query.getFilter();
     if (Object.keys(filter).length !== 1 || !filter._id) return false;
-    const projection = query.projection();
-    if (projection && Object.keys(projection).length > 0) return false;
-
     if (mode === 'single') return typeof filter._id === 'string' || filter._id instanceof Types.ObjectId;
     return (
         typeof filter._id === 'object'
@@ -40,19 +40,26 @@ function isEligibleIdQueryWithoutProjection(query: Query<any, any>, mode: 'in' |
     );
 }
 
+function serializeProjection(projection?: ProjectionFields<any>) {
+    if (!projection || !Object.keys(projection).length) return;
+    return Object.entries(projection).map(([key, value]) => `${key}:${value}`).sort().join(',');
+}
+
 // find
 schema.post(
     'find',
     async function (result) {
         if (this._mongooseOptions.isFromCache) return;
-        if (!isEligibleIdQueryWithoutProjection(this, 'in')) return;
+        if (!isEligibleIdQuery(this, 'in')) return;
+
+        const projectionKey = serializeProjection(this.projection());
 
         await Promise.all(
             result.map(async (document: any) => {
                 const fileDocumentData = document.toObject();
                 const id = document._id.toHexString();
-                lruStore.fileDocumentData.setItem(fileDocumentData, id);
-                await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id);
+                lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
+                await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
             }),
         );
     },
@@ -62,7 +69,9 @@ schema.pre(
     'find',
     async function () {
         const filter = this.getFilter();
-        if (!isEligibleIdQueryWithoutProjection(this, 'in')) return;
+        if (!isEligibleIdQuery(this, 'in')) return;
+
+        const projectionKey = serializeProjection(this.projection());
 
         const ids = (filter._id.$in as (string | Types.ObjectId)[]).map((id) => {
             if (id instanceof Types.ObjectId) return id.toHexString();
@@ -70,7 +79,12 @@ schema.pre(
         });
 
         const allFileDocumentData = await Promise.all(
-            ids.map((id) => lruStore.fileDocumentData.getItem(id) || enhancedRedisStore.fileDocumentData.getItem(id)),
+            ids.map((id) => {
+                return (
+                    lruStore.fileDocumentData.getItem(id, projectionKey)
+                    || enhancedRedisStore.fileDocumentData.getItem(id, projectionKey)
+                );
+            }),
         );
 
         if (!allFileDocumentData.includes(null)) {
@@ -89,12 +103,14 @@ schema.post(
     'findOne',
     async function (result) {
         if (!result) return;
-        if (!isEligibleIdQueryWithoutProjection(this, 'single')) return;
+        if (!isEligibleIdQuery(this, 'single')) return;
+
+        const projectionKey = serializeProjection(this.projection());
 
         const fileDocumentData = result.toObject();
         const id = result._id.toHexString();
-        lruStore.fileDocumentData.setItem(fileDocumentData, id);
-        await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id);
+        lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
+        await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
     },
 );
 
@@ -102,11 +118,13 @@ schema.pre(
     'findOne',
     async function () {
         const filter = this.getFilter();
-        if (!isEligibleIdQueryWithoutProjection(this, 'single')) return;
+        if (!isEligibleIdQuery(this, 'single')) return;
+
+        const projectionKey = serializeProjection(this.projection());
 
         const id = filter._id;
-        let fileDocumentData = lruStore.fileDocumentData.getItem(id);
-        if (!fileDocumentData) fileDocumentData = await enhancedRedisStore.fileDocumentData.getItem(id);
+        let fileDocumentData = lruStore.fileDocumentData.getItem(id, projectionKey);
+        if (!fileDocumentData) fileDocumentData = await enhancedRedisStore.fileDocumentData.getItem(id, projectionKey);
         if (fileDocumentData) {
             this._mongooseOptions.isFromCache = true;
             const model = this.model;
