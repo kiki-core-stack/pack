@@ -12,7 +12,8 @@
     "./dist/hono-backend/setups/mongoose-model-statics/assert-update-one-by-route-id.mjs",
     "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error.mjs",
     "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id.mjs",
-    "./dist/hono-backend/setups/mongoose-model-statics/index.mjs"
+    "./dist/hono-backend/setups/mongoose-model-statics/index.mjs",
+    "./dist/models/file.mjs"
   ],
   "exports": {
     "./*": {
