@@ -7,3 +7,8 @@ export interface FileData extends BaseMongooseModelData<true, false> {
     path: string;
     provider: FileStorageProvider;
 }
+
+export interface FileDocumentData extends Except<FileData, 'id'> {
+    __v: number;
+    _id: string;
+}
