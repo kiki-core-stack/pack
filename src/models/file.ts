@@ -2,6 +2,7 @@ import * as s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import {
+    Document,
     Schema,
     Types,
 } from 'mongoose';
@@ -55,9 +56,10 @@ schema.post(
         const projectionKey = serializeProjection(this.projection());
 
         await Promise.all(
-            result.map(async (document: any) => {
-                const fileDocumentData = document.toObject();
-                const id = document._id.toHexString();
+            result.map(async (value: any) => {
+                if (!(value instanceof Document)) return;
+                const fileDocumentData = value.toObject();
+                const id = value._id.toHexString();
                 lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
                 await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
             }),
@@ -102,7 +104,7 @@ schema.pre(
 schema.post(
     'findOne',
     async function (result) {
-        if (!result) return;
+        if (!(result instanceof Document)) return;
         if (!isEligibleIdQuery(this, 'single')) return;
 
         const projectionKey = serializeProjection(this.projection());
