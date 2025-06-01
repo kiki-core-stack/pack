@@ -14,13 +14,13 @@ import type { AdminLogData } from '../../types/data/admin';
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 
-export interface AdminLog extends BaseMongooseDocType<Except<AdminLogData, 'a'>, true, false> {
-    a: Types.ObjectId;
+export interface AdminLog extends BaseMongooseDocType<Except<AdminLogData, 'admin'>, true, false> {
+    admin: Types.ObjectId;
 }
 
 const schema = new Schema<AdminLog, AdminLogModel>(
     {
-        a: mongooseRefSchemas.admin.required,
+        admin: mongooseRefSchemas.admin.required,
         fingerprint: s.string().trim.nonRequired,
         ip: s.string().trim.nonRequired,
         note: s.string().trim.nonRequired,

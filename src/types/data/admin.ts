@@ -13,7 +13,7 @@ export interface AdminData extends BaseMongooseModelData {
 }
 
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
-    a: Partial<AdminData>;
+    admin: Partial<AdminData>;
     fingerprint?: string;
     ip?: string;
     note?: string;
@@ -27,7 +27,7 @@ export interface AdminLoginFormData {
 }
 
 export interface AdminSessionData extends BaseMongooseModelData {
-    a: Partial<AdminData>;
+    admin: Partial<AdminData>;
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;
