@@ -1,5 +1,57 @@
 # Changelog
 
+## v0.70.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.69.0...v0.70.0)
+
+### 🚀 Enhancements
+
+- Add caching for `FileModel.find` and extract shared logic from `find` and `findOne` middleware into a reusable function ([c2ddd4e](https://github.com/kiki-core-stack/pack/commit/c2ddd4e))
+- Enhance `FileModel` caching to support projections ([ff2d954](https://github.com/kiki-core-stack/pack/commit/ff2d954))
+- Add `strictIsoDateString` zod schema builder ([3c87caf](https://github.com/kiki-core-stack/pack/commit/3c87caf))
+- Add `strictIsoDate` zod schema builder ([930850c](https://github.com/kiki-core-stack/pack/commit/930850c))
+
+### 🩹 Fixes
+
+- Add null check for `result` in `FileModel.findOne` post middleware ([774631f](https://github.com/kiki-core-stack/pack/commit/774631f))
+- Correct `result` check in `FileModel` post middleware ([9cc6070](https://github.com/kiki-core-stack/pack/commit/9cc6070))
+
+### 💅 Refactors
+
+- ⚠️ Remove `populateMongooseDocumentFileFields` ([17a59a8](https://github.com/kiki-core-stack/pack/commit/17a59a8))
+- Merge `file` model files ([45d5dfc](https://github.com/kiki-core-stack/pack/commit/45d5dfc))
+- ⚠️ Update file data caching strategy ([a5a5925](https://github.com/kiki-core-stack/pack/commit/a5a5925))
+- Remove `id` field from `BaseFileData` type ([930cccc](https://github.com/kiki-core-stack/pack/commit/930cccc))
+- ⚠️ Rename abbreviated database field names to full descriptive names ([fca6237](https://github.com/kiki-core-stack/pack/commit/fca6237))
+
+### 🏡 Chore
+
+- Modify `build-and-publish.sh` script ([24c5d50](https://github.com/kiki-core-stack/pack/commit/24c5d50))
+- Lint code ([64b7cda](https://github.com/kiki-core-stack/pack/commit/64b7cda))
+- Upgrade dependencies and remove `@types/node` ([32aaf31](https://github.com/kiki-core-stack/pack/commit/32aaf31))
+- Update `sideEffects` setting ([62d9e68](https://github.com/kiki-core-stack/pack/commit/62d9e68))
+- Wrap all variable expansions in scripts with `${}` ([82c47c9](https://github.com/kiki-core-stack/pack/commit/82c47c9))
+- Wrap all variable expansions in `.env` file with `${}` ([27b426f](https://github.com/kiki-core-stack/pack/commit/27b426f))
+
+### ✅ Tests
+
+- Add `utils/file.test.ts` unit and remove pass unit ([66584e5](https://github.com/kiki-core-stack/pack/commit/66584e5))
+
+### 🤖 CI
+
+- Set `--prod=false` when install dependencies ([93d7945](https://github.com/kiki-core-stack/pack/commit/93d7945))
+- Remove `--prod=false` flag when install dependencies ([249def0](https://github.com/kiki-core-stack/pack/commit/249def0))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `populateMongooseDocumentFileFields` ([17a59a8](https://github.com/kiki-core-stack/pack/commit/17a59a8))
+- ⚠️ Update file data caching strategy ([a5a5925](https://github.com/kiki-core-stack/pack/commit/a5a5925))
+- ⚠️ Rename abbreviated database field names to full descriptive names ([fca6237](https://github.com/kiki-core-stack/pack/commit/fca6237))
+
+### ❤️ Contributors
+
+- kiki-kanri ([@kiki-kanri](https://github.com/kiki-kanri))
+
 ## v0.69.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.68.0...v0.69.0)
