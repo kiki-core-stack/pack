@@ -2,12 +2,10 @@ import type { Context } from 'hono';
 import { Types } from 'mongoose';
 import type {
     HydratedDocument,
-
     ProjectionType,
     QueryOptions,
     RootFilterQuery,
     Schema,
-
 } from 'mongoose';
 
 import { throwApiError } from '../../libs/api';
