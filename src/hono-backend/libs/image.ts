@@ -29,6 +29,6 @@ export async function uploadImageAndCreateFileDocument(
 
     const convertedImage = await convertImage(imageFile, convertImageInputOptions, 'webp', convertImageOutputOptions);
     if (!convertedImage) throwApiError(500);
-    const file = await uploadFileAndCreateDocument(convertedImage, storage).catch(() => throwApiError(500));
+    const file = await uploadFileAndCreateDocument(convertedImage, storage, 'webp').catch(() => throwApiError(500));
     return file;
 }
