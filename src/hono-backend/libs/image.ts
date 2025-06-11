@@ -11,6 +11,11 @@ import { convertImage } from '../../utils/image';
 
 import { throwApiError } from './api';
 
+const animatedMimeTypes = new Set([
+    'image/gif',
+    'image/webp',
+]);
+
 export async function uploadImageAndCreateFileDocument(
     imageFile: Blob,
     storage: BaseFileStorage,
@@ -18,7 +23,7 @@ export async function uploadImageAndCreateFileDocument(
     convertImageOutputOptions?: WebpOptions,
 ) {
     convertImageInputOptions = {
-        animated: imageFile.type === 'image/gif',
+        animated: animatedMimeTypes.has(imageFile.type),
         ...convertImageInputOptions,
     };
 
