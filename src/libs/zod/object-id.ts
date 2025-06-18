@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import * as z from 'zod';
+import * as z from 'zod/v4';
 
 export function objectId() {
     return z

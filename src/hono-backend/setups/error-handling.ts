@@ -4,10 +4,7 @@ import type {
 } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
-import {
-    ZodError,
-    ZodIssueCode,
-} from 'zod';
+import { ZodError } from 'zod/v4';
 
 import { ApiError } from '../libs/api/error';
 
@@ -55,7 +52,7 @@ export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...ar
         if (error instanceof ZodError) {
             if (isDebugMode) logger.error(error);
             const isPayloadTooLarge = error.issues.some((issue) => {
-                return issue.code === ZodIssueCode.custom && issue.params?.reason === 'fileTooLarge';
+                return issue.code === 'custom' && issue.params?.reason === 'fileTooLarge';
             });
 
             if (isPayloadTooLarge) return apiErrorToResponse(ctx, payloadTooLargeError);

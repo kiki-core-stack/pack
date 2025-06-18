@@ -1,7 +1,4 @@
-import type {
-    ZodType,
-    ZodTypeDef,
-} from 'zod';
+import type { ZodType } from 'zod/v4';
 
 export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';
@@ -15,9 +12,5 @@ declare global {
     type ZodValidatorType<
         Output = any,
         O extends Exclude<keyof Output, ZodValidatorTypeExcludeField> = never,
-        Def extends ZodTypeDef = ZodTypeDef,
-    > = ZodType<
-        OmitMongooseTimestampAndOtherFields<Output, O | ZodValidatorTypeExcludeField>,
-        Def
-    >;
+    > = ZodType<OmitMongooseTimestampAndOtherFields<Output, O | ZodValidatorTypeExcludeField>>;
 }

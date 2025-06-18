@@ -1,56 +1,57 @@
 import { Blob } from 'node:buffer';
 
-import * as z from 'zod';
+import * as z from 'zod/v4';
 import type {
-    ZodEffects,
-    ZodType,
-    ZodTypeAny,
-    ZodTypeDef,
-} from 'zod';
+    ZodCustom,
+    ZodPipe,
+    ZodTransform,
+} from 'zod/v4';
 
 import { getFileMimeType } from '../../utils/file';
 
-interface ZodFile extends ZodEffects<ZodEffects<ZodType<Blob, ZodTypeDef, Blob>, Blob, Blob>, Blob, Blob> {
-    commonImages: () => ZodFile;
-    gif: () => ZodFile;
-    jpeg: () => ZodFile;
-    maxSize: (bytes: number) => ZodFile;
-    maxSizeKb: (kb: number) => ZodFile;
-    maxSizeMb: (mb: number) => ZodFile;
-    mimeType: (mimeType: string) => ZodFile;
-    mimeTypes: (mimeTypes: string[]) => ZodFile;
-    png: () => ZodFile;
-    webp: () => ZodFile;
+interface ZodCustomFile extends ZodPipe<ZodCustom<Blob, Blob>, ZodTransform<Blob, Blob>> {
+    commonImages: () => ZodCustomFile;
+    gif: () => ZodCustomFile;
+    jpeg: () => ZodCustomFile;
+    maxSize: (bytes: number) => ZodCustomFile;
+    maxSizeKb: (kb: number) => ZodCustomFile;
+    maxSizeMb: (mb: number) => ZodCustomFile;
+    mimeType: (mimeType: string) => ZodCustomFile;
+    mimeTypes: (mimeTypes: string[]) => ZodCustomFile;
+    png: () => ZodCustomFile;
+    webp: () => ZodCustomFile;
 }
 
 const commonImageMimeTypes: readonly string[] = [
     'image/bmp',
-    'image/jpeg',
     'image/heic',
     'image/heif',
+    'image/jpeg',
     'image/png',
     'image/tiff',
     'image/webp',
 ];
 
-export function file() {
+export function customFile() {
     const allowedMimeTypes = new Set<string>();
     let detectedMimeType: string | undefined;
     let maxBytes: number | undefined;
-    const zodFile = z
+    const zodCustomFile = z
         .instanceof(Blob)
-        .superRefine(async (file, ctx) => {
-            detectedMimeType = await getFileMimeType(file);
+        .check(async (ctx) => {
+            detectedMimeType = await getFileMimeType(ctx.value);
             if (!detectedMimeType || !allowedMimeTypes.has(detectedMimeType)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
+                ctx.issues.push({
+                    code: 'custom',
+                    input: ctx.value,
                     message: `Invalid MIME type: ${detectedMimeType}.`,
                 });
             }
 
-            if (maxBytes !== undefined && file.size > maxBytes) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
+            if (maxBytes !== undefined && ctx.value.size > maxBytes) {
+                ctx.issues.push({
+                    code: 'custom',
+                    input: ctx.value,
                     message: `File size must be less than ${maxBytes} bytes.`,
                     params: { reason: 'fileTooLarge' },
                 });
@@ -61,7 +62,7 @@ export function file() {
             return new Blob([file], { type: detectedMimeType });
         });
 
-    function decorate(schema: ZodTypeAny): ZodFile {
+    function decorate(schema: any): ZodCustomFile {
         const proxy = new Proxy(
             schema,
             {
@@ -125,8 +126,8 @@ export function file() {
             },
         };
 
-        return proxy as ZodFile;
+        return proxy as ZodCustomFile;
     }
 
-    return decorate(zodFile);
+    return decorate(zodCustomFile);
 }

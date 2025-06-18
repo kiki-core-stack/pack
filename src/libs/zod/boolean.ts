@@ -1,8 +1,4 @@
-import * as z from 'zod';
-import type {
-    ZodBoolean,
-    ZodEffects,
-} from 'zod';
+import * as z from 'zod/v4';
 
 export function coerceBooleanStrict() {
     return z.preprocess(
@@ -12,5 +8,5 @@ export function coerceBooleanStrict() {
             return value;
         },
         z.boolean(),
-    ) as ZodEffects<ZodBoolean>;
+    );
 }
