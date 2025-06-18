@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.71.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.70.0...v0.71.0)
+
+### 🚀 Enhancements
+
+- Add `coerceBooleanStrict` zod schema builder ([0793c35](https://github.com/kiki-core-stack/pack/commit/0793c35))
+- Add `filePopulateSelectFields` and `fileLookupProjection` constants ([012cea1](https://github.com/kiki-core-stack/pack/commit/012cea1))
+- Add `extension` parameter to `uploadFileAndCreateDocument` and pass `webp` in `uploadImageAndCreateFileDocument` ([c4b41ff](https://github.com/kiki-core-stack/pack/commit/c4b41ff))
+
+### 🩹 Fixes
+
+- Add missing Zod export ([1c74ed3](https://github.com/kiki-core-stack/pack/commit/1c74ed3))
+- Enable `animated` in `uploadImageAndCreateFileDocument` when mime type is `image/gif` or `image/webp` ([63721d9](https://github.com/kiki-core-stack/pack/commit/63721d9))
+
+### 💅 Refactors
+
+- ⚠️ Rename `constants/socket.io-events.ts` to `constants/socket.io-event-names.ts` and update imports in `socket.io-events.ts` type file ([399145a](https://github.com/kiki-core-stack/pack/commit/399145a))
+- ⚠️ Migrate Zod to v4 and replace original `file` schema builder with `customFile` ([206d711](https://github.com/kiki-core-stack/pack/commit/206d711))
+
+### 🏡 Chore
+
+- Remove unnecessary line breaks ([5729bfc](https://github.com/kiki-core-stack/pack/commit/5729bfc))
+- Upgrade dependencies ([3b94b51](https://github.com/kiki-core-stack/pack/commit/3b94b51))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename `constants/socket.io-events.ts` to `constants/socket.io-event-names.ts` and update imports in `socket.io-events.ts` type file ([399145a](https://github.com/kiki-core-stack/pack/commit/399145a))
+- ⚠️ Migrate Zod to v4 and replace original `file` schema builder with `customFile` ([206d711](https://github.com/kiki-core-stack/pack/commit/206d711))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.70.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.69.0...v0.70.0)
