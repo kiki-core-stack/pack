@@ -1,6 +1,7 @@
 import { Blob } from 'node:buffer';
 
 import * as z from 'zod/v4';
+import { ZodType } from 'zod/v4';
 import type {
     ZodCustom,
     ZodPipe,
@@ -63,8 +64,21 @@ export function customFile() {
         });
 
     function decorate(schema: any): ZodCustomFile {
+        const clonedSchema = Object.create(Object.getPrototypeOf(schema));
+        const descriptors = Object.getOwnPropertyDescriptors(schema);
+        for (const [key, descriptor] of Object.entries(descriptors)) {
+            Object.defineProperty(
+                clonedSchema,
+                key,
+                {
+                    ...descriptor,
+                    configurable: true,
+                },
+            );
+        }
+
         const proxy = new Proxy(
-            schema,
+            clonedSchema,
             {
                 get(target, prop, receiver) {
                     // eslint-disable-next-line ts/no-use-before-define
@@ -72,8 +86,8 @@ export function customFile() {
                     const originalProperty = Reflect.get(target, prop, receiver);
                     if (typeof originalProperty === 'function') {
                         return (...args: any[]) => {
-                            const result = originalProperty.apply(target, args);
-                            if (result instanceof z.ZodType) return decorate(result);
+                            const result = originalProperty.apply(schema, args);
+                            if (result instanceof ZodType) return decorate(result);
                             return result;
                         };
                     }
