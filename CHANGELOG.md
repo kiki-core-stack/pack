@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.72.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.71.0...v0.72.0)
+
+### 🚀 Enhancements
+
+- Update `ZodCustomFile` to automatically replace `blob.type` if it differs from detected MIME type during validation ([b3ff50c](https://github.com/kiki-core-stack/pack/commit/b3ff50c))
+
+### 🩹 Fixes
+
+- Update `ZodCustomFile`'s `decorate` to support `.openapi` on properties and protect non-writable attributes ([b0b921d](https://github.com/kiki-core-stack/pack/commit/b0b921d))
+
+### 💅 Refactors
+
+- Rewrite custom `ZodCustomFile` schema using Zod class `extend` pattern ([b65e65d](https://github.com/kiki-core-stack/pack/commit/b65e65d))
+- Rewrite custom Zod `customFile` builder using `Proxy` for chainable API ([9163716](https://github.com/kiki-core-stack/pack/commit/9163716))
+
+### ✅ Tests
+
+- Add zod `customFile` schema build unit ([98fdf35](https://github.com/kiki-core-stack/pack/commit/98fdf35))
+- Add `coerceBooleanStrict` unit ([f28266d](https://github.com/kiki-core-stack/pack/commit/f28266d))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.71.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.70.0...v0.71.0)
