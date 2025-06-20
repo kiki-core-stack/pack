@@ -68,6 +68,10 @@ export const ZodCustomFile: $constructor<ZodCustomFile> = /* @__PURE__ */ $const
                             message: `Invalid MIME type: ${detectedMimeType}. Allowed types: ${[...params._allowedMimeTypes].join(', ')}.`,
                         });
                     }
+
+                    if (ctx.value.type !== detectedMimeType) {
+                        ctx.value = new BufferBlob([ctx.value], { type: detectedMimeType });
+                    }
                 });
             };
         }
