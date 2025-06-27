@@ -12,10 +12,11 @@ import {
 import { z } from 'zod/v4';
 
 import { customFile } from '../../../src/libs/zod/custom-file';
-import { getFileMimeType } from '../../../src/utils/file';
+import { getFileMimeType as _getFileMimeType } from '../../../src/utils/file';
 
 // Mock the getFileMimeType function
 vi.mock('../../../src/utils/file', () => ({ getFileMimeType: vi.fn() }));
+const getFileMimeType = vi.mocked(_getFileMimeType);
 
 describe.concurrent('customFile', () => {
     beforeEach(() => vi.clearAllMocks());
@@ -46,8 +47,7 @@ describe.concurrent('customFile', () => {
 
     describe.concurrent('mime type validation', () => {
         it('should accept allowed MIME types', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/jpeg');
+            getFileMimeType.mockResolvedValue('image/jpeg');
 
             const schema = customFile().jpeg();
             const blob = new BufferBlob(['test'], { type: 'image/jpeg' });
@@ -57,8 +57,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should reject disallowed MIME types', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/gif');
+            getFileMimeType.mockResolvedValue('image/gif');
 
             const schema = customFile().jpeg().png();
             const blob = new BufferBlob(['test'], { type: 'image/gif' });
@@ -70,8 +69,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should update blob type if detected type differs', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/png');
+            getFileMimeType.mockResolvedValue('image/png');
 
             const schema = customFile().png();
             const blob = new BufferBlob(['test'], { type: 'application/octet-stream' });
@@ -81,8 +79,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should handle null MIME type detection', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue(null!);
+            getFileMimeType.mockResolvedValue(null!);
 
             const schema = customFile().png();
             const blob = new BufferBlob(['test']);
@@ -95,8 +92,7 @@ describe.concurrent('customFile', () => {
 
     describe.concurrent('specific format methods', () => {
         it('should validate PNG files', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/png');
+            getFileMimeType.mockResolvedValue('image/png');
 
             const schema = customFile().png();
             const blob = new BufferBlob(['test'], { type: 'image/png' });
@@ -106,8 +102,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should validate JPEG files', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/jpeg');
+            getFileMimeType.mockResolvedValue('image/jpeg');
 
             const schema = customFile().jpeg();
             const blob = new BufferBlob(['test'], { type: 'image/jpeg' });
@@ -117,8 +112,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should validate GIF files', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/gif');
+            getFileMimeType.mockResolvedValue('image/gif');
 
             const schema = customFile().gif();
             const blob = new BufferBlob(['test'], { type: 'image/gif' });
@@ -128,8 +122,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should validate WebP files', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/webp');
+            getFileMimeType.mockResolvedValue('image/webp');
 
             const schema = customFile().webp();
             const blob = new BufferBlob(['test'], { type: 'image/webp' });
@@ -152,8 +145,7 @@ describe.concurrent('customFile', () => {
 
         commonImageTypes.forEach((mimeType) => {
             it(`should accept ${mimeType} with commonImages()`, async ({ expect }) => {
-                const mockGetFileMimeType = vi.mocked(getFileMimeType);
-                mockGetFileMimeType.mockResolvedValue(mimeType);
+                getFileMimeType.mockResolvedValue(mimeType);
 
                 const schema = customFile().commonImages();
                 const blob = new BufferBlob(['test'], { type: mimeType });
@@ -164,8 +156,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should reject non-common image types', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/svg+xml');
+            getFileMimeType.mockResolvedValue('image/svg+xml');
 
             const schema = customFile().commonImages();
             const blob = new BufferBlob(['test'], { type: 'image/svg+xml' });
@@ -177,8 +168,7 @@ describe.concurrent('customFile', () => {
 
     describe.concurrent('custom MIME types', () => {
         it('should accept custom MIME types as single string', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('application/pdf');
+            getFileMimeType.mockResolvedValue('application/pdf');
 
             const schema = customFile().mimeType('application/pdf');
             const blob = new BufferBlob(['test'], { type: 'application/pdf' });
@@ -188,8 +178,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should accept custom MIME types as array', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('application/pdf');
+            getFileMimeType.mockResolvedValue('application/pdf');
 
             const schema = customFile().mimeType([
                 'application/pdf',
@@ -203,8 +192,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should accept multiple custom MIME type calls', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('text/plain');
+            getFileMimeType.mockResolvedValue('text/plain');
 
             const schema = customFile().mimeType('application/pdf').mimeType('text/plain');
             const blob = new BufferBlob(['test'], { type: 'text/plain' });
@@ -214,8 +202,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should normalize MIME types to lowercase', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/jpeg');
+            getFileMimeType.mockResolvedValue('image/jpeg');
 
             const schema = customFile().mimeType('IMAGE/JPEG');
             const blob = new BufferBlob(['test'], { type: 'image/jpeg' });
@@ -355,8 +342,7 @@ describe.concurrent('customFile', () => {
 
     describe.concurrent('method chaining', () => {
         it('should support chaining multiple methods', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/jpeg');
+            getFileMimeType.mockResolvedValue('image/jpeg');
 
             const schema = customFile().jpeg().png().maxSizeMb(5).minSizeKb(10);
             const blob = new BufferBlob([Buffer.alloc(20 * 1024)], { type: 'image/jpeg' });
@@ -366,8 +352,7 @@ describe.concurrent('customFile', () => {
         });
 
         it('should maintain chainability after transformations', async ({ expect }) => {
-            const mockGetFileMimeType = vi.mocked(getFileMimeType);
-            mockGetFileMimeType.mockResolvedValue('image/png');
+            getFileMimeType.mockResolvedValue('image/png');
 
             const schema = customFile().png().optional().nullable().default(null);
 

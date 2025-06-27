@@ -8,11 +8,15 @@ import {
 import { getFileMimeType } from '../../src/utils/file';
 
 vi.mock('file-type', () => ({ fileTypeFromBlob: vi.fn() }));
-const fileTypeFromBlob = _fileTypeFromBlob as ReturnType<typeof vi.fn>;
+const fileTypeFromBlob = vi.mocked(_fileTypeFromBlob);
 
 describe.concurrent('getFileMimeType', () => {
     it('should return lowercase mime type if file is recognized', async ({ expect }) => {
-        fileTypeFromBlob.mockResolvedValue({ mime: 'IMAGE/PNG' });
+        fileTypeFromBlob.mockResolvedValue({
+            ext: 'png',
+            mime: 'image/png',
+        });
+
         expect(await getFileMimeType(new Blob())).toBe('image/png');
     });
 
