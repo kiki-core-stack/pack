@@ -274,19 +274,19 @@ describe.concurrent('coerceBooleanStrict', () => {
 
         it('should work in object schema', ({ expect }) => {
             const objectSchema = z.object({
+                enabled: coerceBooleanStrict(),
                 isActive: coerceBooleanStrict(),
-                isEnabled: coerceBooleanStrict(),
             });
 
             const result = objectSchema.safeParse({
+                enabled: false,
                 isActive: 'true',
-                isEnabled: false,
             });
 
             expect(result.success).toBe(true);
             expect(result.data).toEqual({
+                enabled: false,
                 isActive: true,
-                isEnabled: false,
             });
         });
 
