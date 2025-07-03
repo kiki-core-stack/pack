@@ -17,11 +17,13 @@ describe.concurrent('getFileMimeType', () => {
             mime: 'image/png',
         });
 
-        expect(await getFileMimeType(new Blob())).toBe('image/png');
+        const result = await getFileMimeType(new Blob());
+        expect(result).toBe('image/png');
     });
 
     it('should return undefined if file-type returns undefined', async ({ expect }) => {
         fileTypeFromBlob.mockResolvedValue(undefined);
-        expect(await getFileMimeType(new Blob())).toBeUndefined();
+        const result = await getFileMimeType(new Blob());
+        expect(result).toBeUndefined();
     });
 });
