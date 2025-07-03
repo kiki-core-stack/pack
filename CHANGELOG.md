@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.73.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.72.0...v0.73.0)
+
+### 🚀 Enhancements
+
+- Add `fileId` zod schema builder ([c71bd04](https://github.com/kiki-core-stack/pack/commit/c71bd04))
+
+### 🩹 Fixes
+
+- In `uploadFileAndCreateDocument`, handle `DuplicateKey` error by re-querying and returning the existing file ([78cab54](https://github.com/kiki-core-stack/pack/commit/78cab54))
+
+### 💅 Refactors
+
+- ⚠️ Remove `fileId` export from `src/libs/zod/index.ts` ([08c67e2](https://github.com/kiki-core-stack/pack/commit/08c67e2))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([f13f678](https://github.com/kiki-core-stack/pack/commit/f13f678))
+
+### ✅ Tests
+
+- Update mocking approach in unit tests ([fa013ee](https://github.com/kiki-core-stack/pack/commit/fa013ee))
+- Update `tests/libs/zod/boolean.test.ts` unit ([b0766ba](https://github.com/kiki-core-stack/pack/commit/b0766ba))
+- Change vitest config file to mjs ([5c3bc1f](https://github.com/kiki-core-stack/pack/commit/5c3bc1f))
+- Update `tests/utils/file.test.ts` unit ([a70e718](https://github.com/kiki-core-stack/pack/commit/a70e718))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Remove `fileId` export from `src/libs/zod/index.ts` ([08c67e2](https://github.com/kiki-core-stack/pack/commit/08c67e2))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.72.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.71.0...v0.72.0)
