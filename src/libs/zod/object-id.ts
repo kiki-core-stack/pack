@@ -4,13 +4,29 @@ import * as z from 'zod/v4';
 export function objectId() {
     return z
         .string()
-        .refine((value) => Types.ObjectId.isValid(value), 'Invalid ObjectId.')
+        .check((ctx) => {
+            if (Types.ObjectId.isValid(ctx.value)) return;
+            ctx.issues.push({
+                code: 'invalid_format',
+                format: 'objectid',
+                input: ctx.value,
+                message: 'Invalid ObjectId.',
+            });
+        })
         .transform((value) => new Types.ObjectId(value));
 }
 
 export function objectIdOrEmptyString() {
     return z
         .string()
-        .refine((value) => !value || Types.ObjectId.isValid(value), 'Invalid ObjectId or empty string.')
-        .transform((value) => value ? new Types.ObjectId(value) : '');
+        .check((ctx) => {
+            if (ctx.value === '' || Types.ObjectId.isValid(ctx.value)) return;
+            ctx.issues.push({
+                code: 'invalid_format',
+                format: 'objectid',
+                input: ctx.value,
+                message: 'Invalid ObjectId.',
+            });
+        })
+        .transform((value) => new Types.ObjectId(value));
 }
