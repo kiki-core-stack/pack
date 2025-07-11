@@ -10,6 +10,6 @@ import { AdminModel } from '../src/models/admin';
         password: cryptoSha3512('password'),
     });
 
-    logger.success(`Successfully created admin account: '${admin.account}'`);
+    logger.success(`Successfully created admin account: ${admin.account}`);
     process.exit();
 })();

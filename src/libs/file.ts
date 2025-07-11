@@ -19,7 +19,7 @@ export async function uploadFileAndCreateDocument(buffer: Buffer, storage: BaseF
         if (error instanceof MongoServerError && error.code === 11000) {
             const file = await FileModel.findOne({ hash });
             if (file) return file;
-            throw new Error(`DuplicateKey error occurred, but file with hash ${hash} was not found in the database.`);
+            throw new Error(`DuplicateKey error occurred, but file with hash ${hash} was not found in the database`);
         }
 
         throw error;

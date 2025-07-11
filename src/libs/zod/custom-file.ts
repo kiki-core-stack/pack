@@ -44,7 +44,7 @@ export function customFile() {
                     code: 'custom',
                     input: ctx.value,
                     // eslint-disable-next-line style/max-len
-                    message: `Invalid MIME type: ${detectedMimeType}. Allowed types: ${[...allowedMimeTypes].join(', ')}.`,
+                    message: `Invalid MIME type: ${detectedMimeType}, allowed types: ${[...allowedMimeTypes].join(', ')}`,
                 });
             }
 
@@ -93,7 +93,7 @@ export function customFile() {
                     ctx.issues.push({
                         code: 'custom',
                         input: ctx.value,
-                        message: `File too large! Max ${bytes} bytes allowed.`,
+                        message: `File too large! Max ${bytes} bytes allowed`,
                         params: { reason: 'fileTooLarge' },
                     });
                 }
@@ -111,7 +111,7 @@ export function customFile() {
                     ctx.issues.push({
                         code: 'custom',
                         input: ctx.value,
-                        message: `File too small! Min ${bytes} bytes allowed.`,
+                        message: `File too small! Min ${bytes} bytes allowed`,
                         params: { reason: 'fileTooSmall' },
                     });
                 }

@@ -10,7 +10,7 @@ export function objectId() {
                 code: 'invalid_format',
                 format: 'objectid',
                 input: ctx.value,
-                message: 'Invalid ObjectId.',
+                message: 'Invalid ObjectId',
             });
         })
         .transform((value) => new Types.ObjectId(value));
@@ -25,7 +25,7 @@ export function objectIdOrEmptyString() {
                 code: 'invalid_format',
                 format: 'objectid',
                 input: ctx.value,
-                message: 'Invalid ObjectId.',
+                message: 'Invalid ObjectId or empty string',
             });
         })
         .transform((value) => new Types.ObjectId(value));

@@ -12,7 +12,7 @@ export function strictIsoDateString() {
                 code: 'invalid_format',
                 format: 'iso8601',
                 input: ctx.value,
-                message: 'Invalid ISO 8601 date string.',
+                message: 'Invalid ISO 8601 date string',
             });
         });
 }

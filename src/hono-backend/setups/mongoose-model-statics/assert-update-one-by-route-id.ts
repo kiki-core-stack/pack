@@ -51,11 +51,11 @@ registerStaticFunctions.push(
                     options,
                 );
 
-                if (!updateResult.acknowledged) throw new Error('Update was not acknowledged.');
+                if (!updateResult.acknowledged) throw new Error('Update was not acknowledged');
                 if (updateResult.matchedCount !== 1) throwApiError(404);
                 if (updateResult.modifiedCount < expectedModifiedCount) {
                     // eslint-disable-next-line style/max-len
-                    throw new Error(`Expected to modify at least ${expectedModifiedCount} document(s), but modified ${updateResult.modifiedCount}.`);
+                    throw new Error(`Expected to modify at least ${expectedModifiedCount} document(s), but modified ${updateResult.modifiedCount}`);
                 }
             },
         );

@@ -8,7 +8,7 @@ export function fileId() {
         ctx.issues.push({
             code: 'custom',
             input: ctx.value,
-            message: 'File not found.',
+            message: 'File not found',
             params: { reason: 'fileNotFound' },
         });
     });
