@@ -101,7 +101,7 @@ export function customFile() {
         }
 
         function mimeType(...mimeTypes: Readonlyable<Arrayable<string>>[]) {
-            [mimeTypes].flat(2).forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
+            mimeTypes.flat().forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
             return proxy;
         }
 
