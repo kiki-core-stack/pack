@@ -4,7 +4,7 @@ import type {
 } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
-import { ZodError } from 'zod/v4';
+import { ZodError } from 'zod';
 
 import { isDebugMode } from '../../constants';
 import { ApiError } from '../libs/api/error';

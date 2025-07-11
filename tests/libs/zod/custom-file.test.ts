@@ -9,7 +9,7 @@ import {
     it,
     vi,
 } from 'vitest';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 import { customFile } from '../../../src/libs/zod/custom-file';
 import { getFileMimeType as _getFileMimeType } from '../../../src/utils/file';

@@ -1,8 +1,8 @@
 import { Blob as BufferBlob } from 'node:buffer';
 
-import * as z from 'zod/v4';
-import { ZodType } from 'zod/v4';
-import type { ZodCustom } from 'zod/v4';
+import * as z from 'zod';
+import { ZodType } from 'zod';
+import type { ZodCustom } from 'zod';
 import type { ParsePayload } from 'zod/v4/core';
 
 import { getFileMimeType } from '../../utils/file';
