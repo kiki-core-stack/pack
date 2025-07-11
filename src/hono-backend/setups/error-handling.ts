@@ -6,10 +6,10 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod/v4';
 
+import { isDebugMode } from '../../constants';
 import { ApiError } from '../libs/api/error';
 
 const badRequestError = new ApiError(400);
-const isDebugMode = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
 const mongodbErrorCodeToHttpStatusCodeMap: ReadonlyRecord<string, ContentfulStatusCode> = {
     2: 400, // BadValue -> Bad Request
     4: 404, // NoSuchKey -> Not Found
