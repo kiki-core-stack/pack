@@ -9,7 +9,7 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
 ): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'> {
     return {
         data: data!,
-        message: message ?? '成功！',
+        message: message ?? '成功',
         success: true,
     };
 }
