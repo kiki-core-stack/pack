@@ -1,6 +1,8 @@
 import type {
     Context,
+    ErrorHandler,
     Hono,
+    NotFoundHandler,
 } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
@@ -40,10 +42,23 @@ const notFoundError = new ApiError(404);
 const payloadTooLargeError = new ApiError(413);
 
 // TODO: Use string perf for response
-export function setupHonoAppErrorHandling(honoApp: Hono, logger: { error: (...args: any[]) => any }) {
+export function setupHonoAppErrorHandling(
+    honoApp: Hono,
+    logger: { error: (...args: any[]) => any },
+    customErrorHandler?: ErrorHandler,
+    customNotFoundHandler?: NotFoundHandler,
+) {
     const apiErrorToResponse = (ctx: Context, error: ApiError) => ctx.json(error.responseData, error.statusCode);
-    honoApp.notFound((ctx) => apiErrorToResponse(ctx, notFoundError));
-    honoApp.onError((error, ctx) => {
+    honoApp.notFound(async (ctx) => {
+        const customNotFoundHandlerResult = await customNotFoundHandler?.(ctx);
+        if (customNotFoundHandlerResult) return customNotFoundHandlerResult;
+        return apiErrorToResponse(ctx, notFoundError);
+    });
+
+    honoApp.onError(async (error, ctx) => {
+        const customErrorHandlerResult = await customErrorHandler?.(error, ctx);
+        if (customErrorHandlerResult) return customErrorHandlerResult;
+
         if (error instanceof ApiError) {
             if (isDebugMode) logger.error(error);
             return apiErrorToResponse(ctx, error);
