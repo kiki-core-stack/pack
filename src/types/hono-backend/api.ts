@@ -4,9 +4,9 @@ import type {
     ZodObject,
 } from 'zod';
 
-export interface FixedApiErrorThrower<S extends ContentfulStatusCode, E extends string, DS extends ZodObject> {
-    (data?: output<DS>, message?: string): never;
-    dataSchema: DS;
+export interface FixedApiErrorThrower<S extends ContentfulStatusCode, E extends string, DataSchema extends ZodObject> {
+    (data?: output<DataSchema>, message?: string): never;
+    dataSchema: DataSchema;
     errorCode: E;
     statusCode: S;
 }

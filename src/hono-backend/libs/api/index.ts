@@ -20,14 +20,18 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
     };
 }
 
-export function createFixedApiErrorThrower<S extends ContentfulStatusCode, E extends string, DS extends ZodObject>(
+export function createFixedApiErrorThrower<
+    S extends ContentfulStatusCode,
+    E extends string,
+    DataSchema extends ZodObject,
+>(
     statusCode: S,
     errorCode: E,
     defaultMessage: string,
-    dataSchema?: DS,
+    dataSchema?: DataSchema,
 ) {
     return Object.assign(
-        (data?: output<DS>, message?: string) => {
+        (data?: output<DataSchema>, message?: string) => {
             throwApiError(statusCode, message ?? defaultMessage, errorCode, data);
         },
         {
@@ -35,7 +39,7 @@ export function createFixedApiErrorThrower<S extends ContentfulStatusCode, E ext
             errorCode,
             statusCode,
         },
-    ) as FixedApiErrorThrower<S, E, DS>;
+    ) as FixedApiErrorThrower<S, E, DataSchema>;
 }
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
