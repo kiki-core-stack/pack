@@ -1,13 +1,11 @@
-import { Blob as BufferBlob } from 'node:buffer';
-
 import * as z from 'zod';
 import { ZodType } from 'zod';
-import type { ZodCustom } from 'zod';
+import type { ZodFile } from 'zod';
 import type { ParsePayload } from 'zod/v4/core';
 
 import { getFileMimeType } from '../../utils/file';
 
-interface ZodCustomFile extends ZodCustom<BufferBlob, BufferBlob> {
+interface ZodCustomFile extends ZodFile {
     commonImages: () => this;
     gif: () => this;
     jpeg: () => this;
@@ -35,7 +33,13 @@ const commonImageMimeTypes: readonly string[] = [
 export function customFile() {
     const allowedMimeTypes = new Set<string>();
     const zodCustomFile = z
-        .instanceof(BufferBlob)
+        .preprocess(
+            (value) => {
+                if (value instanceof Blob) return new File([value], '', { type: value.type });
+                return value;
+            },
+            z.file(),
+        )
         .check(async (ctx) => {
             if (!allowedMimeTypes.size) return;
             const detectedMimeType = await getFileMimeType(ctx.value);
@@ -49,7 +53,7 @@ export function customFile() {
             }
 
             if (ctx.value.type !== detectedMimeType) {
-                ctx.value = new BufferBlob([ctx.value], { type: detectedMimeType });
+                ctx.value = new File([ctx.value], '', { type: detectedMimeType });
             }
         });
 
@@ -88,7 +92,7 @@ export function customFile() {
         );
 
         function maxSize(bytes: number) {
-            return (ctx: ParsePayload<BufferBlob>) => {
+            return (ctx: ParsePayload<File>) => {
                 if (ctx.value.size > bytes) {
                     ctx.issues.push({
                         code: 'custom',
@@ -106,7 +110,7 @@ export function customFile() {
         }
 
         function minSize(bytes: number) {
-            return (ctx: ParsePayload<BufferBlob>) => {
+            return (ctx: ParsePayload<File>) => {
                 if (ctx.value.size < bytes) {
                     ctx.issues.push({
                         code: 'custom',
