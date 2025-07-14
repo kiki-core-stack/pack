@@ -1,5 +1,11 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type { SetFieldType } from 'type-fest';
+import type {
+    output,
+    ZodObject,
+} from 'zod';
+
+import type { FixedApiErrorThrower } from '../../../types/hono-backend/api';
 
 import { ApiError } from './error';
 
@@ -14,17 +20,22 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
     };
 }
 
-export function defineApiErrorMapByErrorCode<Error extends ApiError<any>>(
-    error: Error
-): Readonly<{ [errorCode in Error['errorCode']]: Error }>;
-export function defineApiErrorMapByErrorCode<Errors extends ApiError<any>[]>(
-    errorList: Errors,
-): Readonly<{ [Error in Errors[number] as Error['errorCode']]: Error }>;
-export function defineApiErrorMapByErrorCode(input: Arrayable<ApiError<any>>) {
-    const errors = Array.isArray(input) ? input : [input];
-    const errorMap: any = {};
-    for (const error of errors) errorMap[error.errorCode] = error;
-    return errorMap;
+export function createFixedApiErrorThrower<S extends ContentfulStatusCode, E extends string, DS extends ZodObject>(
+    statusCode: S,
+    errorCode: E,
+    defaultMessage: string,
+    dataSchema?: DS,
+) {
+    return Object.assign(
+        (data?: output<DS>, message?: string) => {
+            throwApiError(statusCode, message ?? defaultMessage, errorCode, data);
+        },
+        {
+            dataSchema,
+            errorCode,
+            statusCode,
+        },
+    ) as FixedApiErrorThrower<S, E, DS>;
 }
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
