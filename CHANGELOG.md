@@ -1,5 +1,43 @@
 # Changelog
 
+## v0.74.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.73.0...v0.74.0)
+
+### 🚀 Enhancements
+
+- Enhance `setupHonoAppErrorHandling` to support custom error and not-found handlers with fallback to defaults ([1849bd4](https://github.com/kiki-core-stack/pack/commit/1849bd4))
+- Add `createFixedApiErrorThrower` hono backend lib ([e51ce24](https://github.com/kiki-core-stack/pack/commit/e51ce24))
+
+### 🩹 Fixes
+
+- Add missing dependencies ([70e1b63](https://github.com/kiki-core-stack/pack/commit/70e1b63))
+- Correct `flat` usage in `ZodCustomFile.mimeType` method ([adcfc85](https://github.com/kiki-core-stack/pack/commit/adcfc85))
+
+### 💅 Refactors
+
+- Replace `refine` with `check` in selected Zod schema builders ([18f3f90](https://github.com/kiki-core-stack/pack/commit/18f3f90))
+- Move `isDebugMode` to `src/constants/index.ts` ([de74d82](https://github.com/kiki-core-stack/pack/commit/de74d82))
+- Update custom Zod `customFile` schema builder ([f1513ae](https://github.com/kiki-core-stack/pack/commit/f1513ae))
+- Return `issues` directly when the error is a Zod error ([1a68e16](https://github.com/kiki-core-stack/pack/commit/1a68e16))
+- Rename generic type parameter ([af563f6](https://github.com/kiki-core-stack/pack/commit/af563f6))
+
+### 🏡 Chore
+
+- Update dependencies and modify scripts ([374cc56](https://github.com/kiki-core-stack/pack/commit/374cc56))
+- Update zod import for v4 ([23c3444](https://github.com/kiki-core-stack/pack/commit/23c3444))
+- Remove all punctuation from error messages ([ede4bc8](https://github.com/kiki-core-stack/pack/commit/ede4bc8))
+- Clean up logger and error messages by removing periods and other punctuation ([8126bbb](https://github.com/kiki-core-stack/pack/commit/8126bbb))
+- Upgrade dependencies ([a847c7c](https://github.com/kiki-core-stack/pack/commit/a847c7c))
+
+### ✅ Tests
+
+- Resolve errors ([788d97a](https://github.com/kiki-core-stack/pack/commit/788d97a))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.73.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.72.0...v0.73.0)
