@@ -41,7 +41,7 @@ describe.concurrent('customFile', () => {
             const result = await schema.safeParseAsync('not a blob');
 
             expect(result.success).toBe(false);
-            expect(result.error?.issues[0]?.message).toContain('Input not instance of Blob');
+            expect(result.error?.issues[0]?.message).toContain('Invalid input: expected file, received string');
         });
     });
 
@@ -64,8 +64,9 @@ describe.concurrent('customFile', () => {
 
             const result = await schema.safeParseAsync(blob);
             expect(result.success).toBe(false);
-            expect(result.error?.issues[0]?.message).toContain('Invalid MIME type: image/gif');
-            expect(result.error?.issues[0]?.message).toContain('Allowed types: image/jpeg, image/png');
+            expect(result.error?.issues[0]?.message).toContain(
+                'Invalid MIME type: image/gif, allowed types: image/jpeg, image/png',
+            );
         });
 
         it('should update blob type if detected type differs', async ({ expect }) => {
@@ -86,7 +87,7 @@ describe.concurrent('customFile', () => {
 
             const result = await schema.safeParseAsync(blob);
             expect(result.success).toBe(false);
-            expect(result.error?.issues[0]?.message).toContain('Invalid MIME type: null.');
+            expect(result.error?.issues[0]?.message).toContain('Invalid MIME type: null, allowed types: image/png');
         });
     });
 
@@ -245,7 +246,7 @@ describe.concurrent('customFile', () => {
 
                 const result = await schema.safeParseAsync(blob);
                 expect(result.success).toBe(false);
-                expect(result.error?.issues[0]?.message).toContain('File too large! Max 100 bytes allowed.');
+                expect(result.error?.issues[0]?.message).toContain('File too large! Max 100 bytes allowed');
             });
 
             it('should return correct error params when file exceeds maxSize', async ({ expect }) => {
@@ -308,7 +309,7 @@ describe.concurrent('customFile', () => {
 
                 const result = await schema.safeParseAsync(blob);
                 expect(result.success).toBe(false);
-                expect(result.error?.issues[0]?.message).toContain('File too small! Min 1000 bytes allowed.');
+                expect(result.error?.issues[0]?.message).toContain('File too small! Min 1000 bytes allowed');
             });
 
             it('should return correct error params when file is below minSize', async ({ expect }) => {
