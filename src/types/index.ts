@@ -3,10 +3,7 @@ import type { ZodType } from 'zod';
 export type {} from '@kikiutils/mongoose/types';
 export type {} from '@kikiutils/types';
 
-type ZodValidatorTypeExcludeField =
-  | 'createdByAdmin'
-  | 'editedByAdmin'
-  | 'id';
+type ZodValidatorTypeExcludeField = 'id' | keyof WithAdminAuditData;
 
 declare global {
     type ZodValidatorType<
