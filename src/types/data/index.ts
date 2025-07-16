@@ -1,3 +1,5 @@
+import type { AdminData } from './admin';
+
 export type {} from '@kikiutils/mongoose/types/data';
 
 declare global {
@@ -10,5 +12,10 @@ declare global {
 
     interface TableRowData {
         id: string;
+    }
+
+    interface WithAdminAuditData {
+        createdByAdmin: Partial<AdminData>;
+        editedByAdmin?: Partial<AdminData>;
     }
 }
