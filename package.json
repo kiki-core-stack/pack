@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.74.0",
+  "version": "0.75.0",
   "author": "kiki-kanri",
   "license": "MIT",
   "repository": {
@@ -73,11 +73,11 @@
   },
   "devDependencies": {
     "@hono/zod-validator": "^0.7.1",
-    "@kikiutils/changelogen": "^0.8.0",
+    "@kikiutils/changelogen": "^0.8.1",
     "@kikiutils/classes": "^6.0.3",
     "@kikiutils/eslint-config": "^1.2.7",
-    "@kikiutils/mongoose": "^3.1.1",
-    "@kikiutils/shared": "^10.2.1",
+    "@kikiutils/mongoose": "^3.3.0",
+    "@kikiutils/shared": "^10.3.0",
     "@kikiutils/tsconfigs": "^5.0.4",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/lodash-es": "^4.17.12",

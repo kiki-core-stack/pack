@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.75.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.74.0...v0.75.0)
+
+### 🚀 Enhancements
+
+- Add `WithAdminAuditData` global interface ([af80dfb](https://github.com/kiki-core-stack/pack/commit/af80dfb))
+- Add `SmartDataToBaseMongooseDocType` global type ([2fecacb](https://github.com/kiki-core-stack/pack/commit/2fecacb))
+
+### 💅 Refactors
+
+- Replace `BaseMongooseDocType` with `DataToBaseMongooseDocType` ([f6bf2c7](https://github.com/kiki-core-stack/pack/commit/f6bf2c7))
+- Change `ZodValidatorTypeExcludeField` type to `'id' ([ keyof WithAdminAuditData`](https://github.com/kiki-core-stack/pack/commit/ keyof WithAdminAuditData`))
+- Replace `DataToBaseMongooseDocType` with `SmartDataToBaseMongooseDocType` ([9a0288c](https://github.com/kiki-core-stack/pack/commit/9a0288c))
+- Update `SmartDataToBaseMongooseDocType` to infer `CreatedAtField` and `UpdatedAtField` based on input type ([167600e](https://github.com/kiki-core-stack/pack/commit/167600e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+- 40d2bc3 ([@kiki-kanri](https://github.com/kiki-kanri))
+
 ## v0.74.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.73.0...v0.74.0)
