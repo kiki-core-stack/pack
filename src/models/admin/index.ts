@@ -5,7 +5,7 @@ import { Schema } from 'mongoose';
 
 import type { AdminData } from '../../types/data/admin';
 
-export type Admin = BaseMongooseDocType<AdminData>;
+export type Admin = DataToBaseMongooseDocType<AdminData>;
 export type AdminDocument = MongooseHydratedDocument<Admin, AdminMethodsAndOverrides>;
 type AdminModel = BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides>;
 

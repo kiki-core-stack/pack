@@ -1,18 +1,13 @@
 import * as s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { Schema } from 'mongoose';
-import type { Types } from 'mongoose';
 
 import { mongooseRefSchemas } from '../../constants/mongoose';
 import type { AdminSessionData } from '../../types/data/admin';
 
+export type AdminSession = DataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
 export type AdminSessionDocument = MongooseHydratedDocument<AdminSession, AdminSessionMethodsAndOverrides>;
 type AdminSessionModel = BaseMongoosePaginateModel<AdminSession, AdminSessionMethodsAndOverrides>;
-
-export interface AdminSession extends BaseMongooseDocType<Except<AdminSessionData, 'admin' | 'lastActiveAt'>> {
-    admin: Types.ObjectId;
-    lastActiveAt: Date;
-}
 
 interface AdminSessionMethodsAndOverrides {
     token: string;
