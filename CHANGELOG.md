@@ -12,14 +12,13 @@
 ### 💅 Refactors
 
 - Replace `BaseMongooseDocType` with `DataToBaseMongooseDocType` ([f6bf2c7](https://github.com/kiki-core-stack/pack/commit/f6bf2c7))
-- Change `ZodValidatorTypeExcludeField` type to `'id' ([ keyof WithAdminAuditData`](https://github.com/kiki-core-stack/pack/commit/ keyof WithAdminAuditData`))
+- Change `ZodValidatorTypeExcludeField` type to `'id' | keyof WithAdminAuditData` ([40d2bc3](https://github.com/kiki-core-stack/pack/commit/40d2bc3))
 - Replace `DataToBaseMongooseDocType` with `SmartDataToBaseMongooseDocType` ([9a0288c](https://github.com/kiki-core-stack/pack/commit/9a0288c))
 - Update `SmartDataToBaseMongooseDocType` to infer `CreatedAtField` and `UpdatedAtField` based on input type ([167600e](https://github.com/kiki-core-stack/pack/commit/167600e))
 
 ### ❤️ Contributors
 
 - kiki-kanri
-- 40d2bc3 ([@kiki-kanri](https://github.com/kiki-kanri))
 
 ## v0.74.0
 
