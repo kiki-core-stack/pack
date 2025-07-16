@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@kikiutils/types':
-        specifier: ^5.3.0
-        version: 5.3.0
+        specifier: ^5.4.0
+        version: 5.4.0
     devDependencies:
       '@hono/zod-validator':
         specifier: ^0.7.1
@@ -31,8 +31,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
       '@kikiutils/shared':
-        specifier: ^10.4.0
-        version: 10.4.0
+        specifier: ^11.0.0
+        version: 11.0.0
       '@kikiutils/tsconfigs':
         specifier: ^5.0.4
         version: 5.0.4
@@ -653,15 +653,15 @@ packages:
     resolution: {integrity: sha512-7avxtxwtvF0A68B0pTq7Ic0TxfzWd7uhzC8ZV+/zYkJto49G8rA1aQrYUMEoDhkA5+L0CE6pn7Uy8+YllQMWEQ==}
     engines: {node: '>=18.12.1'}
 
-  '@kikiutils/shared@10.4.0':
-    resolution: {integrity: sha512-JUV9ZxzCSJ+gJpGpZ4dnB3i/f3emV4Tetka/0ovMhTzoAaSVIuC0USEjCK3I7hdCiCQvAYotglkpbdyxin+HRw==}
-    engines: {node: '>=18.12.1'}
+  '@kikiutils/shared@11.0.0':
+    resolution: {integrity: sha512-VN8PzZzlxd8+VbCfy95ZTR9kGKM7MeN6isfBkoteu2Iobmrgue+1CjcJLL7zSDkKvshsKtTLGrvDX/RaY5ZmQA==}
+    engines: {node: '>=20.0.0'}
 
   '@kikiutils/tsconfigs@5.0.4':
     resolution: {integrity: sha512-KrUx/dZP92SUmfwQirFzflAT0r/OAicgTzB/b5bXG4H2nnyfbhHpPd3BZYeFZn0Nm2ufnbR2uhJkHupZkn3vpA==}
 
-  '@kikiutils/types@5.3.0':
-    resolution: {integrity: sha512-dQArYNd9Q2H/d+GtvqUtlkfuWhf/36T6gZ9pz3cWgJLHMPEAiqnIC38Nga2Zxxg86NJcopVihVEoONXzdXaBuQ==}
+  '@kikiutils/types@5.4.0':
+    resolution: {integrity: sha512-JVGWXFNmdDpTBVYEBakFyof93bTIAa2UDeJP0xabdiSbB+ayoJ1Gba2ItQvhNzUGXHPqeSLFjxUlPxc53C1bRQ==}
 
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
@@ -3578,12 +3578,13 @@ snapshots:
       - socks
       - supports-color
 
-  '@kikiutils/shared@10.4.0': {}
+  '@kikiutils/shared@11.0.0': {}
 
   '@kikiutils/tsconfigs@5.0.4': {}
 
-  '@kikiutils/types@5.3.0':
+  '@kikiutils/types@5.4.0':
     dependencies:
+      '@types/node': 24.0.14
       bson: 6.10.4
       type-fest: 4.41.0
 
