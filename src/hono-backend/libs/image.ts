@@ -1,4 +1,4 @@
-import type { Blob } from 'node:buffer';
+import type { Buffer } from 'node:buffer';
 
 import type {
     SharpOptions,
@@ -17,7 +17,7 @@ const animatedMimeTypes = new Set([
 ]);
 
 export async function uploadImageAndCreateFileDocument(
-    imageFile: Blob,
+    imageFile: Exclude<BinaryInput, Buffer>,
     storage: BaseFileStorage,
     convertImageInputOptions?: SharpOptions,
     convertImageOutputOptions?: WebpOptions,

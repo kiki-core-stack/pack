@@ -1,8 +1,8 @@
-import type { Buffer } from 'node:buffer';
 import { access } from 'node:fs/promises';
 
 import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
+import { toBuffer } from '@kikiutils/shared/buffer';
 import { checkAndGetEnvValue } from '@kikiutils/shared/env';
 
 import { FileStorageProvider } from '../../../constants/file';
@@ -44,8 +44,9 @@ export class LocalFileStorage extends BaseFileStorage {
         }
     }
 
-    async upload(buffer: Buffer, filePath?: PathLike, extension?: string) {
-        const hash = this.getFileHash(buffer);
+    async upload(input: BinaryInput, filePath?: PathLike, extension?: string) {
+        const buffer = await toBuffer(input);
+        const hash = await this.getFileHash(buffer);
         if (!filePath) filePath = this.buildFilePathFromHash(hash, extension);
         filePath = this.#basePath.join(filePath);
         if (!await filePath.parent.mkdirp({ mode: 0o755 })) {

@@ -1,6 +1,5 @@
-import type { Buffer } from 'node:buffer';
-
 import type { PathLike } from '@kikiutils/classes/path';
+import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 
 import type { FileStorageProvider } from '../../../constants/file';
@@ -38,11 +37,15 @@ export abstract class BaseFileStorage {
         } as const;
     }
 
-    protected getFileHash(buffer: Buffer) {
-        return cryptoSha3256(buffer);
+    protected async getFileHash(input: BinaryInput) {
+        return cryptoSha3256(await toBuffer(input));
     }
 
     abstract delete(filePath: PathLike): Promise<Result>;
     abstract exists(filePath: PathLike): Promise<Result<boolean>>;
-    abstract upload(buffer: Buffer, filePath?: PathLike, extension?: string): Promise<Result<FileStorageUploadResult>>;
+    abstract upload(
+        input: BinaryInput,
+        filePath?: PathLike,
+        extension?: string
+    ): Promise<Result<FileStorageUploadResult>>;
 }

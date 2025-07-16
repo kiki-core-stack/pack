@@ -1,7 +1,6 @@
-import type { Blob as BufferBlob } from 'node:buffer';
+import { toBuffer } from '@kikiutils/shared/buffer';
+import { fileTypeFromBuffer } from 'file-type';
 
-import { fileTypeFromBlob } from 'file-type';
-
-export async function getFileMimeType(file: Blob | BufferBlob) {
-    return (await fileTypeFromBlob(file as Blob))?.mime.toLowerCase();
+export async function getFileMimeType(input: BinaryInput) {
+    return (await fileTypeFromBuffer(await toBuffer(input)))?.mime.toLowerCase();
 }
