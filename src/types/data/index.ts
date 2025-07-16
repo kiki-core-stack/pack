@@ -14,14 +14,12 @@ declare global {
         T,
         ObjectIdFields extends Exclude<keyof T, keyof WithAdminAuditData> = never,
         DateFields extends Exclude<keyof T, EffectiveObjectIdFields<T, ObjectIdFields>> = never,
-        CreatedAtField extends boolean = true,
-        UpdatedAtField extends boolean = true,
     > = DataToBaseMongooseDocType<
         T,
         EffectiveObjectIdFields<T, ObjectIdFields>,
         DateFields,
-        CreatedAtField,
-        UpdatedAtField
+        T extends { createdAt: string } ? true : false,
+        T extends { updatedAt: string } ? true : false
     >;
 
     interface ApiResponseData<D extends object | undefined = undefined, E extends string | undefined = undefined> {

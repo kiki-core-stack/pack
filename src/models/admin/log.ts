@@ -10,7 +10,7 @@ import {
 } from '../../constants/mongoose';
 import type { AdminLogData } from '../../types/data/admin';
 
-export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin', never, true, false>;
+export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin'>;
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 
