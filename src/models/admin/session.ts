@@ -5,7 +5,7 @@ import { Schema } from 'mongoose';
 import { mongooseRefSchemas } from '../../constants/mongoose';
 import type { AdminSessionData } from '../../types/data/admin';
 
-export type AdminSession = DataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
+export type AdminSession = SmartDataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
 export type AdminSessionDocument = MongooseHydratedDocument<AdminSession, AdminSessionMethodsAndOverrides>;
 type AdminSessionModel = BaseMongoosePaginateModel<AdminSession, AdminSessionMethodsAndOverrides>;
 

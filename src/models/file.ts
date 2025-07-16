@@ -17,7 +17,7 @@ import * as enhancedRedisStore from '../stores/enhanced/redis';
 import * as lruStore from '../stores/lru';
 import type { FileData } from '../types/data/file';
 
-export type File = DataToBaseMongooseDocType<FileData, never, never, true, false>;
+export type File = SmartDataToBaseMongooseDocType<FileData, never, never, true, false>;
 export type FileDocument = MongooseHydratedDocument<File>;
 type FileModel = BaseMongoosePaginateModel<File>;
 
