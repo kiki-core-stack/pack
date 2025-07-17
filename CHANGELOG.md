@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.76.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.75.0...v0.76.0)
+
+### 💅 Refactors
+
+- Update file-type function inputs ([bce5409](https://github.com/kiki-core-stack/pack/commit/bce5409))
+- Update custom `fileId` zod schema builder ([908907e](https://github.com/kiki-core-stack/pack/commit/908907e))
+- Improve readability of `getFileMimeType` function ([37a8c40](https://github.com/kiki-core-stack/pack/commit/37a8c40))
+- Rename `Readonlyable` to `MaybeReadonly` ([7aac696](https://github.com/kiki-core-stack/pack/commit/7aac696))
+
+### 🏡 Chore
+
+- Fix CHANGELOG ([e71ecc5](https://github.com/kiki-core-stack/pack/commit/e71ecc5))
+- Upgrade and add `@kikiutils/fs-extra` dependencies ([f1370cf](https://github.com/kiki-core-stack/pack/commit/f1370cf))
+- ⚠️ Drop support for Node.js 18.12.1, set minimum supported version to 20 ([32c6ad3](https://github.com/kiki-core-stack/pack/commit/32c6ad3))
+- Upgrade dependencies ([97ef53e](https://github.com/kiki-core-stack/pack/commit/97ef53e))
+- Upgrade dependencies ([b1d34d3](https://github.com/kiki-core-stack/pack/commit/b1d34d3))
+
+### ✅ Tests
+
+- Update all test units ([578056c](https://github.com/kiki-core-stack/pack/commit/578056c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Drop support for Node.js 18.12.1, set minimum supported version to 20 ([32c6ad3](https://github.com/kiki-core-stack/pack/commit/32c6ad3))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.75.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.74.0...v0.75.0)
