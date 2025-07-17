@@ -2,40 +2,39 @@ import {
     describe,
     it,
 } from 'vitest';
-import * as z from 'zod';
 
-import { coerceBooleanStrict } from '../../../src/libs/zod/boolean';
+import * as z from '../../../src/libs/zod';
 
 describe.concurrent('coerceBooleanStrict', () => {
     describe.concurrent('valid boolean coercions', () => {
         it('should accept boolean true', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(true);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(true);
             expect(result.success).toBe(true);
             expect(result.data).toBe(true);
         });
 
         it('should accept boolean false', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(false);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(false);
             expect(result.success).toBe(true);
             expect(result.data).toBe(false);
         });
 
         it('should coerce string "true" to boolean true', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('true');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('true');
             expect(result.success).toBe(true);
             expect(result.data).toBe(true);
         });
 
         it('should coerce string "false" to boolean false', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('false');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('false');
             expect(result.success).toBe(true);
             expect(result.data).toBe(false);
         });
@@ -43,9 +42,9 @@ describe.concurrent('coerceBooleanStrict', () => {
 
     describe.concurrent('invalid inputs', () => {
         it('should reject string "TRUE" (uppercase)', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('TRUE');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('TRUE');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -55,9 +54,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "FALSE" (uppercase)', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('FALSE');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('FALSE');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -67,9 +66,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "True" (mixed case)', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('True');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('True');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -79,9 +78,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "False" (mixed case)', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('False');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('False');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -91,9 +90,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject number 1', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(1);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(1);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -103,9 +102,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject number 0', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(0);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(0);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -115,9 +114,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "1"', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('1');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('1');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -127,9 +126,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "0"', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('0');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('0');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -139,9 +138,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "yes"', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('yes');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('yes');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -151,9 +150,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string "no"', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('no');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('no');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -163,9 +162,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject empty string', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -175,9 +174,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject null', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(null);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(null);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -187,9 +186,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject undefined', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(undefined);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(undefined);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -199,9 +198,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject object', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse({});
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse({});
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -211,9 +210,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject array', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse([]);
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse([]);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -223,9 +222,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string with spaces "true "', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse('true ');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse('true ');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -235,9 +234,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should reject string with spaces " false"', ({ expect }) => {
-            const schema = coerceBooleanStrict();
-            const result = schema.safeParse(' false');
+            const schema = z.coerceBooleanStrict();
 
+            const result = schema.safeParse(' false');
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -249,36 +248,36 @@ describe.concurrent('coerceBooleanStrict', () => {
 
     describe.concurrent('integration with Zod methods', () => {
         it('should work with optional()', ({ expect }) => {
-            const schema = coerceBooleanStrict().optional();
-            const result = schema.safeParse(undefined);
+            const schema = z.coerceBooleanStrict().optional();
 
+            const result = schema.safeParse(undefined);
             expect(result.success).toBe(true);
             expect(result.data).toBeUndefined();
         });
 
         it('should work with nullable()', ({ expect }) => {
-            const schema = coerceBooleanStrict().nullable();
-            const result = schema.safeParse(null);
+            const schema = z.coerceBooleanStrict().nullable();
 
+            const result = schema.safeParse(null);
             expect(result.success).toBe(true);
             expect(result.data).toBeNull();
         });
 
         it('should work with default()', ({ expect }) => {
-            const schema = coerceBooleanStrict().default(true);
-            const result = schema.safeParse(undefined);
+            const schema = z.coerceBooleanStrict().default(true);
 
+            const result = schema.safeParse(undefined);
             expect(result.success).toBe(true);
             expect(result.data).toBe(true);
         });
 
         it('should work in object schema', ({ expect }) => {
-            const objectSchema = z.object({
-                enabled: coerceBooleanStrict(),
-                isActive: coerceBooleanStrict(),
+            const schema = z.object({
+                enabled: z.coerceBooleanStrict(),
+                isActive: z.coerceBooleanStrict(),
             });
 
-            const result = objectSchema.safeParse({
+            const result = schema.safeParse({
                 enabled: false,
                 isActive: 'true',
             });
@@ -291,8 +290,9 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should work in array schema', ({ expect }) => {
-            const arraySchema = z.array(coerceBooleanStrict());
-            const result = arraySchema.safeParse([
+            const schema = z.array(z.coerceBooleanStrict());
+
+            const result = schema.safeParse([
                 true,
                 'false',
                 'true',
@@ -311,11 +311,11 @@ describe.concurrent('coerceBooleanStrict', () => {
 
     describe.concurrent('edge cases', () => {
         it('should handle boolean objects created with Boolean constructor', ({ expect }) => {
-            const schema = coerceBooleanStrict();
+            const schema = z.coerceBooleanStrict();
             // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
             const booleanObject = new Boolean(true);
-            const result = schema.safeParse(booleanObject);
 
+            const result = schema.safeParse(booleanObject);
             expect(result.success).toBe(false);
             expect(result.error?.issues[0]?.code).toBe('invalid_type');
             if (result.error?.issues[0]?.code === 'invalid_type') {
@@ -325,15 +325,14 @@ describe.concurrent('coerceBooleanStrict', () => {
         });
 
         it('should maintain strict equality for coerced values', ({ expect }) => {
-            const schema = coerceBooleanStrict();
+            const schema = z.coerceBooleanStrict();
 
             const trueResult = schema.safeParse('true');
-            const falseResult = schema.safeParse('false');
-
             expect(trueResult.success).toBe(true);
-            expect(falseResult.success).toBe(true);
-
             expect(trueResult.data === true).toBe(true);
+
+            const falseResult = schema.safeParse('false');
+            expect(falseResult.success).toBe(true);
             expect(falseResult.data === false).toBe(true);
         });
     });

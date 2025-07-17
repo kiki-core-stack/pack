@@ -1,4 +1,3 @@
-import { fileTypeFromBlob as _fileTypeFromBlob } from 'file-type';
 import {
     describe,
     it,
@@ -7,12 +6,20 @@ import {
 
 import { getFileMimeType } from '../../src/utils/file';
 
-vi.mock('file-type', () => ({ fileTypeFromBlob: vi.fn() }));
-const fileTypeFromBlob = vi.mocked(_fileTypeFromBlob);
+// Mocks
+vi.mock('file-type', () => ({ fileTypeFromBuffer: vi.fn() }));
 
-describe.concurrent('getFileMimeType', () => {
+// Functions
+async function getMockedFileTypeFromBuffer() {
+    const { fileTypeFromBuffer } = await import('file-type');
+    return vi.mocked(fileTypeFromBuffer);
+}
+
+// Tests
+describe('getFileMimeType', () => {
     it('should return lowercase mime type if file is recognized', async ({ expect }) => {
-        fileTypeFromBlob.mockResolvedValue({
+        const fileTypeFromBuffer = await getMockedFileTypeFromBuffer();
+        fileTypeFromBuffer.mockResolvedValue({
             ext: 'png',
             mime: 'image/png',
         });
@@ -22,7 +29,9 @@ describe.concurrent('getFileMimeType', () => {
     });
 
     it('should return undefined if file-type returns undefined', async ({ expect }) => {
-        fileTypeFromBlob.mockResolvedValue(undefined);
+        const fileTypeFromBuffer = await getMockedFileTypeFromBuffer();
+        fileTypeFromBuffer.mockResolvedValue(undefined);
+
         const result = await getFileMimeType(new Blob());
         expect(result).toBeUndefined();
     });
