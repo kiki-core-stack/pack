@@ -12,7 +12,7 @@ interface ZodCustomFile extends ZodFile {
     maxSize: (bytes: number) => this;
     maxSizeKb: (kb: number) => this;
     maxSizeMb: (mb: number) => this;
-    mimeType: (...mimeTypes: Readonlyable<Arrayable<string>>[]) => this;
+    mimeType: (...mimeTypes: MaybeReadonly<Arrayable<string>>[]) => this;
     minSize: (bytes: number) => this;
     minSizeKb: (kb: number) => this;
     minSizeMb: (mb: number) => this;
@@ -104,7 +104,7 @@ export function customFile() {
             };
         }
 
-        function mimeType(...mimeTypes: Readonlyable<Arrayable<string>>[]) {
+        function mimeType(...mimeTypes: MaybeReadonly<Arrayable<string>>[]) {
             mimeTypes.flat().forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
             return proxy;
         }
