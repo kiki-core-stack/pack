@@ -24,6 +24,10 @@
       "types": "./dist/constants/index.d.ts",
       "import": "./dist/constants/index.mjs"
     },
+    "./constants/mongoose": {
+      "types": "./dist/constants/mongoose/index.d.ts",
+      "import": "./dist/constants/mongoose/index.mjs"
+    },
     "./hono-backend/libs/api": {
       "types": "./dist/hono-backend/libs/api/index.d.ts",
       "import": "./dist/hono-backend/libs/api/index.mjs"

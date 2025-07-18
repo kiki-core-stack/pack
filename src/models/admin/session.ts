@@ -2,7 +2,7 @@ import * as s from '@kikiutils/mongoose/schema-builders';
 import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { Schema } from 'mongoose';
 
-import { mongooseRefSchemas } from '../../constants/mongoose';
+import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import type { AdminSessionData } from '../../types/data/admin';
 
 export type AdminSession = SmartDataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
@@ -14,7 +14,7 @@ interface AdminSessionMethodsAndOverrides {
 }
 
 const schema = new Schema<AdminSession, AdminSessionModel, AdminSessionMethodsAndOverrides>({
-    admin: mongooseRefSchemas.admin.required,
+    admin: mongooseRefSchemas.admin().required,
     lastActiveAt: s.date().required,
     lastActiveIp: s.string().trim.required,
     loginIp: s.string().trim.required,

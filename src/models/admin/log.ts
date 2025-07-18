@@ -4,10 +4,8 @@ import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
 import { AdminLogType } from '../../constants/admin';
-import {
-    mongooseRefSchemas,
-    schemaTimestampsConfigOnlyCreatedAt,
-} from '../../constants/mongoose';
+import { schemaTimestampsConfigOnlyCreatedAt } from '../../constants/mongoose';
+import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import type { AdminLogData } from '../../types/data/admin';
 
 export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin'>;
@@ -16,7 +14,7 @@ type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 
 const schema = new Schema<AdminLog, AdminLogModel>(
     {
-        admin: mongooseRefSchemas.admin.required,
+        admin: mongooseRefSchemas.admin().required,
         fingerprint: s.string().trim.nonRequired,
         ip: s.string().trim.nonRequired,
         note: s.string().trim.nonRequired,
