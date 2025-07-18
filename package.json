@@ -69,7 +69,7 @@
     "depcheck": "depcheck",
     "lint": "eslint --max-warnings 0",
     "lint:fix": "eslint --fix --max-warnings 0",
-    "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && sh ./build-and-publish.sh",
+    "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && bash ./build-and-publish.sh",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
     "typecheck": "tsc --noEmit",
