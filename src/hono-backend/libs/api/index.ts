@@ -5,7 +5,7 @@ import type {
     ZodObject,
 } from 'zod';
 
-import type { FixedApiErrorThrower } from '../../../types/hono-backend/api';
+import type { FixedApiErrorCreator } from '../../types/api';
 
 import { ApiError } from './error';
 
@@ -20,7 +20,7 @@ export function createApiSuccessResponseData<D extends object | undefined = unde
     };
 }
 
-export function createFixedApiErrorThrower<
+export function createFixedApiErrorCreator<
     S extends ContentfulStatusCode,
     E extends string,
     DataSchema extends ZodObject,
@@ -32,14 +32,14 @@ export function createFixedApiErrorThrower<
 ) {
     return Object.assign(
         (data?: output<DataSchema>, message?: string) => {
-            throwApiError(statusCode, message ?? defaultMessage, errorCode, data);
+            return new ApiError(statusCode, message ?? defaultMessage, errorCode, data);
         },
         {
             dataSchema,
             errorCode,
             statusCode,
         },
-    ) as FixedApiErrorThrower<S, E, DataSchema>;
+    ) as FixedApiErrorCreator<S, E, DataSchema>;
 }
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
