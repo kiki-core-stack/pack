@@ -52,9 +52,7 @@ export function customFile() {
                 });
             }
 
-            if (ctx.value.type !== detectedMimeType) {
-                ctx.value = new File([ctx.value], '', { type: detectedMimeType });
-            }
+            if (ctx.value.type !== detectedMimeType) ctx.value = new File([ctx.value], '', { type: detectedMimeType });
         });
 
     function decorate(schema: any): ZodCustomFile {
