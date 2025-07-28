@@ -36,6 +36,7 @@ export function createFixedApiErrorCreator<
         },
         {
             dataSchema,
+            defaultMessage,
             errorCode,
             statusCode,
         },
