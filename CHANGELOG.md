@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.77.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.76.0...v0.77.0)
+
+### 🚀 Enhancements
+
+- Add `defaultMessage` field to `FixedApiErrorCreator` ([9cd9560](https://github.com/kiki-core-stack/pack/commit/9cd9560))
+
+### 🩹 Fixes
+
+- Add missing `defaultMessage` property to function returned by `createFixedApiErrorCreator` ([0a3048a](https://github.com/kiki-core-stack/pack/commit/0a3048a))
+
+### 💅 Refactors
+
+- Update `mongooseRefSchemas` ([0c43f42](https://github.com/kiki-core-stack/pack/commit/0c43f42))
+- Change `FixedApiErrorThrower` to `FixedApiErrorCreator` ([17db20b](https://github.com/kiki-core-stack/pack/commit/17db20b))
+
+### 🏡 Chore
+
+- Use bash to correctly execute `build-and-publish.sh` during `release` command ([78d114f](https://github.com/kiki-core-stack/pack/commit/78d114f))
+- Format code ([95c0052](https://github.com/kiki-core-stack/pack/commit/95c0052))
+- Upgrade dependencies ([aa8db3e](https://github.com/kiki-core-stack/pack/commit/aa8db3e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.76.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.75.0...v0.76.0)
