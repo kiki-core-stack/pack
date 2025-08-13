@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.77.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.1...v0.77.2)
+
+### 🚀 Enhancements
+
+- Add `adminPermission` enhanced redis store ([030e6a8](https://github.com/kiki-core-stack/pack/commit/030e6a8))
+
+### 🏡 Chore
+
+- Bump tsconfig target to es2023 ([b9185b7](https://github.com/kiki-core-stack/pack/commit/b9185b7))
+- Update `.gitignore` ([1465997](https://github.com/kiki-core-stack/pack/commit/1465997))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.77.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.0...v0.77.1)
