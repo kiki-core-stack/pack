@@ -26,6 +26,11 @@ export interface AdminLoginFormData {
     verCode: string;
 }
 
+export interface AdminRoleData extends BaseMongooseModelData, WithAdminAuditData {
+    name: string;
+    permissions: string[];
+}
+
 export interface AdminSessionData extends BaseMongooseModelData {
     admin: Partial<AdminData>;
     isCurrent?: boolean;
