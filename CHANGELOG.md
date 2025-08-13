@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.77.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.0...v0.77.1)
+
+### 🚀 Enhancements
+
+- Add `AdminRole` model ([c80eb20](https://github.com/kiki-core-stack/pack/commit/c80eb20))
+- Add `isSuperAdmin` and `roles` fields to `AdminModel` ([8cd4470](https://github.com/kiki-core-stack/pack/commit/8cd4470))
+
+### 🏡 Chore
+
+- Format code ([c49ec1b](https://github.com/kiki-core-stack/pack/commit/c49ec1b))
+- Upgrade dependencies ([bfd191f](https://github.com/kiki-core-stack/pack/commit/bfd191f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.77.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.76.0...v0.77.0)
