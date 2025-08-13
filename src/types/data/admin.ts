@@ -9,7 +9,9 @@ export interface AdminData extends BaseMongooseModelData {
     account: string;
     email?: string;
     enabled: boolean;
+    isSuperAdmin: boolean;
     password?: string;
+    roles: Partial<AdminRoleData>[];
 }
 
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
