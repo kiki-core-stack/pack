@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.77.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.2...v0.77.3)
+
+### 🚀 Enhancements
+
+- Add `writeAdminPermissionTypesFile` lib ([af3aa28](https://github.com/kiki-core-stack/pack/commit/af3aa28))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.77.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.1...v0.77.2)
