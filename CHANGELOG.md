@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.78.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.3...v0.78.0)
+
+### 💅 Refactors
+
+- ⚠️ Rename `VirtualAdminPermission` to `AdminPermissionGroup` in `writeAdminPermissionTypesFile` ([713a72e](https://github.com/kiki-core-stack/pack/commit/713a72e))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename `VirtualAdminPermission` to `AdminPermissionGroup` in `writeAdminPermissionTypesFile` ([713a72e](https://github.com/kiki-core-stack/pack/commit/713a72e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.77.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.2...v0.77.3)
