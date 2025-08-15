@@ -6,20 +6,20 @@ import { dirname } from 'node:path';
 
 export async function writeAdminPermissionTypesFile(permissions: string[], targetFilePath: string) {
     permissions = permissions.toSorted();
-    const virtualPermissionsSet = new Set<string>();
+    const permissionGroupsSet = new Set<string>();
     permissions.forEach((permission) => {
         const parts = permission.split('.');
-        for (let i = 1; i < parts.length; i++) virtualPermissionsSet.add(parts.slice(0, i).join('.'));
+        for (let i = 1; i < parts.length; i++) permissionGroupsSet.add(parts.slice(0, i).join('.'));
     });
 
-    const virtualPermissions = [...virtualPermissionsSet].sort();
+    const permissionGroups = [...permissionGroupsSet].sort();
     const fileContents = [
         'export type AdminPermission =',
         ...permissions.map((path, index) => `  | '${path}'${index === permissions.length - 1 ? ';' : ''}`),
         '',
-        'export type VirtualAdminPermission =',
-        ...virtualPermissions.map((path, index) => {
-            return `  | '${path}'${index === virtualPermissions.length - 1 ? ';' : ''}`;
+        'export type AdminPermissionGroup =',
+        ...permissionGroups.map((path, index) => {
+            return `  | '${path}'${index === permissionGroups.length - 1 ? ';' : ''}`;
         }),
     ];
 
