@@ -2,12 +2,18 @@ import { createKeyedEnhancedRedisStore } from '@kikiutils/shared/storage/enhance
 
 import { enhancedRedisStorage } from '../../storages/enhanced/redis';
 import type { CachedAdminPermission } from '../../types/admin';
+import type { AdminQrCodeLoginData } from '../../types/data/admin';
 import type { FileDocumentData } from '../../types/data/file';
 import type { EmailOtpCodeType } from '../../types/otp';
 
 // eslint-disable-next-line style/max-len
 export const adminPermission = /* @__PURE__ */ createKeyedEnhancedRedisStore<CachedAdminPermission>(enhancedRedisStorage)(
     (adminId: string) => `adminPermission:${adminId}`,
+);
+
+// eslint-disable-next-line style/max-len
+export const adminQrCodeLoginData = /* @__PURE__ */ createKeyedEnhancedRedisStore<AdminQrCodeLoginData>(enhancedRedisStorage)(
+    (token: string) => `adminQrCodeLoginData:${token}`,
 );
 
 export const emailOtpCode = /* @__PURE__ */ createKeyedEnhancedRedisStore<string>(enhancedRedisStorage)(

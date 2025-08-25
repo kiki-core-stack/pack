@@ -28,6 +28,12 @@ export interface AdminLoginFormData {
     verCode: string;
 }
 
+export interface AdminQrCodeLoginData {
+    ip: string;
+    status: 'approved' | 'pending';
+    userAgent?: string;
+}
+
 export interface AdminRoleData extends BaseMongooseModelData, WithAdminAuditData {
     name: string;
     permissions: string[];
