@@ -29,6 +29,7 @@ export interface AdminLoginFormData {
 }
 
 export interface AdminQrCodeLoginData {
+    adminId?: string;
     ip: string;
     status: 'approved' | 'pending';
     userAgent?: string;
