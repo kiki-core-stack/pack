@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.78.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.1...v0.78.2)
+
+### 🚀 Enhancements
+
+- `AdminQrCodeLoginData` add `adminId` field ([0412b54](https://github.com/kiki-core-stack/pack/commit/0412b54))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.78.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.0...v0.78.1)
