@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.78.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.0...v0.78.1)
+
+### 🚀 Enhancements
+
+- Add `adminQrCodeLoginData` enhanced redis store ([61c49b9](https://github.com/kiki-core-stack/pack/commit/61c49b9))
+
+### 🏡 Chore
+
+- Upgrade dependencies ([8eea0fa](https://github.com/kiki-core-stack/pack/commit/8eea0fa))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.78.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.77.3...v0.78.0)
