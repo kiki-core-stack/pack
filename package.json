@@ -85,7 +85,7 @@
     "@kikiutils/eslint-config": "^2.1.0",
     "@kikiutils/fs-extra": "^4.0.2",
     "@kikiutils/mongoose": "^4.0.0",
-    "@kikiutils/shared": "^11.0.0",
+    "@kikiutils/shared": "^12.0.0",
     "@kikiutils/tsconfigs": "^5.0.4",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/lodash-es": "^4.17.12",
@@ -106,7 +106,7 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
-    "zod": "^4.1.1"
+    "zod": "^4.1.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
