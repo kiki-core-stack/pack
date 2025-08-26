@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.78.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.2...v0.78.3)
+
+### 🏡 Chore
+
+- **ci:** Configure pnpm cache in workflow ([79e2264](https://github.com/kiki-core-stack/pack/commit/79e2264))
+- Upgrade dependencies ([20ccb81](https://github.com/kiki-core-stack/pack/commit/20ccb81))
+- Set `peerDependencies` and `peerDependenciesMeta` in `package.json` ([6f39820](https://github.com/kiki-core-stack/pack/commit/6f39820))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.78.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.1...v0.78.2)
