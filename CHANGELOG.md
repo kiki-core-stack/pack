@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.79.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.1...v0.79.2)
+
 ## v0.79.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.0...v0.79.1)
