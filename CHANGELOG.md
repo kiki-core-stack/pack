@@ -1,5 +1,59 @@
 # Changelog
 
+## v0.79.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.3...v0.79.0)
+
+### 🚀 Enhancements
+
+- `statusCodeToApiResponseErrorCodeMap` and `statusCodeToApiResponseMessageMap` add 410 field ([a4edd0f](https://github.com/kiki-core-stack/pack/commit/a4edd0f))
+- Add `update-peer-dependencies-meta.ts` ([643c006](https://github.com/kiki-core-stack/pack/commit/643c006))
+
+### 🩹 Fixes
+
+- Resolve alias configuration error in tsdown setup ([656e2e0](https://github.com/kiki-core-stack/pack/commit/656e2e0))
+- Add missing -b flag to typecheck command ([cf0c795](https://github.com/kiki-core-stack/pack/commit/cf0c795))
+- Import missing `Except` type ([8f5e073](https://github.com/kiki-core-stack/pack/commit/8f5e073))
+
+### 💅 Refactors
+
+- **tsconfig:** Separate references so src and tests use different settings ([df472e2](https://github.com/kiki-core-stack/pack/commit/df472e2))
+- Update `LocalFileStorage` to stop using `@kikiutils/fs-extra` ([6d36ae9](https://github.com/kiki-core-stack/pack/commit/6d36ae9))
+- Unify import paths across all files to use `@/` alias where possible ([b7c8153](https://github.com/kiki-core-stack/pack/commit/b7c8153))
+
+### 📦 Build
+
+- ⚠️ Switch builder to tsdown and convert package to pure ESM ([d307be4](https://github.com/kiki-core-stack/pack/commit/d307be4))
+
+### 🏡 Chore
+
+- **ci:** Remove pnpm cache configure in workflow ([abc0801](https://github.com/kiki-core-stack/pack/commit/abc0801))
+- ⚠️ Drop support for Node.js 20, set minimum supported version to 22 ([3319820](https://github.com/kiki-core-stack/pack/commit/3319820))
+- Upgrade devDependencies ([57244a0](https://github.com/kiki-core-stack/pack/commit/57244a0))
+- Set tsdown alias and tsconfig paths ([be49779](https://github.com/kiki-core-stack/pack/commit/be49779))
+- Update tsdown config ([fc9e7cb](https://github.com/kiki-core-stack/pack/commit/fc9e7cb))
+- Add `tsconfig.base.json` ([f6ba6dd](https://github.com/kiki-core-stack/pack/commit/f6ba6dd))
+- Update eslint config ([99cd82e](https://github.com/kiki-core-stack/pack/commit/99cd82e))
+- Update tsdown entry ([9cbb6bb](https://github.com/kiki-core-stack/pack/commit/9cbb6bb))
+- Disable `isolatedDeclarations` ([85f066e](https://github.com/kiki-core-stack/pack/commit/85f066e))
+- Update eslint config ([09d584b](https://github.com/kiki-core-stack/pack/commit/09d584b))
+- Update all scripts ([fa5e797](https://github.com/kiki-core-stack/pack/commit/fa5e797))
+- Remove `update-package-exports` and unnecessary dependencies ([b0a7b4d](https://github.com/kiki-core-stack/pack/commit/b0a7b4d))
+- Update `build-and-publish.sh` ([59f533b](https://github.com/kiki-core-stack/pack/commit/59f533b))
+
+### ✅ Tests
+
+- Fix vitest config to correctly load tsconfig and aliases ([0522f79](https://github.com/kiki-core-stack/pack/commit/0522f79))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Switch builder to tsdown and convert package to pure ESM ([d307be4](https://github.com/kiki-core-stack/pack/commit/d307be4))
+- ⚠️ Drop support for Node.js 20, set minimum supported version to 22 ([3319820](https://github.com/kiki-core-stack/pack/commit/3319820))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.78.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.2...v0.78.3)
