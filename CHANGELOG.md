@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.79.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.2...v0.79.3)
+
+### 🩹 Fixes
+
+- Remove custom exports configuration from tsdown ([efb18bc](https://github.com/kiki-core-stack/pack/commit/efb18bc))
+- Remove tsdown `remove-types-js` plugin ([6922c2f](https://github.com/kiki-core-stack/pack/commit/6922c2f))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.79.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.1...v0.79.2)
