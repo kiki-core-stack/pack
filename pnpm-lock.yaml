@@ -25,8 +25,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(@vue/compiler-sfc@3.5.21)(eslint-flat-config-utils@2.1.1)(eslint@9.35.0(jiti@2.5.1))(tailwindcss@4.1.13)(typescript@5.9.2)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.4.0)(jiti@2.5.1)(yaml@2.8.1))(vue-eslint-parser@10.2.0(eslint@9.35.0(jiti@2.5.1)))
       '@kikiutils/mongoose':
-        specifier: ^5.1.2
-        version: 5.1.2
+        specifier: ^5.1.5
+        version: 5.1.5
       '@kikiutils/shared':
         specifier: ^13.0.1
         version: 13.0.1(consola@3.4.2)(decimal.js@10.6.0)(lru-cache@11.2.1)
@@ -806,8 +806,8 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       vue-eslint-parser: ^10.0.0
 
-  '@kikiutils/mongoose@5.1.2':
-    resolution: {integrity: sha512-xxtsQYzd11soUCvT5MF5iqXGC+NtYIvegMsZXgTO5QBb4LGMcJxgOdpaiF6Sq5rFEwQMjqeVA1BkURWSBx2peg==}
+  '@kikiutils/mongoose@5.1.5':
+    resolution: {integrity: sha512-HvMAf0SbEyIl7Z3B9jKn21RZCalMcNxqredNm5KNOP6xu5TJuTQlQD1f+CuyHKCV+FgArL1YUZwPS7rFhVDm/w==}
     engines: {node: '>=22.0.0'}
 
   '@kikiutils/shared@13.0.1':
@@ -4377,7 +4377,7 @@ snapshots:
       vue-eslint-parser: 10.2.0(eslint@9.35.0(jiti@2.5.1))
       xml-name-validator: 4.0.0
 
-  '@kikiutils/mongoose@5.1.2':
+  '@kikiutils/mongoose@5.1.5':
     dependencies:
       decimal.js: 10.6.0
       es-toolkit: 1.39.10
