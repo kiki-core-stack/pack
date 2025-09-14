@@ -8,7 +8,8 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { MongoServerError } from 'mongodb';
 import { ZodError } from 'zod';
 
-import { isDebugMode } from '../../constants';
+import { isDebugMode } from '@/constants';
+
 import { ApiError } from '../libs/api/error';
 
 // Constants

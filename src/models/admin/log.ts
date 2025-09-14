@@ -3,10 +3,10 @@ import { buildMongooseModel } from '@kikiutils/mongoose/utils';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
-import { AdminLogType } from '../../constants/admin';
-import { schemaTimestampsConfigOnlyCreatedAt } from '../../constants/mongoose';
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
-import type { AdminLogData } from '../../types/data/admin';
+import { AdminLogType } from '@/constants/admin';
+import { schemaTimestampsConfigOnlyCreatedAt } from '@/constants/mongoose';
+import * as mongooseRefSchemas from '@/constants/mongoose/ref-schemas';
+import type { AdminLogData } from '@/types/data/admin';
 
 export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin'>;
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;

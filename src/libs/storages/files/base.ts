@@ -2,7 +2,7 @@ import type { PathLike } from '@kikiutils/classes/path';
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 
-import type { FileStorageProvider } from '../../../constants/file';
+import type { FileStorageProvider } from '@/constants/file';
 
 import type { FileStorageUploadResult } from './types';
 

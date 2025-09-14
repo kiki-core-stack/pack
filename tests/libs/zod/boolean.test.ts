@@ -3,7 +3,7 @@ import {
     it,
 } from 'vitest';
 
-import * as z from '../../../src/libs/zod';
+import * as z from '@/libs/zod';
 
 describe.concurrent('coerceBooleanStrict', () => {
     describe.concurrent('valid boolean coercions', () => {

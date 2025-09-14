@@ -1,6 +1,6 @@
 import type { Except } from 'type-fest';
 
-import type { FileStorageProvider } from '../../constants/file';
+import type { FileStorageProvider } from '@/constants/file';
 
 export type BaseFileData = Pick<FileData, 'path' | 'provider'>;
 

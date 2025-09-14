@@ -2,7 +2,7 @@ import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import { MongoServerError } from 'mongodb';
 
-import { FileModel } from '../models/file';
+import { FileModel } from '@/models/file';
 
 import type { BaseFileStorage } from './storages/files/base';
 

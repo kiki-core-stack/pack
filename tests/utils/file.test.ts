@@ -4,7 +4,7 @@ import {
     vi,
 } from 'vitest';
 
-import { getFileMimeType } from '../../src/utils/file';
+import { getFileMimeType } from '@/utils/file';
 
 // Mocks
 vi.mock('file-type', () => ({ fileTypeFromBuffer: vi.fn() }));
