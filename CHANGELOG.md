@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.79.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.0...v0.79.1)
+
+### 🩹 Fixes
+
+- Ensure types are properly loaded during usage ([1cab33e](https://github.com/kiki-core-stack/pack/commit/1cab33e))
+
+### 📦 Build
+
+- Clean up js files under `dist/types` after tsdown build and update exports config ([2affd31](https://github.com/kiki-core-stack/pack/commit/2affd31))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.79.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.78.3...v0.79.0)
