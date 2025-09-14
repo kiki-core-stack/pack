@@ -1,7 +1,7 @@
 import type { ZodType } from 'zod';
 
-export type {} from '@kikiutils/mongoose/types';
-export type {} from '@kikiutils/types';
+export type * as _loadKikiutilsMongooseTypes from '@kikiutils/mongoose/types';
+export type * as _loadKikiutilsTypes from '@kikiutils/types';
 
 type ZodValidatorTypeExcludeField = 'id' | keyof WithAdminAuditData;
 

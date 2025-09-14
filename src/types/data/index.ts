@@ -1,6 +1,6 @@
 import type { AdminData } from './admin';
 
-export type {} from '@kikiutils/mongoose/types/data';
+export type * as _loadKikiutilsMongooseTypes from '@kikiutils/mongoose/types/data';
 
 type EffectiveObjectIdFields<
     T,
