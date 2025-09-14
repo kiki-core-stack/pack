@@ -5,5 +5,9 @@
       "@/*": ["./src/*"]
     },
     "noEmit": true
-  }
+  },
+  "files": [
+    "./src/types/data/index.ts",
+    "./src/types/index.ts"
+  ]
 }
