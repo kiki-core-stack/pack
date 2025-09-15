@@ -13,7 +13,7 @@ Description
 
 ## Requirements
 
-- **Node.js** `>= 24.0.0`
+- **Node.js** `>=24.0.0`
 
 ## Installation
 
