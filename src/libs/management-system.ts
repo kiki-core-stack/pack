@@ -4,7 +4,13 @@ import {
 } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-export async function writeAdminPermissionTypesFile(permissions: string[], targetFilePath: string) {
+import { capitalize } from 'es-toolkit';
+
+export async function writeManagementSystemPermissionTypesFile(
+    managementSystemType: ManagementSystemType,
+    permissions: string[],
+    targetFilePath: string,
+) {
     permissions = permissions.toSorted();
     const permissionGroupsSet = new Set<string>();
     permissions.forEach((permission) => {
@@ -13,11 +19,12 @@ export async function writeAdminPermissionTypesFile(permissions: string[], targe
     });
 
     const permissionGroups = [...permissionGroupsSet].sort();
+    const prefix = capitalize(managementSystemType);
     const fileContents = [
-        'export type AdminPermission =',
+        `export type ${prefix}Permission =`,
         ...permissions.map((path, index) => `  | '${path}'${index === permissions.length - 1 ? ';' : ''}`),
         '',
-        'export type AdminPermissionGroup =',
+        `export type ${prefix}PermissionGroup =`,
         ...permissionGroups.map((path, index) => {
             return `  | '${path}'${index === permissionGroups.length - 1 ? ';' : ''}`;
         }),

@@ -109,6 +109,7 @@
     "@kikiutils/shared": "^13.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/nodemailer": "^7.0.1",
+    "es-toolkit": "^1.39.10",
     "file-type": "^21.0.0",
     "fs-extra": "^11.3.1",
     "hono": "^4.9.4",
@@ -138,6 +139,9 @@
       "optional": true
     },
     "@types/nodemailer": {
+      "optional": true
+    },
+    "es-toolkit": {
       "optional": true
     },
     "file-type": {
@@ -183,16 +187,17 @@
     "@kikiutils/classes": "^7.0.0",
     "@kikiutils/eslint-config": "^3.0.1",
     "@kikiutils/mongoose": "^5.1.5",
-    "@kikiutils/shared": "^13.0.1",
+    "@kikiutils/shared": "^13.4.0",
     "@kikiutils/tsconfigs": "^5.0.5",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.4.0",
+    "@types/node": "^24.5.0",
     "@types/nodemailer": "^7.0.1",
     "@vitest/coverage-v8": "^3.2.4",
     "depcheck": "^1.4.7",
+    "es-toolkit": "^1.39.10",
     "file-type": "^21.0.0",
-    "fs-extra": "^11.3.1",
+    "fs-extra": "^11.3.2",
     "hono": "^4.9.7",
     "lru-cache": "^11.2.1",
     "mongodb": "^6.19.0",
@@ -203,7 +208,7 @@
     "socket.io-client": "^4.8.1",
     "ts-unused-exports": "^11.0.1",
     "tsconfck": "^3.1.6",
-    "tsdown": "^0.15.1",
+    "tsdown": "^0.15.2",
     "type-fest": "^5.0.0",
     "typescript": "^5.9.2",
     "unplugin-unused": "^0.5.3",
