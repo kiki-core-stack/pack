@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.79.4",
+  "version": "0.80.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -36,8 +36,8 @@
     "./hono-backend/setups/mongoose-model-statics/find-by-route-id": "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id.js",
     "./hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error": "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error.js",
     "./hono-backend/types/api": "./dist/hono-backend/types/api.js",
-    "./libs/admin": "./dist/libs/admin.js",
     "./libs/file": "./dist/libs/file.js",
+    "./libs/management-system": "./dist/libs/management-system.js",
     "./libs/socket.io": "./dist/libs/socket.io.js",
     "./libs/storages/files/base": "./dist/libs/storages/files/base.js",
     "./libs/storages/files/local": "./dist/libs/storages/files/local.js",

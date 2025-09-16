@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.80.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.4...v0.80.0)
+
+### 💅 Refactors
+
+- ⚠️ Rename `writeAdminPermissionTypesFile` to `writeManagementSystemPermissionTypesFile` ([9753ea7](https://github.com/kiki-core-stack/pack/commit/9753ea7))
+
+### 📖 Documentation
+
+- Update README ([63ba464](https://github.com/kiki-core-stack/pack/commit/63ba464))
+
+### 📦 Build
+
+- Update tsdown config to treat all dependencies as external ([f5e4f7a](https://github.com/kiki-core-stack/pack/commit/f5e4f7a))
+- Update tsdown customExports to remove entries with keys containing "internals" ([59b1622](https://github.com/kiki-core-stack/pack/commit/59b1622))
+- Update tsdown entry ([2e67d6b](https://github.com/kiki-core-stack/pack/commit/2e67d6b))
+- Set tsdown external from package.json instead of using wildcard * ([7dc5f28](https://github.com/kiki-core-stack/pack/commit/7dc5f28))
+
+### 🏡 Chore
+
+- Set minimum supported version to 22.12.0 ([76e8cc1](https://github.com/kiki-core-stack/pack/commit/76e8cc1))
+- Update default `REDIS_URL` ([2b275db](https://github.com/kiki-core-stack/pack/commit/2b275db))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Rename `writeAdminPermissionTypesFile` to `writeManagementSystemPermissionTypesFile` ([9753ea7](https://github.com/kiki-core-stack/pack/commit/9753ea7))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.79.4
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.3...v0.79.4)
