@@ -9,13 +9,13 @@ function createEnumObject<N extends string, T extends string[]>(name: N, keys: T
     return enumObject as { [key in T[number]]: `${LowercaseUppercaseLetters<N>}.${LowercaseUppercaseLetters<key>}` };
 }
 
-export const ToAdminBackend = /* @__PURE__ */ createEnumObject(
-    'ToAdminBackend',
+export const ToManagementSystemBackend = /* @__PURE__ */ createEnumObject(
+    'ToManagementSystemBackend',
     [] as const,
 );
 
-export const ToAdminFrontend = /* @__PURE__ */ createEnumObject(
-    'ToAdminFrontend',
+export const ToManagementSystemFrontend = /* @__PURE__ */ createEnumObject(
+    'ToManagementSystemFrontend',
     [] as const,
 );
 
