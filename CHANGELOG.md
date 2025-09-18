@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.80.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.1...v0.80.2)
+
+### 🚀 Enhancements
+
+- `createReplayProtectionMiddleware` add `nonceMaxLength` param ([68d14d0](https://github.com/kiki-core-stack/pack/commit/68d14d0))
+
+### 📦 Build
+
+- Update `customExports` rules to enable IDE import hints for package usage ([fa88888](https://github.com/kiki-core-stack/pack/commit/fa88888))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.80.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.0...v0.80.1)
