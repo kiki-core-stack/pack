@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.80.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.0...v0.80.1)
+
+### 🚀 Enhancements
+
+- Add `redisInstance` constant with `lazyConnect` enabled; pass `redisInstance` when creating `enhancedRedisStorage` ([ebf1897](https://github.com/kiki-core-stack/pack/commit/ebf1897))
+- Add `createReplayProtectionMiddleware` hono backend middleware factory ([5f667b6](https://github.com/kiki-core-stack/pack/commit/5f667b6))
+
+### 🩹 Fixes
+
+- Ensure tsdown `customExports` returns after deleting keys containing internals ([7324bab](https://github.com/kiki-core-stack/pack/commit/7324bab))
+
+### 📦 Build
+
+- Update `customExports` rules to enable IDE import hints for package usage ([e4111c0](https://github.com/kiki-core-stack/pack/commit/e4111c0))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.80.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.79.4...v0.80.0)
