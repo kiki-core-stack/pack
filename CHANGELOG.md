@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.82.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.1...v0.82.2)
+
+### 🏡 Chore
+
+- Move `@kikiutils/types` to `devDependencies` ([7fd25c4](https://github.com/kiki-core-stack/pack/commit/7fd25c4))
+- Remove deprecated dependencies ([0a25e04](https://github.com/kiki-core-stack/pack/commit/0a25e04))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.0...v0.82.1)
