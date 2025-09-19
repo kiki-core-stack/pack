@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.82.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.2...v0.82.0)
+
+### 🩹 Fixes
+
+- Current types loading ([2de25ac](https://github.com/kiki-core-stack/pack/commit/2de25ac))
+
+### 💅 Refactors
+
+- ⚠️ Convert all `declare global` types to exported types requiring manual import ([b4e1e4e](https://github.com/kiki-core-stack/pack/commit/b4e1e4e))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ Convert all `declare global` types to exported types requiring manual import ([b4e1e4e](https://github.com/kiki-core-stack/pack/commit/b4e1e4e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.81.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.1...v0.81.2)
