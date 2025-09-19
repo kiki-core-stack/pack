@@ -32,6 +32,7 @@ export async function initializeSystemDefaults() {
                     {
                         account: 'admin',
                         enabled: true,
+                        isSuperAdmin: true,
                         password: await argon2HashPassword(password),
                     },
                 ],
