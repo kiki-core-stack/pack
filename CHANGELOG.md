@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.81.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.0...v0.81.1)
+
+### 🩹 Fixes
+
+- Resolve incorrect merging of `declare module` type definitions ([01cce1e](https://github.com/kiki-core-stack/pack/commit/01cce1e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.81.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.2...v0.81.0)
