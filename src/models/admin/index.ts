@@ -10,6 +10,7 @@ import { Schema } from 'mongoose';
 import type { SetFieldType } from 'type-fest';
 
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminData } from '../../types/data/admin';
 
 export type Admin = SmartDataToBaseMongooseDocType<SetFieldType<AdminData, 'roles', Types.ObjectId[]>>;

@@ -10,6 +10,7 @@ import { Schema } from 'mongoose';
 import { AdminLogType } from '../../constants/admin';
 import { schemaTimestampsConfigOnlyCreatedAt } from '../../constants/mongoose';
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminLogData } from '../../types/data/admin';
 
 export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin'>;

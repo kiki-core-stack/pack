@@ -7,6 +7,7 @@ import type {
 import { Schema } from 'mongoose';
 
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminSessionData } from '../../types/data/admin';
 
 export type AdminSession = SmartDataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
