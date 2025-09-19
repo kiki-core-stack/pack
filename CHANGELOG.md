@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.81.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.1...v0.81.2)
+
+### 🏡 Chore
+
+- Add `references.d.ts` to load required types ([b4cef2a](https://github.com/kiki-core-stack/pack/commit/b4cef2a))
+- Remove unused types import ([1e5112e](https://github.com/kiki-core-stack/pack/commit/1e5112e))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.81.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.0...v0.81.1)
