@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.82.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.0...v0.82.1)
+
+### 🩹 Fixes
+
+- Resolve type errors ([1f702ef](https://github.com/kiki-core-stack/pack/commit/1f702ef))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.81.2...v0.82.0)
