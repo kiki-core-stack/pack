@@ -1,5 +1,9 @@
+import { buildMongooseModel } from '@kikiutils/mongoose/builders';
 import * as s from '@kikiutils/mongoose/schema-builders';
-import { buildMongooseModel } from '@kikiutils/mongoose/utils';
+import type {
+    BaseMongoosePaginateModel,
+    MongooseHydratedDocument,
+} from '@kikiutils/mongoose/types';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
