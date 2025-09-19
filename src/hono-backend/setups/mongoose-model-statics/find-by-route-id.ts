@@ -2,7 +2,7 @@ import type {
     BaseMongoosePaginateModel,
     MongooseFindOneReturnType,
 } from '@kikiutils/mongoose/types';
-import type { Nullable } from '@kikiutils/types';
+import type { Nullable } from '@kikiutils/shared/types';
 import type { Context } from 'hono';
 import type {
     HydratedDocument,

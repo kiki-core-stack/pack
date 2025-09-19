@@ -1,8 +1,8 @@
-import { Path } from '@kikiutils/classes/path';
-import type { PathLike } from '@kikiutils/classes/path';
 import { toBuffer } from '@kikiutils/shared/buffer';
+import { Path } from '@kikiutils/shared/classes/path';
+import type { PathLike } from '@kikiutils/shared/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/shared/env';
-import type { BinaryInput } from '@kikiutils/types';
+import type { BinaryInput } from '@kikiutils/shared/types';
 import {
     chmodSync,
     ensureDirSync,

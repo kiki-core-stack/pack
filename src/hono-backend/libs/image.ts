@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer';
 
-import type { BinaryInput } from '@kikiutils/types';
+import type { BinaryInput } from '@kikiutils/shared/types';
 import type {
     SharpOptions,
     WebpOptions,

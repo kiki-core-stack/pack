@@ -1,5 +1,5 @@
 import { toBuffer } from '@kikiutils/shared/buffer';
-import type { BinaryInput } from '@kikiutils/types';
+import type { BinaryInput } from '@kikiutils/shared/types';
 import { fileTypeFromBuffer } from 'file-type';
 
 export async function getFileMimeType(input: BinaryInput) {

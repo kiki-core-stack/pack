@@ -1,4 +1,4 @@
-import type { MaybeReadonly } from '@kikiutils/types';
+import type { MaybeReadonly } from '@kikiutils/shared/types';
 import type { Arrayable } from 'type-fest';
 import * as z from 'zod';
 import { ZodType } from 'zod';

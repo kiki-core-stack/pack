@@ -1,5 +1,5 @@
 import { toBuffer } from '@kikiutils/shared/buffer';
-import type { BinaryInput } from '@kikiutils/types';
+import type { BinaryInput } from '@kikiutils/shared/types';
 // @ts-expect-error Ignore this error.
 import sharp from 'sharp';
 import type {

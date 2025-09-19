@@ -127,10 +127,8 @@
   },
   "peerDependencies": {
     "@hono/zod-validator": "^0.7.2",
-    "@kikiutils/classes": "^7.0.0",
     "@kikiutils/mongoose": "^6.0.1",
     "@kikiutils/shared": "^13.0.1",
-    "@kikiutils/types": "^8.0.0",
     "@types/fs-extra": "^11.0.4",
     "@types/nodemailer": "^7.0.1",
     "es-toolkit": "^1.39.10",
@@ -151,16 +149,10 @@
     "@hono/zod-validator": {
       "optional": true
     },
-    "@kikiutils/classes": {
-      "optional": true
-    },
     "@kikiutils/mongoose": {
       "optional": true
     },
     "@kikiutils/shared": {
-      "optional": true
-    },
-    "@kikiutils/types": {
       "optional": true
     },
     "@types/fs-extra": {
@@ -212,12 +204,10 @@
   "devDependencies": {
     "@hono/zod-validator": "^0.7.3",
     "@kikiutils/changelogen": "^0.9.0",
-    "@kikiutils/classes": "^7.0.0",
     "@kikiutils/eslint-config": "^3.0.1",
-    "@kikiutils/mongoose": "^6.1.0",
-    "@kikiutils/shared": "^13.4.0",
+    "@kikiutils/mongoose": "^6.1.1",
+    "@kikiutils/shared": "^13.5.1",
     "@kikiutils/tsconfigs": "^5.0.5",
-    "@kikiutils/types": "^8.0.0",
     "@socket.io/component-emitter": "^3.1.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.5.2",
