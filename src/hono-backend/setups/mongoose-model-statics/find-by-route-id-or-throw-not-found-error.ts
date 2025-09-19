@@ -15,7 +15,7 @@ import { throwApiError } from '../../libs/api';
 import { registerStaticFunctions } from './_internals';
 
 declare module '@kikiutils/mongoose/types' {
-    interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
+    interface BaseMongooseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
         findByRouteIdOrThrowNotFoundError: (
             ctx: Context,
             filter?: RootFilterQuery<RawDocType>,

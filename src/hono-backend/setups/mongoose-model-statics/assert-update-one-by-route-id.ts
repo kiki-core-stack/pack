@@ -15,7 +15,7 @@ import { registerStaticFunctions } from './_internals';
 
 declare module '@kikiutils/mongoose/types' {
     // eslint-disable-next-line unused-imports/no-unused-vars
-    interface BaseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
+    interface BaseMongooseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
         assertUpdateOneByRouteId: (
             ctx: Context,
             updateQuery: UpdateQuery<RawDocType>,
