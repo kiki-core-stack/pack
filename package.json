@@ -106,8 +106,10 @@
       "require": null
     }
   },
+  "types": "./references.d.ts",
   "files": [
     "./dist",
+    "./references.d.ts",
     "./src"
   ],
   "engines": {
