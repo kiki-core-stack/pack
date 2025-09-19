@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.81.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.2...v0.81.0)
+
+### 🚀 Enhancements
+
+- Add `generate-rust-socket.io-event-names.ts` script ([527fb54](https://github.com/kiki-core-stack/pack/commit/527fb54))
+
+### 🩹 Fixes
+
+- Resolve all type errors and revert import paths to relative ([8cdbe1d](https://github.com/kiki-core-stack/pack/commit/8cdbe1d))
+- Resolve all type errors ([7c6458b](https://github.com/kiki-core-stack/pack/commit/7c6458b))
+
+### 💅 Refactors
+
+- **socket.io:** ⚠️ Migrate old Admin-related event names to `ManagementSystem` ([bb28972](https://github.com/kiki-core-stack/pack/commit/bb28972))
+- **models:** Update all files under models folder due to dependency changes ([b78f419](https://github.com/kiki-core-stack/pack/commit/b78f419))
+- Remove unnecessary imports ([47430ba](https://github.com/kiki-core-stack/pack/commit/47430ba))
+
+### 🏡 Chore
+
+- Remove alias config ([e353604](https://github.com/kiki-core-stack/pack/commit/e353604))
+- Change `update-peer-dependencies-meta.ts` to non-executable permission file ([62a7690](https://github.com/kiki-core-stack/pack/commit/62a7690))
+- Update base tsconfig ([26f4158](https://github.com/kiki-core-stack/pack/commit/26f4158))
+- Upgrade dependencies ([73dd038](https://github.com/kiki-core-stack/pack/commit/73dd038))
+
+#### ⚠️ Breaking Changes
+
+- **socket.io:** ⚠️ Migrate old Admin-related event names to `ManagementSystem` ([bb28972](https://github.com/kiki-core-stack/pack/commit/bb28972))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.80.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.80.1...v0.80.2)
