@@ -1,3 +1,4 @@
+import type { ReadonlyRecord } from '@kikiutils/types';
 import type {
     Context,
     ErrorHandler,

@@ -1,3 +1,5 @@
+import type { ReadonlyRecord } from '@kikiutils/types';
+
 export enum FileStorageProvider {
     Local = 0,
 }

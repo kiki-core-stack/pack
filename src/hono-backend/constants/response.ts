@@ -1,3 +1,4 @@
+import type { PartialRecord } from '@kikiutils/types';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
 export const statusCodeToApiResponseErrorCodeMap: Readonly<PartialRecord<ContentfulStatusCode, string>> = {

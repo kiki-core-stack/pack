@@ -1,5 +1,6 @@
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
+import type { BinaryInput } from '@kikiutils/types';
 import { MongoServerError } from 'mongodb';
 
 import { FileModel } from '../models/file';

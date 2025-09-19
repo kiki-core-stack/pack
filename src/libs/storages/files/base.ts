@@ -1,6 +1,7 @@
 import type { PathLike } from '@kikiutils/classes/path';
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
+import type { BinaryInput } from '@kikiutils/types';
 
 import type { FileStorageProvider } from '../../../constants/file';
 

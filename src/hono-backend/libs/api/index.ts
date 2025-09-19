@@ -1,5 +1,8 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import type { SetFieldType } from 'type-fest';
+import type {
+    SetFieldType,
+    SetRequired,
+} from 'type-fest';
 import type {
     output,
     ZodObject,

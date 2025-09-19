@@ -2,6 +2,7 @@ import { Path } from '@kikiutils/classes/path';
 import type { PathLike } from '@kikiutils/classes/path';
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { checkAndGetEnvValue } from '@kikiutils/shared/env';
+import type { BinaryInput } from '@kikiutils/types';
 import {
     chmodSync,
     ensureDirSync,

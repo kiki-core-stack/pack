@@ -1,3 +1,5 @@
+import type { ReadonlyRecord } from '@kikiutils/types';
+
 export enum AdminLogType {
     LoginFailure = 0,
     LoginSuccess = 1,
