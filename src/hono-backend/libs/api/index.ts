@@ -8,6 +8,7 @@ import type {
     ZodObject,
 } from 'zod';
 
+import type { ApiResponseData } from '../../../types/data';
 import type { FixedApiErrorCreator } from '../../types/api';
 
 import { ApiError } from './error';

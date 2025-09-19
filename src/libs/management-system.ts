@@ -6,6 +6,8 @@ import { dirname } from 'node:path';
 
 import { capitalize } from 'es-toolkit';
 
+import type { ManagementSystemType } from '../types';
+
 export async function writeManagementSystemPermissionTypesFile(
     managementSystemType: ManagementSystemType,
     permissions: string[],
