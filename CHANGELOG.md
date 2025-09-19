@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.82.4
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.3...v0.82.4)
+
+### 🔥 Performance
+
+- Optimize `initializeSystemDefaults` mongoose connection wait to reduce startup time ([7e1f4fa](https://github.com/kiki-core-stack/pack/commit/7e1f4fa))
+
+### 🩹 Fixes
+
+- Ensure initial admin created in `initializeSystemDefaults` is a super admin ([238443b](https://github.com/kiki-core-stack/pack/commit/238443b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.2...v0.82.3)
