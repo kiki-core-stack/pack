@@ -1,3 +1,5 @@
+import type { DataToBaseMongooseDocType } from '@kikiutils/mongoose/types/data';
+
 import type { AdminData } from './admin';
 
 export type * as _loadKikiutilsMongooseTypes from '@kikiutils/mongoose/types/data';

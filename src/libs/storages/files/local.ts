@@ -7,7 +7,7 @@ import {
     ensureDirSync,
 } from 'fs-extra';
 
-import { FileStorageProvider } from '@/constants/file';
+import { FileStorageProvider } from '../../../constants/file';
 
 import { BaseFileStorage } from './base';
 import type { LocalFileStorageConfig } from './types';

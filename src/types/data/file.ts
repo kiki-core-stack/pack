@@ -1,6 +1,7 @@
+import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 import type { Except } from 'type-fest';
 
-import type { FileStorageProvider } from '@/constants/file';
+import type { FileStorageProvider } from '../../constants/file';
 
 export type BaseFileData = Pick<FileData, 'path' | 'provider'>;
 

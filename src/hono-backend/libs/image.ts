@@ -5,9 +5,9 @@ import type {
     WebpOptions,
 } from 'sharp';
 
-import { uploadFileAndCreateDocument } from '@/libs/file';
-import type { BaseFileStorage } from '@/libs/storages/files/base';
-import { convertImage } from '@/utils/image';
+import { uploadFileAndCreateDocument } from '../../libs/file';
+import type { BaseFileStorage } from '../../libs/storages/files/base';
+import { convertImage } from '../../utils/image';
 
 import { throwApiError } from './api';
 

@@ -1,3 +1,4 @@
+import type { BaseMongoosePaginateModel } from '@kikiutils/mongoose/types';
 import type { Context } from 'hono';
 import { Types } from 'mongoose';
 import type {

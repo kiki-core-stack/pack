@@ -7,14 +7,14 @@ import {
     vi,
 } from 'vitest';
 
-import * as z from '@/libs/zod';
+import * as z from '../../../src/libs/zod';
 
 // Mocks
-vi.mock('@/utils/file', () => ({ getFileMimeType: vi.fn() }));
+vi.mock('../../../src/utils/file', () => ({ getFileMimeType: vi.fn() }));
 
 // Functions
 async function getMockedGetFileMimeType() {
-    const { getFileMimeType } = await import('@/utils/file');
+    const { getFileMimeType } = await import('../../../src/utils/file');
     return vi.mocked(getFileMimeType);
 }
 

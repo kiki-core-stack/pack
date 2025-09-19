@@ -1,3 +1,4 @@
+import type { OmitMongooseTimestampAndOtherFields } from '@kikiutils/mongoose/types';
 import type { ZodType } from 'zod';
 
 export type * as _loadKikiutilsMongooseTypes from '@kikiutils/mongoose/types';

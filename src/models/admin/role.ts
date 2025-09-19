@@ -6,8 +6,8 @@ import type {
 } from '@kikiutils/mongoose/types';
 import { Schema } from 'mongoose';
 
-import * as mongooseRefSchemas from '@/constants/mongoose/ref-schemas';
-import type { AdminRoleData } from '@/types/data/admin';
+import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import type { AdminRoleData } from '../../types/data/admin';
 
 export type AdminRole = SmartDataToBaseMongooseDocType<AdminRoleData>;
 export type AdminRoleDocument = MongooseHydratedDocument<AdminRole>;

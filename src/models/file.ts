@@ -15,11 +15,11 @@ import type {
     Query,
 } from 'mongoose';
 
-import { FileStorageProvider } from '@/constants/file';
-import { schemaTimestampsConfigOnlyCreatedAt } from '@/constants/mongoose';
-import * as enhancedRedisStore from '@/stores/enhanced/redis';
-import * as lruStore from '@/stores/lru';
-import type { FileData } from '@/types/data/file';
+import { FileStorageProvider } from '../constants/file';
+import { schemaTimestampsConfigOnlyCreatedAt } from '../constants/mongoose';
+import * as enhancedRedisStore from '../stores/enhanced/redis';
+import * as lruStore from '../stores/lru';
+import type { FileData } from '../types/data/file';
 
 export type File = SmartDataToBaseMongooseDocType<FileData>;
 export type FileDocument = MongooseHydratedDocument<File>;

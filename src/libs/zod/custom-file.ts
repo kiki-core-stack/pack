@@ -3,7 +3,7 @@ import { ZodType } from 'zod';
 import type { ZodFile } from 'zod';
 import type { ParsePayload } from 'zod/v4/core';
 
-import { getFileMimeType } from '@/utils/file';
+import { getFileMimeType } from '../../utils/file';
 
 interface ZodCustomFile extends ZodFile {
     commonImages: () => this;

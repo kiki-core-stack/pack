@@ -1,4 +1,4 @@
-import type * as SocketIoEventNames from '@/constants/socket.io-event-names';
+import type * as SocketIoEventNames from '../constants/socket.io-event-names';
 
 // eslint-disable-next-line ts/no-namespace
 export namespace SocketIoEvents {

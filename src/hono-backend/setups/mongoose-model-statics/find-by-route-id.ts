@@ -1,3 +1,7 @@
+import type {
+    BaseMongoosePaginateModel,
+    MongooseFindOneReturnType,
+} from '@kikiutils/mongoose/types';
 import type { Context } from 'hono';
 import type {
     HydratedDocument,

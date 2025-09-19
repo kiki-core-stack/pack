@@ -6,8 +6,8 @@ import type {
 } from '@kikiutils/mongoose/types';
 import { Schema } from 'mongoose';
 
-import * as mongooseRefSchemas from '@/constants/mongoose/ref-schemas';
-import type { AdminSessionData } from '@/types/data/admin';
+import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import type { AdminSessionData } from '../../types/data/admin';
 
 export type AdminSession = SmartDataToBaseMongooseDocType<AdminSessionData, 'admin', 'lastActiveAt'>;
 export type AdminSessionDocument = MongooseHydratedDocument<AdminSession, AdminSessionMethodsAndOverrides>;

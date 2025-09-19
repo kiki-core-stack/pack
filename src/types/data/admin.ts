@@ -1,4 +1,6 @@
-import type { AdminLogType } from '@/constants/admin';
+import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
+
+import type { AdminLogType } from '../../constants/admin';
 
 export interface AdminChangePasswordData {
     newPassword: string;
