@@ -6,6 +6,8 @@ import { nanoid } from 'nanoid';
 import { argon2HashPassword } from './libs/password-argon2';
 import { AdminModel } from './models/admin';
 
+const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
+
 export async function initializeSystemDefaults() {
     logger.info('Initializing system defaults...');
 
@@ -13,7 +15,8 @@ export async function initializeSystemDefaults() {
     const startAt = Date.now();
     while (mongooseConnections.default?.readyState !== 1) {
         if (Date.now() - startAt > 10000) return logger.error('Database connection timed out after 10 seconds');
-        await new Promise((resolve) => void setTimeout(resolve, 1000));
+        if (mongooseConnections.default?.readyState === 2) await sleep(50);
+        else await sleep(1000);
     }
 
     logger.success('Database connected successfully');
