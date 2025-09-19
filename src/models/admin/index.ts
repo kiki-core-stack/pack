@@ -1,15 +1,17 @@
+import type { Buffer } from 'node:buffer';
+
 import { buildMongooseModel } from '@kikiutils/mongoose/builders';
 import * as s from '@kikiutils/mongoose/schema-builders';
 import type {
     BaseMongoosePaginateModel,
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
-import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import type { SetFieldType } from 'type-fest';
 
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import { argon2VerifyPassword } from '../../libs/password-argon2';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminData } from '../../types/data/admin';
 
@@ -19,7 +21,7 @@ type AdminModel = BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides>;
 
 interface AdminMethodsAndOverrides {
     password: string;
-    verifyPassword: (password: string) => boolean;
+    verifyPassword: (password: string, options?: { secret: Buffer }) => Promise<boolean>;
 }
 
 const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
@@ -27,10 +29,7 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     email: s.string().lowercase.trim.nonRequired,
     enabled: s.boolean().default(false).required,
     isSuperAdmin: s.boolean().default(false).required,
-    password: {
-        ...s.string().length(64).private.required,
-        set: (password: string) => cryptoSha3256(password),
-    },
+    password: s.string().private.required,
     roles: {
         default: () => [],
         required: true,
@@ -40,8 +39,8 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
 
 schema.method(
     'verifyPassword',
-    function (password: string) {
-        return cryptoSha3256(password) === this.password;
+    function (password: string, options?: { secret: Buffer }) {
+        return argon2VerifyPassword(this.password, password, options);
     },
 );
 
