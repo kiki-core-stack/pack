@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.82.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.2...v0.82.3)
+
+### 🚀 Enhancements
+
+- Hash admin password with `argon2` before storing ([4bbbcef](https://github.com/kiki-core-stack/pack/commit/4bbbcef))
+- Add `initializeSystemDefaults` ([8cb64ce](https://github.com/kiki-core-stack/pack/commit/8cb64ce))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.1...v0.82.2)
