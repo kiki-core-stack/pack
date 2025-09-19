@@ -2,9 +2,5 @@
   "extends": "@kikiutils/tsconfigs/esnext/esnext.json",
   "compilerOptions": {
     "noEmit": true
-  },
-  "files": [
-    "./src/types/data/index.ts",
-    "./src/types/index.ts"
-  ]
+  }
 }
