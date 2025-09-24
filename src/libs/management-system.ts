@@ -1,11 +1,3 @@
-import {
-    mkdir,
-    writeFile,
-} from 'node:fs/promises';
-import { dirname } from 'node:path';
-
-import { capitalize } from 'es-toolkit';
-
 import type { ManagementSystemType } from '../types';
 
 // Functions
@@ -18,6 +10,10 @@ export async function writeManagementSystemPermissionTypesFile(
     permissions: string[],
     targetFilePath: string,
 ) {
+    const { mkdir, writeFile } = await import('node:fs/promises');
+    const { dirname } = await import('node:path');
+    const { capitalize } = await import('es-toolkit');
+
     permissions = permissions.toSorted();
     const permissionGroupsSet = new Set<string>();
     permissions.forEach((permission) => {
