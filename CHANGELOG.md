@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.82.5
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.4...v0.82.5)
+
+### 🚀 Enhancements
+
+- Add `CoreCounterModel` and related files ([6f60c07](https://github.com/kiki-core-stack/pack/commit/6f60c07))
+- Add `getNextCoreCounterSeq` lib ([cfb086f](https://github.com/kiki-core-stack/pack/commit/cfb086f))
+- Add `getManagementSystemTypeFromRoutePath` lib ([43bdf00](https://github.com/kiki-core-stack/pack/commit/43bdf00))
+
+### 🏡 Chore
+
+- Add `.editorconfig` ([11056ce](https://github.com/kiki-core-stack/pack/commit/11056ce))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.4
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.3...v0.82.4)
