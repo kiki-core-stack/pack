@@ -8,6 +8,11 @@ import { capitalize } from 'es-toolkit';
 
 import type { ManagementSystemType } from '../types';
 
+// Functions
+export function getManagementSystemTypeFromRoutePath(path: string): ManagementSystemType | undefined {
+    if (path.startsWith('/admin') || path.startsWith('/api/admin')) return 'admin';
+}
+
 export async function writeManagementSystemPermissionTypesFile(
     managementSystemType: ManagementSystemType,
     permissions: string[],
