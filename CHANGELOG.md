@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.82.6
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.5...v0.82.6)
+
+### 🩹 Fixes
+
+- Change all imports in `writeManagementSystemPermissionTypesFile` to dynamic imports to fix frontend generation issue ([860580b](https://github.com/kiki-core-stack/pack/commit/860580b))
+
+### ❤️ Contributors
+
+- kiki-kanri
+
 ## v0.82.5
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.4...v0.82.5)
