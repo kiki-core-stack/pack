@@ -1,15 +1,18 @@
 import { logger } from '@kikiutils/shared/consola';
-import { cryptoSha3512 } from '@kikiutils/shared/crypto-hash';
 
+import { argon2HashPassword } from '../src/libs/password-argon2';
 import { AdminModel } from '../src/models/admin';
 
 (async () => {
-    const admin = await AdminModel.create({
-        account: 'account',
+    const account = 'account';
+    const password = 'password';
+    await AdminModel.create({
+        account,
         enabled: true,
-        password: cryptoSha3512('password'),
+        isSuperAdmin: true,
+        password: await argon2HashPassword(password),
     });
 
-    logger.success(`Successfully created admin account: ${admin.account}`);
+    logger.success(`Created admin account '${account}' with password '${password}'`);
     process.exit();
 })();
