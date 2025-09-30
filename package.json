@@ -145,6 +145,7 @@
     "nodemailer": "^7.0.5",
     "sharp": "^0.34.3",
     "socket.io-client": "^4.8.1",
+    "socket.io-msgpack-parser": "^3.0.2",
     "type-fest": "^5.0.0",
     "zod": "^4.1.3"
   },
@@ -206,6 +207,9 @@
     "socket.io-client": {
       "optional": true
     },
+    "socket.io-msgpack-parser": {
+      "optional": true
+    },
     "type-fest": {
       "optional": true
     },
@@ -241,6 +245,7 @@
     "publint": "^0.3.13",
     "sharp": "^0.34.4",
     "socket.io-client": "^4.8.1",
+    "socket.io-msgpack-parser": "^3.0.2",
     "ts-unused-exports": "^11.0.1",
     "tsdown": "^0.15.2",
     "type-fest": "^5.0.1",

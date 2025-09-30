@@ -8,6 +8,7 @@ import type {
     Socket,
     SocketOptions,
 } from 'socket.io-client';
+import * as msgpackParser from 'socket.io-msgpack-parser';
 
 export function createSocketIoClient<
     ListenEvents extends EventsMap = DefaultEventsMap,
@@ -22,6 +23,7 @@ export function createSocketIoClient<
         {
             auth,
             autoConnect: false,
+            parser: process.env.NODE_ENV === 'production' ? msgpackParser : undefined,
             reconnectionDelayMax: 250,
             rejectUnauthorized: false,
             ...options,
