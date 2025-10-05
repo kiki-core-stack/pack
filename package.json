@@ -219,7 +219,6 @@
   },
   "devDependencies": {
     "@hono/zod-validator": "^0.7.3",
-    "@kikiutils/changelogen": "^0.9.1",
     "@kikiutils/eslint-config": "^4.0.0",
     "@kikiutils/mongoose": "^6.1.1",
     "@kikiutils/shared": "^13.5.2",
@@ -230,6 +229,7 @@
     "@types/nodemailer": "^7.0.2",
     "@vitest/coverage-v8": "^3.2.4",
     "argon2": "^0.44.0",
+    "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "depcheck": "^1.4.7",
     "es-toolkit": "^1.39.10",
