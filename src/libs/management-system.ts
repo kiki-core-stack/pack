@@ -25,12 +25,12 @@ export async function writeManagementSystemPermissionTypesFile(
     const prefix = capitalize(managementSystemType);
     const fileContents = [
         `export type ${prefix}Permission =`,
-        ...permissions.map((path, index) => `  | '${path}'${index === permissions.length - 1 ? ';' : ''}`),
+        ...permissions.map((permission, i) => `  | '${permission}'${i === permissions.length - 1 ? ';' : ''}`),
         '',
         `export type ${prefix}PermissionGroup =`,
-        ...permissionGroups.map((path, index) => {
-            return `  | '${path}'${index === permissionGroups.length - 1 ? ';' : ''}`;
-        }),
+        ...permissionGroups.map(
+            (permissionGroup, i) => `  | '${permissionGroup}'${i === permissionGroups.length - 1 ? ';' : ''}`,
+        ),
     ];
 
     await mkdir(dirname(targetFilePath), { recursive: true });
