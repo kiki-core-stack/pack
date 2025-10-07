@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.82.6",
+  "version": "0.83.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -60,6 +60,16 @@
       "require": null
     },
     "./hono-backend/setups/mongoose-model-statics/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/management-system": {
+      "types": "./dist/libs/management-system/index.d.ts",
+      "import": "./dist/libs/management-system/index.js",
+      "require": null
+    },
+    "./libs/management-system/index": {
       "types": null,
       "import": null,
       "require": null

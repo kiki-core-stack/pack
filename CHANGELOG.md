@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.83.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.6...v0.83.0)
+
+### 🚀 Enhancements
+
+- Use msgpack parser for socket.io client in prod mode ([e692b98](https://github.com/kiki-core-stack/pack/commit/e692b98))
+
+### 💅 Refactors
+
+- Update `create-admin` script ([28c0147](https://github.com/kiki-core-stack/pack/commit/28c0147))
+- Rename func parameters in `arr.map` and similar methods to `item` for consistency ([c5768ac](https://github.com/kiki-core-stack/pack/commit/c5768ac))
+- Tidy up code ([1a92f2c](https://github.com/kiki-core-stack/pack/commit/1a92f2c))
+- Tidy up code ([a26fdae](https://github.com/kiki-core-stack/pack/commit/a26fdae))
+- ⚠️  Split `libs/management-system.ts` into two files to avoid frontend build warnings or errors ([3bcc093](https://github.com/kiki-core-stack/pack/commit/3bcc093))
+
+### 🏡 Chore
+
+- Upgrade devDependencies ([aca04e8](https://github.com/kiki-core-stack/pack/commit/aca04e8))
+- Replace `@kikiutils/changelogen` with `changelogen` ([8d1d648](https://github.com/kiki-core-stack/pack/commit/8d1d648))
+- Upgrade devDependencies ([b35a1f2](https://github.com/kiki-core-stack/pack/commit/b35a1f2))
+- Upgrade devDependencies ([dab48e1](https://github.com/kiki-core-stack/pack/commit/dab48e1))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Split `libs/management-system.ts` into two files to avoid frontend build warnings or errors ([3bcc093](https://github.com/kiki-core-stack/pack/commit/3bcc093))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.82.6
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.5...v0.82.6)
