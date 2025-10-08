@@ -17,13 +17,15 @@ export function createSocketIoClient<
     uri: string,
     auth?: Partial<ManagerOptions & SocketOptions>['auth'],
     options?: Partial<ManagerOptions & SocketOptions>,
+    forceUseJsonParser?: boolean,
 ) {
+    forceUseJsonParser ??= process.env.SOCKET_IO_FORCE_USE_JSON_PARSER === 'true';
     const socketIoClient: Socket<ListenEvents, EmitEvents> = io(
         uri,
         {
             auth,
             autoConnect: false,
-            parser: process.env.NODE_ENV === 'production' ? msgpackParser : undefined,
+            parser: !forceUseJsonParser && process.env.NODE_ENV === 'production' ? msgpackParser : undefined,
             reconnectionDelayMax: 250,
             rejectUnauthorized: false,
             ...options,
