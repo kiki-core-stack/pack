@@ -1,8 +1,3 @@
-type LowercaseUppercaseLetters<T extends string> = T extends `${infer First}${infer Rest}`
-    ? First extends Uppercase<First>
-        ? `${Lowercase<First>}${LowercaseUppercaseLetters<Rest>}` : LowercaseUppercaseLetters<Rest>
-    : '';
-
 function createEnumObject<N extends string, T extends string[]>(name: N, keys: T) {
     const enumObject: Record<string, string> = {};
     new Set(keys).forEach((key) => {
@@ -12,9 +7,7 @@ function createEnumObject<N extends string, T extends string[]>(name: N, keys: T
         enumObject[key] = `${fullKey.replace(/[a-z]/g, '').toLowerCase()}-${hash.toString(36).slice(0, 3)}`;
     });
 
-    return enumObject as {
-        [key in T[number]]: `${LowercaseUppercaseLetters<N>}.${LowercaseUppercaseLetters<key>}-${string}`
-    };
+    return enumObject as { [key in T[number]]: string };
 }
 
 export const ToManagementSystemBackend = /* @__PURE__ */ createEnumObject(
