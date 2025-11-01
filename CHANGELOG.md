@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.84.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.83.0...v0.84.0)
+
+### 🚀 Enhancements
+
+- Allow forcing JSON parser in `createSocketIoClient` via parameter or environment variable ([fce06a9](https://github.com/kiki-core-stack/pack/commit/fce06a9))
+- Update `createEnumObject` logic in socket.io event names to append hash after keys and reduce collision risk ([85bfc6f](https://github.com/kiki-core-stack/pack/commit/85bfc6f))
+
+### 🩹 Fixes
+
+- Remove `LowercaseUppercaseLetters` type from socket.io event names `createEnumObject` and use `string` instead to avoid usage errors ([a2d56e7](https://github.com/kiki-core-stack/pack/commit/a2d56e7))
+- Correct type configuration in socket.io event names `createEnumObject` that caused incorrect generated types ([31e3e10](https://github.com/kiki-core-stack/pack/commit/31e3e10))
+
+### 💅 Refactors
+
+- ⚠️  Modify files ([69f2f39](https://github.com/kiki-core-stack/pack/commit/69f2f39))
+- ⚠️  Modify files ([8f5c707](https://github.com/kiki-core-stack/pack/commit/8f5c707))
+
+### 🏡 Chore
+
+- Update script ([44312fb](https://github.com/kiki-core-stack/pack/commit/44312fb))
+- Update `pnpm.onlyBuiltDependencies` ([9788a78](https://github.com/kiki-core-stack/pack/commit/9788a78))
+- Upgrade dependencies ([052f278](https://github.com/kiki-core-stack/pack/commit/052f278))
+- Lint files ([2397d8f](https://github.com/kiki-core-stack/pack/commit/2397d8f))
+
+### 🤖 CI
+
+- Update config file ([cfba23c](https://github.com/kiki-core-stack/pack/commit/cfba23c))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Modify files ([69f2f39](https://github.com/kiki-core-stack/pack/commit/69f2f39))
+- ⚠️  Modify files ([8f5c707](https://github.com/kiki-core-stack/pack/commit/8f5c707))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.83.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.82.6...v0.83.0)
