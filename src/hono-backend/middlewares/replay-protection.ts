@@ -3,7 +3,6 @@ import type {
     Next,
 } from 'hono';
 
-import { redisInstance } from '../../constants/redis';
 import { throwApiError } from '../libs/api';
 
 export function createReplayProtectionMiddleware(

@@ -16,14 +16,15 @@ import { ApiError } from './error';
 export function createApiSuccessResponseData<D extends object | undefined = undefined>(
     data?: D,
     message?: string,
-): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'> {
+): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data'> {
     return {
         data: data!,
-        message: message ?? '成功',
+        message,
         success: true,
     };
 }
 
+// TODO: other method
 export function createFixedApiErrorCreator<
     S extends ContentfulStatusCode,
     E extends string,
