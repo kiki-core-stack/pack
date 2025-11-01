@@ -268,8 +268,7 @@
     "onlyBuiltDependencies": [
       "argon2",
       "esbuild",
-      "sharp",
-      "unrs-resolver"
+      "sharp"
     ]
   }
 }
