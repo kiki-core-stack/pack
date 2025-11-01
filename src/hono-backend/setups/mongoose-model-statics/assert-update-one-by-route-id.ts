@@ -21,7 +21,7 @@ declare module '@kikiutils/mongoose/types' {
             updateQuery: UpdateQuery<RawDocType>,
             options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<RawDocType>)>,
             filter?: RootFilterQuery<RawDocType>,
-            expectedModifiedCount?: number
+            expectedModifiedCount?: number,
         ) => Promise<void>;
     }
 }
