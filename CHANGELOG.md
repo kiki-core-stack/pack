@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.84.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.84.0...v0.84.1)
+
+### 💅 Refactors
+
+- Update files ([f3e5a4e](https://github.com/kiki-core-stack/pack/commit/f3e5a4e))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.84.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.83.0...v0.84.0)
