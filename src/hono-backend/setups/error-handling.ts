@@ -64,6 +64,7 @@ export function setupHonoAppErrorHandling(
             return apiErrorToResponse(ctx, error);
         }
 
+        // TODO: pretty error
         if (error instanceof ZodError) {
             if (isDebugMode) logger.error(error);
             return ctx.json({ issues: error.issues }, 400);

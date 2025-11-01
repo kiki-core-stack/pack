@@ -1,8 +1,5 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import type {
-    SetFieldType,
-    SetRequired,
-} from 'type-fest';
+import type { SetFieldType } from 'type-fest';
 import type {
     output,
     ZodObject,
@@ -16,9 +13,9 @@ import { ApiError } from './error';
 export function createApiSuccessResponseData<D extends object | undefined = undefined>(
     data?: D,
     message?: string,
-): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data'> {
+): SetFieldType<ApiResponseData<D>, 'success', true> {
     return {
-        data: data!,
+        data,
         message,
         success: true,
     };
