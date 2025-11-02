@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.85.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.84.1...v0.85.0)
+
+### 🩹 Fixes
+
+- Resolve errors ([ec17baa](https://github.com/kiki-core-stack/pack/commit/ec17baa))
+
+### 💅 Refactors
+
+- ⚠️  Update files ([9a1900d](https://github.com/kiki-core-stack/pack/commit/9a1900d))
+
+### 🏡 Chore
+
+- Tidy up deps ([2676e10](https://github.com/kiki-core-stack/pack/commit/2676e10))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Update files ([9a1900d](https://github.com/kiki-core-stack/pack/commit/9a1900d))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.84.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.84.0...v0.84.1)

@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.84.1",
+  "version": "0.85.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -64,12 +64,12 @@
       "import": null,
       "require": null
     },
-    "./libs/management-system": {
-      "types": "./dist/libs/management-system/index.d.ts",
-      "import": "./dist/libs/management-system/index.js",
+    "./libs/management": {
+      "types": "./dist/libs/management/index.d.ts",
+      "import": "./dist/libs/management/index.js",
       "require": null
     },
-    "./libs/management-system/index": {
+    "./libs/management/index": {
       "types": null,
       "import": null,
       "require": null
