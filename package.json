@@ -136,28 +136,25 @@
     "unused-exports": "ts-unused-exports ./tsconfig.json"
   },
   "peerDependencies": {
-    "@hono/zod-validator": "^0.7.2",
-    "@kikiutils/mongoose": "^6.0.1",
-    "@kikiutils/shared": "^13.0.1",
+    "@hono/zod-validator": "^0.7.4",
+    "@kikiutils/mongoose": "^6.2.0",
+    "@kikiutils/shared": "^13.5.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/nodemailer": "^7.0.1",
+    "@types/nodemailer": "^7.0.3",
     "argon2": "^0.44.0",
     "consola": "^3.4.2",
-    "es-toolkit": "^1.39.10",
+    "es-toolkit": "^1.41.0",
     "file-type": "^21.0.0",
-    "fs-extra": "^11.3.1",
-    "hono": "^4.9.4",
-    "ioredis": "^5.7.0",
-    "lru-cache": "^11.1.0",
-    "mongodb": "^6.18.0",
-    "mongoose": "^8.18.0",
-    "nanoid": "^5.1.5",
-    "nodemailer": "^7.0.5",
-    "sharp": "^0.34.3",
-    "socket.io-client": "^4.8.1",
-    "socket.io-msgpack-parser": "^3.0.2",
-    "type-fest": "^5.0.0",
-    "zod": "^4.1.3"
+    "fs-extra": "^11.3.2",
+    "hono": "^4.10.4",
+    "lru-cache": "^11.2.2",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.2",
+    "nanoid": "^5.1.6",
+    "nodemailer": "^7.0.10",
+    "sharp": "^0.34.4",
+    "type-fest": "^5.1.0",
+    "zod": "^4.1.12"
   },
   "peerDependenciesMeta": {
     "@hono/zod-validator": {
@@ -193,9 +190,6 @@
     "hono": {
       "optional": true
     },
-    "ioredis": {
-      "optional": true
-    },
     "lru-cache": {
       "optional": true
     },
@@ -214,12 +208,6 @@
     "sharp": {
       "optional": true
     },
-    "socket.io-client": {
-      "optional": true
-    },
-    "socket.io-msgpack-parser": {
-      "optional": true
-    },
     "type-fest": {
       "optional": true
     },
@@ -233,7 +221,6 @@
     "@kikiutils/mongoose": "^6.2.0",
     "@kikiutils/shared": "^13.5.2",
     "@kikiutils/tsconfigs": "^5.0.5",
-    "@socket.io/component-emitter": "^3.1.2",
     "@types/bun": "^1.3.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.9.2",
@@ -247,7 +234,6 @@
     "file-type": "^21.0.0",
     "fs-extra": "^11.3.2",
     "hono": "^4.10.4",
-    "ioredis": "^5.8.2",
     "lru-cache": "^11.2.2",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.2",
@@ -255,13 +241,11 @@
     "nodemailer": "^7.0.10",
     "publint": "^0.3.15",
     "sharp": "^0.34.4",
-    "socket.io-client": "^4.8.1",
-    "socket.io-msgpack-parser": "^3.0.2",
     "ts-unused-exports": "^11.0.1",
     "tsdown": "^0.15.12",
     "type-fest": "^5.1.0",
     "typescript": "^5.9.3",
-    "unplugin-unused": "^0.5.4",
+    "unplugin-unused": "^0.5.5",
     "vitest": "^4.0.6",
     "zod": "^4.1.12"
   },
