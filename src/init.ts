@@ -3,7 +3,6 @@ import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import { consola as logger } from 'consola';
 import { nanoid } from 'nanoid';
 
-import { argon2HashPassword } from './libs/password-argon2';
 import { AdminModel } from './models/admin';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
@@ -33,7 +32,7 @@ export async function initializeSystemStartup() {
                         account: 'admin',
                         enabled: true,
                         isSuperAdmin: true,
-                        password: await argon2HashPassword(password),
+                        password,
                     },
                 ],
                 { session },
