@@ -17,7 +17,7 @@ const totalMemMib = totalmem() / 1024 / 1024;
 const defaultHashMemoryCost = Math.min(2 ** 18, Math.max(2 ** 16, Math.floor(totalMemMib / 32) * 1024));
 
 // Functions
-export function argon2HashPassword(
+export function hashPasswordWithArgon2(
     password: string,
     {
         memoryCost = defaultHashMemoryCost,
@@ -39,6 +39,6 @@ export function argon2HashPassword(
     );
 }
 
-export function argon2VerifyPassword(hashed: string, input: string, options?: { secret: Buffer }) {
+export function verifyPasswordWithArgon2(hashed: string, input: string, options?: { secret: Buffer }) {
     return verify(hashed, input, options);
 }

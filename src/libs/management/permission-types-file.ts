@@ -6,10 +6,10 @@ import { dirname } from 'node:path';
 
 import { capitalize } from 'es-toolkit';
 
-import type { ManagementSystemType } from '../../types';
+import type { ManagementType } from '../../types';
 
-export async function writeManagementSystemPermissionTypesFile(
-    managementSystemType: ManagementSystemType,
+export async function writeManagementPermissionTypesFile(
+    managementType: ManagementType,
     permissions: string[],
     targetFilePath: string,
 ) {
@@ -21,7 +21,7 @@ export async function writeManagementSystemPermissionTypesFile(
     });
 
     const permissionGroups = [...permissionGroupsSet].sort();
-    const prefix = capitalize(managementSystemType);
+    const prefix = capitalize(managementType);
     const fileContents = [
         `export type ${prefix}Permission =`,
         ...permissions.map((permission, i) => `  | '${permission}'${i === permissions.length - 1 ? ';' : ''}`),

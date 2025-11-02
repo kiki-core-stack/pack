@@ -8,10 +8,10 @@ import { AdminModel } from './models/admin';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
 
-export async function initializeSystemDefaults() {
-    logger.info('Initializing system defaults...');
+export async function initializeSystemStartup() {
+    logger.info('Initializing startup...');
 
-    logger.info('Waiting for database connection...');
+    logger.info('Waiting for MongoDB connection...');
     const startAt = Date.now();
     while (mongooseConnections.default?.readyState !== 1) {
         if (Date.now() - startAt > 10000) return logger.error('Database connection timed out after 10 seconds');
@@ -19,13 +19,13 @@ export async function initializeSystemDefaults() {
         else await sleep(1000);
     }
 
-    logger.success('Database connected successfully');
+    logger.success('Database connected');
 
-    // Create default data
+    // Default data init
     await mongooseConnections.default!.transaction(async (session) => {
         let admin = await AdminModel.findOne({}, undefined, { session });
         if (!admin) {
-            logger.info('No admin found, creating a new one...');
+            logger.box('No admin found → creating default super admin');
             const password = generateWithNestedRandomLength(nanoid, 16, 32, 48, 64);
             admin = (await AdminModel.create(
                 [
@@ -39,7 +39,8 @@ export async function initializeSystemDefaults() {
                 { session },
             ))[0]!;
 
-            logger.info(`Admin created with account: ${admin.account}, password: ${password}`);
+            logger.info(`Admin created: ${admin.account}`);
+            logger.info(`Temporary password: ${password}`);
         }
 
         // Run other initialization tasks
@@ -47,5 +48,5 @@ export async function initializeSystemDefaults() {
 
     // Run other initialization tasks
 
-    logger.success('System defaults initialized successfully');
+    logger.success('System initialized and ready');
 }

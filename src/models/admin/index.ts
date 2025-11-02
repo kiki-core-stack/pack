@@ -11,7 +11,7 @@ import { Schema } from 'mongoose';
 import type { SetFieldType } from 'type-fest';
 
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
-import { argon2VerifyPassword } from '../../libs/password-argon2';
+import { registerMongooseSchemaArgon2HashFieldHandlers } from '../../libs/mongoose';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminData } from '../../types/data/admin';
 
@@ -37,13 +37,7 @@ const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     },
 });
 
-schema.method(
-    'verifyPassword',
-    function (password: string, options?: { secret: Buffer }) {
-        return argon2VerifyPassword(this.password, password, options);
-    },
-);
-
+registerMongooseSchemaArgon2HashFieldHandlers(schema, ['password']);
 export const AdminModel = buildMongooseModel<Admin, AdminModel, AdminMethodsAndOverrides>(
     'admin.admins',
     'Admin',

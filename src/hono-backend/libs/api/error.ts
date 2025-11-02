@@ -7,8 +7,8 @@ export class ApiError<D extends object | undefined = undefined, E extends string
     readonly errorCode: E;
     readonly statusCode: ContentfulStatusCode;
 
-    constructor(statusCode: ContentfulStatusCode = 500, message?: string, errorCode?: E, data?: D) {
-        super(message);
+    constructor(statusCode: ContentfulStatusCode = 500, errorCode?: E, data?: D, message?: string) {
+        super(message?.trim());
         this.data = data as D;
         errorCode = errorCode ?? statusCodeToApiResponseErrorCodeMap[statusCode] as E;
         if (!errorCode) {
@@ -25,7 +25,7 @@ export class ApiError<D extends object | undefined = undefined, E extends string
         return {
             data: this.data,
             errorCode: this.errorCode,
-            message: this.message,
+            message: this.message.trim() || undefined,
             success: false,
         };
     }
