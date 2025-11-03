@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.85.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.0...v0.85.1)
+
+### 🩹 Fixes
+
+- Resolve bun RedisClient maxRetries to large issue ([9e12be4](https://github.com/kiki-core-stack/pack/commit/9e12be4))
+
+### 💅 Refactors
+
+- Update files ([d720a84](https://github.com/kiki-core-stack/pack/commit/d720a84))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.85.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.84.1...v0.85.0)
