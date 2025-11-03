@@ -25,7 +25,7 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
                 );
             } else {
                 const value = update[field] ?? update.$set?.[field];
-                if (value) {
+                if (value !== undefined) {
                     const hashedValue = await hashPasswordWithArgon2(value as string);
                     if (update[field] !== undefined) update[field] = hashedValue;
                     else update.$set![field] = hashedValue;
@@ -42,7 +42,10 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
 
         // save
         schema.pre('save', async function (next) {
-            if (this.isModified(field)) this[field] = await hashPasswordWithArgon2(this[field] as string);
+            if (this.isModified(field) && this[field] !== undefined) {
+                this[field] = await hashPasswordWithArgon2(this[field] as string);
+            }
+
             next();
         });
 
