@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.85.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.1...v0.85.2)
+
+### 🚀 Enhancements
+
+- Restore cache functionality in file model ([efd7489](https://github.com/kiki-core-stack/pack/commit/efd7489))
+
+### 💅 Refactors
+
+- Replace all Promisable type to Promise in redis storage types ([3b6fdf6](https://github.com/kiki-core-stack/pack/commit/3b6fdf6))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.85.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.0...v0.85.1)
