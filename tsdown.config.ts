@@ -47,6 +47,7 @@ export default defineConfig({
         },
     },
     external: [
+        'bun',
         ...new Set([
             // eslint-disable-next-line ts/ban-ts-comment
             // @ts-ignore

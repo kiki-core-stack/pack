@@ -20,7 +20,7 @@ declare module '@kikiutils/mongoose/types' {
             ctx: Context,
             filter?: RootFilterQuery<RawDocType>,
             projection?: Nullable<ProjectionType<RawDocType>>,
-            options?: Nullable<QueryOptions<RawDocType>>
+            options?: Nullable<QueryOptions<RawDocType>>,
         ) => Promise<HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>>;
     }
 }

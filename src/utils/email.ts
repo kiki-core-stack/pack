@@ -11,6 +11,7 @@ const nodemailerTransporter = createTransport({
     tls: { rejectUnauthorized: false },
 });
 
+// TODO
 export async function sendEmail(
     bccRecipients: string | string[],
     subject: string,

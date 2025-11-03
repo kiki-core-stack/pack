@@ -10,11 +10,11 @@ export async function getNextCoreCounterSeq(type: CoreCounterType, session: Clie
             { $inc: { seq: 1 } },
             {
                 new: true,
-                projection: { seq: true },
                 session,
                 upsert: true,
             },
         )
+        .select(['seq'])
         .lean();
 
     return coreCounter.seq;

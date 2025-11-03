@@ -17,6 +17,7 @@ const animatedMimeTypes = new Set([
     'image/webp',
 ]);
 
+// TODO: move to utils
 export async function uploadImageAndCreateFileDocument(
     imageFile: Exclude<BinaryInput, Buffer>,
     storage: BaseFileStorage,

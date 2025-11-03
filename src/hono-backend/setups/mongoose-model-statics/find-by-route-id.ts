@@ -18,7 +18,7 @@ declare module '@kikiutils/mongoose/types' {
         findByRouteId: (
             ctx: Context,
             projection?: Nullable<ProjectionType<RawDocType>>,
-            options?: Nullable<QueryOptions<RawDocType>>
+            options?: Nullable<QueryOptions<RawDocType>>,
         ) => MongooseFindOneReturnType<
             RawDocType,
             HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>,

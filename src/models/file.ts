@@ -17,8 +17,8 @@ import type {
 
 import { FileStorageProvider } from '../constants/file';
 import { schemaTimestampsConfigOnlyCreatedAt } from '../constants/mongoose';
-import * as enhancedRedisStore from '../stores/enhanced/redis';
 import * as lruStore from '../stores/lru';
+import * as redisStore from '../stores/redis';
 import type { SmartDataToBaseMongooseDocType } from '../types/data';
 import type { FileData } from '../types/data/file';
 
@@ -57,16 +57,14 @@ schema.post(
     async function (result) {
         if (this._mongooseOptions.isFromCache) return;
         if (!isEligibleIdQuery(this, 'in')) return;
-
         const projectionKey = serializeProjection(this.projection());
-
         await Promise.all(
             result.map(async (value: any) => {
                 if (!(value instanceof Document)) return;
                 const fileDocumentData = value.toObject();
                 const id = value._id.toHexString();
                 lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
-                await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
+                await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
             }),
         );
     },
@@ -77,9 +75,7 @@ schema.pre(
     async function () {
         const filter = this.getFilter();
         if (!isEligibleIdQuery(this, 'in')) return;
-
         const projectionKey = serializeProjection(this.projection());
-
         const ids = (filter._id.$in as (string | Types.ObjectId)[]).map((id) => {
             if (id instanceof Types.ObjectId) return id.toHexString();
             return id;
@@ -89,7 +85,7 @@ schema.pre(
             ids.map((id) => {
                 return (
                     lruStore.fileDocumentData.getItem(id, projectionKey)
-                    || enhancedRedisStore.fileDocumentData.getItem(id, projectionKey)
+                    || redisStore.fileDocumentData.getItem(id, projectionKey)
                 );
             }),
         );
@@ -111,13 +107,11 @@ schema.post(
     async function (result) {
         if (!(result instanceof Document)) return;
         if (!isEligibleIdQuery(this, 'single')) return;
-
         const projectionKey = serializeProjection(this.projection());
-
         const fileDocumentData = result.toObject();
         const id = result._id.toHexString();
         lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
-        await enhancedRedisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
+        await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
     },
 );
 
@@ -126,12 +120,9 @@ schema.pre(
     async function () {
         const filter = this.getFilter();
         if (!isEligibleIdQuery(this, 'single')) return;
-
         const projectionKey = serializeProjection(this.projection());
-
-        const id = filter._id;
-        let fileDocumentData = lruStore.fileDocumentData.getItem(id, projectionKey);
-        if (!fileDocumentData) fileDocumentData = await enhancedRedisStore.fileDocumentData.getItem(id, projectionKey);
+        let fileDocumentData = lruStore.fileDocumentData.getItem(filter._id, projectionKey);
+        if (!fileDocumentData) fileDocumentData = await redisStore.fileDocumentData.getItem(filter._id, projectionKey);
         if (fileDocumentData) {
             this._mongooseOptions.isFromCache = true;
             const model = this.model;

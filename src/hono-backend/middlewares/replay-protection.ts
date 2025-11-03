@@ -3,7 +3,7 @@ import type {
     Next,
 } from 'hono';
 
-import { redisInstance } from '../../constants/redis';
+import { redisClient } from '../../constants/redis';
 import { throwApiError } from '../libs/api';
 
 export function createReplayProtectionMiddleware(
@@ -33,12 +33,15 @@ export function createReplayProtectionMiddleware(
                 : `replayProtectionNonce:${nonce}`;
 
         if (
-            !await redisInstance.set(
-                nonceRedisKey,
-                '',
-                'EX',
-                Math.ceil(timeoutMs / 1000) + nonceRedisTtlBufferSeconds,
-                'NX',
+            !await redisClient.send(
+                'SET',
+                [
+                    nonceRedisKey,
+                    '',
+                    'EX',
+                    (Math.ceil(timeoutMs / 1000) + nonceRedisTtlBufferSeconds).toString(),
+                    'NX',
+                ],
             )
         ) throwApiError(403);
 

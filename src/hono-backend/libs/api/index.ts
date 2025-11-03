@@ -1,8 +1,5 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import type {
-    SetFieldType,
-    SetRequired,
-} from 'type-fest';
+import type { SetFieldType } from 'type-fest';
 import type {
     output,
     ZodObject,
@@ -16,14 +13,15 @@ import { ApiError } from './error';
 export function createApiSuccessResponseData<D extends object | undefined = undefined>(
     data?: D,
     message?: string,
-): SetRequired<SetFieldType<ApiResponseData<D>, 'success', true>, 'data' | 'message'> {
+): SetFieldType<ApiResponseData<D>, 'success', true> {
     return {
-        data: data!,
-        message: message ?? '成功',
+        data,
+        message,
         success: true,
     };
 }
 
+// TODO: other method
 export function createFixedApiErrorCreator<
     S extends ContentfulStatusCode,
     E extends string,
@@ -31,12 +29,12 @@ export function createFixedApiErrorCreator<
 >(
     statusCode: S,
     errorCode: E,
-    defaultMessage: string,
     dataSchema?: DataSchema,
+    defaultMessage?: string,
 ) {
     return Object.assign(
         (data?: output<DataSchema>, message?: string) => {
-            return new ApiError(statusCode, message ?? defaultMessage, errorCode, data);
+            return new ApiError(statusCode, errorCode, data, message ?? defaultMessage);
         },
         {
             dataSchema,
@@ -49,9 +47,9 @@ export function createFixedApiErrorCreator<
 
 export function throwApiError<D extends object | undefined = undefined, E extends string | undefined = undefined>(
     statusCode: ContentfulStatusCode = 500,
-    message?: string,
     errorCode?: E,
     data?: D,
+    message?: string,
 ): never {
-    throw new ApiError(statusCode, message, errorCode, data);
+    throw new ApiError(statusCode, errorCode, data, message);
 }

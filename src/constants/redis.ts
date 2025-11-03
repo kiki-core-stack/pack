@@ -1,6 +1,6 @@
-import { Redis } from 'ioredis';
+import { RedisClient } from 'bun';
 
-export const redisInstance = new Redis(
-    process.env.REDIS_URL || 'redis://127.0.0.1:6379?protocol=resp3',
-    { lazyConnect: true },
+export const redisClient = new RedisClient(
+    process.env.REDIS_URL || 'redis://127.0.0.1:6379',
+    { maxRetries: 4294967295 },
 );

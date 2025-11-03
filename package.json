@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.83.0",
+  "version": "0.85.1",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -64,12 +64,12 @@
       "import": null,
       "require": null
     },
-    "./libs/management-system": {
-      "types": "./dist/libs/management-system/index.d.ts",
-      "import": "./dist/libs/management-system/index.js",
+    "./libs/management": {
+      "types": "./dist/libs/management/index.d.ts",
+      "import": "./dist/libs/management/index.js",
       "require": null
     },
-    "./libs/management-system/index": {
+    "./libs/management/index": {
       "types": null,
       "import": null,
       "require": null
@@ -136,28 +136,26 @@
     "unused-exports": "ts-unused-exports ./tsconfig.json"
   },
   "peerDependencies": {
-    "@hono/zod-validator": "^0.7.2",
-    "@kikiutils/mongoose": "^6.0.1",
-    "@kikiutils/shared": "^13.0.1",
+    "@hono/zod-validator": "^0.7.4",
+    "@kikiutils/mongoose": "^6.2.0",
+    "@kikiutils/shared": "^13.5.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/nodemailer": "^7.0.1",
+    "@types/nodemailer": "^7.0.3",
     "argon2": "^0.44.0",
+    "cbor-x": "^1.6.0",
     "consola": "^3.4.2",
-    "es-toolkit": "^1.39.10",
+    "es-toolkit": "^1.41.0",
     "file-type": "^21.0.0",
-    "fs-extra": "^11.3.1",
-    "hono": "^4.9.4",
-    "ioredis": "^5.7.0",
-    "lru-cache": "^11.1.0",
-    "mongodb": "^6.18.0",
-    "mongoose": "^8.18.0",
-    "nanoid": "^5.1.5",
-    "nodemailer": "^7.0.5",
-    "sharp": "^0.34.3",
-    "socket.io-client": "^4.8.1",
-    "socket.io-msgpack-parser": "^3.0.2",
-    "type-fest": "^5.0.0",
-    "zod": "^4.1.3"
+    "fs-extra": "^11.3.2",
+    "hono": "^4.10.4",
+    "lru-cache": "^11.2.2",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.2",
+    "nanoid": "^5.1.6",
+    "nodemailer": "^7.0.10",
+    "sharp": "^0.34.4",
+    "type-fest": "^5.1.0",
+    "zod": "^4.1.12"
   },
   "peerDependenciesMeta": {
     "@hono/zod-validator": {
@@ -178,6 +176,9 @@
     "argon2": {
       "optional": true
     },
+    "cbor-x": {
+      "optional": true
+    },
     "consola": {
       "optional": true
     },
@@ -191,9 +192,6 @@
       "optional": true
     },
     "hono": {
-      "optional": true
-    },
-    "ioredis": {
       "optional": true
     },
     "lru-cache": {
@@ -214,12 +212,6 @@
     "sharp": {
       "optional": true
     },
-    "socket.io-client": {
-      "optional": true
-    },
-    "socket.io-msgpack-parser": {
-      "optional": true
-    },
     "type-fest": {
       "optional": true
     },
@@ -228,48 +220,46 @@
     }
   },
   "devDependencies": {
-    "@hono/zod-validator": "^0.7.3",
-    "@kikiutils/eslint-config": "^4.0.0",
-    "@kikiutils/mongoose": "^6.1.1",
+    "@hono/zod-validator": "^0.7.4",
+    "@kikiutils/eslint-config": "^4.0.1",
+    "@kikiutils/mongoose": "^6.2.0",
     "@kikiutils/shared": "^13.5.2",
     "@kikiutils/tsconfigs": "^5.0.5",
-    "@socket.io/component-emitter": "^3.1.2",
+    "@types/bun": "^1.3.1",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.7.0",
-    "@types/nodemailer": "^7.0.2",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@types/node": "^24.10.0",
+    "@types/nodemailer": "^7.0.3",
+    "@vitest/coverage-v8": "^4.0.6",
     "argon2": "^0.44.0",
+    "cbor-x": "^1.6.0",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "depcheck": "^1.4.7",
-    "es-toolkit": "^1.39.10",
+    "es-toolkit": "^1.41.0",
     "file-type": "^21.0.0",
     "fs-extra": "^11.3.2",
-    "hono": "^4.9.10",
-    "ioredis": "^5.8.1",
+    "hono": "^4.10.4",
     "lru-cache": "^11.2.2",
     "mongodb": "^6.20.0",
-    "mongoose": "^8.19.1",
+    "mongoose": "^8.19.2",
     "nanoid": "^5.1.6",
-    "nodemailer": "^7.0.7",
-    "publint": "^0.3.14",
+    "nodemailer": "^7.0.10",
+    "publint": "^0.3.15",
     "sharp": "^0.34.4",
-    "socket.io-client": "^4.8.1",
-    "socket.io-msgpack-parser": "^3.0.2",
     "ts-unused-exports": "^11.0.1",
-    "tsdown": "^0.15.6",
-    "type-fest": "^5.0.1",
+    "tsdown": "^0.15.12",
+    "type-fest": "^5.1.0",
     "typescript": "^5.9.3",
-    "unplugin-unused": "^0.5.3",
-    "vitest": "^3.2.4",
+    "unplugin-unused": "^0.5.5",
+    "vitest": "^4.0.6",
     "zod": "^4.1.12"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "argon2",
+      "cbor-extract",
       "esbuild",
-      "sharp",
-      "unrs-resolver"
+      "sharp"
     ]
   }
 }
