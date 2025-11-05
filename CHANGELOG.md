@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.86.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.0...v0.86.1)
+
+### 🏡 Chore
+
+- Update tsdown config ([59407a9](https://github.com/kiki-core-stack/pack/commit/59407a9))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.86.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.2...v0.86.0)
