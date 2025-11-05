@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.85.2",
+  "version": "0.86.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -19,102 +19,12 @@
   ],
   "exports": {
     "./*": "./dist/*.js",
-    "./constants": {
-      "types": "./dist/constants/index.d.ts",
-      "import": "./dist/constants/index.js",
-      "require": null
-    },
-    "./constants/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./constants/mongoose": {
-      "types": "./dist/constants/mongoose/index.d.ts",
-      "import": "./dist/constants/mongoose/index.js",
-      "require": null
-    },
-    "./constants/mongoose/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./hono-backend/libs/api": {
-      "types": "./dist/hono-backend/libs/api/index.d.ts",
-      "import": "./dist/hono-backend/libs/api/index.js",
-      "require": null
-    },
-    "./hono-backend/libs/api/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./hono-backend/setups/mongoose-model-statics": {
-      "types": "./dist/hono-backend/setups/mongoose-model-statics/index.d.ts",
-      "import": "./dist/hono-backend/setups/mongoose-model-statics/index.js",
-      "require": null
-    },
     "./hono-backend/setups/mongoose-model-statics/_internals": {
       "types": null,
       "import": null,
       "require": null
     },
-    "./hono-backend/setups/mongoose-model-statics/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/management": {
-      "types": "./dist/libs/management/index.d.ts",
-      "import": "./dist/libs/management/index.js",
-      "require": null
-    },
-    "./libs/management/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/zod": {
-      "types": "./dist/libs/zod/index.d.ts",
-      "import": "./dist/libs/zod/index.js",
-      "require": null
-    },
-    "./libs/zod/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./models/admin": {
-      "types": "./dist/models/admin/index.d.ts",
-      "import": "./dist/models/admin/index.js",
-      "require": null
-    },
-    "./models/admin/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./package.json": "./package.json",
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": null,
-      "require": null
-    },
-    "./types/data": {
-      "types": "./dist/types/data/index.d.ts",
-      "import": null,
-      "require": null
-    },
-    "./types/data/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./types/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    }
+    "./package.json": "./package.json"
   },
   "files": [
     "./dist",
@@ -229,7 +139,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.0",
     "@types/nodemailer": "^7.0.3",
-    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/coverage-v8": "^4.0.7",
     "argon2": "^0.44.0",
     "cbor-x": "^1.6.0",
     "changelogen": "^0.6.2",
@@ -241,17 +151,17 @@
     "hono": "^4.10.4",
     "lru-cache": "^11.2.2",
     "mongodb": "^6.20.0",
-    "mongoose": "^8.19.2",
+    "mongoose": "^8.19.3",
     "nanoid": "^5.1.6",
     "nodemailer": "^7.0.10",
     "publint": "^0.3.15",
     "sharp": "^0.34.4",
     "ts-unused-exports": "^11.0.1",
-    "tsdown": "^0.15.12",
-    "type-fest": "^5.1.0",
+    "tsdown": "^0.16.0",
+    "type-fest": "^5.2.0",
     "typescript": "^5.9.3",
     "unplugin-unused": "^0.5.5",
-    "vitest": "^4.0.6",
+    "vitest": "^4.0.7",
     "zod": "^4.1.12"
   },
   "pnpm": {

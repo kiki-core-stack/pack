@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.86.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.2...v0.86.0)
+
+### 💅 Refactors
+
+- ⚠️  Modify and split image-related functions ([0b88089](https://github.com/kiki-core-stack/pack/commit/0b88089))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Modify and split image-related functions ([0b88089](https://github.com/kiki-core-stack/pack/commit/0b88089))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.85.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.85.1...v0.85.2)
