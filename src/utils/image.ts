@@ -1,3 +1,5 @@
+import type { Buffer } from 'node:buffer';
+
 import { toBuffer } from '@kikiutils/shared/buffer';
 import type { BinaryInput } from '@kikiutils/shared/types';
 // @ts-expect-error Ignore this error.
@@ -6,10 +8,36 @@ import type {
     Sharp,
     SharpInput,
     SharpOptions,
+    WebpOptions,
 } from 'sharp';
 
 declare function sharp(options?: SharpOptions): Sharp;
 declare function sharp(input?: SharpInput | SharpInput[], options?: SharpOptions): Sharp;
+
+// Constants
+const animatedMimeTypes = new Set([
+    'image/gif',
+    'image/webp',
+]);
+
+// Functions
+export function autoConvertAnimatedImageToWebp(
+    input: Exclude<BinaryInput, Buffer>,
+    inputOptions?: SharpOptions,
+    outputOptions?: WebpOptions,
+) {
+    inputOptions = {
+        animated: animatedMimeTypes.has(input.type),
+        ...inputOptions,
+    };
+
+    outputOptions = {
+        alphaQuality: 85,
+        ...outputOptions,
+    };
+
+    return convertImage(input, inputOptions, 'webp', outputOptions);
+}
 
 export async function convertImage(
     input: BinaryInput,
@@ -17,15 +45,13 @@ export async function convertImage(
     outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
     outputOptions?: Parameters<Sharp['toFormat']>[1],
 ) {
-    try {
-        return await sharp(await toBuffer(input), inputOptions)
-            .toFormat(
-                outputFormat,
-                {
-                    quality: 75,
-                    ...outputOptions,
-                },
-            )
-            .toBuffer();
-    } catch {}
+    return await sharp(await toBuffer(input), inputOptions)
+        .toFormat(
+            outputFormat,
+            {
+                quality: 75,
+                ...outputOptions,
+            },
+        )
+        .toBuffer();
 }
