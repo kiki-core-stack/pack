@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.86.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.1...v0.86.2)
+
+### 🏡 Chore
+
+- Disable tsdown `fixedExtension` config ([9039405](https://github.com/kiki-core-stack/pack/commit/9039405))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.86.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.0...v0.86.1)

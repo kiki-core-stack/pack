@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.86.1",
+  "version": "0.86.2",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -18,10 +18,10 @@
     "./dist/models/file.js"
   ],
   "exports": {
-    "./*": "./dist/*.mjs",
+    "./*": "./dist/*.js",
     "./constants": {
-      "types": "./dist/constants/index.d.mts",
-      "import": "./dist/constants/index.mjs",
+      "types": "./dist/constants/index.d.ts",
+      "import": "./dist/constants/index.js",
       "require": null
     },
     "./constants/index": {
@@ -30,8 +30,8 @@
       "require": null
     },
     "./constants/mongoose": {
-      "types": "./dist/constants/mongoose/index.d.mts",
-      "import": "./dist/constants/mongoose/index.mjs",
+      "types": "./dist/constants/mongoose/index.d.ts",
+      "import": "./dist/constants/mongoose/index.js",
       "require": null
     },
     "./constants/mongoose/index": {
@@ -40,8 +40,8 @@
       "require": null
     },
     "./hono-backend/libs/api": {
-      "types": "./dist/hono-backend/libs/api/index.d.mts",
-      "import": "./dist/hono-backend/libs/api/index.mjs",
+      "types": "./dist/hono-backend/libs/api/index.d.ts",
+      "import": "./dist/hono-backend/libs/api/index.js",
       "require": null
     },
     "./hono-backend/libs/api/index": {
@@ -50,8 +50,8 @@
       "require": null
     },
     "./hono-backend/setups/mongoose-model-statics": {
-      "types": "./dist/hono-backend/setups/mongoose-model-statics/index.d.mts",
-      "import": "./dist/hono-backend/setups/mongoose-model-statics/index.mjs",
+      "types": "./dist/hono-backend/setups/mongoose-model-statics/index.d.ts",
+      "import": "./dist/hono-backend/setups/mongoose-model-statics/index.js",
       "require": null
     },
     "./hono-backend/setups/mongoose-model-statics/_internals": {
@@ -65,8 +65,8 @@
       "require": null
     },
     "./libs/management": {
-      "types": "./dist/libs/management/index.d.mts",
-      "import": "./dist/libs/management/index.mjs",
+      "types": "./dist/libs/management/index.d.ts",
+      "import": "./dist/libs/management/index.js",
       "require": null
     },
     "./libs/management/index": {
@@ -75,8 +75,8 @@
       "require": null
     },
     "./libs/zod": {
-      "types": "./dist/libs/zod/index.d.mts",
-      "import": "./dist/libs/zod/index.mjs",
+      "types": "./dist/libs/zod/index.d.ts",
+      "import": "./dist/libs/zod/index.js",
       "require": null
     },
     "./libs/zod/index": {
@@ -85,8 +85,8 @@
       "require": null
     },
     "./models/admin": {
-      "types": "./dist/models/admin/index.d.mts",
-      "import": "./dist/models/admin/index.mjs",
+      "types": "./dist/models/admin/index.d.ts",
+      "import": "./dist/models/admin/index.js",
       "require": null
     },
     "./models/admin/index": {
@@ -96,12 +96,12 @@
     },
     "./package.json": "./package.json",
     "./types": {
-      "types": "./dist/types/index.d.mts",
+      "types": "./dist/types/index.d.ts",
       "import": null,
       "require": null
     },
     "./types/data": {
-      "types": "./dist/types/data/index.d.mts",
+      "types": "./dist/types/data/index.d.ts",
       "import": null,
       "require": null
     },
