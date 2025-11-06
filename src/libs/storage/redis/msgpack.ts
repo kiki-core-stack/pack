@@ -1,14 +1,14 @@
 import {
     decode,
     encode,
-} from 'cbor-x';
+} from 'msgpackr';
 
 import type {
     RedisLikeAdapter,
     RedisLikeStorage,
 } from './types';
 
-export function createCborRedisStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
+export function createMsgPackRedisStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
     return Object.freeze({
         async getItem<T = unknown>(key: string) {
             const rawValue = await adapter.getBuffer(key);

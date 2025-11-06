@@ -1,7 +1,7 @@
 import { redisClient } from '../../constants/redis';
-import { createCborRedisStorage } from '../../libs/storage/redis/cbor';
+import { createMsgPackRedisStorage } from '../../libs/storage/redis/msgpack';
 
-export const cborRedisStorage = createCborRedisStorage({
+export const msgPackRedisStorage = createMsgPackRedisStorage({
     delete: (key) => redisClient.del(key),
     getBuffer: (key) => redisClient.getBuffer(key),
     has: (key) => redisClient.exists(key),

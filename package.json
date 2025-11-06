@@ -142,7 +142,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/nodemailer": "^7.0.3",
     "argon2": "^0.44.0",
-    "cbor-x": "^1.6.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.41.0",
     "file-type": "^21.0.0",
@@ -151,6 +150,7 @@
     "lru-cache": "^11.2.2",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.2",
+    "msgpackr": "^1.11.5",
     "nanoid": "^5.1.6",
     "nodemailer": "^7.0.10",
     "sharp": "^0.34.4",
@@ -176,9 +176,6 @@
     "argon2": {
       "optional": true
     },
-    "cbor-x": {
-      "optional": true
-    },
     "consola": {
       "optional": true
     },
@@ -201,6 +198,9 @@
       "optional": true
     },
     "mongoose": {
+      "optional": true
+    },
+    "msgpackr": {
       "optional": true
     },
     "nanoid": {
@@ -231,7 +231,6 @@
     "@types/nodemailer": "^7.0.3",
     "@vitest/coverage-v8": "^4.0.7",
     "argon2": "^0.44.0",
-    "cbor-x": "^1.6.0",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "depcheck": "^1.4.7",
@@ -242,6 +241,7 @@
     "lru-cache": "^11.2.2",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.3",
+    "msgpackr": "^1.11.5",
     "nanoid": "^5.1.6",
     "nodemailer": "^7.0.10",
     "publint": "^0.3.15",
@@ -257,8 +257,8 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "argon2",
-      "cbor-extract",
       "esbuild",
+      "msgpackr-extract",
       "sharp"
     ]
   }
