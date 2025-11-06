@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.87.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.2...v0.87.0)
+
+### 💅 Refactors
+
+- ⚠️  Migrate cbor to msgpack ([fd5f2c2](https://github.com/kiki-core-stack/pack/commit/fd5f2c2))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Migrate cbor to msgpack ([fd5f2c2](https://github.com/kiki-core-stack/pack/commit/fd5f2c2))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.86.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.1...v0.86.2)
