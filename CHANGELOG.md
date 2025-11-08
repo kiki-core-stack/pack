@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.87.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.1...v0.87.2)
+
+### 🩹 Fixes
+
+- Add unique index on `configMd5` and `serviceProvider` for `EmailPlatform` ([ae424fd](https://github.com/kiki-core-stack/pack/commit/ae424fd))
+
+### 💅 Refactors
+
+- Change `EmailPlatformData.config` type definition to `AnyRecord` ([fc69388](https://github.com/kiki-core-stack/pack/commit/fc69388))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.87.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.0...v0.87.1)
