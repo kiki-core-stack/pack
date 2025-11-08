@@ -30,6 +30,14 @@ const schema = new Schema<EmailPlatform, EmailPlatformModel>({
     serviceProvider: s.number().enum(getEnumNumberValues(EmailServiceProvider)).immutable.required,
 });
 
+schema.index(
+    {
+        configMd5: 1,
+        serviceProvider: 1,
+    },
+    { unique: true },
+);
+
 export const EmailPlatformModel = buildMongooseModel<EmailPlatform, EmailPlatformModel>(
     'email.platforms',
     'EmailPlatform',
