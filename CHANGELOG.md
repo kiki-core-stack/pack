@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.87.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.0...v0.87.1)
+
+### 🚀 Enhancements
+
+- Add `EmailPlatform`, `EmailSendRecord`, and related type definitions and files ([af4affd](https://github.com/kiki-core-stack/pack/commit/af4affd))
+
+### 💅 Refactors
+
+- Rename old socket.io-related files to rt.io and restore parts of their original content ([0701f82](https://github.com/kiki-core-stack/pack/commit/0701f82))
+
+### 🏡 Chore
+
+- Log warn if msgpackr native acceleration disabled at node env ([cbbdcac](https://github.com/kiki-core-stack/pack/commit/cbbdcac))
+- Upgrade deps and remove `./dist/models/file.js` from sideEffects config ([c98ff8e](https://github.com/kiki-core-stack/pack/commit/c98ff8e))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.87.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.86.2...v0.87.0)
