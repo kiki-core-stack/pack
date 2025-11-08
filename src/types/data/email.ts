@@ -1,4 +1,5 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
+import type { AnyRecord } from '@kikiutils/shared/types';
 
 import type {
     EmailSendRecordStatus,
@@ -8,7 +9,7 @@ import type {
 import type { WithAdminAuditData } from './';
 
 export interface EmailPlatformData extends BaseMongooseModelData, WithAdminAuditData {
-    config: Record<string, string>;
+    config: AnyRecord;
     configMd5: string;
     enabled: boolean;
     name: string;
