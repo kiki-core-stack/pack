@@ -1,6 +1,16 @@
-import { createConfig } from '@kikiutils/eslint-config';
+import { antfu } from '@antfu/eslint-config';
+import { createBaseConfigs } from '@kikiutils/eslint-config/base';
 
-export default createConfig('node', { type: 'lib' }).overrideRules({
-    'ts/explicit-function-return-type': 'off',
-    'ts/prefer-literal-enum-member': 'off',
-});
+export default antfu(
+    {
+        type: 'lib',
+        typescript: true,
+    },
+    createBaseConfigs(),
+    {
+        rules: {
+            'ts/explicit-function-return-type': 'off',
+            'ts/prefer-literal-enum-member': 'off',
+        },
+    },
+);
