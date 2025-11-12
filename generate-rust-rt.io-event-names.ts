@@ -15,7 +15,7 @@ import {
 
 import * as RtIoEventNames from './src/constants/rt.io-event-names.ts';
 
-const outputDirPath = resolve(import.meta.dirname, 'generated', 'io_event_names');
+const outputDirPath = resolve(import.meta.dirname, 'generated', 'rt_io_event_names');
 await rm(
     outputDirPath,
     {
