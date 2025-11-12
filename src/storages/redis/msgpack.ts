@@ -1,7 +1,7 @@
 import { redisClient } from '../../constants/redis';
-import { createMsgPackRedisStorage } from '../../libs/storage/redis/msgpack';
+import { createMsgpackRedisStorage } from '../../libs/storage/redis/msgpack';
 
-export const msgPackRedisStorage = createMsgPackRedisStorage({
+export const msgpackRedisStorage = createMsgpackRedisStorage({
     delete: (key) => redisClient.del(key),
     getBuffer: (key) => redisClient.getBuffer(key),
     has: (key) => redisClient.exists(key),

@@ -16,7 +16,7 @@ if (
     && typeof window !== 'undefined'
 ) console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
 
-export function createMsgPackRedisStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
+export function createMsgpackRedisStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
     return Object.freeze({
         async getItem<T = unknown>(key: string) {
             const rawValue = await adapter.getBuffer(key);
