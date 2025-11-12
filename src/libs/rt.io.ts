@@ -1,5 +1,5 @@
 import { WsIoClient } from 'ws.io-client';
-import * as wsIoPacketCborCodec from 'ws.io-client/core/packet/codecs/cbor';
+import * as wsIoPacketMsgpackCodec from 'ws.io-client/core/packet/codecs/msgpack';
 import type { WsIoClientConfig } from 'ws.io-client/types/config';
 
 import { isDebugMode } from '../constants';
@@ -11,7 +11,7 @@ export function createWsIoClient<
     return new WsIoClient<ToServerEvents, ToClientEvents>(
         url,
         {
-            packetCodec: !isDebugMode ? wsIoPacketCborCodec : undefined,
+            packetCodec: !isDebugMode ? wsIoPacketMsgpackCodec : undefined,
             reconnectDelay: 125,
             ...config,
         },
