@@ -11,7 +11,7 @@ export function createWsIoClient<
     return new WsIoClient<ToServerEvents, ToClientEvents>(
         url,
         {
-            packetCodec: !isDebugMode ? wsIoPacketMsgpackCodec : undefined,
+            packetCodec: isDebugMode ? undefined : wsIoPacketMsgpackCodec,
             reconnectDelay: 125,
             ...config,
         },
