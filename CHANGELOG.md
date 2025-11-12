@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.88.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.2...v0.88.0)
+
+### 🚀 Enhancements
+
+- Add `redisSubscriber` constant ([1eb3d3d](https://github.com/kiki-core-stack/pack/commit/1eb3d3d))
+- Add `createAndDispatchEmailSendJob` lib ([eb2b9bc](https://github.com/kiki-core-stack/pack/commit/eb2b9bc))
+- Add `createWsIoClient` lib ([6e16b99](https://github.com/kiki-core-stack/pack/commit/6e16b99))
+
+### 💅 Refactors
+
+- ⚠️  Rename `MsgPack/msgPack` to `Msgpack/msgpack` for naming consistency ([76f7a40](https://github.com/kiki-core-stack/pack/commit/76f7a40))
+
+### 🏡 Chore
+
+- ⚠️  Remove `nodemailer` and `sendEmail` ([b26692e](https://github.com/kiki-core-stack/pack/commit/b26692e))
+- Update eslint config ([e75c3d7](https://github.com/kiki-core-stack/pack/commit/e75c3d7))
+- Update `generate-rust-rt.io-event-names` `outputDirPath` ([7022abe](https://github.com/kiki-core-stack/pack/commit/7022abe))
+- Change default ws.io client packetCodec to msgpack ([3ce4800](https://github.com/kiki-core-stack/pack/commit/3ce4800))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Rename `MsgPack/msgPack` to `Msgpack/msgpack` for naming consistency ([76f7a40](https://github.com/kiki-core-stack/pack/commit/76f7a40))
+- ⚠️  Remove `nodemailer` and `sendEmail` ([b26692e](https://github.com/kiki-core-stack/pack/commit/b26692e))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.87.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.1...v0.87.2)
