@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.88.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.88.0...v0.88.1)
+
+### 🩹 Fixes
+
+- Ensure events map type is correctly passed into `createWsIoClient` ([f77f464](https://github.com/kiki-core-stack/pack/commit/f77f464))
+
+### 💅 Refactors
+
+- Tidy up code ([3409492](https://github.com/kiki-core-stack/pack/commit/3409492))
+
+### 🏡 Chore
+
+- Increase max string length for admin.account and admin.role.name fields ([88ca3f8](https://github.com/kiki-core-stack/pack/commit/88ca3f8))
+- Upgrade deps ([7924080](https://github.com/kiki-core-stack/pack/commit/7924080))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.88.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.87.2...v0.88.0)
