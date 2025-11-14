@@ -9,12 +9,9 @@ import type {
     RedisLikeStorage,
 } from './types';
 
-if (
-    !isNativeAccelerationEnabled
-    && typeof document !== 'undefined'
-    && typeof globalThis.window === 'object'
-    && typeof window !== 'undefined'
-) console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
+if (!isNativeAccelerationEnabled) {
+    console.warn('Native acceleration not enabled for msgpackr, verify that install finished properly');
+}
 
 export function createMsgpackRedisStorage(adapter: RedisLikeAdapter): Readonly<RedisLikeStorage> {
     return Object.freeze({
