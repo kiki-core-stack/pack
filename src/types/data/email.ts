@@ -2,6 +2,7 @@ import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 import type { AnyRecord } from '@kikiutils/shared/types';
 
 import type {
+    EmailSenderIdentityKey,
     EmailSendRecordStatus,
     EmailServiceProvider,
 } from '../../constants/email';
@@ -15,6 +16,12 @@ export interface EmailPlatformData extends BaseMongooseModelData, WithAdminAudit
     name: string;
     priority: number;
     serviceProvider: EmailServiceProvider;
+}
+
+export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdminAuditData {
+    enabled: boolean;
+    from: string;
+    key: EmailSenderIdentityKey;
 }
 
 export interface EmailSendRecordData extends BaseMongooseModelData {
