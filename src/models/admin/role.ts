@@ -17,7 +17,7 @@ type AdminRoleModel = BaseMongoosePaginateModel<AdminRole>;
 const schema = new Schema<AdminRole, AdminRoleModel>({
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
-    name: s.string().maxlength(16).trim.unique.required,
+    name: s.string().maxlength(32).trim.unique.required,
     permissions: [s.string().trim.required],
 });
 
