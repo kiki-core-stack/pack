@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.89.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.88.1...v0.89.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Add `EmailSenderIdentity` and related functionalities ([6575f77](https://github.com/kiki-core-stack/pack/commit/6575f77))
+
+### 🩹 Fixes
+
+- Correct condition for msgpack native acceleration warning check ([a784728](https://github.com/kiki-core-stack/pack/commit/a784728))
+
+### 💅 Refactors
+
+- Rename `createAndDispatchEmailSendJob` to `enqueueEmailSendJobs` ([5f97f7a](https://github.com/kiki-core-stack/pack/commit/5f97f7a))
+- ⚠️  Remove `EmailSendRecordStatus.Processing` ([b3befe3](https://github.com/kiki-core-stack/pack/commit/b3befe3))
+
+### 🏡 Chore
+
+- Upgrade deps ([34dfd3f](https://github.com/kiki-core-stack/pack/commit/34dfd3f))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Add `EmailSenderIdentity` and related functionalities ([6575f77](https://github.com/kiki-core-stack/pack/commit/6575f77))
+- ⚠️  Remove `EmailSendRecordStatus.Processing` ([b3befe3](https://github.com/kiki-core-stack/pack/commit/b3befe3))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.88.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.88.0...v0.88.1)
