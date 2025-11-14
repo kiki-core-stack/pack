@@ -102,8 +102,8 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9(@types/debug@4.1.12)(@types/node@24.10.1)(jiti@2.6.1)(yaml@2.8.1)
       ws.io-client:
-        specifier: ^0.2.9
-        version: 0.2.9(msgpackr@1.11.5)
+        specifier: ^0.3.0
+        version: 0.3.0(msgpackr@1.11.5)
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -3053,8 +3053,8 @@ packages:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
     engines: {node: '>=10'}
 
-  ws.io-client@0.2.9:
-    resolution: {integrity: sha512-hWHcYDm53hxTjqa8n0qEe33vXRx+BbFKn6a658zKGx68cIMOlwK1foAMRMwbjpU2t79/78dxkuh7jd5XnOVgWg==}
+  ws.io-client@0.3.0:
+    resolution: {integrity: sha512-KxK0GZ4bRqcID9EXfsg81NJPA7LZewbFM7pxJ5DCSoQfDRchnaXsDG7CV0FoOepq6edtN9EfHU6KdS++jg13tg==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       cbor-x: ^1.6.0
@@ -6120,7 +6120,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  ws.io-client@0.2.9(msgpackr@1.11.5):
+  ws.io-client@0.3.0(msgpackr@1.11.5):
     dependencies:
       defu: 6.1.4
       p-mutex: 1.0.0
