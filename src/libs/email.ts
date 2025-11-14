@@ -1,17 +1,13 @@
-import { debounce } from 'es-toolkit';
-
 import { redisClient } from '../constants/redis';
 import { EmailSendRecordModel } from '../models/email/send-record';
 
-const notifyEmailSendWorkerJobUpdate = debounce(() => redisClient.publish('jobs.email.send.updated', ''), 5000);
-
-export async function createAndDispatchEmailSendJob(
+export async function enqueueEmailSendJobs(
     to: string | string[],
     subject: string,
     body: string,
     from?: string,
 ) {
-    await EmailSendRecordModel.insertMany(
+    const emailSendRecords = await EmailSendRecordModel.insertMany(
         [to].flat().map((t) => ({
             content: body,
             from,
@@ -20,5 +16,9 @@ export async function createAndDispatchEmailSendJob(
         })),
     );
 
-    notifyEmailSendWorkerJobUpdate();
+    await Promise.all(
+        emailSendRecords.map(
+            (emailSendRecord) => redisClient.rpush('email.send.queue', emailSendRecord._id.toHexString()),
+        ),
+    );
 }
