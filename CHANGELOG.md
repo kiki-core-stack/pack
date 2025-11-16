@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.89.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.0...v0.89.1)
+
+### 🩹 Fixes
+
+- Add unique index to `EmailSenderIdentity.key` field ([3462882](https://github.com/kiki-core-stack/pack/commit/3462882))
+
+### 💅 Refactors
+
+- Update ws.io-client and adjust related code ([4b05479](https://github.com/kiki-core-stack/pack/commit/4b05479))
+
+### 🏡 Chore
+
+- Add eslint-disable comment to generated file from `writeManagementPermissionTypesFile` ([d250f80](https://github.com/kiki-core-stack/pack/commit/d250f80))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.88.1...v0.89.0)

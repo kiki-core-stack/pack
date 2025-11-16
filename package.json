@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.89.0",
+  "version": "0.89.1",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -235,7 +235,7 @@
     "hono": "^4.10.6",
     "lru-cache": "^11.2.2",
     "mongodb": "^7.0.0",
-    "mongoose": "^8.19.3",
+    "mongoose": "^8.19.4",
     "msgpackr": "^1.11.5",
     "nanoid": "^5.1.6",
     "publint": "^0.3.15",
