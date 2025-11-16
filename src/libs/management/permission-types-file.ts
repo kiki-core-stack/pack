@@ -23,6 +23,9 @@ export async function writeManagementPermissionTypesFile(
     const permissionGroups = [...permissionGroupsSet].sort();
     const prefix = capitalize(managementType);
     const fileContents = [
+        '/* eslint-disable eslint-comments/no-unlimited-disable */',
+        '/* eslint-disable */',
+        '',
         `export type ${prefix}Permission =`,
         ...permissions.map((permission, i) => `  | '${permission}'${i === permissions.length - 1 ? ';' : ''}`),
         '',
