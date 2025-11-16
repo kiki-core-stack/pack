@@ -21,7 +21,7 @@ const schema = new Schema<EmailSenderIdentity, EmailSenderIdentityModel>({
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
     from: s.string().trim.required,
-    key: s.number().enum(getEnumNumberValues(EmailSenderIdentityKey)).required,
+    key: s.number().enum(getEnumNumberValues(EmailSenderIdentityKey)).unique.required,
 });
 
 export const EmailSenderIdentityModel = buildMongooseModel<EmailSenderIdentity, EmailSenderIdentityModel>(
