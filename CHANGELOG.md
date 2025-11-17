@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.89.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.1...v0.89.2)
+
+### 🚀 Enhancements
+
+- `EmailSendRecordStatus` add `Processing` value ([be9421e](https://github.com/kiki-core-stack/pack/commit/be9421e))
+
+### 🏡 Chore
+
+- Format code ([560fc3b](https://github.com/kiki-core-stack/pack/commit/560fc3b))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.0...v0.89.1)
