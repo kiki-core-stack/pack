@@ -9,6 +9,7 @@ export enum EmailSenderIdentityKey {
 export enum EmailSendRecordStatus {
     Failed = CommonStatus.Failed,
     Pending = CommonStatus.Pending,
+    Processing = CommonStatus.Processing,
     Success = CommonStatus.Success,
 }
 
