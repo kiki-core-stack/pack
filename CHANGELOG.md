@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.89.5
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.4...v0.89.5)
+
+### 🚀 Enhancements
+
+- Add `rejectTlsUnauthorized` field to `EmailPlatformConfigs.Smtp` ([e13f59f](https://github.com/kiki-core-stack/pack/commit/e13f59f))
+
+### 🏡 Chore
+
+- Add composite index on `status` and `updatedAt` for `EmailSendRecord` ([63d5a7f](https://github.com/kiki-core-stack/pack/commit/63d5a7f))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.4
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.3...v0.89.4)
