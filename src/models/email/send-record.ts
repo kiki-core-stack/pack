@@ -28,6 +28,11 @@ const schema = new Schema<EmailSendRecord, EmailSendRecordModel>({
     to: s.string().trim.required,
 });
 
+schema.index({
+    status: 1,
+    updatedAt: 1,
+});
+
 export const EmailSendRecordModel = buildMongooseModel<EmailSendRecord, EmailSendRecordModel>(
     'email.send_records',
     'EmailSendRecord',
