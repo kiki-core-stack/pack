@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.89.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.2...v0.89.3)
+
+### 💅 Refactors
+
+- Replace `xadd` with `lpush` to Redis array in `enqueueEmailSendJobs` ([05754d8](https://github.com/kiki-core-stack/pack/commit/05754d8))
+
+### 🏡 Chore
+
+- Update deps ([f24d02d](https://github.com/kiki-core-stack/pack/commit/f24d02d))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.1...v0.89.2)
