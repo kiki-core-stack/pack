@@ -1,6 +1,10 @@
+import type { RedisClient } from 'bun';
+import { Types } from 'mongoose';
+
 import type { EmailSenderIdentityKey } from '../constants/email';
-import { redisClient } from '../constants/redis';
+import { redisClient as globalRedisClient } from '../constants/redis';
 import { EmailSendRecordModel } from '../models/email/send-record';
+import type { EmailSendRecordDocument } from '../models/email/send-record';
 import { EmailSenderIdentityModel } from '../models/email/sender-identity';
 import type { EmailSenderIdentityDocument } from '../models/email/sender-identity';
 
@@ -35,9 +39,20 @@ export async function enqueueEmailSendJobs(
         })),
     );
 
-    await Promise.all(
-        emailSendRecords.map(
-            (emailSendRecord) => redisClient.lpush('email:send:queue', emailSendRecord._id.toHexString()),
-        ),
+    await enqueueEmailSendRecordIds(emailSendRecords);
+}
+
+export function enqueueEmailSendRecordIds(
+    emailSendRecordOrIds: (EmailSendRecordDocument | Types.ObjectId)[],
+    redisClient: RedisClient = globalRedisClient,
+) {
+    return Promise.all(
+        emailSendRecordOrIds.map((emailSendRecordOrId) => {
+            const emailSendRecordId = emailSendRecordOrId instanceof Types.ObjectId
+                ? emailSendRecordOrId
+                : emailSendRecordOrId._id;
+
+            return redisClient.lpush('email:send:queue', emailSendRecordId.toHexString());
+        }),
     );
 }
