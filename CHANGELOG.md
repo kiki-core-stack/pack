@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.90.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.5...v0.90.0)
+
+### 💅 Refactors
+
+- ⚠️  Merge tls related fields in `EmailPlatformConfigs.Smtp` into a single tls object field ([db40bd5](https://github.com/kiki-core-stack/pack/commit/db40bd5))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Merge tls related fields in `EmailPlatformConfigs.Smtp` into a single tls object field ([db40bd5](https://github.com/kiki-core-stack/pack/commit/db40bd5))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.5
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.4...v0.89.5)
