@@ -4,6 +4,7 @@ export namespace EmailPlatformConfigs {
         host: string;
         password?: string;
         port: number;
+        rejectTlsUnauthorized: boolean;
         requireTls: boolean;
         secure: boolean;
         username?: string;
