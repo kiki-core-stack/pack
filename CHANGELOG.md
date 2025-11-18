@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.89.4
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.3...v0.89.4)
+
+### 💅 Refactors
+
+- Extract Redis `lpush` logic from `enqueueEmailSendJobs` into a separate function ([c4381bf](https://github.com/kiki-core-stack/pack/commit/c4381bf))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.89.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.2...v0.89.3)
