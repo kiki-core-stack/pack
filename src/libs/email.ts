@@ -36,19 +36,8 @@ export async function enqueueEmailSendJobs(
     );
 
     await Promise.all(
-        emailSendRecords.map((emailSendRecord) => {
-            return redisClient.send(
-                'XADD',
-                [
-                    'email.send.jobs',
-                    'MAXLEN',
-                    '~',
-                    '100000',
-                    '*',
-                    'id',
-                    emailSendRecord._id.toHexString(),
-                ],
-            );
-        }),
+        emailSendRecords.map(
+            (emailSendRecord) => redisClient.lpush('email:send:queue', emailSendRecord._id.toHexString()),
+        ),
     );
 }
