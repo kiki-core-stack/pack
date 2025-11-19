@@ -29,7 +29,6 @@ export interface EmailSendRecordData extends BaseMongooseModelData {
     failureReason?: string;
     from: string;
     platform?: Partial<EmailPlatformData>;
-    sentAt?: string;
     serviceProviderTransactionId?: string;
     status: EmailSendRecordStatus;
     subject: string;
