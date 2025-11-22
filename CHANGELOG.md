@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.90.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.90.0...v0.90.1)
+
+### 💅 Refactors
+
+- Remove `sentAt` field from `EmailSendRecord` ([69f5bf6](https://github.com/kiki-core-stack/pack/commit/69f5bf6))
+- Update code affected by Mongoose upgrade ([a969171](https://github.com/kiki-core-stack/pack/commit/a969171))
+
+### 🏡 Chore
+
+- Upgrade deps ([c8d2deb](https://github.com/kiki-core-stack/pack/commit/c8d2deb))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.90.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.89.5...v0.90.0)
