@@ -34,33 +34,28 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
         }
 
         // findOneAndUpdate
-        schema.pre('findOneAndUpdate', async function (next) {
+        schema.pre('findOneAndUpdate', async function () {
             const update = this.getUpdate();
             if (update) await processUpdate(update);
-            next();
         });
 
         // save
-        schema.pre('save', async function (next) {
+        schema.pre('save', async function () {
             if (this.isModified(field) && this[field] !== undefined) {
                 this[field] = await hashPasswordWithArgon2(this[field] as string);
             }
-
-            next();
         });
 
         // updateMany
-        schema.pre('updateMany', async function (next) {
+        schema.pre('updateMany', async function () {
             const update = this.getUpdate();
             if (update) await processUpdate(update);
-            next();
         });
 
         // updateOne
-        schema.pre('updateOne', async function (next) {
+        schema.pre('updateOne', async function () {
             const update = this.getUpdate();
             if (update) await processUpdate(update);
-            next();
         });
 
         // Verify document method

@@ -12,7 +12,7 @@ import {
 } from 'mongoose';
 import type {
     ProjectionFields,
-    Query,
+    QueryFilter,
 } from 'mongoose';
 
 import { FileStorageProvider } from '../constants/file';
@@ -35,7 +35,7 @@ const schema = new Schema<File, FileModel>(
     { timestamps: schemaTimestampsConfigOnlyCreatedAt },
 );
 
-function isEligibleIdQuery(query: Query<any, any>, mode: 'in' | 'single') {
+function isEligibleIdQuery(query: QueryFilter<File>, mode: 'in' | 'single') {
     const filter = query.getFilter();
     if (Object.keys(filter).length !== 1 || !filter._id) return false;
     if (mode === 'single') return typeof filter._id === 'string' || filter._id instanceof Types.ObjectId;
@@ -70,7 +70,7 @@ schema.post(
     },
 );
 
-schema.pre(
+schema.pre<QueryFilter<File>>(
     'find',
     async function () {
         const filter = this.getFilter();
@@ -115,7 +115,7 @@ schema.post(
     },
 );
 
-schema.pre(
+schema.pre<QueryFilter<File>>(
     'findOne',
     async function () {
         const filter = this.getFilter();

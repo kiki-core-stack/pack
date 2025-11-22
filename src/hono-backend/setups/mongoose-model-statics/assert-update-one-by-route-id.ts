@@ -4,7 +4,7 @@ import type { Context } from 'hono';
 import type {
     mongo,
     MongooseUpdateQueryOptions,
-    RootFilterQuery,
+    QueryFilter,
     Schema,
     UpdateQuery,
 } from 'mongoose';
@@ -20,7 +20,7 @@ declare module '@kikiutils/mongoose/types' {
             ctx: Context,
             updateQuery: UpdateQuery<RawDocType>,
             options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<RawDocType>)>,
-            filter?: RootFilterQuery<RawDocType>,
+            filter?: QueryFilter<RawDocType>,
             expectedModifiedCount?: number,
         ) => Promise<void>;
     }
@@ -39,12 +39,13 @@ registerStaticFunctions.push(
                 ctx: Context,
                 updateQuery: UpdateQuery<DocType>,
                 options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<DocType>)>,
-                filter?: RootFilterQuery<DocType>,
+                filter?: QueryFilter<DocType>,
                 expectedModifiedCount: number = 1,
             ) {
                 const id = ctx.req.param('id');
                 if (!id) throwApiError(404);
                 const updateResult = await this.updateOne(
+                    // @ts-expect-error Ignore this error.
                     {
                         ...filter,
                         _id: id,
