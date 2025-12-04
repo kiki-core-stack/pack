@@ -1,8 +1,12 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
 import { statusCodeToApiResponseErrorCodeMap } from '../../constants/response';
+import type { CommonApiResponseErrorCode } from '../../types/api';
 
-export class ApiError<D extends object | undefined = undefined, E extends string = string> extends Error {
+export class ApiError<
+    D extends object | undefined = undefined,
+    E extends CommonApiResponseErrorCode | (string & {}) = string,
+> extends Error {
     readonly data: D;
     readonly errorCode: E;
     readonly statusCode: ContentfulStatusCode;

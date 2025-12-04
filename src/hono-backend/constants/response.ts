@@ -1,7 +1,11 @@
 import type { PartialRecord } from '@kikiutils/shared/types';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
-export const statusCodeToApiResponseErrorCodeMap: Readonly<PartialRecord<ContentfulStatusCode, string>> = {
+import type { CommonApiResponseErrorCode } from '../types/api';
+
+export const statusCodeToApiResponseErrorCodeMap: Readonly<
+    PartialRecord<ContentfulStatusCode, CommonApiResponseErrorCode>
+> = {
     400: 'badRequest',
     401: 'unauthorized',
     403: 'forbidden',
