@@ -1,7 +1,9 @@
-import { redisClient } from '../../constants/redis';
-import { createMsgpackRedisStorage } from '../../libs/storage/redis/msgpack';
+import { createRedisMsgpackStorage } from '@kikiutils/shared/storages/redis/msgpack';
+import type { RedisLikeStorage as RedisMsgpackStorage } from '@kikiutils/shared/storages/redis/types';
 
-export const msgpackRedisStorage = createMsgpackRedisStorage({
+import { redisClient } from '../../constants/redis';
+
+export const redisMsgpackStorage: RedisMsgpackStorage = createRedisMsgpackStorage({
     delete: (key) => redisClient.del(key),
     getBuffer: (key) => redisClient.getBuffer(key),
     has: (key) => redisClient.exists(key),

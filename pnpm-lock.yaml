@@ -21,8 +21,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       '@kikiutils/shared':
-        specifier: ^13.6.1
-        version: 13.6.1(@types/fs-extra@11.0.4)(@types/jsonfile@6.1.4)(@types/node@24.10.1)(bson@7.0.0)(consola@3.4.2)(decimal.js@10.6.0)(fs-extra@11.3.2)(lru-cache@11.2.4)
+        specifier: ^14.0.0
+        version: 14.0.0(@types/fs-extra@11.0.4)(@types/jsonfile@6.1.4)(@types/node@24.10.1)(bson@7.0.0)(consola@3.4.2)(decimal.js@10.6.0)(fs-extra@11.3.2)(lru-cache@11.2.4)(msgpackr@1.11.5)
       '@kikiutils/tsconfigs':
         specifier: ^5.0.5
         version: 5.0.5
@@ -656,8 +656,8 @@ packages:
     resolution: {integrity: sha512-v22iNIRFseWgvSQ31j/e/dLdibiCYnkabD3zkg53wpV0TQjdNZIuRCMndXM7InteDm62D0dto7hcOZNbEwJHWg==}
     engines: {node: '>=22.12.0'}
 
-  '@kikiutils/shared@13.6.1':
-    resolution: {integrity: sha512-NR9VDfzDEFZNmEwjOv5ISMkoFVkN4QmOvZr8HhIgmQS0pghyY7oY3kILHYJ43iX2p5ZUrtOP9KBBlPmf1cirwA==}
+  '@kikiutils/shared@14.0.0':
+    resolution: {integrity: sha512-ZX9nYMLJoklW3lKSKqj6o3BSHiIgOJsG/mSWzhllEglQdcTQl1AEn9Wi34Sa6g+L4js/3VSWLh9MfFCHiUTE9w==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@noble/hashes': ^2.0.0
@@ -672,9 +672,9 @@ packages:
       decimal.js: ^10.6.0
       element-plus: ^2.11.3
       fs-extra: ^11.3.2
-      ioredis: ^5.7.0
-      lru-cache: ^11.2.1
+      lru-cache: ^11.2.4
       millify: ^6.1.0
+      msgpackr: ^1.11.5
       node-ssh: ^13.2.1
       pino: ^10.0.0
       pino-pretty: ^13.1.1
@@ -706,11 +706,11 @@ packages:
         optional: true
       fs-extra:
         optional: true
-      ioredis:
-        optional: true
       lru-cache:
         optional: true
       millify:
+        optional: true
+      msgpackr:
         optional: true
       node-ssh:
         optional: true
@@ -3596,7 +3596,7 @@ snapshots:
       - snappy
       - socks
 
-  '@kikiutils/shared@13.6.1(@types/fs-extra@11.0.4)(@types/jsonfile@6.1.4)(@types/node@24.10.1)(bson@7.0.0)(consola@3.4.2)(decimal.js@10.6.0)(fs-extra@11.3.2)(lru-cache@11.2.4)':
+  '@kikiutils/shared@14.0.0(@types/fs-extra@11.0.4)(@types/jsonfile@6.1.4)(@types/node@24.10.1)(bson@7.0.0)(consola@3.4.2)(decimal.js@10.6.0)(fs-extra@11.3.2)(lru-cache@11.2.4)(msgpackr@1.11.5)':
     optionalDependencies:
       '@types/fs-extra': 11.0.4
       '@types/jsonfile': 6.1.4
@@ -3606,6 +3606,7 @@ snapshots:
       decimal.js: 10.6.0
       fs-extra: 11.3.2
       lru-cache: 11.2.4
+      msgpackr: 1.11.5
 
   '@kikiutils/tsconfigs@5.0.5': {}
 
