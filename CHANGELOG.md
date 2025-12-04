@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.91.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.90.1...v0.91.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Add `CommonApiResponseErrorCode` type, remove `FixedApiErrorCreator` and `createFixedApiErrorCreator` ([3f5941e](https://github.com/kiki-core-stack/pack/commit/3f5941e))
+
+### 💅 Refactors
+
+- ⚠️  Update storages code to use Redis-related package, adjust code for package changes, and rename `msgpackRedisStorage` to `redisMsgpackStorage` ([7280008](https://github.com/kiki-core-stack/pack/commit/7280008))
+
+### 🏡 Chore
+
+- ⚠️  Rename `libs/rt.io.ts` to `ws.io.ts` ([8f2e872](https://github.com/kiki-core-stack/pack/commit/8f2e872))
+- Upgrade deps ([85ae960](https://github.com/kiki-core-stack/pack/commit/85ae960))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Add `CommonApiResponseErrorCode` type, remove `FixedApiErrorCreator` and `createFixedApiErrorCreator` ([3f5941e](https://github.com/kiki-core-stack/pack/commit/3f5941e))
+- ⚠️  Update storages code to use Redis-related package, adjust code for package changes, and rename `msgpackRedisStorage` to `redisMsgpackStorage` ([7280008](https://github.com/kiki-core-stack/pack/commit/7280008))
+- ⚠️  Rename `libs/rt.io.ts` to `ws.io.ts` ([8f2e872](https://github.com/kiki-core-stack/pack/commit/8f2e872))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.90.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.90.0...v0.90.1)
