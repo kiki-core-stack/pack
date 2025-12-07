@@ -5,6 +5,7 @@ import type {
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
+import type { Nullable } from '@kikiutils/shared/types';
 import {
     Document,
     Schema,
@@ -12,7 +13,7 @@ import {
 } from 'mongoose';
 import type {
     ProjectionFields,
-    QueryFilter,
+    Query,
 } from 'mongoose';
 
 import { FileStorageProvider } from '../constants/file';
@@ -35,7 +36,10 @@ const schema = new Schema<File, FileModel>(
     { timestamps: schemaTimestampsConfigOnlyCreatedAt },
 );
 
-function isEligibleIdQuery(query: QueryFilter<File>, mode: 'in' | 'single') {
+function isEligibleIdQuery(
+    query: Query<FileDocument[], File> | Query<Nullable<FileDocument>, File>,
+    mode: 'in' | 'single',
+) {
     const filter = query.getFilter();
     if (Object.keys(filter).length !== 1 || !filter._id) return false;
     if (mode === 'single') return typeof filter._id === 'string' || filter._id instanceof Types.ObjectId;
@@ -52,25 +56,33 @@ function serializeProjection(projection?: ProjectionFields<any>) {
 }
 
 // find
-schema.post(
+schema.post<Query<FileDocument[], File>>(
     'find',
     async function (result) {
         if (this._mongooseOptions.isFromCache) return;
         if (!isEligibleIdQuery(this, 'in')) return;
         const projectionKey = serializeProjection(this.projection());
         await Promise.all(
-            result.map(async (value: any) => {
-                if (!(value instanceof Document)) return;
-                const fileDocumentData = value.toObject();
-                const id = value._id.toHexString();
-                lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
-                await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
+            result.map((item) => {
+                const fileDocumentData = {
+                    ...item.toObject(),
+                    _id: item._id.toHexString(),
+                    createdAt: item.createdAt.toISOString(),
+                };
+
+                lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
+                return redisStore.fileDocumentData.setItemWithTtl(
+                    3600,
+                    fileDocumentData,
+                    fileDocumentData._id,
+                    projectionKey,
+                );
             }),
         );
     },
 );
 
-schema.pre<QueryFilter<File>>(
+schema.pre<Query<FileDocument[], File>>(
     'find',
     async function () {
         const filter = this.getFilter();
@@ -102,20 +114,25 @@ schema.pre<QueryFilter<File>>(
 );
 
 // fineOne
-schema.post(
+schema.post<Query<Nullable<FileDocument>, File>>(
     'findOne',
     async function (result) {
-        if (!(result instanceof Document)) return;
+        if (this._mongooseOptions.isFromCache) return;
+        if (!result || !(result instanceof Document)) return;
         if (!isEligibleIdQuery(this, 'single')) return;
         const projectionKey = serializeProjection(this.projection());
-        const fileDocumentData = result.toObject();
-        const id = result._id.toHexString();
-        lruStore.fileDocumentData.setItem(fileDocumentData, id, projectionKey);
-        await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, id, projectionKey);
+        const fileDocumentData = {
+            ...result.toObject(),
+            _id: result._id.toHexString(),
+            createdAt: result.createdAt.toISOString(),
+        };
+
+        lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
+        await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, fileDocumentData._id, projectionKey);
     },
 );
 
-schema.pre<QueryFilter<File>>(
+schema.pre<Query<Nullable<FileDocument>, File>>(
     'findOne',
     async function () {
         const filter = this.getFilter();
