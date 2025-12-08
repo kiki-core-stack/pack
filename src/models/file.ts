@@ -67,7 +67,7 @@ schema.post<Query<FileDocument[], File>>(
                 const fileDocumentData = {
                     ...item.toObject(),
                     _id: item._id.toHexString(),
-                    createdAt: item.createdAt.toISOString(),
+                    createdAt: item.createdAt?.toISOString(),
                 };
 
                 lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
@@ -124,7 +124,7 @@ schema.post<Query<Nullable<FileDocument>, File>>(
         const fileDocumentData = {
             ...result.toObject(),
             _id: result._id.toHexString(),
-            createdAt: result.createdAt.toISOString(),
+            createdAt: result.createdAt?.toISOString(),
         };
 
         lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
