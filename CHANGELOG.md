@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.92.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.92.0...v0.92.1)
+
+### 🩹 Fixes
+
+- Correct reversed argument order passed to `verify` in `verifyPasswordWithArgon2` ([0e58b2c](https://github.com/kiki-core-stack/pack/commit/0e58b2c))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.92.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.91.0...v0.92.0)
