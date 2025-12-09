@@ -1,5 +1,3 @@
-import type { Buffer } from 'node:buffer';
-
 import { capitalize } from 'es-toolkit';
 import type {
     Schema,
@@ -59,8 +57,8 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
         });
 
         // Verify document method
-        schema.method(`verify${capitalize(field)}`, function (value: string, options?: { secret: Buffer }) {
-            return verifyPasswordWithArgon2(this[field] as string, value, options);
+        schema.method(`verify${capitalize(field)}`, function (value: string) {
+            return verifyPasswordWithArgon2(this[field] as string, value);
         });
     });
 }
