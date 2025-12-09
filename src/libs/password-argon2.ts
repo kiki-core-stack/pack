@@ -19,5 +19,5 @@ export function hashPasswordWithArgon2(password: string, options?: Except<Bun.Pa
 }
 
 export function verifyPasswordWithArgon2(hashed: string, input: string) {
-    return Bun.password.verify(hashed, input, 'argon2id');
+    return Bun.password.verify(input, hashed, 'argon2id');
 }
