@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.92.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.91.0...v0.92.0)
+
+### 🩹 Fixes
+
+- **file-model:** Correct partial middleware type errors ([8cf6769](https://github.com/kiki-core-stack/pack/commit/8cf6769))
+- **file-model:** Properly handle undefined `createdAt` when building `fileDocumentData` ([e082b03](https://github.com/kiki-core-stack/pack/commit/e082b03))
+
+### 💅 Refactors
+
+- ⚠️  Replace `argon2` with `Bun.password` ([5e1e40d](https://github.com/kiki-core-stack/pack/commit/5e1e40d))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Replace `argon2` with `Bun.password` ([5e1e40d](https://github.com/kiki-core-stack/pack/commit/5e1e40d))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.91.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.90.1...v0.91.0)
