@@ -44,9 +44,8 @@ registerStaticFunctions.push(
                 if (!id) throwApiError(404);
                 if (!Types.ObjectId.isValid(id)) throwApiError(400);
                 const document = await this.findOne(
-                    // @ts-expect-error Ignore this error.
                     {
-                        ...filter,
+                        ...(filter || {}) as QueryFilter<DocType>,
                         _id: id,
                     },
                     projection,

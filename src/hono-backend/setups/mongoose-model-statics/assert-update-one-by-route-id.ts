@@ -45,9 +45,8 @@ registerStaticFunctions.push(
                 const id = ctx.req.param('id');
                 if (!id) throwApiError(404);
                 const updateResult = await this.updateOne(
-                    // @ts-expect-error Ignore this error.
                     {
-                        ...filter,
+                        ...filter || {},
                         _id: id,
                     },
                     updateQuery,
