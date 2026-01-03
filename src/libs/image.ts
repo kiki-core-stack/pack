@@ -1,6 +1,3 @@
-import type { Buffer } from 'node:buffer';
-
-import type { BinaryInput } from '@kikiutils/shared/types';
 import type {
     SharpOptions,
     WebpOptions,
@@ -12,7 +9,7 @@ import { uploadFileAndCreateDocument } from './file';
 import type { BaseFileStorage } from './storages/files/base';
 
 export async function uploadImageAndCreateFileDocument(
-    imageFile: Exclude<BinaryInput, Buffer>,
+    imageFile: Parameters<typeof autoConvertAnimatedImageToWebp>[0],
     storage: BaseFileStorage,
     convertImageInputOptions?: SharpOptions,
     convertImageOutputOptions?: WebpOptions,
