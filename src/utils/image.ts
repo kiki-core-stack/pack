@@ -22,12 +22,12 @@ const animatedMimeTypes = new Set([
 
 // Functions
 export function autoConvertAnimatedImageToWebp(
-    input: Exclude<BinaryInput, Buffer>,
+    input: Exclude<BinaryInput, ArrayBuffer | Buffer | Uint8Array> | { buffer: BinaryInput; type: string },
     inputOptions?: SharpOptions,
     outputOptions?: WebpOptions,
 ) {
     inputOptions = {
-        animated: animatedMimeTypes.has(input.type),
+        animated: animatedMimeTypes.has(input.type.toLowerCase()),
         ...inputOptions,
     };
 
@@ -36,7 +36,7 @@ export function autoConvertAnimatedImageToWebp(
         ...outputOptions,
     };
 
-    return convertImage(input, inputOptions, 'webp', outputOptions);
+    return convertImage('buffer' in input ? input.buffer : input, inputOptions, 'webp', outputOptions);
 }
 
 export async function convertImage(
