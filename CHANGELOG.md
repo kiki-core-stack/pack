@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.93.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.1...v0.93.2)
+
+### 🚀 Enhancements
+
+- 新增`adminSessionToken` redis store ([2ba28de](https://github.com/kiki-core-stack/pack/commit/2ba28de))
+
+### 🏡 Chore
+
+- `AdminSessionData`移除無用欄位 ([7cd2197](https://github.com/kiki-core-stack/pack/commit/7cd2197))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.93.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.0...v0.93.1)
