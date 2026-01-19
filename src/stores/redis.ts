@@ -19,7 +19,7 @@ export const adminQrCodeLoginData = /* @__PURE__ */ createRedisKeyedStore<AdminQ
 );
 
 // eslint-disable-next-line style/max-len
-export const adminSession = /* @__PURE__ */ createRedisKeyedStore<Except<AdminSessionData, 'admin' | 'isCurrent'>>(redisMsgpackStorage)(
+export const adminSession = /* @__PURE__ */ createRedisKeyedStore<Except<AdminSessionData, 'isCurrent'>>(redisMsgpackStorage)(
     (token: string) => `admin:session:${token}`,
 );
 

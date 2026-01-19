@@ -45,12 +45,10 @@ export interface AdminRoleData extends BaseMongooseModelData, WithAdminAuditData
 }
 
 export interface AdminSessionData {
-    admin: Partial<AdminData>;
     adminId: string;
     id: string;
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;
-    loginIp: string;
     userAgent?: string;
 }
