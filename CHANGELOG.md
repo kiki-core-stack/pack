@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.93.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.2...v0.93.3)
+
+### 🚀 Enhancements
+
+- Add `loggedAt` and `loginIp` fields to `AdminSessionData` ([4585eac](https://github.com/kiki-core-stack/pack/commit/4585eac))
+
+### 🏡 Chore
+
+- Remove `fingerprint` field from `AdminLog` ([bd0e554](https://github.com/kiki-core-stack/pack/commit/bd0e554))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.93.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.1...v0.93.2)
