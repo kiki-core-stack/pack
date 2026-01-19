@@ -23,6 +23,10 @@ export const adminSession = /* @__PURE__ */ createRedisKeyedStore<Except<AdminSe
     (token: string) => `admin:session:${token}`,
 );
 
+export const adminSessionToken = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
+    (id: string) => `admin:sessionToken:${id}`,
+);
+
 export const emailOtpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
     (type: EmailOtpCodeType, email: string, additionalKey?: string) => {
         let key = `email:otpCode:${type}:`;
