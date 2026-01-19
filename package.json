@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.93.0",
+  "version": "0.93.1",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -17,7 +17,6 @@
     "./dist/hono-backend/setups/mongoose-model-statics/index.js"
   ],
   "exports": {
-    "./*": "./dist/*.js",
     "./constants": {
       "types": "./dist/constants/index.d.ts",
       "import": "./dist/constants/index.js",
@@ -113,7 +112,8 @@
       "types": null,
       "import": null,
       "require": null
-    }
+    },
+    "./*": "./dist/*.js"
   },
   "files": [
     "./dist",
@@ -214,8 +214,8 @@
     "@antfu/eslint-config": "^7.0.1",
     "@hono/zod-validator": "^0.7.6",
     "@kikiutils/eslint-config": "^5.0.2",
-    "@kikiutils/mongoose": "^7.0.0",
-    "@kikiutils/shared": "^14.1.0",
+    "@kikiutils/mongoose": "^7.0.1",
+    "@kikiutils/shared": "^14.1.1",
     "@kikiutils/tsconfigs": "^5.0.5",
     "@types/bun": "^1.3.6",
     "@types/fs-extra": "^11.0.4",
