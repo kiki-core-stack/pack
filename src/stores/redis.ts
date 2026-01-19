@@ -11,11 +11,11 @@ import type { FileDocumentData } from '../types/data/file';
 import type { EmailOtpCodeType } from '../types/otp';
 
 export const adminPermission = /* @__PURE__ */ createRedisKeyedStore<CachedAdminPermission>(redisMsgpackStorage)(
-    (adminId: string) => `adminPermission:${adminId}`,
+    (adminId: string) => `admin:permission:${adminId}`,
 );
 
 export const adminQrCodeLoginData = /* @__PURE__ */ createRedisKeyedStore<AdminQrCodeLoginData>(redisMsgpackStorage)(
-    (token: string) => `adminQrCodeLoginData:${token}`,
+    (token: string) => `admin:qrCodeLoginData:${token}`,
 );
 
 // eslint-disable-next-line style/max-len
@@ -25,7 +25,7 @@ export const adminSession = /* @__PURE__ */ createRedisKeyedStore<Except<AdminSe
 
 export const emailOtpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
     (type: EmailOtpCodeType, email: string, additionalKey?: string) => {
-        let key = `emailOtpCode:${type}:`;
+        let key = `email:otpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
         return `${key}${email}`;
     },
@@ -33,7 +33,7 @@ export const emailOtpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisM
 
 export const fileDocumentData = /* @__PURE__ */ createRedisKeyedStore<FileDocumentData>(redisMsgpackStorage)(
     (id: string, additionalKey?: string) => {
-        let key = `fileDocumentData:${id}`;
+        let key = `file:documentData:${id}`;
         if (additionalKey) key += `:${additionalKey}`;
         return key;
     },
