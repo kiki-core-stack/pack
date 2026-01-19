@@ -20,7 +20,6 @@ export interface AdminData extends BaseMongooseModelData {
 
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
     admin: Partial<AdminData>;
-    fingerprint?: string;
     ip?: string;
     note?: string;
     type: AdminLogType;
