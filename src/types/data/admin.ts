@@ -44,12 +44,13 @@ export interface AdminRoleData extends BaseMongooseModelData, WithAdminAuditData
     permissions: string[];
 }
 
-export interface AdminSessionData extends BaseMongooseModelData {
+export interface AdminSessionData {
     admin: Partial<AdminData>;
+    adminId: string;
+    id: string;
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;
     loginIp: string;
-    token?: string;
     userAgent?: string;
 }
