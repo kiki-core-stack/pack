@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.93.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.92.1...v0.93.0)
+
+### 🚀 Enhancements
+
+- Add `adminSession` redis store and update `AdminSessionData` interface ([794efcc](https://github.com/kiki-core-stack/pack/commit/794efcc))
+
+### 🔥 Performance
+
+- Optimize `autoConvertAnimatedImageToWebp` and `getFileMimeType` to support more types and reduce conversion overhead ([4d27730](https://github.com/kiki-core-stack/pack/commit/4d27730))
+
+### 🩹 Fixes
+
+- Resolve type errors ([9e72951](https://github.com/kiki-core-stack/pack/commit/9e72951))
+- Resolve `uploadImageAndCreateFileDocument` types error ([8826741](https://github.com/kiki-core-stack/pack/commit/8826741))
+
+### 🏡 Chore
+
+- Update deps ([f4501fc](https://github.com/kiki-core-stack/pack/commit/f4501fc))
+- ⚠️  Remove admin session model ([6e8e2ba](https://github.com/kiki-core-stack/pack/commit/6e8e2ba))
+- Update deps ([fc3e5e6](https://github.com/kiki-core-stack/pack/commit/fc3e5e6))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove admin session model ([6e8e2ba](https://github.com/kiki-core-stack/pack/commit/6e8e2ba))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.92.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.92.0...v0.92.1)
