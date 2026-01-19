@@ -50,5 +50,7 @@ export interface AdminSessionData {
     isCurrent?: boolean;
     lastActiveAt: string;
     lastActiveIp: string;
+    loggedAt: string;
+    loginIp: string;
     userAgent?: string;
 }
