@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.94.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.3...v0.94.0)
+
+### 💅 Refactors
+
+- ⚠️  Change `AdminSessionData`'s `lastActiveAt` and `loggedAt` field type to `Date` ([69c1dbe](https://github.com/kiki-core-stack/pack/commit/69c1dbe))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Change `AdminSessionData`'s `lastActiveAt` and `loggedAt` field type to `Date` ([69c1dbe](https://github.com/kiki-core-stack/pack/commit/69c1dbe))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.93.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.2...v0.93.3)
