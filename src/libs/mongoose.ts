@@ -32,33 +32,48 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
         }
 
         // findOneAndUpdate
-        schema.pre('findOneAndUpdate', async function () {
-            const update = this.getUpdate();
-            if (update) await processUpdate(update);
-        });
+        schema.pre(
+            'findOneAndUpdate',
+            async function () {
+                const update = this.getUpdate();
+                if (update) await processUpdate(update);
+            },
+        );
 
         // save
-        schema.pre('save', async function () {
-            if (this.isModified(field) && this[field] !== undefined) {
-                this[field] = await hashPasswordWithArgon2(this[field] as string);
-            }
-        });
+        schema.pre(
+            'save',
+            async function () {
+                if (this.isModified(field) && this[field] !== undefined) {
+                    this[field] = await hashPasswordWithArgon2(this[field] as string);
+                }
+            },
+        );
 
         // updateMany
-        schema.pre('updateMany', async function () {
-            const update = this.getUpdate();
-            if (update) await processUpdate(update);
-        });
+        schema.pre(
+            'updateMany',
+            async function () {
+                const update = this.getUpdate();
+                if (update) await processUpdate(update);
+            },
+        );
 
         // updateOne
-        schema.pre('updateOne', async function () {
-            const update = this.getUpdate();
-            if (update) await processUpdate(update);
-        });
+        schema.pre(
+            'updateOne',
+            async function () {
+                const update = this.getUpdate();
+                if (update) await processUpdate(update);
+            },
+        );
 
         // Verify document method
-        schema.method(`verify${capitalize(field)}`, function (value: string) {
-            return verifyPasswordWithArgon2(this[field] as string, value);
-        });
+        schema.method(
+            `verify${capitalize(field)}`,
+            function (value: string) {
+                return verifyPasswordWithArgon2(this[field] as string, value);
+            },
+        );
     });
 }

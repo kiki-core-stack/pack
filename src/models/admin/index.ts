@@ -1,5 +1,3 @@
-import type { Buffer } from 'node:buffer';
-
 import { buildMongooseModel } from '@kikiutils/mongoose/builders';
 import * as s from '@kikiutils/mongoose/schema-builders';
 import type {
@@ -21,7 +19,7 @@ type AdminModel = BaseMongoosePaginateModel<Admin, AdminMethodsAndOverrides>;
 
 interface AdminMethodsAndOverrides {
     password: string;
-    verifyPassword: (password: string, options?: { secret: Buffer }) => Promise<boolean>;
+    verifyPassword: (password: string) => Promise<boolean>;
 }
 
 const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
