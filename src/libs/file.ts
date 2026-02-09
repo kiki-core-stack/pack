@@ -1,7 +1,7 @@
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { cryptoSha3256 } from '@kikiutils/shared/crypto-hash';
 import type { BinaryInput } from '@kikiutils/shared/types';
-import { MongoServerError } from 'mongodb';
+import { mongo } from 'mongoose';
 
 import { FileModel } from '../models/file';
 
@@ -17,7 +17,7 @@ export async function uploadFileAndCreateDocument(input: BinaryInput, storage: B
     try {
         return await FileModel.create(uploadResult.value);
     } catch (error) {
-        if (error instanceof MongoServerError && error.code === 11000) {
+        if (error instanceof mongo.MongoServerError && error.code === 11000) {
             const file = await FileModel.findOne({ hash });
             if (file) return file;
             throw new Error(`DuplicateKey error occurred, but file with hash ${hash} was not found in the database`);

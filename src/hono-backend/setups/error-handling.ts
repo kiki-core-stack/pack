@@ -6,7 +6,7 @@ import type {
     NotFoundHandler,
 } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import { MongoServerError } from 'mongodb';
+import { mongo } from 'mongoose';
 import { ZodError } from 'zod';
 
 import { isDebugMode } from '../../constants';
@@ -72,7 +72,7 @@ export function setupHonoAppErrorHandling(
 
         logger.error(error);
         let statusCode: ContentfulStatusCode = 500;
-        if (error instanceof MongoServerError && error.code) {
+        if (error instanceof mongo.MongoServerError && error.code) {
             statusCode = mongodbErrorCodeToHttpStatusCodeMap[error.code] || 500;
         }
 
