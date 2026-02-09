@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.94.0",
+  "version": "0.94.1",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -93,6 +93,16 @@
       "require": null
     },
     "./package.json": "./package.json",
+    "./stores/redis": {
+      "types": "./dist/stores/redis/index.d.ts",
+      "import": "./dist/stores/redis/index.js",
+      "require": null
+    },
+    "./stores/redis/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": null,

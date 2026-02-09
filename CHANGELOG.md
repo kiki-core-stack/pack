@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.94.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.0...v0.94.1)
+
+### 🚀 Enhancements
+
+- Add `enumWithMeta` custom zod schema builder ([7180e8b](https://github.com/kiki-core-stack/pack/commit/7180e8b))
+
+### 🩹 Fixes
+
+- Remove redundant parameter from `verifyPassword` function type ([86ba65c](https://github.com/kiki-core-stack/pack/commit/86ba65c))
+
+### 💅 Refactors
+
+- Split Redis store into multiple files ([dc0472b](https://github.com/kiki-core-stack/pack/commit/dc0472b))
+- Remove direct dependency on mongodb ([90dbb62](https://github.com/kiki-core-stack/pack/commit/90dbb62))
+
+### 🏡 Chore
+
+- Remove `msgpackr` from `peerDependencies` ([6d6cd11](https://github.com/kiki-core-stack/pack/commit/6d6cd11))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.94.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.93.3...v0.94.0)
