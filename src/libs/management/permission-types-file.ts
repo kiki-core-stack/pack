@@ -4,7 +4,7 @@ import {
 } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-import { capitalize } from 'es-toolkit';
+import { upperFirst } from 'es-toolkit';
 
 import type { ManagementType } from '../../types';
 
@@ -21,7 +21,7 @@ export async function writeManagementPermissionTypesFile(
     });
 
     const permissionGroups = [...permissionGroupsSet].sort();
-    const prefix = capitalize(managementType);
+    const prefix = upperFirst(managementType);
     const fileContents = [
         '/* eslint-disable eslint-comments/no-unlimited-disable */',
         '/* eslint-disable */',

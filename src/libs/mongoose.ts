@@ -1,4 +1,4 @@
-import { capitalize } from 'es-toolkit';
+import { upperFirst } from 'es-toolkit';
 import type {
     Schema,
     UpdateQuery,
@@ -70,7 +70,7 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
 
         // Verify document method
         schema.method(
-            `verify${capitalize(field)}`,
+            `verify${upperFirst(field)}`,
             function (value: string) {
                 return verifyPasswordWithArgon2(this[field] as string, value);
             },
