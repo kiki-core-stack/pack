@@ -9,7 +9,7 @@ export async function getNextCoreCounterSeq(type: CoreCounterType, session: Clie
             { _id: type },
             { $inc: { seq: 1 } },
             {
-                new: true,
+                returnDocument: 'after',
                 session,
                 upsert: true,
             },
