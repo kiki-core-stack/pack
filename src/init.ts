@@ -3,6 +3,7 @@ import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import { consola as logger } from 'consola';
 import { nanoid } from 'nanoid';
 
+import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
@@ -20,32 +21,45 @@ export async function initializeSystemStartup() {
 
     logger.success('Database connected');
 
-    // Default data init
-    await mongooseConnections.default!.transaction(async (session) => {
-        let admin = await AdminModel.findOne({}, undefined, { session });
-        if (!admin) {
-            logger.box('No admin found → creating default super admin');
-            const password = generateWithNestedRandomLength(nanoid, 16, 32, 48, 64);
-            admin = (await AdminModel.create(
-                [
-                    {
-                        account: 'admin',
-                        enabled: true,
-                        isSuperAdmin: true,
-                        password,
-                    },
-                ],
-                { session },
-            ))[0]!;
+    // Run default initialization tasks with redis lock
+    const locked = await redisClient.send(
+        'SET',
+        [
+            'system:initialize',
+            '1',
+            'EX',
+            '10',
+            'NX',
+        ],
+    );
 
-            logger.info(`Admin created: ${admin.account}`);
-            logger.info(`Temporary password: ${password}`);
-        }
+    if (locked) {
+        await mongooseConnections.default!.transaction(async (session) => {
+            let admin = await AdminModel.findOne({}, undefined, { session });
+            if (!admin) {
+                logger.box('No admin found → creating default super admin');
+                const password = generateWithNestedRandomLength(nanoid, 16, 32, 48, 64);
+                admin = (await AdminModel.create(
+                    [
+                        {
+                            account: 'admin',
+                            enabled: true,
+                            isSuperAdmin: true,
+                            password,
+                        },
+                    ],
+                    { session },
+                ))[0]!;
+
+                logger.info(`Admin created: ${admin.account}`);
+                logger.info(`Temporary password: ${password}`);
+            }
+
+            // Run other initialization tasks
+        });
 
         // Run other initialization tasks
-    });
-
-    // Run other initialization tasks
+    }
 
     logger.success('System initialized and ready');
 }
