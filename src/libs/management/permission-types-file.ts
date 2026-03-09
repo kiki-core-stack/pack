@@ -20,7 +20,7 @@ export async function writeManagementPermissionTypesFile(
         for (let i = 1; i < parts.length; i++) permissionGroupsSet.add(parts.slice(0, i).join('.'));
     });
 
-    const permissionGroups = [...permissionGroupsSet].sort();
+    const permissionGroups = [...permissionGroupsSet].toSorted();
     const prefix = upperFirst(managementType);
     const fileContents = [
         '/* eslint-disable eslint-comments/no-unlimited-disable */',

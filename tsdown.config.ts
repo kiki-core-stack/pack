@@ -18,15 +18,15 @@ export default defineConfig({
     deps: {
         neverBundle: [
             'bun',
-        ...new Set([
-            // eslint-disable-next-line ts/ban-ts-comment
-            // @ts-ignore
-            ...Object.keys(packageJson.dependencies || {}),
-            ...Object.keys(packageJson.devDependencies || {}),
-            // eslint-disable-next-line ts/ban-ts-comment
-            // @ts-ignore
-            ...Object.keys(packageJson.peerDependencies || {}),
-        ]),
+            ...new Set([
+                // eslint-disable-next-line ts/ban-ts-comment
+                // @ts-ignore
+                ...Object.keys(packageJson.dependencies || {}),
+                ...Object.keys(packageJson.devDependencies || {}),
+                // eslint-disable-next-line ts/ban-ts-comment
+                // @ts-ignore
+                ...Object.keys(packageJson.peerDependencies || {}),
+            ]),
         ],
     },
     dts: true,
