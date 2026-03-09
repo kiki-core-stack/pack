@@ -1,12 +1,13 @@
+import {
+    chmodSync,
+    mkdirSync,
+} from 'node:fs';
+
 import { toBuffer } from '@kikiutils/shared/buffer';
 import { Path } from '@kikiutils/shared/classes/path';
 import type { PathLike } from '@kikiutils/shared/classes/path';
 import { checkAndGetEnvValue } from '@kikiutils/shared/env';
 import type { BinaryInput } from '@kikiutils/shared/types';
-import {
-    chmodSync,
-    ensureDirSync,
-} from 'fs-extra';
 
 import { FileStorageProvider } from '../../../constants/file';
 
@@ -22,7 +23,7 @@ export class LocalFileStorage extends BaseFileStorage {
         super();
         this.#basePath = Path.resolve(config?.basePath ?? checkAndGetEnvValue('FILE_STORAGE_LOCAL_BASE_PATH'));
         try {
-            ensureDirSync(this.#basePath.toString());
+            mkdirSync(this.#basePath.toString(), { recursive: true });
         } catch {
             // eslint-disable-next-line style/max-len
             throw new Error(`Failed to initialize storage directory: ${this.#basePath}\nPlease check if the directory exists and has correct permissions`);
