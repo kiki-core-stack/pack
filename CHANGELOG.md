@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.94.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.2...v0.94.3)
+
+### 🏡 Chore
+
+- Upgrade deps ([c9556f0](https://github.com/kiki-core-stack/pack/commit/c9556f0))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.94.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.1...v0.94.2)
