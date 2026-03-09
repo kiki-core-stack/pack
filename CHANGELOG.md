@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.94.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.1...v0.94.2)
+
+### 🚀 Enhancements
+
+- Implement 10s Redis NX lock in `initializeSystemStartup` to prevent concurrent execution ([9134185](https://github.com/kiki-core-stack/pack/commit/9134185))
+
+### 🩹 Fixes
+
+- Replace incorrect usage of `capitalize` with `upperFirst` ([119ebde](https://github.com/kiki-core-stack/pack/commit/119ebde))
+
+### 💅 Refactors
+
+- Replace deprecated `new` option in `findOneAndUpdate` with `returnDocument: 'after'` ([a30c05b](https://github.com/kiki-core-stack/pack/commit/a30c05b))
+- Replace `fs-extra` with `node:fs` ([16ea196](https://github.com/kiki-core-stack/pack/commit/16ea196))
+
+### 🏡 Chore
+
+- Update vscode settings ([7b2f6f9](https://github.com/kiki-core-stack/pack/commit/7b2f6f9))
+- Update eslint config ([77a5f00](https://github.com/kiki-core-stack/pack/commit/77a5f00))
+- Update deps, tsdown config and package scripts ([5ada952](https://github.com/kiki-core-stack/pack/commit/5ada952))
+- Update deps and configs ([6082b0e](https://github.com/kiki-core-stack/pack/commit/6082b0e))
+- Lint code ([abb1ffa](https://github.com/kiki-core-stack/pack/commit/abb1ffa))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.94.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.0...v0.94.1)
