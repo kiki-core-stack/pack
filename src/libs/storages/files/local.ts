@@ -41,7 +41,7 @@ export class LocalFileStorage extends BaseFileStorage {
         return this
             .#basePath
             .join(filePath)
-            .remove()
+            .rm({ force: true })
             .then(() => this.createResult())
             .catch((error) => this.createResult(new Error(`Delete file failed: ${filePath}, error: ${error}`)));
     }
@@ -63,7 +63,12 @@ export class LocalFileStorage extends BaseFileStorage {
         const hash = await this.getFileHash(buffer);
         if (!filePath) filePath = this.buildFilePathFromHash(hash, extension);
         filePath = this.#basePath.join(filePath);
-        if (!await filePath.parent.ensureDir({ mode: 0o755 }).then(() => true).catch(() => false)) {
+        const mkdirPromise = filePath.parent.mkdir({
+            mode: 0o755,
+            recursive: true,
+        });
+
+        if (!await mkdirPromise.then(() => true).catch(() => false)) {
             return this.createResult(new Error(`Failed to create directory: ${filePath.parent}`));
         }
 
