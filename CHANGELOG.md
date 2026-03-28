@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.94.4
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.3...v0.94.4)
+
+### 🩹 Fixes
+
+- Resolve `LocalFileStorage` related methods errors ([91bcefc](https://github.com/kiki-core-stack/pack/commit/91bcefc))
+
+### 🏡 Chore
+
+- Update deps ([2d9c3d7](https://github.com/kiki-core-stack/pack/commit/2d9c3d7))
+- Upgrade deps ([edf49b6](https://github.com/kiki-core-stack/pack/commit/edf49b6))
+- Upgrade deps ([243c4b6](https://github.com/kiki-core-stack/pack/commit/243c4b6))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.94.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.2...v0.94.3)
