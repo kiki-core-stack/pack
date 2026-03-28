@@ -24,8 +24,8 @@ importers:
         specifier: ^15.0.0
         version: 15.0.0(bson@7.2.0)(consola@3.4.2)(decimal.js@10.6.0)(lru-cache@11.2.7)(msgpackr@1.11.9)
       '@kikiutils/tsconfigs':
-        specifier: ^5.1.0
-        version: 5.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/bun':
         specifier: ^1.3.11
         version: 1.3.11
@@ -580,8 +580,8 @@ packages:
       vue-router:
         optional: true
 
-  '@kikiutils/tsconfigs@5.1.0':
-    resolution: {integrity: sha512-HCg4i2RQ0GNDfswLlS7umP+D15zWio5ZL5S5EnjePU2qJwXlkqTCsyzsyAwrHiz30CWKr112hE7vOfsgFZsSAw==}
+  '@kikiutils/tsconfigs@6.0.0':
+    resolution: {integrity: sha512-xEqCyrTnprJBna7gpHUHMKv8+pRLC5VRHSeyVHhUSCeWRf5drpty7GoeK1oDov4sbgxta47J7TMM9hYoSTFcQg==}
 
   '@mongodb-js/saslprep@1.4.6':
     resolution: {integrity: sha512-y+x3H1xBZd38n10NZF/rEBlvDOOMQ6LKUTHqr8R9VkJ+mmQOYtJFxIlkkK8fZrtOiL6VixbOBWMbZGBdal3Z1g==}
@@ -3320,7 +3320,7 @@ snapshots:
       lru-cache: 11.2.7
       msgpackr: 1.11.9
 
-  '@kikiutils/tsconfigs@5.1.0': {}
+  '@kikiutils/tsconfigs@6.0.0': {}
 
   '@mongodb-js/saslprep@1.4.6':
     dependencies:
