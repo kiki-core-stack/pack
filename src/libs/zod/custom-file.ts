@@ -7,8 +7,14 @@ import type { ParsePayload } from 'zod/v4/core';
 
 import { getFileMimeType } from '../../utils/file';
 
-interface ZodCustomFile extends ZodFile {
+export interface ZodCustomFile extends ZodFile {
     commonImages: () => this;
+    getMaxSize: () => number | undefined;
+    getMaxSizeKb: () => number | undefined;
+    getMaxSizeMb: () => number | undefined;
+    getMinSize: () => number | undefined;
+    getMinSizeKb: () => number | undefined;
+    getMinSizeMb: () => number | undefined;
     gif: () => this;
     jpeg: () => this;
     maxSize: (bytes: number) => this;
@@ -34,6 +40,8 @@ const commonImageMimeTypes: readonly string[] = [
 
 export function customFile() {
     const allowedMimeTypes = new Set<string>();
+    let maxSizeBytes: number | undefined;
+    let minSizeBytes: number | undefined;
     const zodCustomFile = z
         .preprocess(
             (value) => {
@@ -75,7 +83,7 @@ export function customFile() {
             clonedSchema,
             {
                 get(target, prop, receiver) {
-                // eslint-disable-next-line ts/no-use-before-define
+                    // eslint-disable-next-line ts/no-use-before-define
                     if (prop in customMethods) return customMethods[prop as keyof typeof customMethods];
                     const originalProperty = Reflect.get(target, prop, receiver);
                     if (typeof originalProperty === 'function') {
@@ -92,6 +100,7 @@ export function customFile() {
         );
 
         function maxSize(bytes: number) {
+            maxSizeBytes = bytes;
             return (ctx: ParsePayload<File>) => {
                 if (ctx.value.size > bytes) {
                     ctx.issues.push({
@@ -110,6 +119,7 @@ export function customFile() {
         }
 
         function minSize(bytes: number) {
+            minSizeBytes = bytes;
             return (ctx: ParsePayload<File>) => {
                 if (ctx.value.size < bytes) {
                     ctx.issues.push({
@@ -124,6 +134,12 @@ export function customFile() {
 
         const customMethods = {
             commonImages: () => mimeType(commonImageMimeTypes),
+            getMaxSize: () => maxSizeBytes,
+            getMaxSizeKb: () => maxSizeBytes ? maxSizeBytes / 1024 : undefined,
+            getMaxSizeMb: () => maxSizeBytes ? maxSizeBytes / 1024 / 1024 : undefined,
+            getMinSize: () => minSizeBytes,
+            getMinSizeKb: () => minSizeBytes ? minSizeBytes / 1024 : undefined,
+            getMinSizeMb: () => minSizeBytes ? minSizeBytes / 1024 / 1024 : undefined,
             gif: () => mimeType('image/gif'),
             jpeg: () => mimeType('image/jpeg'),
             maxSize: (bytes: number) => proxy.check(maxSize(bytes)),
