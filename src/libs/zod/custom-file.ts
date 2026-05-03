@@ -87,6 +87,7 @@ export function customFile() {
             clonedSchema,
             {
                 get(target, prop, receiver) {
+                    if (prop === 'toRawSchema') return () => clonedSchema;
                     // eslint-disable-next-line ts/no-use-before-define
                     if (prop in customMethods) return customMethods[prop as keyof typeof customMethods];
                     const originalProperty = Reflect.get(target, prop, receiver);
@@ -153,7 +154,6 @@ export function customFile() {
             minSizeKb: (kb: number) => proxy.check(minSize(kb * 1024)),
             minSizeMb: (mb: number) => proxy.check(minSize(mb * 1024 * 1024)),
             png: () => mimeType('image/png'),
-            toRawSchema: () => schema,
             webp: () => mimeType('image/webp'),
         };
 
