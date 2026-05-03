@@ -2,7 +2,10 @@ import type { MaybeReadonly } from '@kikiutils/shared/types';
 import type { Arrayable } from 'type-fest';
 import * as z from 'zod';
 import { ZodType } from 'zod';
-import type { ZodFile } from 'zod';
+import type {
+    ZodFile,
+    ZodPreprocess,
+} from 'zod';
 import type { ParsePayload } from 'zod/v4/core';
 
 import { getFileMimeType } from '../../utils/file';
@@ -25,6 +28,7 @@ export interface ZodCustomFile extends ZodFile {
     minSizeKb: (kb: number) => this;
     minSizeMb: (mb: number) => this;
     png: () => this;
+    toRawSchema: () => ZodPreprocess<ZodFile>;
     webp: () => this;
 }
 
@@ -89,8 +93,7 @@ export function customFile() {
                     if (typeof originalProperty === 'function') {
                         return (...args: any[]) => {
                             const result = originalProperty.apply(schema, args);
-                            if (result instanceof ZodType) return decorate(result);
-                            return result;
+                            return result instanceof ZodType ? decorate(result) : result;
                         };
                     }
 
@@ -150,6 +153,7 @@ export function customFile() {
             minSizeKb: (kb: number) => proxy.check(minSize(kb * 1024)),
             minSizeMb: (mb: number) => proxy.check(minSize(mb * 1024 * 1024)),
             png: () => mimeType('image/png'),
+            toRawSchema: () => schema,
             webp: () => mimeType('image/webp'),
         };
 
