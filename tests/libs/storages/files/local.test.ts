@@ -46,7 +46,7 @@ afterEach(async () => {
     process.env.FILE_STORAGE_LOCAL_BASE_PATH = originalFileStorageLocalBasePath;
 });
 
-describe('local file storage', () => {
+describe.concurrent('local file storage', () => {
     it('should upload under FILE_STORAGE_LOCAL_BASE_PATH when no config is passed', async ({ expect }) => {
         const basePath = await createTempDir();
         process.env.FILE_STORAGE_LOCAL_BASE_PATH = basePath.toString();
@@ -80,6 +80,42 @@ describe('local file storage', () => {
         }
     });
 
+    it('should report missing files as not existing', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+
+        await expect(storage.exists('/missing/file.txt')).resolves.toStrictEqual({
+            ok: true,
+            value: false,
+        });
+    });
+
+    it('should delete files inside storage base path', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+        const uploadResult = await storage.upload(Buffer.from('delete me'), 'nested/file.txt');
+        expect(uploadResult.ok).toBe(true);
+
+        await expect(storage.delete('/nested/file.txt')).resolves.toStrictEqual({ ok: true });
+        await expect(storage.exists('nested/file.txt')).resolves.toStrictEqual({
+            ok: true,
+            value: false,
+        });
+    });
+
+    it('should treat absolute-looking storage paths as relative stored paths', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+
+        const result = await storage.upload(Buffer.from('absolute-like'), '/nested/file.txt');
+
+        expect(result.ok).toBe(true);
+        if (result.ok) {
+            expect(result.value.path).toBe('/nested/file.txt');
+            await expect(basePath.join('nested/file.txt').readFile('utf8')).resolves.toBe('absolute-like');
+        }
+    });
+
     it('should reject traversal paths without touching files outside storage base path', async ({ expect }) => {
         const parentPath = await createTempDir();
         const basePath = parentPath.join('storage');
@@ -93,5 +129,13 @@ describe('local file storage', () => {
         expect(uploadResult.ok).toBe(false);
         expect(deleteResult.ok).toBe(false);
         await expect(outsideFilePath.readFile('utf8')).resolves.toBe('keep');
+    });
+
+    it('should reject empty paths', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+
+        await expect(storage.delete('')).resolves.toMatchObject({ ok: false });
+        await expect(storage.upload(Buffer.from('bad'), '')).resolves.toMatchObject({ ok: false });
     });
 });

@@ -78,7 +78,7 @@ export class LocalFileStorage extends BaseFileStorage {
     async upload(input: BinaryInput, filePath?: PathLike, extension?: string) {
         const buffer = await toBuffer(input);
         const hash = await this.getFileHash(buffer);
-        if (!filePath) filePath = this.buildFilePathFromHash(hash, extension);
+        if (filePath === undefined) filePath = this.buildFilePathFromHash(hash, extension);
         try {
             filePath = this.#resolveStoragePath(filePath);
         } catch (error) {

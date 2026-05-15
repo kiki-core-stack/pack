@@ -28,5 +28,5 @@ export function objectIdOrEmptyString() {
                 message: 'Invalid ObjectId or empty string',
             });
         })
-        .transform((value) => new Types.ObjectId(value));
+        .transform((value) => value === '' ? value : new Types.ObjectId(value));
 }
