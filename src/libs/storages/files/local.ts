@@ -37,20 +37,37 @@ export class LocalFileStorage extends BaseFileStorage {
         }
     }
 
+    // Private methods
+    #resolveStoragePath(filePath: PathLike) {
+        const relativeFilePath = filePath.toString().replace(/^[\\/]+/, '');
+        if (!relativeFilePath) throw new Error('Invalid empty storage path');
+
+        const resolvedFilePath = Path.resolve(this.#basePath, relativeFilePath);
+        const relativeResolvedFilePath = this.#basePath.relative(resolvedFilePath);
+        const relativeResolvedFilePathString = relativeResolvedFilePath.toString();
+        if (
+            relativeResolvedFilePathString === '..'
+            || relativeResolvedFilePathString.startsWith('../')
+            || relativeResolvedFilePathString.startsWith('..\\')
+            || relativeResolvedFilePath.isAbsolute()
+        ) throw new Error(`Invalid storage path outside base directory: ${filePath}`);
+
+        return resolvedFilePath;
+    }
+
+    // Public methods
     delete(filePath: PathLike) {
-        return this
-            .#basePath
-            .join(filePath)
-            .rm({ force: true })
+        return Promise.resolve()
+            .then(() => this.#resolveStoragePath(filePath))
+            .then((resolvedFilePath) => resolvedFilePath.rm({ force: true }))
             .then(() => this.createResult())
             .catch((error) => this.createResult(new Error(`Delete file failed: ${filePath}, error: ${error}`)));
     }
 
     exists(filePath: PathLike) {
-        return this
-            .#basePath
-            .join(filePath)
-            .access()
+        return Promise.resolve()
+            .then(() => this.#resolveStoragePath(filePath))
+            .then((resolvedFilePath) => resolvedFilePath.access())
             .then(() => this.createResult(true))
             .catch((error) => {
                 if ((error as NodeJS.ErrnoException).code === 'ENOENT') return this.createResult(false);
@@ -62,7 +79,12 @@ export class LocalFileStorage extends BaseFileStorage {
         const buffer = await toBuffer(input);
         const hash = await this.getFileHash(buffer);
         if (!filePath) filePath = this.buildFilePathFromHash(hash, extension);
-        filePath = this.#basePath.join(filePath);
+        try {
+            filePath = this.#resolveStoragePath(filePath);
+        } catch (error) {
+            return this.createResult(error instanceof Error ? error : new Error(String(error)));
+        }
+
         const mkdirPromise = filePath.parent.mkdir({
             mode: 0o755,
             recursive: true,
