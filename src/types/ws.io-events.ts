@@ -1,12 +1,12 @@
-import type * as RtIoEventNames from '../constants/rt.io-event-names';
+import type * as WsIoEventNames from '../constants/ws.io-event-names';
 
 // eslint-disable-next-line ts/no-namespace
-export namespace RtIoEvents {
+export namespace WsIoEvents {
     export interface ToAdminFrontend {}
 
     export interface ToManagementBackend {}
 
     export interface ToServer {
-        [RtIoEventNames.ToServer.Test]: () => void;
+        [WsIoEventNames.ToServer.Test]: () => void;
     }
 }

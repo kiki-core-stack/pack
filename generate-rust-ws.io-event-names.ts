@@ -13,9 +13,9 @@ import {
     snakeCase,
 } from 'es-toolkit';
 
-import * as RtIoEventNames from './src/constants/rt.io-event-names.ts';
+import * as WsIoEventNames from './src/constants/ws.io-event-names.ts';
 
-const outputDirPath = resolve(import.meta.dirname, 'generated', 'rt_io_event_names');
+const outputDirPath = resolve(import.meta.dirname, 'generated', 'ws_io_event_names');
 await rm(
     outputDirPath,
     {
@@ -26,7 +26,7 @@ await rm(
 
 await mkdir(outputDirPath, { recursive: true });
 await Promise.all(
-    Object.entries(RtIoEventNames).map(([zone, names]) => {
+    Object.entries(WsIoEventNames).map(([zone, names]) => {
         const fileName = `${snakeCase(zone)}.rs`;
         const fileContentLines = Object
             .entries(names)

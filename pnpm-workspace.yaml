@@ -1,0 +1,6 @@
+allowBuilds:
+  msgpackr-extract: true
+  sharp: true
+
+shellEmulator: true
+trustPolicy: no-downgrade
