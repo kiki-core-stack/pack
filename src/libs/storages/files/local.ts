@@ -85,17 +85,20 @@ export class LocalFileStorage extends BaseFileStorage {
             return this.createResult(error instanceof Error ? error : new Error(String(error)));
         }
 
-        const mkdirPromise = filePath.parent.mkdir({
-            mode: 0o755,
-            recursive: true,
-        });
-
-        if (!await mkdirPromise.then(() => true).catch(() => false)) {
+        if (!await filePath.parent.mkdir({ recursive: true }).then(() => true).catch(() => false)) {
             return this.createResult(new Error(`Failed to create directory: ${filePath.parent}`));
         }
 
-        if (!await filePath.writeFile(buffer, { mode: 0o644 }).then(() => true).catch(() => false)) {
+        if (!await filePath.parent.chmod(0o755).then(() => true).catch(() => false)) {
+            return this.createResult(new Error(`Failed to set permissions (755) for directory: ${filePath.parent}`));
+        }
+
+        if (!await filePath.writeFile(buffer).then(() => true).catch(() => false)) {
             return this.createResult(new Error(`Failed to write file: ${filePath}`));
+        }
+
+        if (!await filePath.chmod(0o644).then(() => true).catch(() => false)) {
+            return this.createResult(new Error(`Failed to set permissions (644) for file: ${filePath}`));
         }
 
         return this.createResult({
