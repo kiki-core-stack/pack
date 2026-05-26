@@ -38,6 +38,21 @@ export class LocalFileStorage extends BaseFileStorage {
     }
 
     // Private methods
+    async #chmodPublicDirectoryPath(directoryPath: Path) {
+        const relativeDirectoryPath = this.#basePath.relative(directoryPath).toString();
+        const directoryParts = relativeDirectoryPath
+            .split(/[\\/]+/)
+            .filter((directoryPart) => directoryPart && directoryPart !== '.');
+
+        let currentDirectoryPath = this.#basePath;
+        for (const directoryPart of directoryParts) {
+            currentDirectoryPath = Path.resolve(currentDirectoryPath, directoryPart);
+            if (!await currentDirectoryPath.chmod(0o755).then(() => true).catch(() => false)) return false;
+        }
+
+        return true;
+    }
+
     #resolveStoragePath(filePath: PathLike) {
         const relativeFilePath = filePath.toString().replace(/^[\\/]+/, '');
         if (!relativeFilePath) throw new Error('Invalid empty storage path');
@@ -89,8 +104,10 @@ export class LocalFileStorage extends BaseFileStorage {
             return this.createResult(new Error(`Failed to create directory: ${filePath.parent}`));
         }
 
-        if (!await filePath.parent.chmod(0o755).then(() => true).catch(() => false)) {
-            return this.createResult(new Error(`Failed to set permissions (755) for directory: ${filePath.parent}`));
+        if (!await this.#chmodPublicDirectoryPath(filePath.parent)) {
+            return this.createResult(
+                new Error(`Failed to set permissions (755) for directory path: ${filePath.parent}`),
+            );
         }
 
         if (!await filePath.writeFile(buffer).then(() => true).catch(() => false)) {
