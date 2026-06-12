@@ -1,5 +1,53 @@
 # Changelog
 
+## v0.95.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.4...v0.95.0)
+
+### 🚀 Enhancements
+
+- Add `getMaxSize` and `getMinSize` methods to `ZodCustomFile` and export `ZodCustomFile` interface ([df8b26b](https://github.com/kiki-core-stack/pack/commit/df8b26b))
+- Add `toRawSchema` method to `ZodCustomFile` ([ab97431](https://github.com/kiki-core-stack/pack/commit/ab97431))
+
+### 🩹 Fixes
+
+- Resolve `toRawSchema` in `ZodCustomFile` still return proxy error ([8a81feb](https://github.com/kiki-core-stack/pack/commit/8a81feb))
+- **storage:** Prevent local file path traversal ([532161b](https://github.com/kiki-core-stack/pack/commit/532161b))
+- **storage:** Enforce local file permissions after writes ([ce7efc3](https://github.com/kiki-core-stack/pack/commit/ce7efc3))
+- **storage:** Chmod local upload directory chain ([6d107d7](https://github.com/kiki-core-stack/pack/commit/6d107d7))
+- ⚠️  Remove dynamic `await import` of `wsIoPacketMsgpackCodec` in `createWsIoClient` to prevent frontend bundle deadlock issues and use `MsgpackCodec` by default instead of env-based selection ([5ae6690](https://github.com/kiki-core-stack/pack/commit/5ae6690))
+- Update sharp types usage ([1419a4e](https://github.com/kiki-core-stack/pack/commit/1419a4e))
+
+### 💅 Refactors
+
+- Update `sharp` import method for TypeScript compatibility ([9b70898](https://github.com/kiki-core-stack/pack/commit/9b70898))
+- ⚠️  Rename `rt.io` to `ws.io` and upgrade deps ([f6265fa](https://github.com/kiki-core-stack/pack/commit/f6265fa))
+
+### 🏡 Chore
+
+- Add `.gitattributes` ([4645112](https://github.com/kiki-core-stack/pack/commit/4645112))
+- Add `.omx/` to `.gitignore` ([a9a8cfa](https://github.com/kiki-core-stack/pack/commit/a9a8cfa))
+- Update scripts ([723523c](https://github.com/kiki-core-stack/pack/commit/723523c))
+- Upgrade deps ([e00e4a3](https://github.com/kiki-core-stack/pack/commit/e00e4a3))
+
+### ✅ Tests
+
+- Add unit for `src/utils/image.ts` ([6a37ab0](https://github.com/kiki-core-stack/pack/commit/6a37ab0))
+- Cover storage and validation edge cases ([a43334c](https://github.com/kiki-core-stack/pack/commit/a43334c))
+
+### 🤖 CI
+
+- Update node versions ([8f4edfd](https://github.com/kiki-core-stack/pack/commit/8f4edfd))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove dynamic `await import` of `wsIoPacketMsgpackCodec` in `createWsIoClient` to prevent frontend bundle deadlock issues and use `MsgpackCodec` by default instead of env-based selection ([5ae6690](https://github.com/kiki-core-stack/pack/commit/5ae6690))
+- ⚠️  Rename `rt.io` to `ws.io` and upgrade deps ([f6265fa](https://github.com/kiki-core-stack/pack/commit/f6265fa))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.94.4
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.3...v0.94.4)
