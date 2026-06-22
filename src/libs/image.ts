@@ -1,4 +1,7 @@
-import type sharpTypes from 'sharp';
+import type {
+    SharpOptions,
+    WebpOptions,
+} from 'sharp';
 
 import { autoConvertAnimatedImageToWebp } from '../utils/image';
 
@@ -8,8 +11,8 @@ import type { BaseFileStorage } from './storages/files/base';
 export async function uploadImageAndCreateFileDocument(
     imageFile: Parameters<typeof autoConvertAnimatedImageToWebp>[0],
     storage: BaseFileStorage,
-    convertImageInputOptions?: sharpTypes.SharpOptions,
-    convertImageOutputOptions?: sharpTypes.WebpOptions,
+    convertImageInputOptions?: SharpOptions,
+    convertImageOutputOptions?: WebpOptions,
 ) {
     const convertedImage = await autoConvertAnimatedImageToWebp(
         imageFile,
