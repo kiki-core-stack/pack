@@ -25,7 +25,7 @@ const schema = new Schema<EmailPlatform, EmailPlatformModel>({
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
-    name: s.string().maxlength(32).trim.unique.required,
+    name: s.string().maxlength(64).trim.unique.required,
     priority: s.number().default(0).required,
     serviceProvider: s.number().enum(getEnumNumberValues(EmailServiceProvider)).immutable.required,
 });
