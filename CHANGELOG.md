@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.95.1
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.0...v0.95.1)
+
+### 🩹 Fixes
+
+- Resolve sharp type errors due to sharp update ([75754b5](https://github.com/kiki-core-stack/pack/commit/75754b5))
+- **models:** Expand name field length limits ([92c277d](https://github.com/kiki-core-stack/pack/commit/92c277d))
+
+### 🏡 Chore
+
+- Update `pnpm-workspace.yaml` ([effd0ed](https://github.com/kiki-core-stack/pack/commit/effd0ed))
+- Update `pnpm-workspace.yaml` ([f638eb6](https://github.com/kiki-core-stack/pack/commit/f638eb6))
+- Upgrade deps ([8fae0be](https://github.com/kiki-core-stack/pack/commit/8fae0be))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.0
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.94.4...v0.95.0)
