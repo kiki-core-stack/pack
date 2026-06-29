@@ -90,6 +90,14 @@ export class LocalFileStorage extends BaseFileStorage {
             });
     }
 
+    read(filePath: PathLike) {
+        return Promise.resolve()
+            .then(() => this.#resolveStoragePath(filePath))
+            .then((resolvedFilePath) => resolvedFilePath.readFile())
+            .then((buffer) => this.createResult(buffer))
+            .catch((error) => this.createResult(new Error(`Read file failed: ${filePath}, error: ${error}`)));
+    }
+
     async upload(input: BinaryInput, filePath?: PathLike, extension?: string) {
         const buffer = await toBuffer(input);
         const hash = await this.getFileHash(buffer);

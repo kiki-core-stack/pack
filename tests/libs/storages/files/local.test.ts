@@ -46,7 +46,7 @@ afterEach(async () => {
     process.env.FILE_STORAGE_LOCAL_BASE_PATH = originalFileStorageLocalBasePath;
 });
 
-describe.concurrent('local file storage', () => {
+describe('local file storage', () => {
     it('should upload under FILE_STORAGE_LOCAL_BASE_PATH when no config is passed', async ({ expect }) => {
         const basePath = await createTempDir();
         process.env.FILE_STORAGE_LOCAL_BASE_PATH = basePath.toString();
@@ -90,6 +90,39 @@ describe.concurrent('local file storage', () => {
         });
     });
 
+    it('should read uploaded files as buffers', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+        const content = Buffer.from('read me');
+
+        const uploadResult = await storage.upload(content, 'nested/file.txt');
+
+        expect(uploadResult.ok).toBe(true);
+        await expect(storage.read('/nested/file.txt')).resolves.toStrictEqual({
+            ok: true,
+            value: content,
+        });
+
+        await expect(storage.getBuffer('nested/file.txt')).resolves.toStrictEqual({
+            ok: true,
+            value: content,
+        });
+    });
+
+    it('should wrap missing file read errors', async ({ expect }) => {
+        const basePath = await createTempDir();
+        const storage = new LocalFileStorage({ basePath: basePath.toString() });
+
+        const result = await storage.read('/missing/file.txt');
+
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.error).toBeInstanceOf(Error);
+            expect((result.error as Error).message).toContain('Read file failed: /missing/file.txt');
+            expect((result.error as Error).message).toContain('ENOENT');
+        }
+    });
+
     it('should delete files inside storage base path', async ({ expect }) => {
         const basePath = await createTempDir();
         const storage = new LocalFileStorage({ basePath: basePath.toString() });
@@ -125,9 +158,11 @@ describe.concurrent('local file storage', () => {
 
         const uploadResult = await storage.upload(Buffer.from('bad'), '../outside.txt');
         const deleteResult = await storage.delete('../outside.txt');
+        const readResult = await storage.read('../outside.txt');
 
         expect(uploadResult.ok).toBe(false);
         expect(deleteResult.ok).toBe(false);
+        expect(readResult.ok).toBe(false);
         await expect(outsideFilePath.readFile('utf8')).resolves.toBe('keep');
     });
 
@@ -136,6 +171,7 @@ describe.concurrent('local file storage', () => {
         const storage = new LocalFileStorage({ basePath: basePath.toString() });
 
         await expect(storage.delete('')).resolves.toMatchObject({ ok: false });
+        await expect(storage.read('')).resolves.toMatchObject({ ok: false });
         await expect(storage.upload(Buffer.from('bad'), '')).resolves.toMatchObject({ ok: false });
     });
 });
