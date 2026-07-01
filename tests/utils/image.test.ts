@@ -75,6 +75,53 @@ describe('convertImage', () => {
         expect(metadata.format).toBe('webp');
     });
 
+    it('should auto-orient images using EXIF orientation and strip orientation metadata', async ({ expect }) => {
+        const buffer = await sharp({
+            create: {
+                background: 'red',
+                channels: 3,
+                height: 3,
+                width: 2,
+            },
+        })
+            .jpeg()
+            .withMetadata({ orientation: 6 })
+            .toBuffer();
+
+        const inputMetadata = await sharp(buffer).metadata();
+        expect(inputMetadata.orientation).toBe(6);
+
+        const resultBuffer = await convertImage(buffer, undefined, 'png');
+        const metadata = await sharp(resultBuffer).metadata();
+
+        expect(metadata.format).toBe('png');
+        expect(metadata.width).toBe(3);
+        expect(metadata.height).toBe(2);
+        expect(metadata.orientation).toBeUndefined();
+    });
+
+    it('should allow disabling EXIF auto-orientation through input options', async ({ expect }) => {
+        const buffer = await sharp({
+            create: {
+                background: 'red',
+                channels: 3,
+                height: 3,
+                width: 2,
+            },
+        })
+            .jpeg()
+            .withMetadata({ orientation: 6 })
+            .toBuffer();
+
+        const resultBuffer = await convertImage(buffer, { autoOrient: false }, 'png');
+        const metadata = await sharp(resultBuffer).metadata();
+
+        expect(metadata.format).toBe('png');
+        expect(metadata.width).toBe(2);
+        expect(metadata.height).toBe(3);
+        expect(metadata.orientation).toBeUndefined();
+    });
+
     it('should successfully convert a JPG image buffer to specific requested format', async ({ expect }) => {
         const buffer = await readFile(imageJpgPath);
 
