@@ -5,7 +5,6 @@ import type {
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
-import type { Nullable } from '@kikiutils/shared/types';
 import {
     Document,
     Schema,
@@ -37,7 +36,7 @@ const schema = new Schema<File, FileModel>(
 );
 
 function isEligibleIdQuery(
-    query: Query<FileDocument[], File> | Query<Nullable<FileDocument>, File>,
+    query: Query<FileDocument[], File> | Query<FileDocument | null, File>,
     mode: 'in' | 'single',
 ) {
     const filter = query.getFilter();
@@ -114,7 +113,7 @@ schema.pre<Query<FileDocument[], File>>(
 );
 
 // fineOne
-schema.post<Query<Nullable<FileDocument>, File>>(
+schema.post<Query<FileDocument | null, File>>(
     'findOne',
     async function (result) {
         if (this._mongooseOptions.isFromCache) return;
@@ -132,7 +131,7 @@ schema.post<Query<Nullable<FileDocument>, File>>(
     },
 );
 
-schema.pre<Query<Nullable<FileDocument>, File>>(
+schema.pre<Query<FileDocument | null, File>>(
     'findOne',
     async function () {
         const filter = this.getFilter();

@@ -1,5 +1,4 @@
 import type { BaseMongoosePaginateModel } from '@kikiutils/mongoose/types';
-import type { Nullable } from '@kikiutils/shared/types';
 import type { Context } from 'hono';
 import type {
     mongo,
@@ -19,7 +18,7 @@ declare module '@kikiutils/mongoose/types' {
         assertUpdateOneByRouteId: (
             ctx: Context,
             updateQuery: UpdateQuery<RawDocType>,
-            options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<RawDocType>)>,
+            options?: (mongo.UpdateOptions & MongooseUpdateQueryOptions<RawDocType>) | null,
             filter?: QueryFilter<RawDocType>,
             expectedModifiedCount?: number,
         ) => Promise<void>;
@@ -38,7 +37,7 @@ registerStaticFunctions.push(
             async function (
                 ctx: Context,
                 updateQuery: UpdateQuery<DocType>,
-                options?: Nullable<(mongo.UpdateOptions & MongooseUpdateQueryOptions<DocType>)>,
+                options?: (mongo.UpdateOptions & MongooseUpdateQueryOptions<DocType>) | null,
                 filter?: QueryFilter<DocType>,
                 expectedModifiedCount: number = 1,
             ) {

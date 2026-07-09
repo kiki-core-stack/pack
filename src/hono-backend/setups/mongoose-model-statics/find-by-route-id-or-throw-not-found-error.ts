@@ -1,5 +1,4 @@
 import type { BaseMongoosePaginateModel } from '@kikiutils/mongoose/types';
-import type { Nullable } from '@kikiutils/shared/types';
 import type { Context } from 'hono';
 import { Types } from 'mongoose';
 import type {
@@ -19,8 +18,8 @@ declare module '@kikiutils/mongoose/types' {
         findByRouteIdOrThrowNotFoundError: (
             ctx: Context,
             filter?: QueryFilter<RawDocType>,
-            projection?: Nullable<ProjectionType<RawDocType>>,
-            options?: Nullable<QueryOptions<RawDocType>>,
+            projection?: null | ProjectionType<RawDocType>,
+            options?: null | QueryOptions<RawDocType>,
         ) => Promise<HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>>;
     }
 }
@@ -37,8 +36,8 @@ registerStaticFunctions.push(
             async function (
                 ctx: Context,
                 filter?: QueryFilter<DocType>,
-                projection?: Nullable<ProjectionType<DocType>>,
-                options?: Nullable<QueryOptions<DocType>>,
+                projection?: null | ProjectionType<DocType>,
+                options?: null | QueryOptions<DocType>,
             ) {
                 const id = ctx.req.param('id');
                 if (!id) throwApiError(404);

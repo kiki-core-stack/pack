@@ -2,7 +2,6 @@ import type {
     BaseMongoosePaginateModel,
     MongooseFindOneReturnType,
 } from '@kikiutils/mongoose/types';
-import type { Nullable } from '@kikiutils/shared/types';
 import type { Context } from 'hono';
 import type {
     HydratedDocument,
@@ -17,8 +16,8 @@ declare module '@kikiutils/mongoose/types' {
     interface BaseMongooseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
         findByRouteId: (
             ctx: Context,
-            projection?: Nullable<ProjectionType<RawDocType>>,
-            options?: Nullable<QueryOptions<RawDocType>>,
+            projection?: null | ProjectionType<RawDocType>,
+            options?: null | QueryOptions<RawDocType>,
         ) => MongooseFindOneReturnType<
             RawDocType,
             HydratedDocument<RawDocType, InstanceMethodsAndOverrides, QueryHelpers>,
@@ -39,8 +38,8 @@ registerStaticFunctions.push(
             'findByRouteId',
             function (
                 ctx: Context,
-                projection?: Nullable<ProjectionType<DocType>>,
-                options?: Nullable<QueryOptions<DocType>>,
+                projection?: null | ProjectionType<DocType>,
+                options?: null | QueryOptions<DocType>,
             ) {
                 return this.findById(ctx.req.param('id'), projection, options);
             },
