@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.95.2
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.1...v0.95.2)
+
+### 🚀 Enhancements
+
+- **file-storage:** Add safe buffer reads ([4add227](https://github.com/kiki-core-stack/pack/commit/4add227))
+
+### 🩹 Fixes
+
+- **image:** Auto-orient converted images ([329acf5](https://github.com/kiki-core-stack/pack/commit/329acf5))
+
+### 💅 Refactors
+
+- Remove all `Nullable` type usage ([67956ab](https://github.com/kiki-core-stack/pack/commit/67956ab))
+
+### 🏡 Chore
+
+- Upgrade deps ([7f453f5](https://github.com/kiki-core-stack/pack/commit/7f453f5))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.1
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.0...v0.95.1)
