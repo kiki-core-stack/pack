@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.95.3
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.2...v0.95.3)
+
+### 🚀 Enhancements
+
+- **utils:** Add user agent device parser ([c3b7c8f](https://github.com/kiki-core-stack/pack/commit/c3b7c8f))
+
+### 🏡 Chore
+
+- Upgrade deps ([cb352ef](https://github.com/kiki-core-stack/pack/commit/cb352ef))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.2
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.1...v0.95.2)
