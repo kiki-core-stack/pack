@@ -33,26 +33,27 @@ export const generateAuthenticationSessionEpoch = () => randomBytes(32).toString
 
 export function generateAuthenticationSessionToken(
     principalType: AuthenticationSessionPrincipalType,
-    pepper: string | Uint8Array,
+    tokenHmacKey: string | Uint8Array,
 ): GeneratedAuthenticationSessionToken {
     const bytes = randomBytes(tokenByteLength);
 
     return {
         selector: bytes.subarray(0, selectorByteLength).toString('base64url'),
         token: bytes.toString('base64url'),
-        validatorDigest: getAuthenticationSessionTokenDigestBytes(principalType, bytes, pepper).toString('base64url'),
+        validatorDigest: getAuthenticationSessionTokenDigestBytes(principalType, bytes, tokenHmacKey)
+            .toString('base64url'),
     };
 }
 
 export function getAuthenticationSessionTokenDigestBytes(
     principalType: AuthenticationSessionPrincipalType,
     tokenBytes: Uint8Array,
-    pepper: string | Uint8Array,
+    tokenHmacKey: string | Uint8Array,
 ) {
-    const pepperByteLength = typeof pepper === 'string' ? Buffer.byteLength(pepper) : pepper.byteLength;
-    if (pepperByteLength < 32) throw new TypeError('authentication session pepper must contain at least 32 bytes');
+    const hasher = typeof Bun !== 'undefined'
+        ? new Bun.CryptoHasher('sha256', tokenHmacKey)
+        : createHmac('sha256', tokenHmacKey);
 
-    const hasher = typeof Bun !== 'undefined' ? new Bun.CryptoHasher('sha256', pepper) : createHmac('sha256', pepper);
     hasher.update(principalType);
     hasher.update(principalTypeSeparator);
     hasher.update(tokenBytes);
@@ -75,9 +76,9 @@ export function verifyAuthenticationSessionToken(
     principalType: AuthenticationSessionPrincipalType,
     parsedToken: ParsedAuthenticationSessionToken,
     validatorDigest: string,
-    pepper: string | Uint8Array,
+    tokenHmacKey: string | Uint8Array,
 ) {
-    const actualDigest = getAuthenticationSessionTokenDigestBytes(principalType, parsedToken.bytes, pepper);
+    const actualDigest = getAuthenticationSessionTokenDigestBytes(principalType, parsedToken.bytes, tokenHmacKey);
     const expectedDigest = Buffer.from(validatorDigest, 'base64url');
 
     return actualDigest.byteLength === expectedDigest.byteLength && timingSafeEqual(actualDigest, expectedDigest);

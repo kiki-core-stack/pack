@@ -12,22 +12,22 @@ import {
     verifyAuthenticationSessionToken,
 } from '../../../src/libs/authentication-session';
 
-const pepper = 'a-secure-test-only-pepper-with-more-than-32-bytes';
+const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes';
 
 describe.concurrent('authentication session token', () => {
     it('generates a fixed-length opaque selector and token', ({ expect }) => {
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const parsed = parseAuthenticationSessionToken(generated.token);
 
         expect(Buffer.from(generated.selector, 'base64url')).toHaveLength(16);
         expect(Buffer.from(generated.token, 'base64url')).toHaveLength(48);
         expect(parsed?.selector).toBe(generated.selector);
-        expect(parsed && verifyAuthenticationSessionToken('admin', parsed, generated.validatorDigest, pepper))
+        expect(parsed && verifyAuthenticationSessionToken('admin', parsed, generated.validatorDigest, tokenHmacKey))
             .toBe(true);
     });
 
     it('rejects malformed and tampered tokens', ({ expect }) => {
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const tampered = `${generated.token.slice(0, -1)}${generated.token.endsWith('A') ? 'B' : 'A'}`;
 
         expect(parseAuthenticationSessionToken('short')).toBeUndefined();
@@ -37,14 +37,9 @@ describe.concurrent('authentication session token', () => {
                 'admin',
                 parseAuthenticationSessionToken(tampered)!,
                 generated.validatorDigest,
-                pepper,
+                tokenHmacKey,
             ),
         ).toBe(false);
-    });
-
-    it('rejects peppers shorter than 32 bytes', ({ expect }) => {
-        expect(() => generateAuthenticationSessionToken('admin', 'short')).toThrow(TypeError);
-        expect(() => generateAuthenticationSessionToken('admin', new Uint8Array(31))).toThrow(TypeError);
     });
 
     it('generates independent random epochs', ({ expect }) => {

@@ -7,12 +7,16 @@ import {
 import { authenticationSessionIdleTtlSeconds } from '../../../src/constants/authentication-session';
 import { generateAuthenticationSessionToken } from '../../../src/libs/authentication-session';
 import {
+    createRedisAuthenticationSessionManager,
     createRedisAuthenticationSessionStore,
     getRedisAuthenticationSessionEpochKey,
     getRedisAuthenticationSessionIndexKey,
     getRedisAuthenticationSessionKey,
 } from '../../../src/libs/authentication-session/redis-store';
-import type { RedisAuthenticationSessionStoreOptions } from '../../../src/libs/authentication-session/redis-store';
+import type {
+    RedisAuthenticationSessionManagerOptions,
+    RedisAuthenticationSessionStoreOptions,
+} from '../../../src/libs/authentication-session/redis-store';
 import {
     createAuthenticationSessionScript,
     createRedisScript,
@@ -22,11 +26,11 @@ import {
 import type { AuthenticationSessionData } from '../../../src/types/data/authentication-session';
 
 // Types
-type RedisAuthenticationSessionClient = RedisAuthenticationSessionStoreOptions['client'];
+type RedisAuthenticationSessionClient = RedisAuthenticationSessionManagerOptions['client'];
 type StoredAuthenticationSessionData = AuthenticationSessionData & { validatorDigest: string };
 
 // Constants
-const pepper = 'a-secure-test-only-pepper-with-more-than-32-bytes';
+const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes';
 
 // Functions
 function createClient(overrides: Partial<RedisAuthenticationSessionClient> = {}): RedisAuthenticationSessionClient {
@@ -40,15 +44,26 @@ function createClient(overrides: Partial<RedisAuthenticationSessionClient> = {})
     };
 }
 
+function createManager(
+    client = createClient(),
+    options: Omit<RedisAuthenticationSessionManagerOptions, 'client' | 'principalType'> = {},
+) {
+    return createRedisAuthenticationSessionManager({
+        ...options,
+        client,
+        principalType: 'admin',
+    });
+}
+
 function createStore(
     client = createClient(),
-    options: Omit<RedisAuthenticationSessionStoreOptions, 'client' | 'pepper' | 'principalType'> = {},
+    options: Omit<RedisAuthenticationSessionStoreOptions, 'client' | 'principalType' | 'tokenHmacKey'> = {},
 ) {
     return createRedisAuthenticationSessionStore({
         ...options,
         client,
-        pepper,
         principalType: 'admin',
+        tokenHmacKey,
     });
 }
 
@@ -125,7 +140,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(client.hmget).not.toHaveBeenCalled();
         expect(client.send).not.toHaveBeenCalled();
 
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const digestMismatchClient = createClient({
             hmget: vi.fn().mockResolvedValue(createStoredSessionRow({
                 id: generated.selector,
@@ -233,8 +248,25 @@ describe.concurrent('redis authentication session store', () => {
             .toThrow('authentication session epoch changed during creation');
     });
 
+    it('rejects an invalid token HMAC key when creating the store', ({ expect }) => {
+        for (
+            const invalidTokenHmacKey of [
+                'short',
+                new Uint8Array(31),
+            ]
+        ) {
+            expect(
+                () => createRedisAuthenticationSessionStore({
+                    client: createClient(),
+                    principalType: 'admin',
+                    tokenHmacKey: invalidTokenHmacKey,
+                }),
+            ).toThrow(TypeError);
+        }
+    });
+
     it('returns authentication activity only when Redis touches the session', async ({ expect }) => {
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const send = vi.fn()
             .mockResolvedValueOnce(1)
             .mockResolvedValueOnce(2)
@@ -299,9 +331,9 @@ describe.concurrent('redis authentication session store', () => {
             zrange: vi.fn().mockResolvedValue(['selector']),
         });
 
-        const store = createStore(client);
+        const manager = createManager(client);
 
-        const result = await store.list({
+        const result = await manager.list({
             currentSessionId: 'selector',
             now: 15_000,
             principalId: 'admin-id',
@@ -344,9 +376,9 @@ describe.concurrent('redis authentication session store', () => {
             zrange: vi.fn().mockResolvedValue(selectors),
         });
 
-        const store = createStore(client);
+        const manager = createManager(client);
 
-        const result = await store.list({
+        const result = await manager.list({
             now: 15_000,
             principalId: 'admin-id',
         });
@@ -360,9 +392,9 @@ describe.concurrent('redis authentication session store', () => {
     });
 
     it('returns an empty list without an epoch and removes stale index members', async ({ expect }) => {
-        const emptyStore = createStore();
+        const emptyManager = createManager();
 
-        await expect(emptyStore.list({ principalId: 'admin-id' })).resolves.toEqual({
+        await expect(emptyManager.list({ principalId: 'admin-id' })).resolves.toEqual({
             count: 0,
             list: [],
         });
@@ -393,10 +425,10 @@ describe.concurrent('redis authentication session store', () => {
             zrem,
         });
 
-        const store = createStore(client);
+        const manager = createManager(client);
 
         await expect(
-            store.list({
+            manager.list({
                 now: 15_000,
                 principalId: 'admin-id',
             }),
@@ -415,50 +447,38 @@ describe.concurrent('redis authentication session store', () => {
         );
     });
 
-    it('revokes only sessions owned by the principal', async ({ expect }) => {
+    it('revokes a session using its stored principal', async ({ expect }) => {
         const hmget = vi.fn()
-            .mockResolvedValueOnce([
-                'epoch',
-                'another-admin',
-            ])
+            .mockResolvedValueOnce([])
             .mockResolvedValueOnce([
                 'epoch',
                 'admin-id',
             ]);
 
         const send = vi.fn().mockResolvedValue(1);
-        const store = createStore(
+        const manager = createManager(
             createClient({
                 hmget,
                 send,
             }),
         );
 
-        await expect(
-            store.revoke({
-                principalId: 'admin-id',
-                sessionId: 'selector',
-            }),
-        )
+        await expect(manager.revoke('missing'))
             .resolves
             .toBe(false);
 
-        await expect(
-            store.revoke({
-                principalId: 'admin-id',
-                sessionId: 'selector',
-            }),
-        )
+        await expect(manager.revoke('selector'))
             .resolves
             .toBe(true);
 
         expect(send).toHaveBeenCalledTimes(1);
+        expect(send.mock.calls[0]?.[1]).toContain('authenticationSessions:admin:admin-id:epoch');
     });
 
     it('rotates the epoch atomically before cleaning revoked session indexes', async ({ expect }) => {
         const get = vi.fn().mockResolvedValue(null);
         const send = vi.fn().mockResolvedValueOnce('old-epoch').mockResolvedValueOnce(2);
-        const store = createStore(
+        const manager = createManager(
             createClient({
                 get,
                 send,
@@ -466,7 +486,7 @@ describe.concurrent('redis authentication session store', () => {
             { keyPrefix: 'test:' },
         );
 
-        await store.revokeAll('admin-id');
+        await manager.revokeAll('admin-id');
 
         expect(get).not.toHaveBeenCalled();
         expect(send.mock.calls.map(([command]) => command)).toEqual([
@@ -482,14 +502,14 @@ describe.concurrent('redis authentication session store', () => {
 
     it('does not unlink an index when no previous epoch exists', async ({ expect }) => {
         const send = vi.fn().mockResolvedValue('');
-        const store = createStore(createClient({ send }));
+        const manager = createManager(createClient({ send }));
 
-        await store.revokeAll('admin-id');
+        await manager.revokeAll('admin-id');
         expect(send).toHaveBeenCalledTimes(1);
     });
 
     it('preserves the absolute lifetime and login metadata when rotating a token', async ({ expect }) => {
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const send = vi.fn().mockResolvedValue(1);
         const store = createStore(
             createClient({
@@ -532,7 +552,7 @@ describe.concurrent('redis authentication session store', () => {
     });
 
     it('does not rotate another principal session or a session changed concurrently', async ({ expect }) => {
-        const generated = generateAuthenticationSessionToken('admin', pepper);
+        const generated = generateAuthenticationSessionToken('admin', tokenHmacKey);
         const otherPrincipalSend = vi.fn().mockResolvedValue(1);
         const otherPrincipalStore = createStore(
             createClient({

@@ -25,15 +25,18 @@ export interface AuthenticationSessionListResult {
     list: AuthenticationSessionListItemData[];
 }
 
-export interface AuthenticationSessionStore {
+export interface AuthenticationSessionManager {
+    list: (input: ListAuthenticationSessionsInput) => Promise<AuthenticationSessionListResult>;
+    revoke: (sessionId: string) => Promise<boolean>;
+    revokeAll: (principalId: string) => Promise<void>;
+}
+
+export interface AuthenticationSessionStore extends AuthenticationSessionManager {
     authenticate: (input: AuthenticateAuthenticationSessionInput) => Promise<
         AuthenticationSessionAuthenticationResult | undefined
     >;
 
     create: (input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult>;
-    list: (input: ListAuthenticationSessionsInput) => Promise<AuthenticationSessionListResult>;
-    revoke: (input: RevokeAuthenticationSessionInput) => Promise<boolean>;
-    revokeAll: (principalId: string) => Promise<void>;
     rotate: (input: RotateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult | undefined>;
 }
 
@@ -48,11 +51,6 @@ export interface ListAuthenticationSessionsInput {
     currentSessionId?: string;
     now?: number;
     principalId: string;
-}
-
-export interface RevokeAuthenticationSessionInput {
-    principalId: string;
-    sessionId: string;
 }
 
 export interface RotateAuthenticationSessionInput extends AuthenticateAuthenticationSessionInput {
