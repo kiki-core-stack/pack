@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.95.4
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.3...v0.95.4)
+
+### 🚀 Enhancements
+
+- **authentication-session:** Add Redis-backed session management ([f32b8e2](https://github.com/kiki-core-stack/pack/commit/f32b8e2))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.3
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.2...v0.95.3)
