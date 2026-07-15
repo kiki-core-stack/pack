@@ -1,20 +1,27 @@
 import {
-    authenticationSessionAbsoluteTtlSeconds,
-    authenticationSessionIdleTtlSeconds,
-    authenticationSessionTouchIntervalSeconds,
-} from '../../../constants/authentication-session';
-import {
     generateAuthenticationSessionEpoch,
     generateAuthenticationSessionToken,
     getAuthenticationSessionTokenDigestBytes,
     parseAuthenticationSessionToken,
     verifyAuthenticationSessionToken,
-} from '../../../libs/authentication-session';
+} from '..';
+import {
+    authenticationSessionAbsoluteTtlSeconds,
+    authenticationSessionIdleTtlSeconds,
+    authenticationSessionTouchIntervalSeconds,
+} from '../../../constants/authentication-session';
+import type {
+    AuthenticateAuthenticationSessionInput,
+    AuthenticationSessionStore,
+    CreateAuthenticationSessionInput,
+    ListAuthenticationSessionsInput,
+    RevokeAuthenticationSessionInput,
+    RotateAuthenticationSessionInput,
+} from '../../../types/authentication-session';
 import type {
     AuthenticationSessionData,
     AuthenticationSessionListItemData,
     AuthenticationSessionPrincipalType,
-    StoredAuthenticationSessionData,
 } from '../../../types/data/authentication-session';
 
 import {
@@ -28,58 +35,9 @@ import {
 } from './_internals';
 
 // Types
-export type RedisAuthenticationSessionClient = Pick<Bun.RedisClient, 'get' | 'hmget' | 'send' | 'zrange' | 'zrem'>;
-
-export interface AuthenticateAuthenticationSessionInput {
-    ip: string;
-    now?: number;
-    token: string;
-}
-
-export interface AuthenticationSessionAuthenticationResult {
-    refreshedTtlSeconds?: number;
-    session: AuthenticationSessionData;
-}
-
-export interface AuthenticationSessionCreationResult {
-    session: AuthenticationSessionData;
-    token: string;
-    ttlSeconds: number;
-}
-
-export interface AuthenticationSessionListResult {
-    count: number;
-    list: AuthenticationSessionListItemData[];
-}
-
-export interface CreateAuthenticationSessionInput {
-    ip: string;
-    now?: number;
-    principalId: string;
-    userAgent?: string;
-}
-
-export interface ListAuthenticationSessionsInput {
-    currentSessionId?: string;
-    now?: number;
-    principalId: string;
-}
-
-export interface RedisAuthenticationSessionStore {
-    authenticate: (input: AuthenticateAuthenticationSessionInput) => Promise<
-        AuthenticationSessionAuthenticationResult | undefined
-    >;
-
-    create: (input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult>;
-    list: (input: ListAuthenticationSessionsInput) => Promise<AuthenticationSessionListResult>;
-    revoke: (input: RevokeAuthenticationSessionInput) => Promise<boolean>;
-    revokeAll: (principalId: string) => Promise<void>;
-    rotate: (input: RotateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult | undefined>;
-}
-
 export interface RedisAuthenticationSessionStoreOptions {
     absoluteTtlSeconds?: number;
-    client: RedisAuthenticationSessionClient;
+    client: Pick<Bun.RedisClient, 'get' | 'hmget' | 'send' | 'zrange' | 'zrem'>;
     idleTtlSeconds?: number;
     keyPrefix?: string;
     pepper: string | Uint8Array;
@@ -87,14 +45,8 @@ export interface RedisAuthenticationSessionStoreOptions {
     touchIntervalSeconds?: number;
 }
 
-export interface RevokeAuthenticationSessionInput {
-    principalId: string;
-    sessionId: string;
-}
-
-export interface RotateAuthenticationSessionInput extends AuthenticateAuthenticationSessionInput {
-    principalId: string;
-    userAgent?: string;
+interface StoredAuthenticationSessionData extends AuthenticationSessionData {
+    validatorDigest: string;
 }
 
 // Constants
@@ -116,7 +68,7 @@ const storedAuthenticationSessionFields = [
 // Functions
 export function createRedisAuthenticationSessionStore(
     options: RedisAuthenticationSessionStoreOptions,
-): RedisAuthenticationSessionStore {
+): AuthenticationSessionStore {
     // Constants
     const {
         absoluteTtlSeconds = authenticationSessionAbsoluteTtlSeconds,

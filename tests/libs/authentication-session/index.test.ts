@@ -10,7 +10,7 @@ import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
     verifyAuthenticationSessionToken,
-} from '../../src/libs/authentication-session';
+} from '../../../src/libs/authentication-session';
 
 const pepper = 'a-secure-test-only-pepper-with-more-than-32-bytes';
 

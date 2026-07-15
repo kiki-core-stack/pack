@@ -1,10 +1,6 @@
-import type { Except } from 'type-fest';
-
-export type AuthenticationSessionData = Except<StoredAuthenticationSessionData, 'validatorDigest'>;
-export type AuthenticationSessionListItemData = AuthenticationSessionData & { isCurrent: boolean };
 export type AuthenticationSessionPrincipalType = 'admin';
 
-export interface StoredAuthenticationSessionData {
+export interface AuthenticationSessionData {
     absoluteExpiresAt: number;
     epoch: string;
     id: string;
@@ -15,5 +11,8 @@ export interface StoredAuthenticationSessionData {
     principalId: string;
     principalType: AuthenticationSessionPrincipalType;
     userAgent?: string;
-    validatorDigest: string;
+}
+
+export interface AuthenticationSessionListItemData extends AuthenticationSessionData {
+    isCurrent: boolean;
 }

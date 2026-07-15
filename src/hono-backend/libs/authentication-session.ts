@@ -8,15 +8,15 @@ import type { Except } from 'type-fest';
 
 import type {
     AuthenticateAuthenticationSessionInput,
+    AuthenticationSessionStore,
     CreateAuthenticationSessionInput,
-    RedisAuthenticationSessionStore,
     RotateAuthenticationSessionInput,
-} from '../../stores/redis/authentication-session';
+} from '../../types/authentication-session';
 import type { AuthenticationSessionData } from '../../types/data/authentication-session';
 import { baseSetCookieOptions } from '../constants/cookie';
 
 // Types
-export interface HonoAuthenticationSession {
+interface HonoAuthenticationSession {
     authenticate: (ctx: Context, input: Except<AuthenticateAuthenticationSessionInput, 'token'>) => Promise<
         AuthenticationSessionData | undefined
     >;
@@ -30,7 +30,7 @@ export interface HonoAuthenticationSession {
 
 export interface HonoAuthenticationSessionOptions {
     cookieName: string;
-    store: Pick<RedisAuthenticationSessionStore, 'authenticate' | 'create' | 'rotate'>;
+    store: Pick<AuthenticationSessionStore, 'authenticate' | 'create' | 'rotate'>;
 }
 
 // Functions

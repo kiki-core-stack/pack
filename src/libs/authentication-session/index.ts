@@ -5,16 +5,16 @@ import {
     timingSafeEqual,
 } from 'node:crypto';
 
-import type { AuthenticationSessionPrincipalType } from '../types/data/authentication-session';
+import type { AuthenticationSessionPrincipalType } from '../../types/data/authentication-session';
 
 // Types
-export interface GeneratedAuthenticationSessionToken {
+interface GeneratedAuthenticationSessionToken {
     selector: string;
     token: string;
     validatorDigest: string;
 }
 
-export interface ParsedAuthenticationSessionToken {
+interface ParsedAuthenticationSessionToken {
     bytes: Uint8Array;
     selector: string;
 }

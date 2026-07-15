@@ -62,6 +62,31 @@
       "import": null,
       "require": null
     },
+    "./libs/authentication-session": {
+      "types": "./dist/libs/authentication-session/index.d.ts",
+      "import": "./dist/libs/authentication-session/index.js",
+      "require": null
+    },
+    "./libs/authentication-session/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store": {
+      "types": "./dist/libs/authentication-session/redis-store/index.d.ts",
+      "import": "./dist/libs/authentication-session/redis-store/index.js",
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_internals": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./libs/management": {
       "types": "./dist/libs/management/index.d.ts",
       "import": "./dist/libs/management/index.js",
@@ -96,21 +121,6 @@
     "./stores/redis": {
       "types": "./dist/stores/redis/index.d.ts",
       "import": "./dist/stores/redis/index.js",
-      "require": null
-    },
-    "./stores/redis/authentication-session": {
-      "types": "./dist/stores/redis/authentication-session/index.d.ts",
-      "import": "./dist/stores/redis/authentication-session/index.js",
-      "require": null
-    },
-    "./stores/redis/authentication-session/_internals": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./stores/redis/authentication-session/index": {
-      "types": null,
-      "import": null,
       "require": null
     },
     "./stores/redis/index": {

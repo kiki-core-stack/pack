@@ -11,21 +11,24 @@ import {
     getRedisAuthenticationSessionEpochKey,
     getRedisAuthenticationSessionIndexKey,
     getRedisAuthenticationSessionKey,
-} from '../../../src/stores/redis/authentication-session';
-import type {
-    RedisAuthenticationSessionClient,
-    RedisAuthenticationSessionStoreOptions,
-} from '../../../src/stores/redis/authentication-session';
+} from '../../../src/libs/authentication-session/redis-store';
+import type { RedisAuthenticationSessionStoreOptions } from '../../../src/libs/authentication-session/redis-store';
 import {
     createAuthenticationSessionScript,
     createRedisScript,
     finalizeAuthenticationSessionScript,
     rotateAuthenticationSessionScript,
-} from '../../../src/stores/redis/authentication-session/_internals';
-import type { StoredAuthenticationSessionData } from '../../../src/types/data/authentication-session';
+} from '../../../src/libs/authentication-session/redis-store/_internals';
+import type { AuthenticationSessionData } from '../../../src/types/data/authentication-session';
 
+// Types
+type RedisAuthenticationSessionClient = RedisAuthenticationSessionStoreOptions['client'];
+type StoredAuthenticationSessionData = AuthenticationSessionData & { validatorDigest: string };
+
+// Constants
 const pepper = 'a-secure-test-only-pepper-with-more-than-32-bytes';
 
+// Functions
 function createClient(overrides: Partial<RedisAuthenticationSessionClient> = {}): RedisAuthenticationSessionClient {
     return {
         get: vi.fn().mockResolvedValue(null),
@@ -79,6 +82,7 @@ function createStoredSessionRow(overrides: Partial<StoredAuthenticationSessionDa
     ];
 }
 
+// Tests
 describe.concurrent('redis authentication session store', () => {
     it('bounds authentication session indexes by expiration and TTL', ({ expect }) => {
         for (
