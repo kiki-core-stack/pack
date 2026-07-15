@@ -28,6 +28,8 @@ import {
 } from './_internals';
 
 // Types
+export type RedisAuthenticationSessionClient = Pick<Bun.RedisClient, 'get' | 'hmget' | 'send' | 'zrange' | 'zrem'>;
+
 export interface AuthenticateAuthenticationSessionInput {
     ip: string;
     now?: number;
@@ -61,14 +63,6 @@ export interface ListAuthenticationSessionsInput {
     currentSessionId?: string;
     now?: number;
     principalId: string;
-}
-
-export interface RedisAuthenticationSessionClient {
-    get: (key: string) => Promise<null | string>;
-    hmget: (key: string, ...fields: string[]) => Promise<(null | string)[]>;
-    send: (command: string, args: string[]) => Promise<unknown>;
-    zrange: (key: string, start: number | string, stop: number | string, ...options: string[]) => Promise<string[]>;
-    zrem: (key: string, member: string, ...members: string[]) => Promise<number>;
 }
 
 export interface RedisAuthenticationSessionStore {
