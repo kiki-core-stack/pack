@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.95.5
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.4...v0.95.5)
+
+### 💅 Refactors
+
+- **authentication-session:** Derive Redis client type from Bun ([7dd13cf](https://github.com/kiki-core-stack/pack/commit/7dd13cf))
+- **authentication-session:** Reorganize session modules ([493bf07](https://github.com/kiki-core-stack/pack/commit/493bf07))
+- **authentication-session:** Split management capabilities ([6834fa1](https://github.com/kiki-core-stack/pack/commit/6834fa1))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.4
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.3...v0.95.4)
