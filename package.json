@@ -98,6 +98,21 @@
       "import": "./dist/stores/redis/index.js",
       "require": null
     },
+    "./stores/redis/authentication-session": {
+      "types": "./dist/stores/redis/authentication-session/index.d.ts",
+      "import": "./dist/stores/redis/authentication-session/index.js",
+      "require": null
+    },
+    "./stores/redis/authentication-session/_internals": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./stores/redis/authentication-session/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./stores/redis/index": {
       "types": null,
       "import": null,
