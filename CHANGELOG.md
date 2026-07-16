@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.95.8
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.7...v0.95.8)
+
+### 💅 Refactors
+
+- **authentication-session:** Return session arrays ([cd6a4fa](https://github.com/kiki-core-stack/pack/commit/cd6a4fa))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.7
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.6...v0.95.7)
