@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.95.6
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.5...v0.95.6)
+
+### 📦 Build
+
+- **package:** Use source-based exports ([7412759](https://github.com/kiki-core-stack/pack/commit/7412759))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.5
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.4...v0.95.5)
