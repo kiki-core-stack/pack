@@ -164,7 +164,7 @@
     "knip:exports": "knip --exports",
     "lint": "eslint --max-warnings 0",
     "lint:fix": "eslint --fix --max-warnings 0",
-    "release": "./scripts/sync-package-exports.ts && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release",
+    "release": "./scripts/sync-package-exports.ts && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && ./scripts/print-release-tag.ts",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
     "typecheck": "tsc -b --noEmit"

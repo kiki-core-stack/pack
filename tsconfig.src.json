@@ -5,8 +5,7 @@
     "isolatedDeclarations": false
   },
   "include": [
-    "./scripts/generate-rust-ws.io-event-names.ts",
-    "./scripts/sync-package-exports.ts",
+    "./scripts/*.ts",
     "./src"
   ]
 }
