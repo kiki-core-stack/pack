@@ -88,12 +88,7 @@ export function createRedisAuthenticationSessionManager(
             getRedisAuthenticationSessionEpochKey(principalType, input.principalId, keyPrefix),
         );
 
-        if (!epoch) {
-            return {
-                count: 0,
-                list: [],
-            };
-        }
+        if (!epoch) return [];
 
         const indexKey = getRedisAuthenticationSessionIndexKey(principalType, input.principalId, epoch, keyPrefix);
         const now = input.now ?? Date.now();
@@ -139,10 +134,7 @@ export function createRedisAuthenticationSessionManager(
             }
         }
 
-        return {
-            count: list.length,
-            list,
-        };
+        return list;
     }
 
     async function revoke(sessionId: string) {

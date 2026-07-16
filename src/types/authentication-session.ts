@@ -20,13 +20,8 @@ interface AuthenticationSessionCreationResult {
     ttlSeconds: number;
 }
 
-export interface AuthenticationSessionListResult {
-    count: number;
-    list: AuthenticationSessionListItemData[];
-}
-
 export interface AuthenticationSessionManager {
-    list: (input: ListAuthenticationSessionsInput) => Promise<AuthenticationSessionListResult>;
+    list: (input: ListAuthenticationSessionsInput) => Promise<AuthenticationSessionListItemData[]>;
     revoke: (sessionId: string) => Promise<boolean>;
     revokeAll: (principalId: string) => Promise<void>;
 }

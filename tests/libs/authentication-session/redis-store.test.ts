@@ -339,8 +339,8 @@ describe.concurrent('redis authentication session store', () => {
             principalId: 'admin-id',
         });
 
-        expect(result.count).toBe(1);
-        expect(result.list[0]).toMatchObject({
+        expect(result).toHaveLength(1);
+        expect(result[0]).toMatchObject({
             id: 'selector',
             isCurrent: true,
             principalId: 'admin-id',
@@ -383,7 +383,7 @@ describe.concurrent('redis authentication session store', () => {
             principalId: 'admin-id',
         });
 
-        expect(result.count).toBe(0);
+        expect(result).toHaveLength(0);
         expect(maximumActiveReads).toBe(100);
         expect(vi.mocked(client.zrem).mock.calls.map((args) => args.slice(1).length)).toEqual([
             100,
@@ -394,10 +394,7 @@ describe.concurrent('redis authentication session store', () => {
     it('returns an empty list without an epoch and removes stale index members', async ({ expect }) => {
         const emptyManager = createManager();
 
-        await expect(emptyManager.list({ principalId: 'admin-id' })).resolves.toEqual({
-            count: 0,
-            list: [],
-        });
+        await expect(emptyManager.list({ principalId: 'admin-id' })).resolves.toEqual([]);
 
         const zrem = vi.fn().mockResolvedValue(3);
         const client = createClient({
@@ -434,10 +431,7 @@ describe.concurrent('redis authentication session store', () => {
             }),
         )
             .resolves
-            .toEqual({
-                count: 0,
-                list: [],
-            });
+            .toEqual([]);
 
         expect(zrem).toHaveBeenCalledWith(
             'authenticationSessions:admin:admin-id:epoch',
