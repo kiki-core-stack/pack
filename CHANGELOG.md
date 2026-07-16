@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.95.7
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.6...v0.95.7)
+
+### 💅 Refactors
+
+- **environment:** Isolate runtime configuration reads ([58406f8](https://github.com/kiki-core-stack/pack/commit/58406f8))
+
+### 📦 Build
+
+- **release:** Log released tag commit ([25166ff](https://github.com/kiki-core-stack/pack/commit/25166ff))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.6
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.5...v0.95.6)
