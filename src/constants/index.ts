@@ -37,5 +37,3 @@ export const commonStatusToTextMap: ReadonlyRecord<CommonStatus, string> = {
     [CommonStatus.Success]: '成功',
     [CommonStatus.ToBePaid]: '待付款',
 };
-
-export const isDebugMode = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
