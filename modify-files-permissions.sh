@@ -10,3 +10,4 @@ find . -name node_modules -prune -o \( -type f -exec chmod 600 {} + \)
 find . -name node_modules -prune -o \( -type d -exec chmod 700 {} + \)
 find . -type d -name bin -exec chmod 700 -R {} +
 find . -name node_modules -prune -o \( -name '*.sh' -type f -exec chmod 700 {} + \)
+find ./scripts -type f -name '*.ts' -exec chmod 700 {} +

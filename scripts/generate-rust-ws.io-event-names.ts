@@ -1,21 +1,21 @@
+#!/usr/bin/env node
+
 import {
     mkdir,
     rm,
     writeFile,
 } from 'node:fs/promises';
-import {
-    join,
-    resolve,
-} from 'node:path';
+import { join } from 'node:path';
 
 import {
     constantCase,
     snakeCase,
 } from 'es-toolkit';
 
-import * as WsIoEventNames from './src/constants/ws.io-event-names.ts';
+// @ts-expect-error Ignore this error.
+import * as WsIoEventNames from '../src/constants/ws.io-event-names.ts';
 
-const outputDirPath = resolve(import.meta.dirname, 'generated', 'ws_io_event_names');
+const outputDirPath = join(import.meta.dirname, '..', 'generated', 'ws_io_event_names');
 await rm(
     outputDirPath,
     {

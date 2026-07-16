@@ -11,15 +11,15 @@
   },
   "keywords": [],
   "sideEffects": [
-    "./dist/hono-backend/setups/mongoose-model-statics/assert-update-one-by-route-id.js",
-    "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error.js",
-    "./dist/hono-backend/setups/mongoose-model-statics/find-by-route-id.js",
-    "./dist/hono-backend/setups/mongoose-model-statics/index.js"
+    "./src/hono-backend/setups/mongoose-model-statics/assert-update-one-by-route-id.ts",
+    "./src/hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error.ts",
+    "./src/hono-backend/setups/mongoose-model-statics/find-by-route-id.ts",
+    "./src/hono-backend/setups/mongoose-model-statics/index.ts"
   ],
   "exports": {
     "./constants": {
-      "types": "./dist/constants/index.d.ts",
-      "import": "./dist/constants/index.js",
+      "types": "./src/constants/index.ts",
+      "import": "./src/constants/index.ts",
       "require": null
     },
     "./constants/index": {
@@ -28,8 +28,8 @@
       "require": null
     },
     "./constants/mongoose": {
-      "types": "./dist/constants/mongoose/index.d.ts",
-      "import": "./dist/constants/mongoose/index.js",
+      "types": "./src/constants/mongoose/index.ts",
+      "import": "./src/constants/mongoose/index.ts",
       "require": null
     },
     "./constants/mongoose/index": {
@@ -38,8 +38,8 @@
       "require": null
     },
     "./hono-backend/libs/api": {
-      "types": "./dist/hono-backend/libs/api/index.d.ts",
-      "import": "./dist/hono-backend/libs/api/index.js",
+      "types": "./src/hono-backend/libs/api/index.ts",
+      "import": "./src/hono-backend/libs/api/index.ts",
       "require": null
     },
     "./hono-backend/libs/api/index": {
@@ -48,8 +48,8 @@
       "require": null
     },
     "./hono-backend/setups/mongoose-model-statics": {
-      "types": "./dist/hono-backend/setups/mongoose-model-statics/index.d.ts",
-      "import": "./dist/hono-backend/setups/mongoose-model-statics/index.js",
+      "types": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
+      "import": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
       "require": null
     },
     "./hono-backend/setups/mongoose-model-statics/_internals": {
@@ -63,8 +63,8 @@
       "require": null
     },
     "./libs/authentication-session": {
-      "types": "./dist/libs/authentication-session/index.d.ts",
-      "import": "./dist/libs/authentication-session/index.js",
+      "types": "./src/libs/authentication-session/index.ts",
+      "import": "./src/libs/authentication-session/index.ts",
       "require": null
     },
     "./libs/authentication-session/index": {
@@ -73,8 +73,8 @@
       "require": null
     },
     "./libs/authentication-session/redis-store": {
-      "types": "./dist/libs/authentication-session/redis-store/index.d.ts",
-      "import": "./dist/libs/authentication-session/redis-store/index.js",
+      "types": "./src/libs/authentication-session/redis-store/index.ts",
+      "import": "./src/libs/authentication-session/redis-store/index.ts",
       "require": null
     },
     "./libs/authentication-session/redis-store/_internals": {
@@ -88,8 +88,8 @@
       "require": null
     },
     "./libs/management": {
-      "types": "./dist/libs/management/index.d.ts",
-      "import": "./dist/libs/management/index.js",
+      "types": "./src/libs/management/index.ts",
+      "import": "./src/libs/management/index.ts",
       "require": null
     },
     "./libs/management/index": {
@@ -98,8 +98,8 @@
       "require": null
     },
     "./libs/zod": {
-      "types": "./dist/libs/zod/index.d.ts",
-      "import": "./dist/libs/zod/index.js",
+      "types": "./src/libs/zod/index.ts",
+      "import": "./src/libs/zod/index.ts",
       "require": null
     },
     "./libs/zod/index": {
@@ -108,8 +108,8 @@
       "require": null
     },
     "./models/admin": {
-      "types": "./dist/models/admin/index.d.ts",
-      "import": "./dist/models/admin/index.js",
+      "types": "./src/models/admin/index.ts",
+      "import": "./src/models/admin/index.ts",
       "require": null
     },
     "./models/admin/index": {
@@ -119,8 +119,8 @@
     },
     "./package.json": "./package.json",
     "./stores/redis": {
-      "types": "./dist/stores/redis/index.d.ts",
-      "import": "./dist/stores/redis/index.js",
+      "types": "./src/stores/redis/index.ts",
+      "import": "./src/stores/redis/index.ts",
       "require": null
     },
     "./stores/redis/index": {
@@ -129,12 +129,12 @@
       "require": null
     },
     "./types": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./src/types/index.ts",
       "import": null,
       "require": null
     },
     "./types/data": {
-      "types": "./dist/types/data/index.d.ts",
+      "types": "./src/types/data/index.ts",
       "import": null,
       "require": null
     },
@@ -148,7 +148,7 @@
       "import": null,
       "require": null
     },
-    "./*": "./dist/*.js"
+    "./*": "./src/*.ts"
   },
   "files": [
     "./dist",
@@ -164,13 +164,13 @@
     "knip:exports": "knip --exports",
     "lint": "eslint --max-warnings 0",
     "lint:fix": "eslint --fix --max-warnings 0",
-    "release": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && bash ./build-and-publish.sh",
+    "release": "./scripts/sync-package-exports.ts && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
     "typecheck": "tsc -b --noEmit"
   },
   "peerDependencies": {
-    "@hono/zod-validator": "^0.8.0",
+    "@hono/zod-validator": "^0.9.0",
     "@kikiutils/mongoose": "^7.0.2",
     "@kikiutils/shared": "^16.0.0",
     "consola": "^3.4.2",
@@ -231,7 +231,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
-    "@hono/zod-validator": "^0.8.0",
+    "@hono/zod-validator": "^0.9.0",
     "@kikiutils/eslint-config": "^9.2.0",
     "@kikiutils/mongoose": "^7.0.2",
     "@kikiutils/shared": "^16.0.0",
