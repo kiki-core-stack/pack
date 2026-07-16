@@ -358,6 +358,62 @@ describe.concurrent('redis authentication session store', () => {
         expect(client.send).not.toHaveBeenCalled();
     });
 
+    it('lists the current session first and remaining sessions by recent activity', async ({ expect }) => {
+        const sessions = {
+            'current': createStoredSessionRow({
+                id: 'current',
+                lastActiveAt: 1_000,
+                loggedAt: 500,
+            }),
+            'newest': createStoredSessionRow({
+                id: 'newest',
+                lastActiveAt: 12_000,
+                loggedAt: 500,
+            }),
+            'older': createStoredSessionRow({
+                id: 'older',
+                lastActiveAt: 4_000,
+                loggedAt: 500,
+            }),
+            'same-a': createStoredSessionRow({
+                id: 'same-a',
+                lastActiveAt: 8_000,
+                loggedAt: 1_000,
+            }),
+            'same-b': createStoredSessionRow({
+                id: 'same-b',
+                lastActiveAt: 8_000,
+                loggedAt: 1_000,
+            }),
+        };
+
+        const client = createClient({
+            get: vi.fn().mockResolvedValue('epoch'),
+            hmget: vi.fn((key) => Promise.resolve(sessions[key.split(':').at(-1) as keyof typeof sessions])),
+            zrange: vi.fn().mockResolvedValue([
+                'older',
+                'same-b',
+                'current',
+                'newest',
+                'same-a',
+            ]),
+        });
+
+        const result = await createManager(client).list({
+            currentSessionId: 'current',
+            now: 15_000,
+            principalId: 'admin-id',
+        });
+
+        expect(result.map(({ id }) => id)).toEqual([
+            'current',
+            'newest',
+            'same-a',
+            'same-b',
+            'older',
+        ]);
+    });
+
     it('bounds concurrent Redis reads while listing all active sessions', async ({ expect }) => {
         let activeReads = 0;
         let maximumActiveReads = 0;

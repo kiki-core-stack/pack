@@ -134,6 +134,13 @@ export function createRedisAuthenticationSessionManager(
             }
         }
 
+        list.sort((a, b) =>
+            Number(b.isCurrent) - Number(a.isCurrent)
+            || b.lastActiveAt - a.lastActiveAt
+            || b.loggedAt - a.loggedAt
+            || a.id.localeCompare(b.id),
+        );
+
         return list;
     }
 
