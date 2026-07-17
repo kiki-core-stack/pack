@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.95.9
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.8...v0.95.9)
+
+### 🚀 Enhancements
+
+- **authentication-session:** Harden Redis session lifecycle ([f2a0a2a](https://github.com/kiki-core-stack/pack/commit/f2a0a2a))
+
+### 🩹 Fixes
+
+- **authentication-session:** Sort session lists consistently ([b6945db](https://github.com/kiki-core-stack/pack/commit/b6945db))
+
+### 🏡 Chore
+
+- Upgrade deps ([211d5e4](https://github.com/kiki-core-stack/pack/commit/211d5e4))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.8
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.7...v0.95.8)
