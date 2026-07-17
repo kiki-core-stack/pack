@@ -16,10 +16,16 @@ type RedisAuthenticationSessionClient = RedisAuthenticationSessionManagerOptions
 type StoredAuthenticationSessionData = AuthenticationSessionData & { validatorDigest: string };
 
 // Constants
+const environment = process.env.ENVIRONMENT?.trim();
+export const expectedRedisAuthenticationSessionKeyPrefix = environment
+    ? `kiki-core-stack:${environment}:`
+    : 'kiki-core-stack:';
+
 const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes';
-export const validatePrincipal = () => Promise.resolve(true);
 
 // Functions
+export const validatePrincipal = () => Promise.resolve(true);
+
 export function createClient(
     overrides: Partial<RedisAuthenticationSessionClient> = {},
 ): RedisAuthenticationSessionClient {

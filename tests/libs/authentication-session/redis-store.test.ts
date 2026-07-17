@@ -13,6 +13,7 @@ import {
     createManager,
     createStore,
     createStoredSessionRow,
+    expectedRedisAuthenticationSessionKeyPrefix,
     generateStoredSessionToken,
     validatePrincipal,
 } from './_fixtures';
@@ -193,7 +194,7 @@ describe.concurrent('redis authentication session store', () => {
             .mockResolvedValueOnce('epoch')
             .mockResolvedValueOnce(1);
 
-        const store = createStore(createClient({ send }), { keyPrefix: 'test:' });
+        const store = createStore(createClient({ send }));
 
         const created = await store.create({
             ip: '127.0.0.1',
@@ -216,9 +217,9 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[3]?.[1]).toEqual([
             expect.any(String),
             '3',
-            expect.stringContaining(`authenticationSession:admin:${created.session.id}`),
-            'test:authenticationSessionEpoch:admin:admin-id',
-            'test:authenticationSessions:admin:admin-id:epoch',
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:admin:${created.session.id}`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
             'epoch',
             '2592001000',
             created.session.id,
@@ -248,7 +249,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[2]?.[1]).toEqual([
             expect.any(String),
             '1',
-            'test:authenticationSessionEpoch:admin:admin-id',
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
             expect.any(String),
             '2592000',
         ]);

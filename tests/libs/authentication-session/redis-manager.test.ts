@@ -8,6 +8,7 @@ import {
     createClient,
     createManager,
     createStoredSessionRow,
+    expectedRedisAuthenticationSessionKeyPrefix,
 } from './_fixtures';
 
 describe.concurrent('redis authentication session manager', () => {
@@ -35,7 +36,7 @@ describe.concurrent('redis authentication session manager', () => {
         });
 
         expect(client.zrange).toHaveBeenCalledWith(
-            'authenticationSessions:admin:admin-id:epoch',
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
             '+inf',
             '(15000',
             'BYSCORE',
@@ -175,7 +176,7 @@ describe.concurrent('redis authentication session manager', () => {
         ).resolves.toEqual([]);
 
         expect(zrem).toHaveBeenCalledWith(
-            'authenticationSessions:admin:admin-id:epoch',
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
             'missing',
             'expired',
             'wrong-epoch',
@@ -218,7 +219,9 @@ describe.concurrent('redis authentication session manager', () => {
         await expect(manager.revoke('missing')).resolves.toBe(false);
         await expect(manager.revoke('selector')).resolves.toBe(true);
         expect(send).toHaveBeenCalledTimes(1);
-        expect(send.mock.calls[0]?.[1]).toContain('authenticationSessions:admin:admin-id:epoch');
+        expect(send.mock.calls[0]?.[1]).toContain(
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
+        );
     });
 
     it('deletes the epoch atomically before cleaning revoked session indexes', async ({ expect }) => {
@@ -229,7 +232,6 @@ describe.concurrent('redis authentication session manager', () => {
                 get,
                 send,
             }),
-            { keyPrefix: 'test:' },
         );
 
         await manager.revokeAll('admin-id');
@@ -245,13 +247,13 @@ describe.concurrent('redis authentication session manager', () => {
             [
                 expect.any(String),
                 '1',
-                'test:authenticationSessionEpoch:admin:admin-id',
+                `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
             ],
         ]);
 
         expect(send.mock.calls[1]).toEqual([
             'UNLINK',
-            ['test:authenticationSessions:admin:admin-id:old-epoch'],
+            [`${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:old-epoch`],
         ]);
     });
 

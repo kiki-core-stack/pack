@@ -41,7 +41,6 @@ import {
 // Types
 export interface RedisAuthenticationSessionManagerOptions {
     client: Pick<Bun.RedisClient, 'get' | 'hmget' | 'send' | 'zrange' | 'zrem'>;
-    keyPrefix?: string;
     principalType: AuthenticationSessionPrincipalType;
 }
 
@@ -75,13 +74,8 @@ function assertValidAuthenticationSessionDuration(name: string, value: number, m
 export function createRedisAuthenticationSessionManager(
     options: RedisAuthenticationSessionManagerOptions,
 ): AuthenticationSessionManager {
-    const {
-        client,
-        keyPrefix = '',
-        principalType,
-    } = options;
-
-    const keys = createRedisAuthenticationSessionKeys(principalType, keyPrefix);
+    const { client, principalType } = options;
+    const keys = createRedisAuthenticationSessionKeys(principalType);
 
     const revokeStoredSession = createRedisScriptRunner<number>(client, revokeAuthenticationSessionScript);
     const revokeAllStoredSessions = createRedisScriptRunner<string>(client, revokeAllAuthenticationSessionsScript);
@@ -192,7 +186,6 @@ export function createRedisAuthenticationSessionStore(
         absoluteTtlSeconds = defaultAbsoluteTtlSeconds,
         client,
         idleTtlSeconds = defaultIdleTtlSeconds,
-        keyPrefix = '',
         principalType,
         tokenHmacKey,
         touchIntervalSeconds = defaultTouchIntervalSeconds,
@@ -215,7 +208,7 @@ export function createRedisAuthenticationSessionStore(
     }
 
     const manager = createRedisAuthenticationSessionManager(options);
-    const keys = createRedisAuthenticationSessionKeys(principalType, keyPrefix);
+    const keys = createRedisAuthenticationSessionKeys(principalType);
 
     // Functions
     const initializeEpoch = createRedisScriptRunner<string>(client, initializeAuthenticationSessionEpochScript);
