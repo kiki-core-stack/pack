@@ -8,6 +8,7 @@ export interface AuthenticationSessionData {
     lastActiveIp: string;
     loggedAt: number;
     loginIp: string;
+    principalAuthenticationRevision: number;
     principalId: string;
     principalType: AuthenticationSessionPrincipalType;
     userAgent?: string;

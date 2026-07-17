@@ -18,9 +18,11 @@ const session: AuthenticationSessionData = {
     lastActiveIp: '127.0.0.1',
     loggedAt: 9_000,
     loginIp: '127.0.0.1',
+    principalAuthenticationRevision: 3,
     principalId: 'admin-id',
     principalType: 'admin',
 };
+const validatePrincipal = () => Promise.resolve(true);
 
 function createStore(
     overrides: Partial<HonoAuthenticationSessionOptions['store']> = {},
@@ -28,9 +30,9 @@ function createStore(
     return {
         authenticate: vi.fn().mockResolvedValue(undefined),
         create: vi.fn().mockResolvedValue({
+            cookieMaxAgeSeconds: 600,
             session,
             token: 'created-token',
-            ttlSeconds: 600,
         }),
         rotate: vi.fn().mockResolvedValue(undefined),
         ...overrides,
@@ -52,6 +54,7 @@ describe.concurrent('hono authentication session', () => {
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store,
+            validatePrincipal,
         });
 
         const app = new Hono()
@@ -88,6 +91,7 @@ describe.concurrent('hono authentication session', () => {
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store,
+            validatePrincipal,
         });
 
         const app = new Hono().post(
@@ -97,6 +101,7 @@ describe.concurrent('hono authentication session', () => {
                     ctx,
                     {
                         ip: '127.0.0.1',
+                        principalAuthenticationRevision: 3,
                         principalId: 'admin-id',
                     },
                 ),
@@ -110,15 +115,22 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('authenticates from the host cookie and refreshes it only after a touch', async ({ expect }) => {
-        const authenticate = vi.fn().mockResolvedValue({
-            refreshedTtlSeconds: 500,
-            session,
+    it('authenticates from the host cookie without rewriting it after a touch', async ({ expect }) => {
+        const validateContextPrincipal = vi.fn().mockResolvedValue(true);
+        const authenticate = vi.fn(async (input) => {
+            await input.validatePrincipal({
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
+            });
+
+            return session;
         });
 
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store: createStore({ authenticate }),
+            validatePrincipal: validateContextPrincipal,
         });
 
         const app = new Hono().get(
@@ -134,28 +146,17 @@ describe.concurrent('hono authentication session', () => {
         expect(authenticate).toHaveBeenCalledWith({
             ip: '127.0.0.2',
             token: 'current-token',
+            validatePrincipal: expect.any(Function),
         });
 
-        await expect(response.json()).resolves.toEqual(session);
-        expectSecureHostCookie(expect, response.headers.get('set-cookie'), 'current-token', 500);
-        expect(response.headers.get('cache-control')).toBe('no-store');
-    });
-
-    it('does not rewrite the cookie when authentication does not touch the session', async ({ expect }) => {
-        const authenticationSession = createHonoAuthenticationSession({
-            cookieName: 'admin-session',
-            store: createStore({ authenticate: vi.fn().mockResolvedValue({ session }) }),
-        });
-
-        const app = new Hono().get(
-            '/',
-            async (ctx) => {
-                const authenticated = await authenticationSession.authenticate(ctx, { ip: '127.0.0.1' });
-                return ctx.json(authenticated);
+        expect(validateContextPrincipal).toHaveBeenCalledWith(
+            expect.anything(),
+            {
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
             },
         );
-
-        const response = await app.request('/', { headers: { cookie: '__Host-admin-session=current-token' } });
 
         await expect(response.json()).resolves.toEqual(session);
         expect(response.headers.get('set-cookie')).toBeNull();
@@ -166,6 +167,7 @@ describe.concurrent('hono authentication session', () => {
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store: createStore(),
+            validatePrincipal,
         });
 
         const app = new Hono()
@@ -206,15 +208,25 @@ describe.concurrent('hono authentication session', () => {
     });
 
     it('rotates the cookie token and exposes an explicit cookie deletion operation', async ({ expect }) => {
-        const rotate = vi.fn().mockResolvedValue({
-            session,
-            token: 'rotated-token',
-            ttlSeconds: 400,
+        const validateContextPrincipal = vi.fn().mockResolvedValue(true);
+        const rotate = vi.fn(async (input) => {
+            await input.validatePrincipal({
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
+            });
+
+            return {
+                cookieMaxAgeSeconds: 400,
+                session,
+                token: 'rotated-token',
+            };
         });
 
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store: createStore({ rotate }),
+            validatePrincipal: validateContextPrincipal,
         });
 
         const app = new Hono()
@@ -245,7 +257,17 @@ describe.concurrent('hono authentication session', () => {
             ip: '127.0.0.2',
             principalId: 'admin-id',
             token: 'current-token',
+            validatePrincipal: expect.any(Function),
         });
+
+        expect(validateContextPrincipal).toHaveBeenCalledWith(
+            expect.anything(),
+            {
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
+            },
+        );
 
         await expect(rotatedResponse.json()).resolves.toEqual(session);
         expectSecureHostCookie(expect, rotatedResponse.headers.get('set-cookie'), 'rotated-token', 400);

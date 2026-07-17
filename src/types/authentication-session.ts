@@ -3,21 +3,26 @@ import type {
     AuthenticationSessionListItemData,
 } from './data/authentication-session';
 
+/**
+ * Must fail closed using authoritative state and verify that the principal exists, may authenticate,
+ * and still has the supplied revision. Security mutations must atomically increment that revision and
+ * revoke existing sessions; a request that already completed validation may finish as an in-flight request.
+ */
+export type AuthenticationSessionPrincipalValidator = (
+    data: AuthenticationSessionPrincipalValidationData,
+) => Promise<boolean>;
+
 export interface AuthenticateAuthenticationSessionInput {
     ip: string;
     now?: number;
     token: string;
+    validatePrincipal: AuthenticationSessionPrincipalValidator;
 }
 
-interface AuthenticationSessionAuthenticationResult {
-    refreshedTtlSeconds?: number;
-    session: AuthenticationSessionData;
-}
-
-interface AuthenticationSessionCreationResult {
+interface AuthenticationSessionIssuanceResult {
+    cookieMaxAgeSeconds: number;
     session: AuthenticationSessionData;
     token: string;
-    ttlSeconds: number;
 }
 
 export interface AuthenticationSessionManager {
@@ -26,18 +31,22 @@ export interface AuthenticationSessionManager {
     revokeAll: (principalId: string) => Promise<void>;
 }
 
-export interface AuthenticationSessionStore extends AuthenticationSessionManager {
-    authenticate: (input: AuthenticateAuthenticationSessionInput) => Promise<
-        AuthenticationSessionAuthenticationResult | undefined
-    >;
+export interface AuthenticationSessionPrincipalValidationData {
+    principalAuthenticationRevision: number;
+    principalId: string;
+    principalType: AuthenticationSessionData['principalType'];
+}
 
-    create: (input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult>;
-    rotate: (input: RotateAuthenticationSessionInput) => Promise<AuthenticationSessionCreationResult | undefined>;
+export interface AuthenticationSessionStore extends AuthenticationSessionManager {
+    authenticate: (input: AuthenticateAuthenticationSessionInput) => Promise<AuthenticationSessionData | undefined>;
+    create: (input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionIssuanceResult>;
+    rotate: (input: RotateAuthenticationSessionInput) => Promise<AuthenticationSessionIssuanceResult | undefined>;
 }
 
 export interface CreateAuthenticationSessionInput {
     ip: string;
     now?: number;
+    principalAuthenticationRevision: number;
     principalId: string;
     userAgent?: string;
 }

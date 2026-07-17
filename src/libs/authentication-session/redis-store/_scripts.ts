@@ -1,22 +1,3 @@
-import { createHash } from 'node:crypto';
-
-// Types
-type RedisScript = (keys: string[], args: (number | string)[]) => Promise<unknown>;
-
-interface RedisScriptClient {
-    send: (command: string, args: string[]) => Promise<unknown>;
-}
-
-// Constants
-export const initializeAuthenticationSessionEpochScript = String.raw`
-local epoch = redis.call('GET', KEYS[1])
-if not epoch then
-    epoch = ARGV[1]
-    redis.call('SET', KEYS[1], epoch)
-end
-return epoch
-`;
-
 export const createAuthenticationSessionScript = String.raw`
 local epoch = redis.call('GET', KEYS[2])
 if epoch ~= ARGV[1] then
@@ -31,19 +12,20 @@ redis.call('HSET', KEYS[1],
     'lastActiveIp', ARGV[5],
     'loggedAt', ARGV[4],
     'loginIp', ARGV[5],
-    'principalId', ARGV[6],
-    'principalType', ARGV[7],
-    'userAgent', ARGV[8],
-    'validatorDigest', ARGV[9])
-redis.call('EXPIRE', KEYS[1], ARGV[10])
-redis.call('ZADD', KEYS[3], ARGV[11], ARGV[3])
+    'principalAuthenticationRevision', ARGV[6],
+    'principalId', ARGV[7],
+    'principalType', ARGV[8],
+    'userAgent', ARGV[9],
+    'validatorDigest', ARGV[10])
+redis.call('EXPIRE', KEYS[1], ARGV[11])
+redis.call('ZADD', KEYS[3], ARGV[12], ARGV[3])
 local expiredIds = redis.call('ZRANGEBYSCORE', KEYS[3], '-inf', ARGV[4],
     'LIMIT', 0, 256)
 if #expiredIds > 0 then
     redis.call('ZREM', KEYS[3], unpack(expiredIds))
 end
-if redis.call('TTL', KEYS[3]) < tonumber(ARGV[10]) then
-    redis.call('EXPIRE', KEYS[3], ARGV[10])
+if redis.call('TTL', KEYS[3]) < tonumber(ARGV[11]) then
+    redis.call('EXPIRE', KEYS[3], ARGV[11])
 end
 return 1
 `;
@@ -86,6 +68,23 @@ end
 return 2
 `;
 
+export const initializeAuthenticationSessionEpochScript = String.raw`
+local epoch = redis.call('GET', KEYS[1])
+if not epoch then
+    epoch = ARGV[1]
+    redis.call('SET', KEYS[1], epoch, 'EX', ARGV[2])
+elseif redis.call('TTL', KEYS[1]) < tonumber(ARGV[2]) then
+    redis.call('EXPIRE', KEYS[1], ARGV[2])
+end
+return epoch
+`;
+
+export const revokeAllAuthenticationSessionsScript = String.raw`
+local oldEpoch = redis.call('GET', KEYS[1])
+redis.call('DEL', KEYS[1])
+return oldEpoch or ''
+`;
+
 export const revokeAuthenticationSessionScript = String.raw`
 local values = redis.call('HMGET', KEYS[1], 'epoch', 'id', 'principalId')
 if values[1] ~= ARGV[1]
@@ -98,19 +97,13 @@ redis.call('ZREM', KEYS[2], values[2])
 return 1
 `;
 
-export const revokeAllAuthenticationSessionsScript = String.raw`
-local oldEpoch = redis.call('GET', KEYS[1])
-redis.call('SET', KEYS[1], ARGV[1])
-return oldEpoch or ''
-`;
-
 export const rotateAuthenticationSessionScript = String.raw`
 local oldValues = redis.call('HMGET', KEYS[1],
     'absoluteExpiresAt', 'epoch', 'id', 'lastActiveAt', 'lastActiveIp',
-    'loggedAt', 'loginIp', 'principalId', 'principalType', 'userAgent',
-    'validatorDigest')
-if oldValues[8] ~= ARGV[1]
-    or oldValues[11] ~= ARGV[2] then
+    'loggedAt', 'loginIp', 'principalAuthenticationRevision', 'principalId',
+    'principalType', 'userAgent', 'validatorDigest')
+if oldValues[9] ~= ARGV[1]
+    or oldValues[12] ~= ARGV[2] then
     return 0
 end
 
@@ -131,8 +124,9 @@ redis.call('HSET', KEYS[2],
     'lastActiveIp', ARGV[5],
     'loggedAt', oldValues[6],
     'loginIp', oldValues[7],
+    'principalAuthenticationRevision', oldValues[8],
     'principalId', ARGV[1],
-    'principalType', oldValues[9],
+    'principalType', oldValues[10],
     'userAgent', ARGV[6],
     'validatorDigest', ARGV[7])
 redis.call('EXPIRE', KEYS[2], ARGV[8])
@@ -147,45 +141,3 @@ if redis.call('TTL', KEYS[4]) < tonumber(ARGV[8]) then
 end
 return 1
 `;
-
-// Functions
-export function createRedisScript(client: RedisScriptClient, source: string): RedisScript {
-    const digest = createHash('sha1').update(source).digest('hex');
-    let loading: Promise<unknown> | undefined;
-
-    function execute(keys: string[], args: (number | string)[]) {
-        return client.send(
-            'EVALSHA',
-            [
-                digest,
-                String(keys.length),
-                ...keys,
-                ...args.map(String),
-            ],
-        );
-    }
-
-    return async (keys, args) => {
-        try {
-            return await execute(keys, args);
-        } catch (error) {
-            if (!(error instanceof Error) || !error.message.includes('NOSCRIPT')) throw error;
-
-            if (loading === undefined) {
-                loading = client
-                    .send(
-                        'SCRIPT',
-                        [
-                            'LOAD',
-                            source,
-                        ],
-                    )
-                    .finally(() => loading = undefined);
-            }
-
-            await loading;
-
-            return execute(keys, args);
-        }
-    };
-}

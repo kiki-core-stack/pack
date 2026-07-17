@@ -5,16 +5,25 @@ import {
     timingSafeEqual,
 } from 'node:crypto';
 
-import type { AuthenticationSessionPrincipalType } from '../../types/data/authentication-session';
+import type { AuthenticationSessionData } from '../../types/data/authentication-session';
 
 // Types
+type AuthenticationSessionTokenBindingData = Pick<
+    AuthenticationSessionData,
+    | 'absoluteExpiresAt'
+    | 'epoch'
+    | 'principalAuthenticationRevision'
+    | 'principalId'
+    | 'principalType'
+>;
+
 interface GeneratedAuthenticationSessionToken {
     selector: string;
     token: string;
     validatorDigest: string;
 }
 
-interface ParsedAuthenticationSessionToken {
+export interface ParsedAuthenticationSessionToken {
     bytes: Uint8Array;
     selector: string;
 }
@@ -25,14 +34,10 @@ const validatorByteLength = 32;
 const tokenByteLength = selectorByteLength + validatorByteLength;
 const tokenLength = Math.ceil(tokenByteLength * 4 / 3);
 const tokenPattern = new RegExp(`^[\\w-]{${tokenLength}}$`);
-// Prevents principal types and token bytes from sharing an ambiguous HMAC input boundary.
-const principalTypeSeparator = new Uint8Array([0]);
 
 // Functions
-export const generateAuthenticationSessionEpoch = () => randomBytes(32).toString('base64url');
-
 export function generateAuthenticationSessionToken(
-    principalType: AuthenticationSessionPrincipalType,
+    binding: AuthenticationSessionTokenBindingData,
     tokenHmacKey: string | Uint8Array,
 ): GeneratedAuthenticationSessionToken {
     const bytes = randomBytes(tokenByteLength);
@@ -40,13 +45,13 @@ export function generateAuthenticationSessionToken(
     return {
         selector: bytes.subarray(0, selectorByteLength).toString('base64url'),
         token: bytes.toString('base64url'),
-        validatorDigest: getAuthenticationSessionTokenDigestBytes(principalType, bytes, tokenHmacKey)
+        validatorDigest: getAuthenticationSessionTokenDigestBytes(binding, bytes, tokenHmacKey)
             .toString('base64url'),
     };
 }
 
-export function getAuthenticationSessionTokenDigestBytes(
-    principalType: AuthenticationSessionPrincipalType,
+function getAuthenticationSessionTokenDigestBytes(
+    binding: AuthenticationSessionTokenBindingData,
     tokenBytes: Uint8Array,
     tokenHmacKey: string | Uint8Array,
 ) {
@@ -54,8 +59,14 @@ export function getAuthenticationSessionTokenDigestBytes(
         ? new Bun.CryptoHasher('sha256', tokenHmacKey)
         : createHmac('sha256', tokenHmacKey);
 
-    hasher.update(principalType);
-    hasher.update(principalTypeSeparator);
+    hasher.update(JSON.stringify([
+        binding.principalType,
+        binding.principalId,
+        binding.principalAuthenticationRevision,
+        binding.epoch,
+        binding.absoluteExpiresAt,
+    ]));
+
     hasher.update(tokenBytes);
 
     return hasher.digest();
@@ -73,12 +84,12 @@ export function parseAuthenticationSessionToken(token: string): ParsedAuthentica
 }
 
 export function verifyAuthenticationSessionToken(
-    principalType: AuthenticationSessionPrincipalType,
+    binding: AuthenticationSessionTokenBindingData,
     parsedToken: ParsedAuthenticationSessionToken,
     validatorDigest: string,
     tokenHmacKey: string | Uint8Array,
 ) {
-    const actualDigest = getAuthenticationSessionTokenDigestBytes(principalType, parsedToken.bytes, tokenHmacKey);
+    const actualDigest = getAuthenticationSessionTokenDigestBytes(binding, parsedToken.bytes, tokenHmacKey);
     const expectedDigest = Buffer.from(validatorDigest, 'base64url');
 
     return actualDigest.byteLength === expectedDigest.byteLength && timingSafeEqual(actualDigest, expectedDigest);

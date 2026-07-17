@@ -62,12 +62,7 @@
       "import": null,
       "require": null
     },
-    "./libs/authentication-session": {
-      "types": "./src/libs/authentication-session/index.ts",
-      "import": "./src/libs/authentication-session/index.ts",
-      "require": null
-    },
-    "./libs/authentication-session/index": {
+    "./libs/authentication-session/_token": {
       "types": null,
       "import": null,
       "require": null
@@ -77,7 +72,22 @@
       "import": "./src/libs/authentication-session/redis-store/index.ts",
       "require": null
     },
-    "./libs/authentication-session/redis-store/_internals": {
+    "./libs/authentication-session/redis-store/_keys": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_script-runner": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_scripts": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_stored-session": {
       "types": null,
       "import": null,
       "require": null

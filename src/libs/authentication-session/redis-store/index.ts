@@ -1,17 +1,6 @@
 import { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
 
-import {
-    generateAuthenticationSessionEpoch,
-    generateAuthenticationSessionToken,
-    getAuthenticationSessionTokenDigestBytes,
-    parseAuthenticationSessionToken,
-    verifyAuthenticationSessionToken,
-} from '..';
-import {
-    authenticationSessionAbsoluteTtlSeconds,
-    authenticationSessionIdleTtlSeconds,
-    authenticationSessionTouchIntervalSeconds,
-} from '../../../constants/authentication-session';
 import type {
     AuthenticateAuthenticationSessionInput,
     AuthenticationSessionManager,
@@ -25,16 +14,29 @@ import type {
     AuthenticationSessionListItemData,
     AuthenticationSessionPrincipalType,
 } from '../../../types/data/authentication-session';
+import {
+    generateAuthenticationSessionToken,
+    parseAuthenticationSessionToken,
+    verifyAuthenticationSessionToken,
+} from '../_token';
+import type { ParsedAuthenticationSessionToken } from '../_token';
 
+import { createRedisAuthenticationSessionKeys } from './_keys';
+import { createRedisScriptRunner } from './_script-runner';
 import {
     createAuthenticationSessionScript,
-    createRedisScript,
     finalizeAuthenticationSessionScript,
     initializeAuthenticationSessionEpochScript,
     revokeAllAuthenticationSessionsScript,
     revokeAuthenticationSessionScript,
     rotateAuthenticationSessionScript,
-} from './_internals';
+} from './_scripts';
+import {
+    parseStoredAuthenticationSession,
+    parseStoredAuthenticationSessionData,
+    storedAuthenticationSessionDataFields,
+    storedAuthenticationSessionFields,
+} from './_stored-session';
 
 // Types
 export interface RedisAuthenticationSessionManagerOptions {
@@ -50,27 +52,26 @@ export interface RedisAuthenticationSessionStoreOptions extends RedisAuthenticat
     touchIntervalSeconds?: number;
 }
 
-interface StoredAuthenticationSessionData extends AuthenticationSessionData {
+interface ValidatedAuthenticationSession {
+    session: AuthenticationSessionData;
     validatorDigest: string;
 }
 
 // Constants
 const authenticationSessionListReadBatchSize = 100;
-const storedAuthenticationSessionFields = [
-    'absoluteExpiresAt',
-    'epoch',
-    'id',
-    'lastActiveAt',
-    'lastActiveIp',
-    'loggedAt',
-    'loginIp',
-    'principalId',
-    'principalType',
-    'userAgent',
-    'validatorDigest',
-] as const;
+const defaultAbsoluteTtlSeconds = 60 * 60 * 24 * 30;
+const defaultIdleTtlSeconds = 60 * 60 * 24 * 7;
+const defaultTouchIntervalSeconds = 60 * 10;
 
 // Functions
+function assertValidAuthenticationSessionDuration(name: string, value: number, minimum: number) {
+    if (
+        !Number.isSafeInteger(value)
+        || value < minimum
+        || !Number.isSafeInteger(Date.now() + value * 1000)
+    ) throw new TypeError(`${name} must be a safe integer greater than or equal to ${minimum}`);
+}
+
 export function createRedisAuthenticationSessionManager(
     options: RedisAuthenticationSessionManagerOptions,
 ): AuthenticationSessionManager {
@@ -80,17 +81,18 @@ export function createRedisAuthenticationSessionManager(
         principalType,
     } = options;
 
-    const revokeStoredSession = createRedisScript(client, revokeAuthenticationSessionScript);
-    const revokeAllStoredSessions = createRedisScript(client, revokeAllAuthenticationSessionsScript);
+    const keys = createRedisAuthenticationSessionKeys(principalType, keyPrefix);
+
+    const revokeStoredSession = createRedisScriptRunner<number>(client, revokeAuthenticationSessionScript);
+    const revokeAllStoredSessions = createRedisScriptRunner<string>(client, revokeAllAuthenticationSessionsScript);
 
     async function list(input: ListAuthenticationSessionsInput) {
-        const epoch = await client.get(
-            getRedisAuthenticationSessionEpochKey(principalType, input.principalId, keyPrefix),
-        );
+        const epochKey = keys.epoch(input.principalId);
+        const epoch = await client.get(epochKey);
 
         if (!epoch) return [];
 
-        const indexKey = getRedisAuthenticationSessionIndexKey(principalType, input.principalId, epoch, keyPrefix);
+        const indexKey = keys.index(input.principalId, epoch);
         const now = input.now ?? Date.now();
         const activeScoreMinimum = `(${now}`;
         const selectors = await client.zrange(indexKey, '+inf', activeScoreMinimum, 'BYSCORE', 'REV');
@@ -103,8 +105,8 @@ export function createRedisAuthenticationSessionManager(
                     async (selector) => [
                         selector,
                         await client.hmget(
-                            getRedisAuthenticationSessionKey(principalType, selector, keyPrefix),
-                            ...storedAuthenticationSessionFields,
+                            keys.session(selector),
+                            ...storedAuthenticationSessionDataFields,
                         ),
                     ] as const,
                 ),
@@ -113,19 +115,19 @@ export function createRedisAuthenticationSessionManager(
             const staleSelectors: string[] = [];
 
             rows.forEach(([selector, row]) => {
-                const storedSession = parseStoredAuthenticationSession(row);
+                const session = parseStoredAuthenticationSessionData(row, principalType);
                 if (
-                    !storedSession
-                    || storedSession.absoluteExpiresAt <= now
-                    || storedSession.epoch !== epoch
+                    !session
+                    || session.absoluteExpiresAt <= now
+                    || session.epoch !== epoch
                 ) {
                     staleSelectors.push(selector);
                     return;
                 }
 
                 list.push({
-                    ...toAuthenticationSessionData(storedSession),
-                    isCurrent: storedSession.id === input.currentSessionId,
+                    ...session,
+                    isCurrent: session.id === input.currentSessionId,
                 });
             });
 
@@ -133,6 +135,8 @@ export function createRedisAuthenticationSessionManager(
                 await client.zrem(indexKey, staleSelectors[0] as string, ...staleSelectors.slice(1));
             }
         }
+
+        if (await client.get(epochKey) !== epoch) return [];
 
         list.sort((a, b) =>
             Number(b.isCurrent) - Number(a.isCurrent)
@@ -145,7 +149,7 @@ export function createRedisAuthenticationSessionManager(
     }
 
     async function revoke(sessionId: string) {
-        const sessionKey = getRedisAuthenticationSessionKey(principalType, sessionId, keyPrefix);
+        const sessionKey = keys.session(sessionId);
         const [epoch, principalId] = await client.hmget(sessionKey, 'epoch', 'principalId');
 
         if (!epoch || !principalId) return false;
@@ -153,7 +157,7 @@ export function createRedisAuthenticationSessionManager(
         const revokeResult = await revokeStoredSession(
             [
                 sessionKey,
-                getRedisAuthenticationSessionIndexKey(principalType, principalId, epoch, keyPrefix),
+                keys.index(principalId, epoch),
             ],
             [
                 epoch,
@@ -165,11 +169,11 @@ export function createRedisAuthenticationSessionManager(
     }
 
     async function revokeAll(principalId: string) {
-        const epochKey = getRedisAuthenticationSessionEpochKey(principalType, principalId, keyPrefix);
-        const oldEpoch = await revokeAllStoredSessions([epochKey], [generateAuthenticationSessionEpoch()]) as string;
+        const epochKey = keys.epoch(principalId);
+        const oldEpoch = await revokeAllStoredSessions([epochKey], []);
         if (!oldEpoch) return;
 
-        const indexKey = getRedisAuthenticationSessionIndexKey(principalType, principalId, oldEpoch, keyPrefix);
+        const indexKey = keys.index(principalId, oldEpoch);
         await client.send('UNLINK', [indexKey]);
     }
 
@@ -185,14 +189,22 @@ export function createRedisAuthenticationSessionStore(
 ): AuthenticationSessionStore {
     // Constants
     const {
-        absoluteTtlSeconds = authenticationSessionAbsoluteTtlSeconds,
+        absoluteTtlSeconds = defaultAbsoluteTtlSeconds,
         client,
-        idleTtlSeconds = authenticationSessionIdleTtlSeconds,
+        idleTtlSeconds = defaultIdleTtlSeconds,
         keyPrefix = '',
         principalType,
         tokenHmacKey,
-        touchIntervalSeconds = authenticationSessionTouchIntervalSeconds,
+        touchIntervalSeconds = defaultTouchIntervalSeconds,
     } = options;
+
+    assertValidAuthenticationSessionDuration('absoluteTtlSeconds', absoluteTtlSeconds, 1);
+    assertValidAuthenticationSessionDuration('idleTtlSeconds', idleTtlSeconds, 1);
+    assertValidAuthenticationSessionDuration('touchIntervalSeconds', touchIntervalSeconds, 0);
+
+    if (touchIntervalSeconds >= idleTtlSeconds) {
+        throw new TypeError('touchIntervalSeconds must be less than idleTtlSeconds');
+    }
 
     const tokenHmacKeyByteLength = typeof tokenHmacKey === 'string'
         ? Buffer.byteLength(tokenHmacKey)
@@ -203,26 +215,48 @@ export function createRedisAuthenticationSessionStore(
     }
 
     const manager = createRedisAuthenticationSessionManager(options);
+    const keys = createRedisAuthenticationSessionKeys(principalType, keyPrefix);
 
     // Functions
-    const initializeEpoch = createRedisScript(client, initializeAuthenticationSessionEpochScript);
-    const createStoredSession = createRedisScript(client, createAuthenticationSessionScript);
-    const finalizeAuthentication = createRedisScript(client, finalizeAuthenticationSessionScript);
-    const rotateStoredSession = createRedisScript(client, rotateAuthenticationSessionScript);
+    const initializeEpoch = createRedisScriptRunner<string>(client, initializeAuthenticationSessionEpochScript);
+    const createStoredSession = createRedisScriptRunner<number>(client, createAuthenticationSessionScript);
+    const finalizeAuthentication = createRedisScriptRunner<number>(client, finalizeAuthenticationSessionScript);
+    const rotateStoredSession = createRedisScriptRunner<number>(client, rotateAuthenticationSessionScript);
 
     async function create(input: CreateAuthenticationSessionInput) {
+        if (!Number.isSafeInteger(input.principalAuthenticationRevision) || input.principalAuthenticationRevision < 0) {
+            throw new TypeError('principalAuthenticationRevision must be a non-negative safe integer');
+        }
+
         const now = input.now ?? Date.now();
         const absoluteExpiresAt = now + absoluteTtlSeconds * 1000;
-        const ttlSeconds = getAuthenticationSessionTtlSeconds(absoluteExpiresAt, now, idleTtlSeconds);
-        const expiresAt = getAuthenticationSessionExpiresAt(absoluteExpiresAt, now, idleTtlSeconds);
-        const generated = generateAuthenticationSessionToken(principalType, tokenHmacKey);
-        const epochKey = getRedisAuthenticationSessionEpochKey(principalType, input.principalId, keyPrefix);
-        const epoch = await initializeEpoch([epochKey], [generateAuthenticationSessionEpoch()]) as string;
+        const { expiresAt, ttlSeconds } = getAuthenticationSessionExpiration(absoluteExpiresAt, now, idleTtlSeconds);
+
+        const epochKey = keys.epoch(input.principalId);
+        const epoch = await initializeEpoch(
+            [epochKey],
+            [
+                randomBytes(32).toString('base64url'),
+                absoluteTtlSeconds,
+            ],
+        );
+
+        const generated = generateAuthenticationSessionToken(
+            {
+                absoluteExpiresAt,
+                epoch,
+                principalAuthenticationRevision: input.principalAuthenticationRevision,
+                principalId: input.principalId,
+                principalType,
+            },
+            tokenHmacKey,
+        );
+
         const created = await createStoredSession(
             [
-                getRedisAuthenticationSessionKey(principalType, generated.selector, keyPrefix),
+                keys.session(generated.selector),
                 epochKey,
-                getRedisAuthenticationSessionIndexKey(principalType, input.principalId, epoch, keyPrefix),
+                keys.index(input.principalId, epoch),
             ],
             [
                 epoch,
@@ -230,6 +264,7 @@ export function createRedisAuthenticationSessionStore(
                 generated.selector,
                 now,
                 input.ip,
+                input.principalAuthenticationRevision,
                 input.principalId,
                 principalType,
                 input.userAgent ?? '',
@@ -242,6 +277,7 @@ export function createRedisAuthenticationSessionStore(
         if (created !== 1) throw new Error('authentication session epoch changed during creation');
 
         return {
+            cookieMaxAgeSeconds: absoluteTtlSeconds,
             session: {
                 absoluteExpiresAt,
                 epoch,
@@ -250,28 +286,29 @@ export function createRedisAuthenticationSessionStore(
                 lastActiveIp: input.ip,
                 loggedAt: now,
                 loginIp: input.ip,
+                principalAuthenticationRevision: input.principalAuthenticationRevision,
                 principalId: input.principalId,
                 principalType,
                 userAgent: input.userAgent,
             },
             token: generated.token,
-            ttlSeconds,
         };
     }
 
-    async function authenticate(input: AuthenticateAuthenticationSessionInput) {
-        const parsedToken = parseAuthenticationSessionToken(input.token);
-        if (!parsedToken) return;
-
-        const sessionKey = getRedisAuthenticationSessionKey(principalType, parsedToken.selector, keyPrefix);
+    async function authenticateParsedToken(
+        input: AuthenticateAuthenticationSessionInput,
+        parsedToken: ParsedAuthenticationSessionToken,
+    ): Promise<undefined | ValidatedAuthenticationSession> {
+        const sessionKey = keys.session(parsedToken.selector);
         const storedSession = parseStoredAuthenticationSession(
             await client.hmget(sessionKey, ...storedAuthenticationSessionFields),
+            principalType,
         );
 
         if (
             !storedSession
             || !verifyAuthenticationSessionToken(
-                principalType,
+                storedSession,
                 parsedToken,
                 storedSession.validatorDigest,
                 tokenHmacKey,
@@ -279,26 +316,39 @@ export function createRedisAuthenticationSessionStore(
         ) return;
 
         const now = input.now ?? Date.now();
-        const ttl = getAuthenticationSessionTtlSeconds(storedSession.absoluteExpiresAt, now, idleTtlSeconds);
-        const expiresAt = getAuthenticationSessionExpiresAt(storedSession.absoluteExpiresAt, now, idleTtlSeconds);
+        if (
+            storedSession.absoluteExpiresAt <= now
+            || storedSession.lastActiveAt + idleTtlSeconds * 1000 <= now
+        ) return;
+
+        const { validatorDigest, ...session } = storedSession;
+        if (
+            !await input.validatePrincipal({
+                principalAuthenticationRevision: session.principalAuthenticationRevision,
+                principalId: session.principalId,
+                principalType: session.principalType,
+            })
+        ) return;
+
+        const { expiresAt, ttlSeconds } = getAuthenticationSessionExpiration(
+            storedSession.absoluteExpiresAt,
+            now,
+            idleTtlSeconds,
+        );
+
         const result = await finalizeAuthentication(
             [
                 sessionKey,
-                getRedisAuthenticationSessionEpochKey(principalType, storedSession.principalId, keyPrefix),
-                getRedisAuthenticationSessionIndexKey(
-                    principalType,
-                    storedSession.principalId,
-                    storedSession.epoch,
-                    keyPrefix,
-                ),
+                keys.epoch(storedSession.principalId),
+                keys.index(storedSession.principalId, storedSession.epoch),
             ],
             [
                 storedSession.epoch,
                 storedSession.principalId,
-                storedSession.validatorDigest,
+                validatorDigest,
                 now,
                 input.ip,
-                ttl,
+                ttlSeconds,
                 touchIntervalSeconds * 1000,
                 expiresAt,
                 idleTtlSeconds * 1000,
@@ -307,49 +357,63 @@ export function createRedisAuthenticationSessionStore(
 
         if (result !== 1 && result !== 2) return;
 
-        const session = toAuthenticationSessionData(storedSession);
-        if (result === 1) return { session };
+        if (result === 1) {
+            return {
+                session,
+                validatorDigest,
+            };
+        }
 
         return {
-            refreshedTtlSeconds: ttl,
             session: {
                 ...session,
                 lastActiveAt: now,
                 lastActiveIp: input.ip,
             },
+            validatorDigest,
         };
     }
 
+    async function authenticate(input: AuthenticateAuthenticationSessionInput) {
+        const parsedToken = parseAuthenticationSessionToken(input.token);
+        if (!parsedToken) return;
+
+        return (await authenticateParsedToken(input, parsedToken))?.session;
+    }
+
     async function rotate(input: RotateAuthenticationSessionInput) {
+        const parsedToken = parseAuthenticationSessionToken(input.token);
+        if (!parsedToken) return;
+
         const now = input.now ?? Date.now();
-        const authenticated = await authenticate({
-            ...input,
-            now,
-        });
+        const authenticated = await authenticateParsedToken(
+            {
+                ...input,
+                now,
+            },
+            parsedToken,
+        );
 
         if (!authenticated || authenticated.session.principalId !== input.principalId) return;
 
-        const parsedToken = parseAuthenticationSessionToken(input.token)!;
         const oldSession = authenticated.session;
-        const ttlSeconds = getAuthenticationSessionTtlSeconds(oldSession.absoluteExpiresAt, now, idleTtlSeconds);
-        const expiresAt = getAuthenticationSessionExpiresAt(oldSession.absoluteExpiresAt, now, idleTtlSeconds);
-        const generated = generateAuthenticationSessionToken(principalType, tokenHmacKey);
+        const { expiresAt, ttlSeconds } = getAuthenticationSessionExpiration(
+            oldSession.absoluteExpiresAt,
+            now,
+            idleTtlSeconds,
+        );
+
+        const generated = generateAuthenticationSessionToken(oldSession, tokenHmacKey);
         const rotated = await rotateStoredSession(
             [
-                getRedisAuthenticationSessionKey(principalType, parsedToken.selector, keyPrefix),
-                getRedisAuthenticationSessionKey(principalType, generated.selector, keyPrefix),
-                getRedisAuthenticationSessionEpochKey(principalType, input.principalId, keyPrefix),
-                getRedisAuthenticationSessionIndexKey(
-                    principalType,
-                    input.principalId,
-                    oldSession.epoch,
-                    keyPrefix,
-                ),
+                keys.session(parsedToken.selector),
+                keys.session(generated.selector),
+                keys.epoch(input.principalId),
+                keys.index(input.principalId, oldSession.epoch),
             ],
             [
                 input.principalId,
-                getAuthenticationSessionTokenDigestBytes(principalType, parsedToken.bytes, tokenHmacKey)
-                    .toString('base64url'),
+                authenticated.validatorDigest,
                 now,
                 generated.selector,
                 input.ip,
@@ -364,6 +428,7 @@ export function createRedisAuthenticationSessionStore(
         if (rotated !== 1) return;
 
         return {
+            cookieMaxAgeSeconds: Math.max(1, Math.ceil((oldSession.absoluteExpiresAt - now) / 1000)),
             session: {
                 absoluteExpiresAt: oldSession.absoluteExpiresAt,
                 epoch: oldSession.epoch,
@@ -372,12 +437,12 @@ export function createRedisAuthenticationSessionStore(
                 lastActiveIp: input.ip,
                 loggedAt: oldSession.loggedAt,
                 loginIp: oldSession.loginIp,
+                principalAuthenticationRevision: oldSession.principalAuthenticationRevision,
                 principalId: input.principalId,
                 principalType,
                 userAgent: input.userAgent ?? oldSession.userAgent,
             },
             token: generated.token,
-            ttlSeconds,
         };
     }
 
@@ -389,73 +454,11 @@ export function createRedisAuthenticationSessionStore(
     };
 }
 
-function getAuthenticationSessionExpiresAt(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
-    return Math.min(absoluteExpiresAt, now + idleTtlSeconds * 1000);
-}
-
-function getAuthenticationSessionTtlSeconds(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
-    return Math.max(1, Math.min(idleTtlSeconds, Math.ceil((absoluteExpiresAt - now) / 1000)));
-}
-
-export function getRedisAuthenticationSessionEpochKey(
-    principalType: AuthenticationSessionPrincipalType,
-    principalId: string,
-    keyPrefix = '',
-) {
-    return `${keyPrefix}authenticationSessionEpoch:${principalType}:${principalId}`;
-}
-
-export function getRedisAuthenticationSessionIndexKey(
-    principalType: AuthenticationSessionPrincipalType,
-    principalId: string,
-    epoch: string,
-    keyPrefix = '',
-): string {
-    return `${keyPrefix}authenticationSessions:${principalType}:${principalId}:${epoch}`;
-}
-
-export function getRedisAuthenticationSessionKey(
-    principalType: AuthenticationSessionPrincipalType,
-    selector: string,
-    keyPrefix = '',
-) {
-    return `${keyPrefix}authenticationSession:${principalType}:${selector}`;
-}
-
-function parseStoredAuthenticationSession(values: (null | string)[]): StoredAuthenticationSessionData | undefined {
-    const [
-        absoluteExpiresAt,
-        epoch,
-        id,
-        lastActiveAt,
-        lastActiveIp,
-        loggedAt,
-        loginIp,
-        principalId,
-        principalType,
-        userAgent,
-        validatorDigest,
-    ] = values;
-
-    if (!absoluteExpiresAt) return;
+function getAuthenticationSessionExpiration(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
+    const expiresAt = Math.min(absoluteExpiresAt, now + idleTtlSeconds * 1000);
 
     return {
-        absoluteExpiresAt: Number(absoluteExpiresAt),
-        epoch: epoch as string,
-        id: id as string,
-        lastActiveAt: Number(lastActiveAt),
-        lastActiveIp: lastActiveIp as string,
-        loggedAt: Number(loggedAt),
-        loginIp: loginIp as string,
-        principalId: principalId as string,
-        principalType: principalType as AuthenticationSessionPrincipalType,
-        userAgent: userAgent || undefined,
-        validatorDigest: validatorDigest as string,
+        expiresAt,
+        ttlSeconds: Math.max(1, Math.ceil((expiresAt - now) / 1000)),
     };
-}
-
-function toAuthenticationSessionData(storedSession: StoredAuthenticationSessionData): AuthenticationSessionData {
-    const { validatorDigest, ...session } = storedSession;
-
-    return session;
 }
