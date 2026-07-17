@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.95.10
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.9...v0.95.10)
+
+### 🩹 Fixes
+
+- **authentication-session:** Scope Redis keys by application ([587ffc6](https://github.com/kiki-core-stack/pack/commit/587ffc6))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.9
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.8...v0.95.9)
