@@ -262,7 +262,7 @@
     "nanoid": "^6.0.0",
     "publint": "^0.3.21",
     "sharp": "^0.35.3",
-    "tsdown": "^0.22.8",
+    "tsdown": "^0.22.9",
     "type-fest": "^5.8.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.5.7",
