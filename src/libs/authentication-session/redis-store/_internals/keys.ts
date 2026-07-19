@@ -1,4 +1,4 @@
-import type { AuthenticationSessionPrincipalType } from '../../../types/data/authentication-session';
+import type { AuthenticationSessionPrincipalType } from '../../../../types/authentication-session';
 
 const applicationKeyPrefix = 'kiki-core-stack';
 
@@ -20,6 +20,7 @@ export function createRedisAuthenticationSessionKeys(
         epoch: (principalId: string) => `${keyPrefix}authenticationSessionEpoch:${principalType}:${principalId}`,
         index: (principalId: string, epoch: string) =>
             `${keyPrefix}authenticationSessions:${principalType}:${principalId}:${epoch}`,
+        qrCodeLogin: (selector: string) => `${keyPrefix}authenticationSessionQrCodeLogin:${principalType}:${selector}`,
         session: (selector: string) => `${keyPrefix}authenticationSession:${principalType}:${selector}`,
     };
 }

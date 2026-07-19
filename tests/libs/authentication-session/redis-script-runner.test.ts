@@ -4,7 +4,7 @@ import {
     vi,
 } from 'vitest';
 
-import { createRedisScriptRunner } from '../../../src/libs/authentication-session/redis-store/_script-runner';
+import { createRedisScriptRunner } from '../../../src/libs/authentication-session/redis-store/_internals/script-runner';
 
 describe.concurrent('redis script runner', () => {
     it('shares one script load between concurrent callers', async ({ expect }) => {

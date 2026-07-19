@@ -1,4 +1,4 @@
-export type AuthenticationSessionPrincipalType = 'admin';
+import type { AuthenticationSessionPrincipalType } from '../authentication-session';
 
 export interface AuthenticationSessionData {
     absoluteExpiresAt: number;

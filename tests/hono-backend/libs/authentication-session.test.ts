@@ -8,22 +8,14 @@ import type { ExpectStatic } from 'vitest';
 
 import { createHonoAuthenticationSession } from '../../../src/hono-backend/libs/authentication-session';
 import type { HonoAuthenticationSessionOptions } from '../../../src/hono-backend/libs/authentication-session';
-import type { AuthenticationSessionData } from '../../../src/types/data/authentication-session';
+import { createAuthenticationSessionData } from '../../libs/authentication-session/_fixtures';
 
-const session: AuthenticationSessionData = {
-    absoluteExpiresAt: 30_000,
-    epoch: 'epoch',
-    id: 'selector',
-    lastActiveAt: 10_000,
-    lastActiveIp: '127.0.0.1',
-    loggedAt: 9_000,
-    loginIp: '127.0.0.1',
-    principalAuthenticationRevision: 3,
-    principalId: 'admin-id',
-    principalType: 'admin',
-};
+// Constants
+const session = createAuthenticationSessionData({ absoluteExpiresAt: 30_000 });
+
 const validatePrincipal = () => Promise.resolve(true);
 
+// Functions
 function createStore(
     overrides: Partial<HonoAuthenticationSessionOptions['store']> = {},
 ): HonoAuthenticationSessionOptions['store'] {
@@ -34,6 +26,13 @@ function createStore(
             session,
             token: 'created-token',
         }),
+        qrCodeLogin: {
+            approve: vi.fn().mockResolvedValue(false),
+            cancel: vi.fn().mockResolvedValue(false),
+            complete: vi.fn().mockResolvedValue(undefined),
+            create: vi.fn(),
+            getApprovalRequest: vi.fn().mockResolvedValue(undefined),
+        },
         rotate: vi.fn().mockResolvedValue(undefined),
         ...overrides,
     };
@@ -48,6 +47,7 @@ function expectSecureHostCookie(expect: ExpectStatic, value: null | string, toke
     expect(value).toContain('SameSite=Strict');
 }
 
+// Tests
 describe.concurrent('hono authentication session', () => {
     it('does not call the store when the request has no session cookie', async ({ expect }) => {
         const store = createStore();
@@ -283,5 +283,93 @@ describe.concurrent('hono authentication session', () => {
 
         expect(deletedResponse.headers.get('set-cookie')).toContain('__Host-admin-session=; Max-Age=0; Path=/; Secure');
         expect(deletedResponse.headers.get('cache-control')).toBe('no-store');
+    });
+
+    it('completes an approved QR code login and writes the issued session cookie', async ({ expect }) => {
+        const validateContextPrincipal = vi.fn().mockResolvedValue(true);
+        const complete = vi.fn(async (input) => {
+            await input.validatePrincipal({
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
+            });
+
+            return {
+                cookieMaxAgeSeconds: 500,
+                session,
+                state: 'completed' as const,
+                token: 'qr-code-login-token',
+            };
+        });
+
+        const store = createStore();
+        store.qrCodeLogin.complete = complete;
+
+        const authenticationSession = createHonoAuthenticationSession({
+            cookieName: 'admin-session',
+            store,
+            validatePrincipal: validateContextPrincipal,
+        });
+
+        const app = new Hono().post(
+            '/',
+            async (ctx) => ctx.json(await authenticationSession.completeQrCodeLogin(
+                ctx,
+                {
+                    completionToken: 'completion-token',
+                    ip: '127.0.0.2',
+                },
+            )),
+        );
+
+        const response = await app.request('/', { method: 'POST' });
+
+        expect(complete).toHaveBeenCalledWith({
+            completionToken: 'completion-token',
+            ip: '127.0.0.2',
+            validatePrincipal: expect.any(Function),
+        });
+
+        expect(validateContextPrincipal).toHaveBeenCalledWith(
+            expect.anything(),
+            {
+                principalAuthenticationRevision: 3,
+                principalId: 'admin-id',
+                principalType: 'admin',
+            },
+        );
+
+        await expect(response.json()).resolves.toEqual({
+            session,
+            state: 'completed',
+        });
+
+        expectSecureHostCookie(expect, response.headers.get('set-cookie'), 'qr-code-login-token', 500);
+        expect(response.headers.get('cache-control')).toBe('no-store');
+    });
+
+    it('prevents caching while a QR code login is pending', async ({ expect }) => {
+        const store = createStore();
+        store.qrCodeLogin.complete = vi.fn().mockResolvedValue({ state: 'pending' });
+
+        const authenticationSession = createHonoAuthenticationSession({
+            cookieName: 'admin-session',
+            store,
+            validatePrincipal,
+        });
+
+        const app = new Hono().post(
+            '/',
+            async (ctx) => ctx.json(await authenticationSession.completeQrCodeLogin(ctx, {
+                completionToken: 'completion-token',
+                ip: '127.0.0.2',
+            })),
+        );
+
+        const response = await app.request('/', { method: 'POST' });
+
+        await expect(response.json()).resolves.toEqual({ state: 'pending' });
+        expect(response.headers.get('cache-control')).toBe('no-store');
+        expect(response.headers.get('set-cookie')).toBeNull();
     });
 });

@@ -1,5 +1,3 @@
-import { Buffer } from 'node:buffer';
-
 import {
     describe,
     it,
@@ -254,7 +252,7 @@ describe.concurrent('redis authentication session store', () => {
             '2592000',
         ]);
 
-        expect(Buffer.from(send.mock.calls[2]?.[1][3] as string, 'base64url')).toHaveLength(32);
+        expect(send.mock.calls[2]?.[1][3]).toMatch(/^[\w-]{43}$/);
     });
 
     it('fails session creation when its epoch changes', async ({ expect }) => {
@@ -299,6 +297,12 @@ describe.concurrent('redis authentication session store', () => {
                 {
                     idleTtlSeconds: 10,
                     touchIntervalSeconds: 10,
+                },
+                { qrCodeLoginApprovalTtlSeconds: 0 },
+                { qrCodeLoginRequestTtlSeconds: 1.5 },
+                {
+                    qrCodeLoginApprovalTtlSeconds: 11,
+                    qrCodeLoginRequestTtlSeconds: 10,
                 },
             ]
         ) {
@@ -409,10 +413,12 @@ describe.concurrent('redis authentication session store', () => {
                 token: generated.token,
                 validatePrincipal,
             }),
-        ).resolves.toEqual(expect.objectContaining({
-            lastActiveAt: 15_000,
-            lastActiveIp: '127.0.0.3',
-        }));
+        ).resolves.toEqual(
+            expect.objectContaining({
+                lastActiveAt: 15_000,
+                lastActiveIp: '127.0.0.3',
+            }),
+        );
 
         await expect(
             store.authenticate({

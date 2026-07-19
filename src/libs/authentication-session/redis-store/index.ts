@@ -1,9 +1,11 @@
 import { Buffer } from 'node:buffer';
-import { randomBytes } from 'node:crypto';
+
+import { nanoid } from 'nanoid';
 
 import type {
     AuthenticateAuthenticationSessionInput,
     AuthenticationSessionManager,
+    AuthenticationSessionPrincipalType,
     AuthenticationSessionStore,
     CreateAuthenticationSessionInput,
     ListAuthenticationSessionsInput,
@@ -12,7 +14,6 @@ import type {
 import type {
     AuthenticationSessionData,
     AuthenticationSessionListItemData,
-    AuthenticationSessionPrincipalType,
 } from '../../../types/data/authentication-session';
 import {
     generateAuthenticationSessionToken,
@@ -21,8 +22,9 @@ import {
 } from '../_token';
 import type { ParsedAuthenticationSessionToken } from '../_token';
 
-import { createRedisAuthenticationSessionKeys } from './_keys';
-import { createRedisScriptRunner } from './_script-runner';
+import { createRedisAuthenticationSessionKeys } from './_internals/keys';
+import { createRedisAuthenticationSessionQrCodeLoginStore } from './_internals/qr-code-login';
+import { createRedisScriptRunner } from './_internals/script-runner';
 import {
     createAuthenticationSessionScript,
     finalizeAuthenticationSessionScript,
@@ -30,13 +32,13 @@ import {
     revokeAllAuthenticationSessionsScript,
     revokeAuthenticationSessionScript,
     rotateAuthenticationSessionScript,
-} from './_scripts';
+} from './_internals/scripts';
 import {
     parseStoredAuthenticationSession,
     parseStoredAuthenticationSessionData,
     storedAuthenticationSessionDataFields,
     storedAuthenticationSessionFields,
-} from './_stored-session';
+} from './_internals/stored-session';
 
 // Types
 export interface RedisAuthenticationSessionManagerOptions {
@@ -47,6 +49,8 @@ export interface RedisAuthenticationSessionManagerOptions {
 export interface RedisAuthenticationSessionStoreOptions extends RedisAuthenticationSessionManagerOptions {
     absoluteTtlSeconds?: number;
     idleTtlSeconds?: number;
+    qrCodeLoginApprovalTtlSeconds?: number;
+    qrCodeLoginRequestTtlSeconds?: number;
     tokenHmacKey: string | Uint8Array;
     touchIntervalSeconds?: number;
 }
@@ -61,6 +65,8 @@ const authenticationSessionListReadBatchSize = 100;
 const defaultAbsoluteTtlSeconds = 60 * 60 * 24 * 30;
 const defaultIdleTtlSeconds = 60 * 60 * 24 * 7;
 const defaultTouchIntervalSeconds = 60 * 10;
+const defaultQrCodeLoginApprovalTtlSeconds = 5;
+const defaultQrCodeLoginRequestTtlSeconds = 60;
 
 // Functions
 function assertValidAuthenticationSessionDuration(name: string, value: number, minimum: number) {
@@ -187,6 +193,8 @@ export function createRedisAuthenticationSessionStore(
         client,
         idleTtlSeconds = defaultIdleTtlSeconds,
         principalType,
+        qrCodeLoginApprovalTtlSeconds = defaultQrCodeLoginApprovalTtlSeconds,
+        qrCodeLoginRequestTtlSeconds = defaultQrCodeLoginRequestTtlSeconds,
         tokenHmacKey,
         touchIntervalSeconds = defaultTouchIntervalSeconds,
     } = options;
@@ -194,9 +202,15 @@ export function createRedisAuthenticationSessionStore(
     assertValidAuthenticationSessionDuration('absoluteTtlSeconds', absoluteTtlSeconds, 1);
     assertValidAuthenticationSessionDuration('idleTtlSeconds', idleTtlSeconds, 1);
     assertValidAuthenticationSessionDuration('touchIntervalSeconds', touchIntervalSeconds, 0);
+    assertValidAuthenticationSessionDuration('qrCodeLoginApprovalTtlSeconds', qrCodeLoginApprovalTtlSeconds, 1);
+    assertValidAuthenticationSessionDuration('qrCodeLoginRequestTtlSeconds', qrCodeLoginRequestTtlSeconds, 1);
 
     if (touchIntervalSeconds >= idleTtlSeconds) {
         throw new TypeError('touchIntervalSeconds must be less than idleTtlSeconds');
+    }
+
+    if (qrCodeLoginApprovalTtlSeconds > qrCodeLoginRequestTtlSeconds) {
+        throw new TypeError('qrCodeLoginApprovalTtlSeconds must be less than or equal to qrCodeLoginRequestTtlSeconds');
     }
 
     const tokenHmacKeyByteLength = typeof tokenHmacKey === 'string'
@@ -209,6 +223,15 @@ export function createRedisAuthenticationSessionStore(
 
     const manager = createRedisAuthenticationSessionManager(options);
     const keys = createRedisAuthenticationSessionKeys(principalType);
+    const qrCodeLogin = createRedisAuthenticationSessionQrCodeLoginStore({
+        absoluteTtlSeconds,
+        approvalTtlSeconds: qrCodeLoginApprovalTtlSeconds,
+        client,
+        idleTtlSeconds,
+        principalType,
+        qrCodeLoginRequestTtlSeconds,
+        tokenHmacKey,
+    });
 
     // Functions
     const initializeEpoch = createRedisScriptRunner<string>(client, initializeAuthenticationSessionEpochScript);
@@ -229,7 +252,7 @@ export function createRedisAuthenticationSessionStore(
         const epoch = await initializeEpoch(
             [epochKey],
             [
-                randomBytes(32).toString('base64url'),
+                nanoid(43),
                 absoluteTtlSeconds,
             ],
         );
@@ -443,6 +466,7 @@ export function createRedisAuthenticationSessionStore(
         ...manager,
         authenticate,
         create,
+        qrCodeLogin,
         rotate,
     };
 }

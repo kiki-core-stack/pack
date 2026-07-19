@@ -41,7 +41,7 @@ async function createPackageExports() {
         const sourcePath = `./src/${filePath}`;
         const exportPath = `./${join(parsedPath.dir, parsedPath.name)}`;
 
-        if (parsedPath.name.startsWith('_')) {
+        if (filePath.includes('_')) {
             exports[exportPath] = createBlockedExportEntry();
             continue;
         }

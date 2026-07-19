@@ -9,7 +9,9 @@ import type { Except } from 'type-fest';
 import type {
     AuthenticateAuthenticationSessionInput,
     AuthenticationSessionPrincipalValidationData,
+    AuthenticationSessionQrCodeLoginCompletionResult,
     AuthenticationSessionStore,
+    CompleteAuthenticationSessionQrCodeLoginInput,
     CreateAuthenticationSessionInput,
     RotateAuthenticationSessionInput,
 } from '../../types/authentication-session';
@@ -27,11 +29,23 @@ export type HonoAuthenticationSessionPrincipalValidator = (
     data: AuthenticationSessionPrincipalValidationData,
 ) => Promise<boolean>;
 
+type HonoAuthenticationSessionQrCodeLoginCompletionResult =
+  | Extract<AuthenticationSessionQrCodeLoginCompletionResult, { state: 'pending' }>
+  | {
+      session: AuthenticationSessionData;
+      state: 'completed';
+  };
+
 interface HonoAuthenticationSession {
-    authenticate: (ctx: Context, input: Except<
-        AuthenticateAuthenticationSessionInput,
-        'token' | 'validatePrincipal'
-    >) => Promise<AuthenticationSessionData | undefined>;
+    authenticate: (
+        ctx: Context,
+        input: Except<AuthenticateAuthenticationSessionInput, 'token' | 'validatePrincipal'>,
+    ) => Promise<AuthenticationSessionData | undefined>;
+
+    completeQrCodeLogin: (
+        ctx: Context,
+        input: Except<CompleteAuthenticationSessionQrCodeLoginInput, 'validatePrincipal'>,
+    ) => Promise<HonoAuthenticationSessionQrCodeLoginCompletionResult | undefined>;
 
     create: (ctx: Context, input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionData>;
     deleteCookie: (ctx: Context) => void;
@@ -42,7 +56,7 @@ interface HonoAuthenticationSession {
 
 export interface HonoAuthenticationSessionOptions {
     cookieName: string;
-    store: Pick<AuthenticationSessionStore, 'authenticate' | 'create' | 'rotate'>;
+    store: Pick<AuthenticationSessionStore, 'authenticate' | 'create' | 'qrCodeLogin' | 'rotate'>;
     validatePrincipal: HonoAuthenticationSessionPrincipalValidator;
 }
 
@@ -104,6 +118,27 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         return created.session;
     }
 
+    async function completeQrCodeLogin(
+        ctx: Context,
+        input: Except<CompleteAuthenticationSessionQrCodeLoginInput, 'validatePrincipal'>,
+    ): Promise<HonoAuthenticationSessionQrCodeLoginCompletionResult | undefined> {
+        ctx.header('Cache-Control', 'no-store');
+
+        const completed = await options.store.qrCodeLogin.complete({
+            ...input,
+            validatePrincipal: (data) => options.validatePrincipal(ctx, data),
+        });
+
+        if (!completed || completed.state === 'pending') return completed;
+
+        writeCookie(ctx, completed.token, completed.cookieMaxAgeSeconds);
+
+        return {
+            session: completed.session,
+            state: completed.state,
+        };
+    }
+
     async function rotate(
         ctx: Context,
         input: Except<RotateAuthenticationSessionInput, 'token' | 'validatePrincipal'>,
@@ -126,6 +161,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
 
     return {
         authenticate,
+        completeQrCodeLogin,
         create,
         deleteCookie,
         rotate,

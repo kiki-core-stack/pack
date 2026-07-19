@@ -9,7 +9,7 @@ import {
     initializeAuthenticationSessionEpochScript,
     revokeAllAuthenticationSessionsScript,
     rotateAuthenticationSessionScript,
-} from '../../../src/libs/authentication-session/redis-store/_scripts';
+} from '../../../src/libs/authentication-session/redis-store/_internals/scripts';
 
 describe.concurrent('redis authentication session scripts', () => {
     it('bounds session indexes and preserves authoritative metadata', ({ expect }) => {

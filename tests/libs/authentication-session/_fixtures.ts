@@ -26,6 +26,24 @@ const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes'
 // Functions
 export const validatePrincipal = () => Promise.resolve(true);
 
+export function createAuthenticationSessionData(
+    overrides: Partial<AuthenticationSessionData> = {},
+): AuthenticationSessionData {
+    return {
+        absoluteExpiresAt: 20_000,
+        epoch: 'epoch',
+        id: 'selector',
+        lastActiveAt: 10_000,
+        lastActiveIp: '127.0.0.1',
+        loggedAt: 9_000,
+        loginIp: '127.0.0.1',
+        principalAuthenticationRevision: 3,
+        principalId: 'admin-id',
+        principalType: 'admin',
+        ...overrides,
+    };
+}
+
 export function createClient(
     overrides: Partial<RedisAuthenticationSessionClient> = {},
 ): RedisAuthenticationSessionClient {
@@ -65,19 +83,11 @@ export function createStore(
 function createStoredSessionData(
     overrides: Partial<StoredAuthenticationSessionData> = {},
 ): StoredAuthenticationSessionData {
+    const { validatorDigest = 'digest', ...sessionOverrides } = overrides;
+
     return {
-        absoluteExpiresAt: 20_000,
-        epoch: 'epoch',
-        id: 'selector',
-        lastActiveAt: 10_000,
-        lastActiveIp: '127.0.0.1',
-        loggedAt: 9_000,
-        loginIp: '127.0.0.1',
-        principalAuthenticationRevision: 3,
-        principalId: 'admin-id',
-        principalType: 'admin',
-        validatorDigest: 'digest',
-        ...overrides,
+        ...createAuthenticationSessionData(sessionOverrides),
+        validatorDigest,
     };
 }
 

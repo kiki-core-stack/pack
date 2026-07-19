@@ -1,7 +1,5 @@
-import type {
-    AuthenticationSessionData,
-    AuthenticationSessionPrincipalType,
-} from '../../../types/data/authentication-session';
+import type { AuthenticationSessionPrincipalType } from '../../../../types/authentication-session';
+import type { AuthenticationSessionData } from '../../../../types/data/authentication-session';
 
 // Types
 interface StoredAuthenticationSessionData extends AuthenticationSessionData {

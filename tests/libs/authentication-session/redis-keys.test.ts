@@ -3,7 +3,8 @@ import {
     it,
 } from 'vitest';
 
-import { createRedisAuthenticationSessionKeys } from '../../../src/libs/authentication-session/redis-store/_keys';
+// eslint-disable-next-line style/max-len
+import { createRedisAuthenticationSessionKeys } from '../../../src/libs/authentication-session/redis-store/_internals/keys';
 
 describe.concurrent('redis authentication session keys', () => {
     it('always scopes keys by application and optionally by environment', ({ expect }) => {

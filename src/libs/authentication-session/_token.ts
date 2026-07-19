@@ -29,9 +29,9 @@ export interface ParsedAuthenticationSessionToken {
 }
 
 // Constants
-const selectorByteLength = 16;
-const validatorByteLength = 32;
-const tokenByteLength = selectorByteLength + validatorByteLength;
+export const tokenSelectorByteLength = 16;
+export const tokenValidatorByteLength = 32;
+const tokenByteLength = tokenSelectorByteLength + tokenValidatorByteLength;
 const tokenLength = Math.ceil(tokenByteLength * 4 / 3);
 const tokenPattern = new RegExp(`^[\\w-]{${tokenLength}}$`);
 
@@ -43,7 +43,7 @@ export function generateAuthenticationSessionToken(
     const bytes = randomBytes(tokenByteLength);
 
     return {
-        selector: bytes.subarray(0, selectorByteLength).toString('base64url'),
+        selector: bytes.subarray(0, tokenSelectorByteLength).toString('base64url'),
         token: bytes.toString('base64url'),
         validatorDigest: getAuthenticationSessionTokenDigestBytes(binding, bytes, tokenHmacKey)
             .toString('base64url'),
@@ -79,7 +79,7 @@ export function parseAuthenticationSessionToken(token: string): ParsedAuthentica
 
     return {
         bytes,
-        selector: bytes.subarray(0, selectorByteLength).toString('base64url'),
+        selector: bytes.subarray(0, tokenSelectorByteLength).toString('base64url'),
     };
 }
 
@@ -89,7 +89,13 @@ export function verifyAuthenticationSessionToken(
     validatorDigest: string,
     tokenHmacKey: string | Uint8Array,
 ) {
-    const actualDigest = getAuthenticationSessionTokenDigestBytes(binding, parsedToken.bytes, tokenHmacKey);
+    return verifyAuthenticationSessionTokenDigest(
+        getAuthenticationSessionTokenDigestBytes(binding, parsedToken.bytes, tokenHmacKey),
+        validatorDigest,
+    );
+}
+
+export function verifyAuthenticationSessionTokenDigest(actualDigest: Uint8Array, validatorDigest: string) {
     const expectedDigest = Buffer.from(validatorDigest, 'base64url');
 
     return actualDigest.byteLength === expectedDigest.byteLength && timingSafeEqual(actualDigest, expectedDigest);

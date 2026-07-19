@@ -11,22 +11,18 @@ export function createRedisScriptRunner<TResult = unknown>(
     const digest = createHash('sha1').update(source).digest('hex');
     let loading: Promise<unknown> | undefined;
 
-    function execute(keys: string[], args: (number | string)[]) {
-        return client.send(
-            'EVALSHA',
-            [
-                digest,
-                String(keys.length),
-                ...keys,
-                ...args.map(String),
-            ],
-        );
-    }
-
     return async (keys, args) => {
         for (let attempt = 0; ; attempt += 1) {
             try {
-                return await execute(keys, args) as TResult;
+                return await client.send(
+                    'EVALSHA',
+                    [
+                        digest,
+                        String(keys.length),
+                        ...keys,
+                        ...args.map(String),
+                    ],
+                ) as TResult;
             } catch (error) {
                 if (
                     !(error instanceof Error)

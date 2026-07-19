@@ -72,22 +72,32 @@
       "import": "./src/libs/authentication-session/redis-store/index.ts",
       "require": null
     },
-    "./libs/authentication-session/redis-store/_keys": {
+    "./libs/authentication-session/redis-store/_internals/keys": {
       "types": null,
       "import": null,
       "require": null
     },
-    "./libs/authentication-session/redis-store/_script-runner": {
+    "./libs/authentication-session/redis-store/_internals/qr-code-login": {
       "types": null,
       "import": null,
       "require": null
     },
-    "./libs/authentication-session/redis-store/_scripts": {
+    "./libs/authentication-session/redis-store/_internals/script-runner": {
       "types": null,
       "import": null,
       "require": null
     },
-    "./libs/authentication-session/redis-store/_stored-session": {
+    "./libs/authentication-session/redis-store/_internals/scripts/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_internals/scripts/qr-code-login": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/authentication-session/redis-store/_internals/stored-session": {
       "types": null,
       "import": null,
       "require": null
