@@ -21,7 +21,6 @@ import { createRedisAuthenticationSessionKeys } from './keys';
 import { createRedisScriptRunner } from './script-runner';
 import {
     approveAuthenticationSessionQrCodeLoginScript,
-    cancelAuthenticationSessionQrCodeLoginScript,
     completeAuthenticationSessionQrCodeLoginScript,
     createAuthenticationSessionQrCodeLoginScript,
 } from './scripts/qr-code-login';
@@ -156,7 +155,6 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
 
     // 每個狀態轉移使用獨立 Lua runner，確保 Redis 內原子執行。
     const approveStoredRequest = createRedisScriptRunner<number>(client, approveAuthenticationSessionQrCodeLoginScript);
-    const cancelStoredRequest = createRedisScriptRunner<number>(client, cancelAuthenticationSessionQrCodeLoginScript);
     const completeStoredRequest = createRedisScriptRunner<0 | [number, number]>(
         client,
         completeAuthenticationSessionQrCodeLoginScript,
@@ -372,30 +370,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         };
     }
 
-    /** 目標裝置使用 completion capability 主動取消尚未完成的 request。 */
-    async function cancel(completionToken: string) {
-        // 格式錯誤時不執行 Redis script。
-        const parsedToken = parseAuthenticationSessionToken(completionToken);
-        if (!parsedToken) return false;
-
-        // Lua 只有在 completion digest 符合時才刪除 request。
-        return await cancelStoredRequest(
-            [keys.qrCodeLogin(parsedToken.selector)],
-            [
-                getAuthenticationSessionQrCodeLoginTokenDigestBytes(
-                    'completion',
-                    principalType,
-                    parsedToken.bytes,
-                    tokenHmacKey,
-                ).toString('base64url'),
-            ],
-        ) === 1;
-    }
-
     // 對外公開完整但最小的 QR Login 狀態機操作。
     return {
         approve,
-        cancel,
         complete,
         create,
         getApprovalRequest,

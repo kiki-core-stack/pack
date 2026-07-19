@@ -99,7 +99,7 @@ export interface AuthenticationSessionQrCodeLoginCreationResult {
     /** 交由已登入來源裝置掃描並核准的能力 token。 */
     approvalToken: string;
 
-    /** 留在目標裝置輪詢、完成或取消請求的能力 token。 */
+    /** 留在目標裝置輪詢並完成請求的能力 token。 */
     completionToken: string;
 
     /** pending 請求的毫秒到期時間戳。 */
@@ -110,9 +110,6 @@ export interface AuthenticationSessionQrCodeLoginCreationResult {
 export interface AuthenticationSessionQrCodeLoginStore {
     /** 來源裝置核准 pending request。 */
     approve: (input: ApproveAuthenticationSessionQrCodeLoginInput) => Promise<boolean>;
-
-    /** 目標裝置取消尚未完成的 request。 */
-    cancel: (completionToken: string) => Promise<boolean>;
 
     /** 目標裝置輪詢並在核准後建立正式 Session。 */
     complete: (input: CompleteAuthenticationSessionQrCodeLoginInput) => Promise<

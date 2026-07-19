@@ -288,26 +288,6 @@ describe.concurrent('redis authentication session QR code login', () => {
         expect(send).toHaveBeenCalledTimes(1);
     });
 
-    it('only allows the completion capability to cancel a request', async ({ expect }) => {
-        const send = vi.fn()
-            .mockResolvedValueOnce('61000')
-            .mockResolvedValueOnce(0)
-            .mockResolvedValueOnce(1)
-            .mockResolvedValueOnce(0);
-
-        const store = createStore(createClient({ send }));
-        const created = await store.qrCodeLogin.create({ ip: '192.0.2.10' });
-        const completionValidatorDigest = send.mock.calls[0]?.[1][6];
-
-        await expect(store.qrCodeLogin.cancel(created.approvalToken)).resolves.toBe(false);
-        await expect(store.qrCodeLogin.cancel(created.completionToken)).resolves.toBe(true);
-        await expect(store.qrCodeLogin.cancel(created.completionToken)).resolves.toBe(false);
-
-        expect(send.mock.calls[1]?.[1][3]).not.toBe(completionValidatorDigest);
-        expect(send.mock.calls[2]?.[1][3]).toBe(completionValidatorDigest);
-        expect(send.mock.calls[3]?.[1][3]).toBe(completionValidatorDigest);
-    });
-
     it('rejects malformed tokens without reading or mutating Redis', async ({ expect }) => {
         const client = createClient();
         const store = createStore(client);
@@ -328,7 +308,6 @@ describe.concurrent('redis authentication session QR code login', () => {
             }),
         ).resolves.toBeUndefined();
 
-        await expect(store.qrCodeLogin.cancel('invalid')).resolves.toBe(false);
         expect(client.hmget).not.toHaveBeenCalled();
         expect(client.send).not.toHaveBeenCalled();
     });

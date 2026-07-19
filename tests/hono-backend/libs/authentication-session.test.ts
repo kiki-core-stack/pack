@@ -28,7 +28,6 @@ function createStore(
         }),
         qrCodeLogin: {
             approve: vi.fn().mockResolvedValue(false),
-            cancel: vi.fn().mockResolvedValue(false),
             complete: vi.fn().mockResolvedValue(undefined),
             create: vi.fn(),
             getApprovalRequest: vi.fn().mockResolvedValue(undefined),

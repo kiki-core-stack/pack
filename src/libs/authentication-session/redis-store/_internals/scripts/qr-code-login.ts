@@ -41,16 +41,6 @@ redis.call('PEXPIREAT', KEYS[1], approvalExpiresAt)
 return 1
 `;
 
-/** 驗證 completion capability digest 後原子刪除 QR 登入請求。 */
-export const cancelAuthenticationSessionQrCodeLoginScript = String.raw`
-if redis.call('HGET', KEYS[1], 'completionValidatorDigest') ~= ARGV[1] then
-    return 0
-end
-
-redis.call('DEL', KEYS[1])
-return 1
-`;
-
 /**
  * 目標裝置原子完成已核准請求：重新驗證 request、來源 Session、epoch 與期限，
  * 建立具全新 absolute lifetime 且仍受 idle TTL 限制的目標 Session，維護 epoch/index TTL，
