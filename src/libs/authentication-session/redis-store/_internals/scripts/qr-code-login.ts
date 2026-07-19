@@ -1,3 +1,7 @@
+/**
+ * 來源裝置以 approval capability 原子核准 pending request：驗證 capability、來源 Session、
+ * epoch 與各項期限，保存完成階段需要的來源綁定，並將 request TTL 收斂到短效核准期限。
+ */
 export const approveAuthenticationSessionQrCodeLoginScript = String.raw`
 local request = redis.call('HMGET', KEYS[1],
     'approvalValidatorDigest', 'state', 'expiresAt')
@@ -37,6 +41,7 @@ redis.call('PEXPIREAT', KEYS[1], approvalExpiresAt)
 return 1
 `;
 
+/** 驗證 completion capability digest 後原子刪除 QR 登入請求。 */
 export const cancelAuthenticationSessionQrCodeLoginScript = String.raw`
 if redis.call('HGET', KEYS[1], 'completionValidatorDigest') ~= ARGV[1] then
     return 0
@@ -46,6 +51,11 @@ redis.call('DEL', KEYS[1])
 return 1
 `;
 
+/**
+ * 目標裝置原子完成已核准請求：重新驗證 request、來源 Session、epoch 與期限，
+ * 建立具全新 absolute lifetime 且仍受 idle TTL 限制的目標 Session，維護 epoch/index TTL，
+ * 最後消耗一次性 request。
+ */
 export const completeAuthenticationSessionQrCodeLoginScript = String.raw`
 local request = redis.call('HMGET', KEYS[1],
     'completionValidatorDigest', 'state', 'approvalExpiresAt',
@@ -115,6 +125,10 @@ redis.call('DEL', KEYS[1])
 return {targetAbsoluteRemainingSeconds, now}
 `;
 
+/**
+ * 依 Redis server time 建立 pending QR 登入請求，保存互相分離的 approval/completion
+ * capability digest、目標裝置資訊與 request TTL，並回傳到期時間。
+ */
 export const createAuthenticationSessionQrCodeLoginScript = String.raw`
 local redisTime = redis.call('TIME')
 local now = tonumber(redisTime[1]) * 1000 + math.floor(tonumber(redisTime[2]) / 1000)

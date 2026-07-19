@@ -1,3 +1,7 @@
+/**
+ * 原子建立 Session：重新確認主體 epoch，寫入只保存 token digest 的 Session hash，
+ * 設定 idle/absolute 較早的 TTL，更新到期索引並限量清除過期 member。
+ */
 export const createAuthenticationSessionScript = String.raw`
 local epoch = redis.call('GET', KEYS[2])
 if epoch ~= ARGV[1] then
@@ -30,6 +34,10 @@ end
 return 1
 `;
 
+/**
+ * 主體驗證完成後再次原子確認 epoch、principal、digest、absolute 與 idle expiry；
+ * 尚未達 touch interval 時只回報成功，否則更新活動資訊、TTL 與到期索引。
+ */
 export const finalizeAuthenticationSessionScript = String.raw`
 local values = redis.call('HMGET', KEYS[1],
     'absoluteExpiresAt', 'epoch', 'id', 'lastActiveAt', 'principalId',
@@ -68,6 +76,10 @@ end
 return 2
 `;
 
+/**
+ * 取得或建立主體目前的撤銷世代；既有 epoch 繼續沿用，
+ * 並確保 epoch key 的 TTL 足以涵蓋新 Session 的 absolute TTL。
+ */
 export const initializeAuthenticationSessionEpochScript = String.raw`
 local epoch = redis.call('GET', KEYS[1])
 if not epoch then
@@ -79,12 +91,14 @@ end
 return epoch
 `;
 
+/** 原子刪除並回傳主體舊 epoch，使所有引用舊世代的 Session 立即失效。 */
 export const revokeAllAuthenticationSessionsScript = String.raw`
 local oldEpoch = redis.call('GET', KEYS[1])
 redis.call('DEL', KEYS[1])
 return oldEpoch or ''
 `;
 
+/** 重新確認 epoch 與 principal 後，原子刪除單一 Session hash 及其 index member。 */
 export const revokeAuthenticationSessionScript = String.raw`
 local values = redis.call('HMGET', KEYS[1], 'epoch', 'id', 'principalId')
 if values[1] ~= ARGV[1]
@@ -97,6 +111,10 @@ redis.call('ZREM', KEYS[2], values[2])
 return 1
 `;
 
+/**
+ * 原子驗證並消耗舊 token，重新確認 epoch 與到期狀態，建立保留原登入資訊及
+ * absolute expiry 的新 Session，更新 TTL 與索引，確保並行輪換只成功一次。
+ */
 export const rotateAuthenticationSessionScript = String.raw`
 local oldValues = redis.call('HMGET', KEYS[1],
     'absoluteExpiresAt', 'epoch', 'id', 'lastActiveAt', 'lastActiveIp',
