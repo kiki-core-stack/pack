@@ -93,7 +93,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         );
 
         // 防止包含登入狀態變更的回應被任何中介層快取。
-        ctx.header('Cache-Control', 'no-store');
+        ctx.header('cache-control', 'no-store');
     }
 
     /** 寫入新的 opaque token；瀏覽器保存時間依簽發結果設定，最終有效期限仍由伺服端判斷。 */
@@ -111,7 +111,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         );
 
         // 簽發 token 的回應一律禁止快取。
-        ctx.header('Cache-Control', 'no-store');
+        ctx.header('cache-control', 'no-store');
     }
 
     /** 驗證 request 中的 Session Cookie，不主動刪除可能已被並行請求輪換的舊 Cookie。 */
@@ -134,7 +134,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         if (!authenticated) return;
 
         // 成功認證的回應可能包含個人狀態，因此禁止快取。
-        ctx.header('Cache-Control', 'no-store');
+        ctx.header('cache-control', 'no-store');
 
         return authenticated;
     }
@@ -155,7 +155,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         input: Except<CompleteAuthenticationSessionQrCodeLoginInput, 'validatePrincipal'>,
     ): Promise<HonoAuthenticationSessionQrCodeLoginCompletionResult | undefined> {
         // pending 與 completed 狀態都不得由瀏覽器或代理快取。
-        ctx.header('Cache-Control', 'no-store');
+        ctx.header('cache-control', 'no-store');
 
         // 主體權威驗證仍在建立目標 Session 前執行。
         const completed = await options.store.qrCodeLogin.complete({
