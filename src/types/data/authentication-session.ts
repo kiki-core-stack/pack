@@ -40,3 +40,30 @@ export interface AuthenticationSessionListItemData extends AuthenticationSession
     /** 此項目是否對應呼叫端目前使用中的 Session。 */
     isCurrent: boolean;
 }
+
+/** 已登入來源裝置查詢 QR Code 登入請求時可見的安全範圍資料。 */
+export interface AuthenticationSessionQrCodeLoginApprovalRequestData {
+    /** 目前狀態實際有效到期的毫秒時間戳。 */
+    expiresAt: number;
+
+    /** 請求仍等待核准或已進入短效完成窗口。 */
+    state: 'approved' | 'pending';
+
+    /** 目標裝置建立請求時的 IP。 */
+    targetIp: string;
+
+    /** 目標裝置建立請求時的原始 User-Agent。 */
+    targetUserAgent?: string;
+}
+
+/** 建立 QR Code 登入請求後分別交給來源與目標裝置的能力 token。 */
+export interface AuthenticationSessionQrCodeLoginCreationData {
+    /** 交由已登入來源裝置掃描並核准的能力 token。 */
+    approvalToken: string;
+
+    /** 留在目標裝置輪詢並完成請求的能力 token。 */
+    completionToken: string;
+
+    /** pending 請求的毫秒到期時間戳。 */
+    expiresAt: number;
+}

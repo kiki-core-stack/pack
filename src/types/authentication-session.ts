@@ -1,6 +1,8 @@
 import type {
     AuthenticationSessionData,
     AuthenticationSessionListItemData,
+    AuthenticationSessionQrCodeLoginApprovalRequestData,
+    AuthenticationSessionQrCodeLoginCreationData,
 } from './data/authentication-session';
 
 export type AuthenticationSessionPrincipalType = 'admin';
@@ -79,33 +81,6 @@ export interface AuthenticationSessionPrincipalValidationData {
     principalType: AuthenticationSessionPrincipalType;
 }
 
-/** 已登入來源裝置查詢 QR Code 登入請求時可見的安全範圍資料。 */
-export interface AuthenticationSessionQrCodeLoginApprovalRequest {
-    /** 目前狀態實際有效到期的毫秒時間戳。 */
-    expiresAt: number;
-
-    /** 請求仍等待核准或已進入短效完成窗口。 */
-    state: 'approved' | 'pending';
-
-    /** 目標裝置建立請求時的 IP。 */
-    targetIp: string;
-
-    /** 目標裝置建立請求時的原始 User-Agent。 */
-    targetUserAgent?: string;
-}
-
-/** 建立 QR Code 登入請求後分別交給來源與目標裝置的能力 token。 */
-export interface AuthenticationSessionQrCodeLoginCreationResult {
-    /** 交由已登入來源裝置掃描並核准的能力 token。 */
-    approvalToken: string;
-
-    /** 留在目標裝置輪詢並完成請求的能力 token。 */
-    completionToken: string;
-
-    /** pending 請求的毫秒到期時間戳。 */
-    expiresAt: number;
-}
-
 /** QR Code 跨裝置登入的完整狀態機介面。 */
 export interface AuthenticationSessionQrCodeLoginStore {
     /** 來源裝置核准 pending request。 */
@@ -118,11 +93,13 @@ export interface AuthenticationSessionQrCodeLoginStore {
 
     /** 目標裝置建立新的 pending request。 */
     create: (input: CreateAuthenticationSessionQrCodeLoginInput) => Promise<
-        AuthenticationSessionQrCodeLoginCreationResult
+        AuthenticationSessionQrCodeLoginCreationData
     >;
 
     /** 來源裝置讀取待核准目標裝置資訊與狀態。 */
-    getApprovalRequest: (approvalToken: string) => Promise<AuthenticationSessionQrCodeLoginApprovalRequest | undefined>;
+    getApprovalRequest: (approvalToken: string) => Promise<
+        AuthenticationSessionQrCodeLoginApprovalRequestData | undefined
+    >;
 }
 
 /** 可簽發及驗證 token 的完整工作階段儲存介面。 */
