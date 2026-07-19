@@ -29,7 +29,6 @@ export interface AdminLogData extends BaseMongooseModelData<true, false> {
 export interface AdminLoginFormData {
     account: string;
     password: string;
-    verCode: string;
 }
 
 export interface AdminRoleData extends BaseMongooseModelData, WithAdminAuditData {
