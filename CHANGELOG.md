@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.95.11
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.10...v0.95.11)
+
+### 🚀 Enhancements
+
+- **auth:** Add QR code session login ([76bd195](https://github.com/kiki-core-stack/pack/commit/76bd195))
+
+### 📖 Documentation
+
+- **auth:** Document authentication session flow ([b1613e3](https://github.com/kiki-core-stack/pack/commit/b1613e3))
+
+### 🏡 Chore
+
+- Upgrade deps ([3b0eaba](https://github.com/kiki-core-stack/pack/commit/3b0eaba))
+- Upgrade deps ([76eb24f](https://github.com/kiki-core-stack/pack/commit/76eb24f))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.10
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.9...v0.95.10)
