@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.96.0
+
+[compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.11...v0.96.0)
+
+### 🩹 Fixes
+
+- **auth:** Backfill admin authentication revisions ([fb2dde9](https://github.com/kiki-core-stack/pack/commit/fb2dde9))
+
+### 💅 Refactors
+
+- **auth:** ⚠️  Remove QR login cancellation ([ca7a6e8](https://github.com/kiki-core-stack/pack/commit/ca7a6e8))
+- **auth:** Remove captcha from admin login data ([449cd15](https://github.com/kiki-core-stack/pack/commit/449cd15))
+- **auth:** Expose QR login response data types ([e869180](https://github.com/kiki-core-stack/pack/commit/e869180))
+
+### 🎨 Styles
+
+- **http:** Normalize response header casing ([2ac3c43](https://github.com/kiki-core-stack/pack/commit/2ac3c43))
+
+#### ⚠️ Breaking Changes
+
+- **auth:** ⚠️  Remove QR login cancellation ([ca7a6e8](https://github.com/kiki-core-stack/pack/commit/ca7a6e8))
+
+### ❤️ Contributors
+
+- Kiki-kanri
+
 ## v0.95.11
 
 [compare changes](https://github.com/kiki-core-stack/pack/compare/v0.95.10...v0.95.11)

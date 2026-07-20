@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.95.11",
+  "version": "0.96.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -264,7 +264,7 @@
     "es-toolkit": "^1.49.0",
     "eslint": "^10.7.0",
     "file-type": "^22.0.1",
-    "hono": "^4.12.30",
+    "hono": "^4.12.31",
     "knip": "^6.27.0",
     "lru-cache": "^11.5.2",
     "mongoose": "^9.7.4",
