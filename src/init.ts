@@ -59,6 +59,12 @@ export async function initializeSystemStartup() {
         });
 
         // Run other initialization tasks
+
+        // 2026-07-20 backfill the initial authentication revision for admins created before session revision tracking
+        await AdminModel.updateMany(
+            { authenticationRevision: { $exists: false } },
+            { $set: { authenticationRevision: 0 } },
+        );
     }
 
     logger.success('System initialized and ready');
