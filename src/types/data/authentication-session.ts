@@ -35,8 +35,16 @@ export interface AuthenticationSessionData {
     userAgent?: string;
 }
 
-/** 裝置列表在持久化資料之外補上是否為目前工作階段。 */
-export interface AuthenticationSessionListItemData extends AuthenticationSessionData {
+/** 裝置列表只公開管理登入裝置實際需要的資料。 */
+export interface AuthenticationSessionListItemData extends Pick<
+    AuthenticationSessionData,
+    | 'id'
+    | 'lastActiveAt'
+    | 'lastActiveIp'
+    | 'loggedAt'
+    | 'loginIp'
+    | 'userAgent'
+> {
     /** 此項目是否對應呼叫端目前使用中的 Session。 */
     isCurrent: boolean;
 }

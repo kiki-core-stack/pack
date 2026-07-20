@@ -106,7 +106,6 @@ export function createStoredSessionRow(
         session.loginIp,
         String(session.principalAuthenticationRevision),
         session.principalId,
-        session.principalType,
         session.userAgent ?? null,
         session.validatorDigest,
     ];

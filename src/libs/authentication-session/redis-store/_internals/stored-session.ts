@@ -17,7 +17,6 @@ export const storedAuthenticationSessionDataFields = [
     'loginIp',
     'principalAuthenticationRevision',
     'principalId',
-    'principalType',
     'userAgent',
 ] as const;
 
@@ -64,11 +63,10 @@ export function parseStoredAuthenticationSessionData(
         loginIp,
         principalAuthenticationRevision,
         principalId,
-        principalType,
         userAgent,
     ] = values;
 
-    // 所有必要欄位都必須存在，且 principal type 必須符合目前 store 的範圍。
+    // 所有必要欄位都必須存在；principal type 由目前 store 的固定範圍提供。
     if (
         absoluteExpiresAt == null
         || epoch == null
@@ -79,7 +77,6 @@ export function parseStoredAuthenticationSessionData(
         || loginIp == null
         || principalAuthenticationRevision == null
         || principalId == null
-        || principalType !== expectedPrincipalType
     ) return;
 
     // Redis 回傳字串；僅在儲存邊界將數值欄位轉回 number。
@@ -111,7 +108,7 @@ export function parseStoredAuthenticationSessionData(
         loginIp,
         principalAuthenticationRevision: parsedPrincipalAuthenticationRevision,
         principalId,
-        principalType,
+        principalType: expectedPrincipalType,
         // Redis 以空字串表示未提供 optional User-Agent。
         userAgent: userAgent || undefined,
     };

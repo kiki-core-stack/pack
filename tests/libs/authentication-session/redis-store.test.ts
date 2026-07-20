@@ -155,11 +155,7 @@ describe.concurrent('redis authentication session store', () => {
                     String(Number.MAX_SAFE_INTEGER + 1),
                 ],
                 [
-                    9,
-                    'other-principal-type',
-                ],
-                [
-                    11,
+                    10,
                     null,
                 ],
             ] as const
@@ -176,6 +172,7 @@ describe.concurrent('redis authentication session store', () => {
             await expect(
                 store.authenticate({
                     ip: '127.0.0.1',
+                    now: 10_000,
                     token: generated.token,
                     validatePrincipal: validateStoredPrincipal,
                 }),
@@ -225,7 +222,6 @@ describe.concurrent('redis authentication session store', () => {
             '127.0.0.1',
             '3',
             'admin-id',
-            'admin',
             '',
             expect.any(String),
             String(expectedDefaultIdleTtlSeconds),

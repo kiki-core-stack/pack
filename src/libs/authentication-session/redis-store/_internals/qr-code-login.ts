@@ -40,9 +40,6 @@ interface ApprovedStoredAuthenticationSessionQrCodeLogin extends StoredAuthentic
     /** 核准來源 Session 所屬主體識別碼。 */
     principalId: string;
 
-    /** 核准來源 Session 所屬主體種類。 */
-    principalType: AuthenticationSessionPrincipalType;
-
     /** 核准此請求的來源 Session 身分與撤銷世代。 */
     sourceEpoch: string;
 
@@ -130,7 +127,6 @@ const storedAuthenticationSessionQrCodeLoginFields = [
     'approvalExpiresAt',
     'principalAuthenticationRevision',
     'principalId',
-    'principalType',
     'sourceEpoch',
     'sourceSessionId',
 ] as const;
@@ -198,7 +194,6 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         // 讀取並嚴格解析 Redis request，畸形資料採失敗關閉。
         const request = parseStoredAuthenticationSessionQrCodeLogin(
             await client.hmget(keys.qrCodeLogin(parsedToken.selector), ...storedAuthenticationSessionQrCodeLoginFields),
-            principalType,
         );
 
         // selector 只能定位資料；仍須用 approval domain digest 驗證完整 token。
@@ -250,7 +245,6 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
                 source.epoch,
                 source.principalAuthenticationRevision,
                 source.principalId,
-                source.principalType,
                 // Lua 以毫秒比較來源 Session idle 與核准期限。
                 idleTtlSeconds * 1000,
                 approvalTtlSeconds * 1000,
@@ -270,7 +264,6 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         // 先取得 request 狀態與完成階段需要的來源綁定資料。
         const request = parseStoredAuthenticationSessionQrCodeLogin(
             await client.hmget(keys.qrCodeLogin(parsedToken.selector), ...storedAuthenticationSessionQrCodeLoginFields),
-            principalType,
         );
 
         // completion token 必須通過獨立 completion domain 的 HMAC 驗證。
@@ -293,7 +286,7 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
             !await input.validatePrincipal({
                 principalAuthenticationRevision: request.principalAuthenticationRevision,
                 principalId: request.principalId,
-                principalType: request.principalType,
+                principalType,
             })
         ) return;
 
@@ -307,7 +300,7 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
             epoch: request.sourceEpoch,
             principalAuthenticationRevision: request.principalAuthenticationRevision,
             principalId: request.principalId,
-            principalType: request.principalType,
+            principalType,
         };
 
         // 為目標裝置產生完全獨立的正式 Session token。
@@ -337,7 +330,6 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
                 request.sourceEpoch,
                 request.principalAuthenticationRevision,
                 request.principalId,
-                request.principalType,
                 binding.absoluteExpiresAt,
                 idleTtlSeconds,
                 generated.selector,
@@ -448,7 +440,6 @@ function getAuthenticationSessionQrCodeLoginTokenDigestBytes(
 /** 依固定 HMGET 順序解析 pending 或 approved Redis request。 */
 function parseStoredAuthenticationSessionQrCodeLogin(
     row: (null | string)[],
-    principalType: AuthenticationSessionPrincipalType,
 ): StoredAuthenticationSessionQrCodeLogin | undefined {
     // 解構順序必須與 storedAuthenticationSessionQrCodeLoginFields 一致。
     const [
@@ -461,7 +452,6 @@ function parseStoredAuthenticationSessionQrCodeLogin(
         approvalExpiresAtValue,
         principalAuthenticationRevisionValue,
         principalId,
-        storedPrincipalType,
         sourceEpoch,
         sourceSessionId,
     ] = row;
@@ -501,7 +491,6 @@ function parseStoredAuthenticationSessionQrCodeLogin(
         approvalExpiresAtValue == null
         || principalAuthenticationRevisionValue == null
         || !principalId
-        || storedPrincipalType !== principalType
         || !sourceEpoch
         || !sourceSessionId
     ) return;
@@ -523,7 +512,6 @@ function parseStoredAuthenticationSessionQrCodeLogin(
         approvalExpiresAt,
         principalAuthenticationRevision,
         principalId,
-        principalType,
         sourceEpoch,
         sourceSessionId,
         state: 'approved',

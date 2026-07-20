@@ -75,7 +75,6 @@ describe.concurrent('redis authentication session QR code login', () => {
             null,
             null,
             null,
-            null,
         ];
 
         hmget.mockResolvedValue(row);
@@ -169,7 +168,6 @@ describe.concurrent('redis authentication session QR code login', () => {
             '12000',
             String(sourceSession.principalAuthenticationRevision),
             sourceSession.principalId,
-            sourceSession.principalType,
             sourceSession.epoch,
             sourceSession.id,
         ]);
@@ -190,7 +188,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         });
 
         const completionArguments = send.mock.calls[2]?.[1] as string[];
-        const targetAbsoluteExpiresAt = Number(completionArguments[13]);
+        const targetAbsoluteExpiresAt = Number(completionArguments[12]);
 
         expect(validatePrincipal).toHaveBeenCalledWith({
             principalAuthenticationRevision: sourceSession.principalAuthenticationRevision,
@@ -239,7 +237,6 @@ describe.concurrent('redis authentication session QR code login', () => {
             sourceSession.epoch,
             String(sourceSession.principalAuthenticationRevision),
             sourceSession.principalId,
-            sourceSession.principalType,
             expect.any(String),
             String(60 * 60 * 24 * 7),
             expect.any(String),
@@ -272,7 +269,6 @@ describe.concurrent('redis authentication session QR code login', () => {
             '12000',
             String(sourceSession.principalAuthenticationRevision),
             sourceSession.principalId,
-            sourceSession.principalType,
             sourceSession.epoch,
             sourceSession.id,
         ]);

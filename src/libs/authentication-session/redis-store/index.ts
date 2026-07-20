@@ -166,8 +166,13 @@ export function createRedisAuthenticationSessionManager(
 
                 // currentSessionId 只產生 isCurrent 顯示標記並影響排序，不參與安全判斷。
                 list.push({
-                    ...session,
+                    id: session.id,
                     isCurrent: session.id === input.currentSessionId,
+                    lastActiveAt: session.lastActiveAt,
+                    lastActiveIp: session.lastActiveIp,
+                    loggedAt: session.loggedAt,
+                    loginIp: session.loginIp,
+                    userAgent: session.userAgent,
                 });
             });
 
@@ -347,7 +352,6 @@ export function createRedisAuthenticationSessionStore(
                 input.ip,
                 input.principalAuthenticationRevision,
                 input.principalId,
-                principalType,
                 input.userAgent ?? '',
                 generated.validatorDigest,
                 ttlSeconds,

@@ -28,11 +28,14 @@ describe.concurrent('redis authentication session manager', () => {
         });
 
         expect(result).toHaveLength(1);
-        expect(result[0]).toMatchObject({
+        expect(result[0]).toEqual({
             id: 'selector',
             isCurrent: true,
-            principalId: 'admin-id',
-            principalType: 'admin',
+            lastActiveAt: 10_000,
+            lastActiveIp: '127.0.0.1',
+            loggedAt: 9_000,
+            loginIp: '127.0.0.1',
+            userAgent: undefined,
         });
 
         expect(client.zrange).toHaveBeenCalledWith(

@@ -10,6 +10,10 @@ import {
     revokeAllAuthenticationSessionsScript,
     rotateAuthenticationSessionScript,
 } from '../../../src/libs/authentication-session/redis-store/_internals/scripts';
+import {
+    approveAuthenticationSessionQrCodeLoginScript,
+    completeAuthenticationSessionQrCodeLoginScript,
+} from '../../../src/libs/authentication-session/redis-store/_internals/scripts/qr-code-login';
 
 describe.concurrent('redis authentication session scripts', () => {
     it('bounds session indexes and preserves authoritative metadata', ({ expect }) => {
@@ -31,7 +35,14 @@ describe.concurrent('redis authentication session scripts', () => {
         expect(createAuthenticationSessionScript)
             .toContain('\'principalAuthenticationRevision\', ARGV[6]');
 
+        expect(createAuthenticationSessionScript).not.toContain('\'principalType\'');
+
         expect(rotateAuthenticationSessionScript)
             .toContain('\'principalAuthenticationRevision\', oldValues[8]');
+
+        expect(rotateAuthenticationSessionScript).not.toContain('\'principalType\'');
+
+        expect(approveAuthenticationSessionQrCodeLoginScript).not.toContain('\'principalType\'');
+        expect(completeAuthenticationSessionQrCodeLoginScript).not.toContain('\'principalType\'');
     });
 });

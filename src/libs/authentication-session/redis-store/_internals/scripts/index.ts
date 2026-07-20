@@ -18,18 +18,17 @@ redis.call('HSET', KEYS[1],
     'loginIp', ARGV[5],
     'principalAuthenticationRevision', ARGV[6],
     'principalId', ARGV[7],
-    'principalType', ARGV[8],
-    'userAgent', ARGV[9],
-    'validatorDigest', ARGV[10])
-redis.call('EXPIRE', KEYS[1], ARGV[11])
-redis.call('ZADD', KEYS[3], ARGV[12], ARGV[3])
+    'userAgent', ARGV[8],
+    'validatorDigest', ARGV[9])
+redis.call('EXPIRE', KEYS[1], ARGV[10])
+redis.call('ZADD', KEYS[3], ARGV[11], ARGV[3])
 local expiredIds = redis.call('ZRANGEBYSCORE', KEYS[3], '-inf', ARGV[4],
     'LIMIT', 0, 256)
 if #expiredIds > 0 then
     redis.call('ZREM', KEYS[3], unpack(expiredIds))
 end
-if redis.call('TTL', KEYS[3]) < tonumber(ARGV[11]) then
-    redis.call('EXPIRE', KEYS[3], ARGV[11])
+if redis.call('TTL', KEYS[3]) < tonumber(ARGV[10]) then
+    redis.call('EXPIRE', KEYS[3], ARGV[10])
 end
 return 1
 `;
@@ -119,9 +118,9 @@ export const rotateAuthenticationSessionScript = String.raw`
 local oldValues = redis.call('HMGET', KEYS[1],
     'absoluteExpiresAt', 'epoch', 'id', 'lastActiveAt', 'lastActiveIp',
     'loggedAt', 'loginIp', 'principalAuthenticationRevision', 'principalId',
-    'principalType', 'userAgent', 'validatorDigest')
+    'userAgent', 'validatorDigest')
 if oldValues[9] ~= ARGV[1]
-    or oldValues[12] ~= ARGV[2] then
+    or oldValues[11] ~= ARGV[2] then
     return 0
 end
 
@@ -144,7 +143,6 @@ redis.call('HSET', KEYS[2],
     'loginIp', oldValues[7],
     'principalAuthenticationRevision', oldValues[8],
     'principalId', ARGV[1],
-    'principalType', oldValues[10],
     'userAgent', ARGV[6],
     'validatorDigest', ARGV[7])
 redis.call('EXPIRE', KEYS[2], ARGV[8])
