@@ -40,4 +40,4 @@ apply_permissions "${REPO_ROOT}"
 find "${REPO_ROOT}" -name .git -prune -o \
     \( -name '*.sh' -type f -exec chmod 700 {} + \)
 
-find "${REPOSITORY_ROOT}/scripts" -type f -name '*.ts' -exec chmod 700 {} +
+find "${REPO_ROOT}/scripts" -type f -name '*.ts' -exec chmod 700 {} +
