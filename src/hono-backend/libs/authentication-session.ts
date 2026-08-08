@@ -64,9 +64,17 @@ interface HonoAuthenticationSession {
 }
 
 /** 將 Authentication Session store 組合成 Hono Cookie adapter 所需依賴。 */
+export interface HonoAuthenticationSessionCookieOptions {
+    /** Cookie 保存策略；persistent 依 Session absolute TTL 設定 Max-Age，session 則於瀏覽器工作階段結束時失效。 */
+    persistence?: 'persistent' | 'session';
+}
+
 export interface HonoAuthenticationSessionOptions {
     /** 不含 __Host- prefix 的 Cookie 名稱，由 Hono prefix 選項統一套用。 */
     cookieName: string;
+
+    /** Cookie 保存策略，預設使用 persistent。 */
+    cookieOptions?: HonoAuthenticationSessionCookieOptions;
 
     /** HTTP adapter 實際需要的最小 Session store 能力集合。 */
     store: Pick<AuthenticationSessionStore, 'authenticate' | 'create' | 'qrCodeLogin' | 'rotate'>;
@@ -96,16 +104,16 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         ctx.header('cache-control', 'no-store');
     }
 
-    /** 寫入新的 opaque token；瀏覽器保存時間依簽發結果設定，最終有效期限仍由伺服端判斷。 */
+    /** 寫入新的 opaque token；持久 Cookie 才設定 Max-Age，最終有效期限仍由伺服端判斷。 */
     function writeCookie(ctx: Context, token: string, maxAgeSeconds: number) {
-        // 共用 Cookie 安全屬性，再補上本次 Session 的 Max-Age 與 __Host prefix。
+        // 共用 Cookie 安全屬性；只有持久 Cookie 才補上本次 Session 的 Max-Age。
         setCookie(
             ctx,
             options.cookieName,
             token,
             {
                 ...baseSetCookieOptions,
-                maxAge: maxAgeSeconds,
+                ...options.cookieOptions?.persistence === 'session' ? {} : { maxAge: maxAgeSeconds },
                 prefix: 'host',
             },
         );

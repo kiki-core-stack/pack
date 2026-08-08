@@ -114,6 +114,41 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
+    it('can write the token as a browser session cookie', async ({ expect }) => {
+        const authenticationSession = createHonoAuthenticationSession({
+            cookieName: 'admin-session',
+            cookieOptions: { persistence: 'session' },
+            store: createStore(),
+            validatePrincipal,
+        });
+
+        const app = new Hono().post(
+            '/',
+            async (ctx) => ctx.json(
+                await authenticationSession.create(
+                    ctx,
+                    {
+                        ip: '127.0.0.1',
+                        principalAuthenticationRevision: 3,
+                        principalId: 'admin-id',
+                    },
+                ),
+            ),
+        );
+
+        const response = await app.request('/', { method: 'POST' });
+        const setCookieHeader = response.headers.get('set-cookie');
+
+        await expect(response.json()).resolves.toEqual(session);
+        expect(setCookieHeader).toContain('__Host-admin-session=created-token');
+        expect(setCookieHeader).not.toContain('Max-Age');
+        expect(setCookieHeader).toContain('Path=/');
+        expect(setCookieHeader).toContain('HttpOnly');
+        expect(setCookieHeader).toContain('Secure');
+        expect(setCookieHeader).toContain('SameSite=Strict');
+        expect(response.headers.get('cache-control')).toBe('no-store');
+    });
+
     it('authenticates from the host cookie without rewriting it after a touch', async ({ expect }) => {
         const validateContextPrincipal = vi.fn().mockResolvedValue(true);
         const authenticate = vi.fn(async (input) => {
