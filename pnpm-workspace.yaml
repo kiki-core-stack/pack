@@ -1,6 +1,10 @@
 allowBuilds:
   msgpackr-extract: true
 
+minimumReleaseAgeExclude:
+  - '@types/bun'
+  - bun-types
+
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
