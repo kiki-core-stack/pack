@@ -12,7 +12,7 @@ import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { EmailSendRecordData } from '../../types/data/email';
 
-export type EmailSendRecord = SmartDataToBaseMongooseDocType<EmailSendRecordData, 'platform'>;
+export type EmailSendRecord = SmartDataToBaseMongooseDocType<EmailSendRecordData, 'provider'>;
 export type EmailSendRecordDocument = MongooseHydratedDocument<EmailSendRecord>;
 type EmailSendRecordModel = BaseMongoosePaginateModel<EmailSendRecord>;
 
@@ -20,8 +20,8 @@ const schema = new Schema<EmailSendRecord, EmailSendRecordModel>({
     content: s.string().trim.required,
     failureReason: s.string().trim.nonRequired,
     from: s.string().trim.required,
-    platform: mongooseRefSchemas.emailPlatform().nonRequired,
-    serviceProviderTransactionId: s.string().trim.nonRequired,
+    provider: mongooseRefSchemas.emailProvider().nonRequired,
+    providerTransactionId: s.string().trim.nonRequired,
     status: s.number().default(EmailSendRecordStatus.Pending).enum(getEnumNumberValues(EmailSendRecordStatus)).required,
     subject: s.string().trim.required,
     to: s.string().trim.required,

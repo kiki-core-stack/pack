@@ -7,39 +7,40 @@ import type {
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
-import { EmailServiceProvider } from '../../constants/email';
+import { EmailProviderCode } from '../../constants/email';
 import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { EmailPlatformData } from '../../types/data/email';
+import type { EmailProviderData } from '../../types/data/email';
 
-export type EmailPlatform = SmartDataToBaseMongooseDocType<EmailPlatformData>;
-export type EmailPlatformDocument = MongooseHydratedDocument<EmailPlatform>;
-type EmailPlatformModel = BaseMongoosePaginateModel<EmailPlatform>;
+export type EmailProvider = SmartDataToBaseMongooseDocType<EmailProviderData>;
+export type EmailProviderDocument = MongooseHydratedDocument<EmailProvider>;
+type EmailProviderModel = BaseMongoosePaginateModel<EmailProvider>;
 
-const schema = new Schema<EmailPlatform, EmailPlatformModel>({
+const schema = new Schema<EmailProvider, EmailProviderModel>({
+    apiProxyUrl: s.string().trim.nonRequired,
     config: {
         required: true,
         type: Object,
     },
-    configMd5: s.string().trim.required,
+    configHash: s.string().trim.required,
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(64).trim.unique.required,
     priority: s.number().default(0).required,
-    serviceProvider: s.number().enum(getEnumNumberValues(EmailServiceProvider)).immutable.required,
+    providerCode: s.number().enum(getEnumNumberValues(EmailProviderCode)).immutable.required,
 });
 
 schema.index(
     {
-        configMd5: 1,
-        serviceProvider: 1,
+        configHash: 1,
+        providerCode: 1,
     },
     { unique: true },
 );
 
-export const EmailPlatformModel = buildMongooseModel<EmailPlatform, EmailPlatformModel>(
-    'email.platforms',
-    'EmailPlatform',
+export const EmailProviderModel = buildMongooseModel<EmailProvider, EmailProviderModel>(
+    'email.providers',
+    'EmailProvider',
     schema,
 );

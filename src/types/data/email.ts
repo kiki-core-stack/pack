@@ -2,20 +2,21 @@ import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 import type { AnyRecord } from '@kikiutils/shared/types';
 
 import type {
+    EmailProviderCode,
     EmailSenderIdentityKey,
     EmailSendRecordStatus,
-    EmailServiceProvider,
 } from '../../constants/email';
 
 import type { WithAdminAuditData } from './';
 
-export interface EmailPlatformData extends BaseMongooseModelData, WithAdminAuditData {
+export interface EmailProviderData extends BaseMongooseModelData, WithAdminAuditData {
+    apiProxyUrl?: string;
     config: AnyRecord;
-    configMd5: string;
+    configHash: string;
     enabled: boolean;
     name: string;
     priority: number;
-    serviceProvider: EmailServiceProvider;
+    providerCode: EmailProviderCode;
 }
 
 export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdminAuditData {
@@ -28,8 +29,8 @@ export interface EmailSendRecordData extends BaseMongooseModelData {
     content: string;
     failureReason?: string;
     from: string;
-    platform?: Partial<EmailPlatformData>;
-    serviceProviderTransactionId?: string;
+    provider?: Partial<EmailProviderData>;
+    providerTransactionId?: string;
     status: EmailSendRecordStatus;
     subject: string;
     to: string;
