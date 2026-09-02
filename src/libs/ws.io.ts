@@ -1,5 +1,4 @@
 import { WsIoClient } from 'ws.io-client';
-import { wsIoPacketMsgpackCodec } from 'ws.io-client/core/packet/codecs/msgpack';
 import type {
     DefaultEventsMap,
     EventsMap,
@@ -13,7 +12,6 @@ export function createWsIoClient<
     return new WsIoClient<ToServerEvents, ToClientEvents>(
         url,
         {
-            packetCodec: wsIoPacketMsgpackCodec,
             reconnectDelay: 125,
             ...config,
         },
