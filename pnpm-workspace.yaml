@@ -4,7 +4,6 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@types/bun'
   - bun-types
-  - ws.io-client
 
 shellEmulator: true
 trustPolicy: no-downgrade
