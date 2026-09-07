@@ -1,4 +1,5 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
+import type { AnyRecord } from '@kikiutils/shared/types';
 
 import type { AdminLogType } from '../../constants/admin';
 
@@ -22,6 +23,7 @@ export interface AdminData extends BaseMongooseModelData {
 export interface AdminLogData extends BaseMongooseModelData<true, false> {
     admin: Partial<AdminData>;
     ip?: string;
+    metadata?: AnyRecord;
     note?: string;
     type: AdminLogType;
 }
