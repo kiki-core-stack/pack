@@ -25,12 +25,19 @@ export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdmi
     key: EmailSenderIdentityKey;
 }
 
+export interface EmailSendJobData {
+    recordId: string;
+}
+
 export interface EmailSendRecordData extends BaseMongooseModelData {
+    attemptId?: string;
     content: string;
     failureReason?: string;
     from: string;
+    nextPublishAt: string;
     provider?: Partial<EmailProviderData>;
     providerTransactionId?: string;
+    queuePublishedAt?: string;
     status: EmailSendRecordStatus;
     subject: string;
     to: string;

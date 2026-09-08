@@ -193,6 +193,7 @@
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^7.0.3",
     "@kikiutils/shared": "^18.0.1",
+    "bullmq": "^6.3.4",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
     "file-type": "^22.0.2",
@@ -213,6 +214,9 @@
       "optional": true
     },
     "@kikiutils/shared": {
+      "optional": true
+    },
+    "bullmq": {
       "optional": true
     },
     "consola": {
@@ -259,6 +263,7 @@
     "@types/bun": "^1.4.0",
     "@types/node": "^26.4.0",
     "@vitest/coverage-v8": "^4.1.11",
+    "bullmq": "^6.3.4",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
