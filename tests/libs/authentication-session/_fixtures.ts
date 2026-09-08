@@ -1,3 +1,4 @@
+import type { Except } from 'type-fest';
 import { vi } from 'vitest';
 
 import { generateAuthenticationSessionToken } from '../../../src/libs/authentication-session/_token';
@@ -59,7 +60,7 @@ export function createClient(
 
 export function createManager(
     client = createClient(),
-    options: Omit<RedisAuthenticationSessionManagerOptions, 'client' | 'principalType'> = {},
+    options: Except<RedisAuthenticationSessionManagerOptions, 'client' | 'principalType'> = {},
 ) {
     return createRedisAuthenticationSessionManager({
         ...options,
@@ -70,7 +71,7 @@ export function createManager(
 
 export function createStore(
     client = createClient(),
-    options: Omit<RedisAuthenticationSessionStoreOptions, 'client' | 'principalType' | 'tokenHmacKey'> = {},
+    options: Except<RedisAuthenticationSessionStoreOptions, 'client' | 'principalType' | 'tokenHmacKey'> = {},
 ) {
     return createRedisAuthenticationSessionStore({
         ...options,
