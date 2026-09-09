@@ -5,7 +5,7 @@ import type {
 } from 'bullmq';
 import type { Except } from 'type-fest';
 
-import { projectRedisKeyPrefix } from '../constants';
+import { projectBullmqKeyPrefix } from '../constants';
 import type { EmailSenderIdentityKey } from '../constants/email';
 import { emailSendQueueName } from '../constants/email';
 import { EmailSendRecordModel } from '../models/email/send-record';
@@ -40,13 +40,13 @@ const emailSendDefaultJobOptions: Readonly<DefaultJobOptions> = {
  * A supplied connection adapter remains caller-owned and must be closed after its Queues.
  * Configure a bounded, fail-fast producer connection; never pass the worker's blocking connection.
  */
-export function createEmailSendQueue(options: Except<QueueOptions, 'defaultJobOptions'>): EmailSendQueue {
+export function createEmailSendQueue(options: Except<QueueOptions, 'defaultJobOptions' | 'prefix'>): EmailSendQueue {
     return new Queue(
         emailSendQueueName,
         {
-            prefix: `${projectRedisKeyPrefix}:bull`,
             ...options,
             defaultJobOptions: emailSendDefaultJobOptions,
+            prefix: projectBullmqKeyPrefix,
             skipWaitingForReady: true,
         },
     );
