@@ -22,6 +22,16 @@
       "import": "./src/constants/index.ts",
       "require": null
     },
+    "./constants/email": {
+      "types": "./src/constants/email/index.ts",
+      "import": "./src/constants/email/index.ts",
+      "require": null
+    },
+    "./constants/email/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./constants/index": {
       "types": null,
       "import": null,
@@ -103,6 +113,16 @@
       "require": null
     },
     "./libs/authentication-session/redis-store/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./libs/email": {
+      "types": "./src/libs/email/index.ts",
+      "import": "./src/libs/email/index.ts",
+      "require": null
+    },
+    "./libs/email/index": {
       "types": null,
       "import": null,
       "require": null

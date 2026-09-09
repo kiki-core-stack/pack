@@ -1,6 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
-import { CommonStatus } from './';
+import { CommonStatus } from '..';
 
 export enum EmailProviderCode {
     Smtp = 0,
