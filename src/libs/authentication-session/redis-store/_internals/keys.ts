@@ -1,7 +1,5 @@
+import { projectRedisKeyPrefix } from '../../../../constants';
 import type { AuthenticationSessionPrincipalType } from '../../../../types/authentication-session';
-
-/** 每個由此 template 衍生的產品必須使用自己的固定前綴，避免共用 Redis 時互相碰撞。 */
-const applicationKeyPrefix = 'kiki-core-stack';
 
 /** 建立同一 principal type 下所有 Authentication Session Redis key。 */
 export function createRedisAuthenticationSessionKeys(
@@ -19,8 +17,8 @@ export function createRedisAuthenticationSessionKeys(
 
     // ENVIRONMENT 僅隔離同一產品的不同部署環境，不用來識別不同產品。
     const keyPrefix = normalizedEnvironment
-        ? `${applicationKeyPrefix}:${normalizedEnvironment}:`
-        : `${applicationKeyPrefix}:`;
+        ? `${projectRedisKeyPrefix}:${normalizedEnvironment}:`
+        : `${projectRedisKeyPrefix}:`;
 
     return {
         // epoch 是主體目前有效的撤銷世代。

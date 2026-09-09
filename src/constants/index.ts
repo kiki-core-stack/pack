@@ -77,3 +77,9 @@ export const commonStatusToTextMap: ReadonlyRecord<CommonStatus, string> = {
     [CommonStatus.Unknown]: '未知',
     [CommonStatus.Uploading]: '上傳中',
 };
+
+/**
+ * Fixed Redis key prefix for this project.
+ * Projects forked from the base pack must replace it with their own prefix.
+ */
+export const projectRedisKeyPrefix = 'kiki-core-stack';

@@ -5,6 +5,7 @@ import type {
 } from 'bullmq';
 import type { Except } from 'type-fest';
 
+import { projectRedisKeyPrefix } from '../constants';
 import type { EmailSenderIdentityKey } from '../constants/email';
 import { emailSendQueueName } from '../constants/email';
 import { EmailSendRecordModel } from '../models/email/send-record';
@@ -43,6 +44,7 @@ export function createEmailSendQueue(options: Except<QueueOptions, 'defaultJobOp
     return new Queue(
         emailSendQueueName,
         {
+            prefix: `${projectRedisKeyPrefix}:bull`,
             ...options,
             defaultJobOptions: emailSendDefaultJobOptions,
             skipWaitingForReady: true,
