@@ -22,16 +22,6 @@
       "import": "./src/constants/index.ts",
       "require": null
     },
-    "./constants/email": {
-      "types": "./src/constants/email/index.ts",
-      "import": "./src/constants/email/index.ts",
-      "require": null
-    },
-    "./constants/email/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
     "./constants/index": {
       "types": null,
       "import": null,
@@ -113,16 +103,6 @@
       "require": null
     },
     "./libs/authentication-session/redis-store/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/email": {
-      "types": "./src/libs/email/index.ts",
-      "import": "./src/libs/email/index.ts",
-      "require": null
-    },
-    "./libs/email/index": {
       "types": null,
       "import": null,
       "require": null
@@ -213,7 +193,6 @@
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^7.0.3",
     "@kikiutils/shared": "^18.0.1",
-    "bullmq": "^6.3.4",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
     "file-type": "^22.0.2",
@@ -234,9 +213,6 @@
       "optional": true
     },
     "@kikiutils/shared": {
-      "optional": true
-    },
-    "bullmq": {
       "optional": true
     },
     "consola": {
@@ -283,7 +259,6 @@
     "@types/bun": "^1.4.2",
     "@types/node": "^26.5.0",
     "@vitest/coverage-v8": "^5.0.0",
-    "bullmq": "^6.3.4",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",

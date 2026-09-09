@@ -1,6 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
-import { CommonStatus } from '..';
+import { CommonStatus } from './';
 
 export enum EmailProviderCode {
     Smtp = 0,
@@ -23,4 +23,3 @@ export const emailProviderCodeToTextMap: ReadonlyRecord<EmailProviderCode, strin
 
 // eslint-disable-next-line style/max-len
 export const emailSenderIdentityKeyToTextMap: ReadonlyRecord<EmailSenderIdentityKey, string> = { [EmailSenderIdentityKey.Admin]: '總後台' };
-export const emailSendQueueName = 'email-send';

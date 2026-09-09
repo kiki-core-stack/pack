@@ -83,4 +83,3 @@ export const commonStatusToTextMap: ReadonlyRecord<CommonStatus, string> = {
  * Projects forked from the base pack must replace it with their own prefix.
  */
 export const projectRedisKeyPrefix = 'kiki-core-stack';
-export const projectBullmqKeyPrefix = `${projectRedisKeyPrefix}:bull`;
