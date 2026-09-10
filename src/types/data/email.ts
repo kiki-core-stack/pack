@@ -25,10 +25,6 @@ export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdmi
     key: EmailSenderIdentityKey;
 }
 
-export interface EmailSendJobData {
-    recordId: string;
-}
-
 export interface EmailSendRecordData extends BaseMongooseModelData {
     attemptId?: string;
     content: string;
