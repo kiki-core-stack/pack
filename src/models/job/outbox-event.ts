@@ -7,7 +7,10 @@ import type {
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
-import { JobType } from '../../constants/job';
+import {
+    JobOutboxEventStatus,
+    JobType,
+} from '../../constants/job';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { JobOutboxEventData } from '../../types/data/job';
 
@@ -29,6 +32,7 @@ const schema = new Schema<JobOutboxEvent, JobOutboxEventModel>({
     publishAttempts: s.number().default(0).min(0).required,
     publishClaimId: s.string().trim.nonRequired,
     publishLeaseUntil: s.date().nonRequired,
+    status: s.number().default(JobOutboxEventStatus.Pending).enum(getEnumNumberValues(JobOutboxEventStatus)).required,
     type: s.number().enum(getEnumNumberValues(JobType)).required,
 });
 
