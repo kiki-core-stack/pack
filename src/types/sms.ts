@@ -2,7 +2,6 @@
 export namespace SmsProviderConfigs {
     export interface Mitake {
         apiUrl: string;
-        encoding: 'UTF8';
         password: string;
         username: string;
     }
