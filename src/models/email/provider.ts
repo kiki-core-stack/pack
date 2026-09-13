@@ -18,12 +18,12 @@ type EmailProviderModel = BaseMongoosePaginateModel<EmailProvider>;
 
 const schema = new Schema<EmailProvider, EmailProviderModel>({
     apiProxyUrl: s.string().trim.nonRequired,
+    cacheKey: s.string().trim.required,
     code: s.number().enum(getEnumNumberValues(EmailProviderCode)).immutable.required,
     config: {
         required: true,
         type: Object,
     },
-    configHash: s.string().trim.required,
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
@@ -33,8 +33,8 @@ const schema = new Schema<EmailProvider, EmailProviderModel>({
 
 schema.index(
     {
+        cacheKey: 1,
         code: 1,
-        configHash: 1,
     },
     { unique: true },
 );

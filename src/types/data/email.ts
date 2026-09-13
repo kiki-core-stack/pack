@@ -11,9 +11,9 @@ import type { WithAdminAuditData } from './';
 
 export interface EmailProviderData extends BaseMongooseModelData, WithAdminAuditData {
     apiProxyUrl?: string;
+    cacheKey: string;
     code: EmailProviderCode;
     config: AnyRecord;
-    configHash: string;
     enabled: boolean;
     name: string;
     priority: number;
