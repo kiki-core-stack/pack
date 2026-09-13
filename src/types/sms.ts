@@ -4,7 +4,6 @@ export namespace SmsProviderConfigs {
         apiUrl: string;
         encoding: 'UTF8';
         password: string;
-        sendPath: string;
         username: string;
     }
 
