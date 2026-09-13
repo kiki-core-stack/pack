@@ -36,8 +36,8 @@ export enum CommonStatus {
     Unknown = 29,
     Uploading = 30,
 
-    // Values below 1000 are reserved for shared statuses.
-    // Downstream projects must assign project-specific statuses values starting at 1000.
+    // Values below 1000 are reserved for upstream shared base types.
+    // Downstream projects must assign project-specific values starting at 1000.
     // /* eslint-disable perfectionist/sort-enums */
 
     // /* eslint-enable perfectionist/sort-enums */
