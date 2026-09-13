@@ -10,12 +10,12 @@ import type { WithAdminAuditData } from './';
 
 export interface SmsProviderData extends BaseMongooseModelData, WithAdminAuditData {
     apiProxyUrl?: string;
+    code: SmsProviderCode;
     config: AnyRecord;
     configHash: string;
     enabled: boolean;
     name: string;
     priority: number;
-    providerCode: SmsProviderCode;
 }
 
 export interface SmsSendRecordData extends BaseMongooseModelData {

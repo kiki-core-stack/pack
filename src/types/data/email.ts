@@ -11,12 +11,12 @@ import type { WithAdminAuditData } from './';
 
 export interface EmailProviderData extends BaseMongooseModelData, WithAdminAuditData {
     apiProxyUrl?: string;
+    code: EmailProviderCode;
     config: AnyRecord;
     configHash: string;
     enabled: boolean;
     name: string;
     priority: number;
-    providerCode: EmailProviderCode;
 }
 
 export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdminAuditData {
