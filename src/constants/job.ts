@@ -1,10 +1,3 @@
-import { CommonStatus } from '.';
-
-export enum JobOutboxEventStatus {
-    DeadLettered = CommonStatus.DeadLettered,
-    Pending = CommonStatus.Pending,
-}
-
 export enum JobType {
     SendEmail = 0,
     SendSms = 1,
