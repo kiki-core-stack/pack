@@ -22,7 +22,7 @@ const schema = new Schema<SmsProvider, SmsProviderModel>({
     code: s.number().enum(getEnumNumberValues(SmsProviderCode)).immutable.required,
     config: {
         required: true,
-        type: Object,
+        type: Schema.Types.Mixed,
     },
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
