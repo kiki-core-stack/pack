@@ -138,6 +138,26 @@
       "require": null
     },
     "./package.json": "./package.json",
+    "./providers/email": {
+      "types": "./src/providers/email/index.ts",
+      "import": "./src/providers/email/index.ts",
+      "require": null
+    },
+    "./providers/email/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./providers/sms": {
+      "types": "./src/providers/sms/index.ts",
+      "import": "./src/providers/sms/index.ts",
+      "require": null
+    },
+    "./providers/sms/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./stores/redis": {
       "types": "./src/stores/redis/index.ts",
       "import": "./src/stores/redis/index.ts",
@@ -193,13 +213,17 @@
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^7.0.3",
     "@kikiutils/shared": "^18.0.1",
+    "axios": "^1.20.0",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
     "file-type": "^22.0.2",
     "hono": "^4.13.5",
+    "http-proxy-agent": "^9.1.0",
+    "https-proxy-agent": "^9.1.0",
     "lru-cache": "^11.5.2",
     "mongoose": "^9.9.4",
     "nanoid": "^6.0.1",
+    "nodemailer": "^10.0.10",
     "sharp": "^0.35.4",
     "type-fest": "^5.9.0",
     "ws.io-client": "^0.4.0",
@@ -215,6 +239,9 @@
     "@kikiutils/shared": {
       "optional": true
     },
+    "axios": {
+      "optional": true
+    },
     "consola": {
       "optional": true
     },
@@ -227,6 +254,12 @@
     "hono": {
       "optional": true
     },
+    "http-proxy-agent": {
+      "optional": true
+    },
+    "https-proxy-agent": {
+      "optional": true
+    },
     "lru-cache": {
       "optional": true
     },
@@ -234,6 +267,9 @@
       "optional": true
     },
     "nanoid": {
+      "optional": true
+    },
+    "nodemailer": {
       "optional": true
     },
     "sharp": {
@@ -257,27 +293,31 @@
     "@kikiutils/shared": "^18.0.1",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@types/bun": "^1.4.2",
-    "@types/node": "^26.5.1",
-    "@vitest/coverage-v8": "^5.0.0",
+    "@types/node": "^26.6.2",
+    "@vitest/coverage-v8": "^5.0.1",
+    "axios": "^1.20.0",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
-    "eslint": "^10.10.0",
-    "file-type": "^22.1.0",
-    "hono": "^4.13.7",
-    "knip": "^6.35.1",
-    "lru-cache": "^11.5.2",
-    "mongoose": "^9.10.0",
+    "eslint": "^10.11.0",
+    "file-type": "^22.1.1",
+    "hono": "^4.13.9",
+    "http-proxy-agent": "^9.1.0",
+    "https-proxy-agent": "^9.1.0",
+    "knip": "^6.38.0",
+    "lru-cache": "^11.5.3",
+    "mongoose": "^9.10.2",
     "msgpackr": "^2.1.0",
     "nanoid": "^6.0.1",
+    "nodemailer": "^10.0.10",
     "publint": "^0.3.24",
     "sharp": "^0.35.4",
     "tsdown": "^0.23.0",
-    "type-fest": "^5.9.0",
+    "type-fest": "^5.10.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.0.0",
+    "vitest": "^5.0.1",
     "ws.io-client": "^0.4.0",
-    "zod": "^4.6.2"
+    "zod": "^4.6.5"
   }
 }
