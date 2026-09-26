@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid';
 
 import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
+import { EmailProviderModel } from './models/email/provider';
+import { SmsProviderModel } from './models/sms/provider';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
 
@@ -60,11 +62,18 @@ export async function initializeSystemStartup() {
 
         // Run other initialization tasks
 
-        // 2026-07-20 backfill the initial authentication revision for admins created before session revision tracking
-        await AdminModel.updateMany(
-            { authenticationRevision: { $exists: false } },
-            { $set: { authenticationRevision: 0 } },
-        );
+        await Promise.all([
+            // 2026-07-20 backfill the initial authentication revision for admins
+            // created before session revision tracking
+            AdminModel.updateMany(
+                { authenticationRevision: { $exists: false } },
+                { $set: { authenticationRevision: 0 } },
+            ),
+
+            // 2026-09-26 refresh email and sms provider collection indexes
+            EmailProviderModel.syncIndexes(),
+            SmsProviderModel.syncIndexes(),
+        ]);
     }
 
     logger.success('System initialized and ready');

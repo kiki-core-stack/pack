@@ -18,7 +18,7 @@ type EmailProviderModel = BaseMongoosePaginateModel<EmailProvider>;
 
 const schema = new Schema<EmailProvider, EmailProviderModel>({
     apiProxyUrl: s.string().trim.nonRequired,
-    cacheKey: s.string().trim.required,
+    cacheKey: s.string().trim.unique.required,
     code: s.number().enum(getEnumNumberValues(EmailProviderCode)).immutable.required,
     config: {
         required: true,
@@ -30,14 +30,6 @@ const schema = new Schema<EmailProvider, EmailProviderModel>({
     name: s.string().maxlength(64).trim.unique.required,
     priority: s.number().default(0).required,
 });
-
-schema.index(
-    {
-        cacheKey: 1,
-        code: 1,
-    },
-    { unique: true },
-);
 
 export const EmailProviderModel = buildMongooseModel<EmailProvider, EmailProviderModel>(
     'email.providers',

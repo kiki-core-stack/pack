@@ -18,7 +18,7 @@ type SmsProviderModel = BaseMongoosePaginateModel<SmsProvider>;
 
 const schema = new Schema<SmsProvider, SmsProviderModel>({
     apiProxyUrl: s.string().trim.nonRequired,
-    cacheKey: s.string().trim.required,
+    cacheKey: s.string().trim.unique.required,
     code: s.number().enum(getEnumNumberValues(SmsProviderCode)).immutable.required,
     config: {
         required: true,
@@ -30,14 +30,6 @@ const schema = new Schema<SmsProvider, SmsProviderModel>({
     name: s.string().maxlength(64).trim.unique.required,
     priority: s.number().default(0).required,
 });
-
-schema.index(
-    {
-        cacheKey: 1,
-        code: 1,
-    },
-    { unique: true },
-);
 
 export const SmsProviderModel = buildMongooseModel<SmsProvider, SmsProviderModel>(
     'sms.providers',
