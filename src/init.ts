@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid';
 
 import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
+import { EmailProviderModel } from './models/email/provider';
+import { SmsProviderModel } from './models/sms/provider';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
 
@@ -23,6 +25,7 @@ export async function initializeSystemStartup() {
 
     // Run default initialization tasks with redis lock
     // TODO: 此處應該改方法 避免初始化完成之前其餘服務或thread直接跳過這個lock進入service ready的錯誤狀態
+    // 或是正式環境時需要由一個init docker startup container/image開始執行
     const locked = await redisClient.send(
         'SET',
         [
@@ -69,6 +72,10 @@ export async function initializeSystemStartup() {
             { authenticationRevision: { $exists: false } },
             { $set: { authenticationRevision: 0 } },
         );
+
+        // 2026-09-26 sync email and sms provider collection indexes
+        await EmailProviderModel.syncIndexes();
+        await SmsProviderModel.syncIndexes();
 
         // Others downstream projects tasks
     }
