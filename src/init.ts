@@ -5,8 +5,6 @@ import { nanoid } from 'nanoid';
 
 import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
-import { EmailProviderModel } from './models/email/provider';
-import { SmsProviderModel } from './models/sms/provider';
 
 const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
 
@@ -24,6 +22,7 @@ export async function initializeSystemStartup() {
     logger.success('Database connected');
 
     // Run default initialization tasks with redis lock
+    // TODO: 此處應該改方法 避免初始化完成之前其餘服務或thread直接跳過這個lock進入service ready的錯誤狀態
     const locked = await redisClient.send(
         'SET',
         [
@@ -57,23 +56,21 @@ export async function initializeSystemStartup() {
                 logger.info(`Temporary password: ${password}`);
             }
 
-            // Run other initialization tasks
+            // Run other initialization tasks with session
+
+            // Others downstream projects tasks with session
         });
 
         // Run other initialization tasks
 
-        await Promise.all([
-            // 2026-07-20 backfill the initial authentication revision for admins
-            // created before session revision tracking
-            AdminModel.updateMany(
-                { authenticationRevision: { $exists: false } },
-                { $set: { authenticationRevision: 0 } },
-            ),
+        // 2026-07-20 backfill the initial authentication revision for admins
+        // created before session revision tracking
+        AdminModel.updateMany(
+            { authenticationRevision: { $exists: false } },
+            { $set: { authenticationRevision: 0 } },
+        );
 
-            // 2026-09-26 refresh email and sms provider collection indexes
-            EmailProviderModel.syncIndexes(),
-            SmsProviderModel.syncIndexes(),
-        ]);
+        // Others downstream projects tasks
     }
 
     logger.success('System initialized and ready');
