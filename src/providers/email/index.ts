@@ -14,7 +14,9 @@ export type LeanedEmailProvider = GetLeanResultType<EmailProvider, EmailProvider
 
 // Constants/Variables
 const instances = new Map<string, BaseEmailProvider<any>>();
+const providerCodeToInstanceClassMap = { [EmailProviderCode.Smtp]: EmailSmtpProvider } as const;
 
+// Functions
 export async function closeEmailProviderInstances() {
     const results = await Promise.allSettled([...instances.values()].map(async (instance) => {
         await instance.close();
@@ -28,13 +30,10 @@ export async function closeEmailProviderInstances() {
 export function getOrCreateEmailProviderInstance(provider: LeanedEmailProvider) {
     let instance = instances.get(provider.cacheKey);
     if (instance) return instance;
-    switch (provider.code) {
-        case EmailProviderCode.Smtp:
-            instance = new EmailSmtpProvider(provider);
-            break;
-        default: throw new EmailProviderError('Unsupported Email provider', 'not-accepted');
-    }
+    const instanceClass = providerCodeToInstanceClassMap[provider.code];
+    if (!instanceClass) throw new EmailProviderError('Unsupported Email provider', 'not-accepted');
 
-    instances.set(provider.cacheKey, instance);
+    // eslint-disable-next-line new-cap
+    instances.set(provider.cacheKey, instance = new instanceClass(provider));
     return instance;
 }

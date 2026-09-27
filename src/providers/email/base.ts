@@ -5,7 +5,9 @@ import type { EmailProviderConfigs } from '../../types/email';
 
 import type { LeanedEmailProvider } from './';
 
-export abstract class BaseEmailProvider<C extends EmailProviderConfigs.Smtp> {
+type EmailProviderConfig = EmailProviderConfigs.Smtp;
+
+export abstract class BaseEmailProvider<C extends EmailProviderConfig> {
     protected readonly apiProxyUrl?: string;
     protected readonly config: C;
 

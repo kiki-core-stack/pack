@@ -15,6 +15,10 @@ export type LeanedSmsProvider = GetLeanResultType<SmsProvider, SmsProviderDocume
 
 // Constants/Variables
 const instances = new Map<string, BaseSmsProvider<any>>();
+const providerCodeToInstanceClassMap = {
+    [SmsProviderCode.Mitake]: SmsMitakeProvider,
+    [SmsProviderCode.TwSms]: SmsTwSmsProvider,
+} as const;
 
 // Functions
 export async function closeSmsProviderInstances() {
@@ -30,16 +34,10 @@ export async function closeSmsProviderInstances() {
 export function getOrCreateSmsProviderInstance(provider: LeanedSmsProvider) {
     let instance = instances.get(provider.cacheKey);
     if (instance) return instance;
-    switch (provider.code) {
-        case SmsProviderCode.Mitake:
-            instance = new SmsMitakeProvider(provider);
-            break;
-        case SmsProviderCode.TwSms:
-            instance = new SmsTwSmsProvider(provider);
-            break;
-        default: throw new SmsProviderError('Unsupported Sms provider', 'not-accepted');
-    }
+    const instanceClass = providerCodeToInstanceClassMap[provider.code];
+    if (!instanceClass) throw new SmsProviderError('Unsupported Sms provider', 'not-accepted');
 
-    instances.set(provider.cacheKey, instance);
+    // eslint-disable-next-line new-cap
+    instances.set(provider.cacheKey, instance = new instanceClass(provider));
     return instance;
 }

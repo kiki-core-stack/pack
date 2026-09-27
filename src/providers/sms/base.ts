@@ -8,7 +8,9 @@ import { createAxiosProxyAgentOptions } from '../utils/axios';
 
 import type { LeanedSmsProvider } from './';
 
-export abstract class BaseSmsProvider<C extends SmsProviderConfigs.Mitake | SmsProviderConfigs.TwSms> {
+type SmsProviderConfig = SmsProviderConfigs.Mitake | SmsProviderConfigs.TwSms;
+
+export abstract class BaseSmsProvider<C extends SmsProviderConfig> {
     readonly #axiosProxyAgents: AxiosProxyAgents;
 
     protected readonly axiosInstance: AxiosInstance;
