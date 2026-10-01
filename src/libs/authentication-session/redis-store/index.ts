@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer';
 
 import { nanoid } from 'nanoid';
 
+import * as redisScripts from '../../../redis-scripts';
 import type {
     AuthenticateAuthenticationSessionInput,
     AuthenticationSessionManager,
@@ -25,14 +26,6 @@ import type { ParsedAuthenticationSessionToken } from '../_token';
 import { createRedisAuthenticationSessionKeys } from './_internals/keys';
 import { createRedisAuthenticationSessionQrCodeLoginStore } from './_internals/qr-code-login';
 import { createRedisScriptRunner } from './_internals/script-runner';
-import {
-    createAuthenticationSessionScript,
-    finalizeAuthenticationSessionScript,
-    initializeAuthenticationSessionEpochScript,
-    revokeAllAuthenticationSessionsScript,
-    revokeAuthenticationSessionScript,
-    rotateAuthenticationSessionScript,
-} from './_internals/scripts';
 import {
     parseStoredAuthenticationSession,
     parseStoredAuthenticationSessionData,
@@ -116,8 +109,11 @@ export function createRedisAuthenticationSessionManager(
     const keys = createRedisAuthenticationSessionKeys(principalType);
 
     // 預先建立具 NOSCRIPT 自動恢復能力的 Lua runner。
-    const revokeStoredSession = createRedisScriptRunner<number>(client, revokeAuthenticationSessionScript);
-    const revokeAllStoredSessions = createRedisScriptRunner<string>(client, revokeAllAuthenticationSessionsScript);
+    const revokeStoredSession = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.revoke);
+    const revokeAllStoredSessions = createRedisScriptRunner<string>(
+        client,
+        redisScripts.authenticationSession.revokeAll,
+    );
 
     /** 列出指定主體目前 epoch 下尚未到期的全部工作階段。 */
     async function list(input: ListAuthenticationSessionsInput) {
@@ -298,10 +294,10 @@ export function createRedisAuthenticationSessionStore(
     });
 
     // 每個 Lua runner 會快取 script SHA，並在 Redis 清除 cache 後自動重新載入。
-    const initializeEpoch = createRedisScriptRunner<string>(client, initializeAuthenticationSessionEpochScript);
-    const createStoredSession = createRedisScriptRunner<number>(client, createAuthenticationSessionScript);
-    const finalizeAuthentication = createRedisScriptRunner<number>(client, finalizeAuthenticationSessionScript);
-    const rotateStoredSession = createRedisScriptRunner<number>(client, rotateAuthenticationSessionScript);
+    const initializeEpoch = createRedisScriptRunner<string>(client, redisScripts.authenticationSession.initializeEpoch);
+    const createStoredSession = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.create);
+    const finalizeAuthentication = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.finalize);
+    const rotateStoredSession = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.rotate);
 
     /** 一般登入成功後建立全新 Session 與 opaque token。 */
     async function create(input: CreateAuthenticationSessionInput) {

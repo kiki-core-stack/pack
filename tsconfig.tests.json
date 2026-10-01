@@ -3,5 +3,8 @@
   "compilerOptions": {
     "isolatedDeclarations": false
   },
-  "include": ["./tests"]
+  "include": [
+    "./tests",
+    "./src/redis-scripts/types.d.ts"
+  ]
 }

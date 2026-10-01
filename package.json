@@ -87,16 +87,6 @@
       "import": null,
       "require": null
     },
-    "./libs/authentication-session/redis-store/_internals/scripts/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/authentication-session/redis-store/_internals/scripts/qr-code-login": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
     "./libs/authentication-session/redis-store/_internals/stored-session": {
       "types": null,
       "import": null,
@@ -158,6 +148,36 @@
       "import": null,
       "require": null
     },
+    "./redis-scripts": {
+      "types": "./src/redis-scripts/index.ts",
+      "import": "./src/redis-scripts/index.ts",
+      "require": null
+    },
+    "./redis-scripts/authentication-session": {
+      "types": "./src/redis-scripts/authentication-session/index.ts",
+      "import": "./src/redis-scripts/authentication-session/index.ts",
+      "require": null
+    },
+    "./redis-scripts/authentication-session/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./redis-scripts/authentication-session/qr-code-login": {
+      "types": "./src/redis-scripts/authentication-session/qr-code-login/index.ts",
+      "import": "./src/redis-scripts/authentication-session/qr-code-login/index.ts",
+      "require": null
+    },
+    "./redis-scripts/authentication-session/qr-code-login/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
+    "./redis-scripts/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./stores/redis": {
       "types": "./src/stores/redis/index.ts",
       "import": "./src/stores/redis/index.ts",
@@ -202,8 +222,8 @@
     "bumplog": "changelogen --bump --hideAuthorEmail",
     "knip:deps": "knip --dependencies",
     "knip:exports": "knip --exports",
-    "lint": "eslint --max-warnings 0",
-    "lint:fix": "eslint --fix --max-warnings 0",
+    "lint": "eslint --max-warnings 0 && stylua --check src/redis-scripts",
+    "lint:fix": "eslint --fix --max-warnings 0 && stylua src/redis-scripts",
     "release": "./scripts/sync-package-exports.ts && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && ./scripts/print-release-tag.ts",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
@@ -288,35 +308,36 @@
   "devDependencies": {
     "@antfu/eslint-config": "^9.5.1",
     "@hono/zod-validator": "^0.9.1",
+    "@johnnymorganz/stylua-bin": "^2.5.2",
     "@kikiutils/eslint-config": "^9.2.1",
-    "@kikiutils/mongoose": "^7.0.3",
+    "@kikiutils/mongoose": "^7.1.0",
     "@kikiutils/shared": "^18.0.1",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@types/bun": "^1.4.2",
-    "@types/node": "^26.6.2",
-    "@vitest/coverage-v8": "^5.0.1",
+    "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.2",
     "axios": "^1.20.0",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
     "es-toolkit": "^1.52.0",
     "eslint": "^10.11.0",
     "file-type": "^22.1.1",
-    "hono": "^4.13.9",
+    "hono": "^4.13.11",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
     "knip": "^6.38.0",
     "lru-cache": "^11.5.3",
-    "mongoose": "^9.10.2",
+    "mongoose": "^9.10.3",
     "msgpackr": "^2.1.0",
     "nanoid": "^6.0.1",
-    "nodemailer": "^10.0.10",
+    "nodemailer": "^10.0.13",
     "publint": "^0.3.24",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "tsdown": "^0.23.0",
     "type-fest": "^5.10.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.0.1",
+    "vitest": "^5.0.2",
     "ws.io-client": "^0.4.0",
     "zod": "^4.6.5"
   }

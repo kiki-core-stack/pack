@@ -1,48 +1,86 @@
+import { readFile } from 'node:fs/promises';
+
 import {
     describe,
     it,
 } from 'vitest';
 
-import {
-    createAuthenticationSessionScript,
-    finalizeAuthenticationSessionScript,
-    initializeAuthenticationSessionEpochScript,
-    revokeAllAuthenticationSessionsScript,
-    rotateAuthenticationSessionScript,
-} from '../../../src/libs/authentication-session/redis-store/_internals/scripts';
-import {
-    approveAuthenticationSessionQrCodeLoginScript,
-    completeAuthenticationSessionQrCodeLoginScript,
-} from '../../../src/libs/authentication-session/redis-store/_internals/scripts/qr-code-login';
+import * as redisScripts from '../../../src/redis-scripts';
 
 describe.concurrent('redis authentication session scripts', () => {
+    it.for([
+        [
+            'create',
+            redisScripts.authenticationSession.create,
+        ],
+        [
+            'finalize',
+            redisScripts.authenticationSession.finalize,
+        ],
+        [
+            'initialize-epoch',
+            redisScripts.authenticationSession.initializeEpoch,
+        ],
+        [
+            'revoke-all',
+            redisScripts.authenticationSession.revokeAll,
+        ],
+        [
+            'revoke',
+            redisScripts.authenticationSession.revoke,
+        ],
+        [
+            'rotate',
+            redisScripts.authenticationSession.rotate,
+        ],
+        [
+            'qr-code-login/approve',
+            redisScripts.authenticationSession.qrCodeLogin.approve,
+        ],
+        [
+            'qr-code-login/complete',
+            redisScripts.authenticationSession.qrCodeLogin.complete,
+        ],
+        [
+            'qr-code-login/create',
+            redisScripts.authenticationSession.qrCodeLogin.create,
+        ],
+    ])('imports %s as Lua source text', async ([name, script], { expect }) => {
+        const source = await readFile(
+            new URL(`../../../src/redis-scripts/authentication-session/${name}.lua`, import.meta.url),
+            'utf8',
+        );
+
+        expect(script).toBe(source);
+    });
+
     it('bounds session indexes and preserves authoritative metadata', ({ expect }) => {
         for (
             const script of [
-                createAuthenticationSessionScript,
-                finalizeAuthenticationSessionScript,
-                rotateAuthenticationSessionScript,
+                redisScripts.authenticationSession.create,
+                redisScripts.authenticationSession.finalize,
+                redisScripts.authenticationSession.rotate,
             ]
         ) {
-            expect(script).toContain('redis.call(\'ZRANGEBYSCORE\'');
-            expect(script).toContain('\'LIMIT\', 0, 256');
-            expect(script).toContain('redis.call(\'TTL\'');
+            expect(script).toMatch(/redis\.call\(\s*['"]ZRANGEBYSCORE['"]/);
+            expect(script).toMatch(/['"]LIMIT['"],\s*0,\s*256/);
+            expect(script).toMatch(/redis\.call\(\s*['"]TTL['"]/);
         }
 
-        expect(initializeAuthenticationSessionEpochScript).toContain('\'EX\', ARGV[2]');
-        expect(initializeAuthenticationSessionEpochScript).toContain('redis.call(\'TTL\', KEYS[1])');
-        expect(revokeAllAuthenticationSessionsScript).toContain('redis.call(\'DEL\', KEYS[1])');
-        expect(createAuthenticationSessionScript)
-            .toContain('\'principalAuthenticationRevision\', ARGV[6]');
+        expect(redisScripts.authenticationSession.initializeEpoch).toMatch(/['"]EX['"],\s*ARGV\[2\]/);
+        expect(redisScripts.authenticationSession.initializeEpoch).toMatch(/redis\.call\(\s*['"]TTL['"],\s*KEYS\[1\]/);
+        expect(redisScripts.authenticationSession.revokeAll).toMatch(/redis\.call\(\s*['"]DEL['"],\s*KEYS\[1\]/);
+        expect(redisScripts.authenticationSession.create)
+            .toMatch(/['"]principalAuthenticationRevision['"],\s*ARGV\[6\]/);
 
-        expect(createAuthenticationSessionScript).not.toContain('\'principalType\'');
+        expect(redisScripts.authenticationSession.create).not.toMatch(/['"]principalType['"]/);
 
-        expect(rotateAuthenticationSessionScript)
-            .toContain('\'principalAuthenticationRevision\', oldValues[8]');
+        expect(redisScripts.authenticationSession.rotate)
+            .toMatch(/['"]principalAuthenticationRevision['"],\s*oldValues\[8\]/);
 
-        expect(rotateAuthenticationSessionScript).not.toContain('\'principalType\'');
+        expect(redisScripts.authenticationSession.rotate).not.toMatch(/['"]principalType['"]/);
 
-        expect(approveAuthenticationSessionQrCodeLoginScript).not.toContain('\'principalType\'');
-        expect(completeAuthenticationSessionQrCodeLoginScript).not.toContain('\'principalType\'');
+        expect(redisScripts.authenticationSession.qrCodeLogin.approve).not.toMatch(/['"]principalType['"]/);
+        expect(redisScripts.authenticationSession.qrCodeLogin.complete).not.toMatch(/['"]principalType['"]/);
     });
 });

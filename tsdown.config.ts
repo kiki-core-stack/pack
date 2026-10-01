@@ -67,6 +67,7 @@ export default defineConfig({
     // },
     fixedExtension: false,
     format: 'esm',
+    loader: { '.lua': 'text' },
     plugins: [
         {
             name: 'remove-types-js',

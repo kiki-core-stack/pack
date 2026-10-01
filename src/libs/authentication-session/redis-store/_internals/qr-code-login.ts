@@ -4,6 +4,7 @@ import {
     randomBytes,
 } from 'node:crypto';
 
+import * as redisScripts from '../../../../redis-scripts';
 import type {
     AuthenticationSessionPrincipalType,
     AuthenticationSessionQrCodeLoginStore,
@@ -19,11 +20,6 @@ import type { ParsedAuthenticationSessionToken } from '../../_token';
 
 import { createRedisAuthenticationSessionKeys } from './keys';
 import { createRedisScriptRunner } from './script-runner';
-import {
-    approveAuthenticationSessionQrCodeLoginScript,
-    completeAuthenticationSessionQrCodeLoginScript,
-    createAuthenticationSessionQrCodeLoginScript,
-} from './scripts/qr-code-login';
 
 /** Redis request 依 state 決定是否已保存來源 Session 綁定資料。 */
 type StoredAuthenticationSessionQrCodeLogin =
@@ -150,13 +146,20 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
     const keys = createRedisAuthenticationSessionKeys(principalType);
 
     // 每個狀態轉移使用獨立 Lua runner，確保 Redis 內原子執行。
-    const approveStoredRequest = createRedisScriptRunner<number>(client, approveAuthenticationSessionQrCodeLoginScript);
-    const completeStoredRequest = createRedisScriptRunner<0 | [number, number]>(
+    const approveStoredRequest = createRedisScriptRunner<number>(
         client,
-        completeAuthenticationSessionQrCodeLoginScript,
+        redisScripts.authenticationSession.qrCodeLogin.approve,
     );
 
-    const createStoredRequest = createRedisScriptRunner<string>(client, createAuthenticationSessionQrCodeLoginScript);
+    const completeStoredRequest = createRedisScriptRunner<0 | [number, number]>(
+        client,
+        redisScripts.authenticationSession.qrCodeLogin.complete,
+    );
+
+    const createStoredRequest = createRedisScriptRunner<string>(
+        client,
+        redisScripts.authenticationSession.qrCodeLogin.create,
+    );
 
     /** 建立 pending request，回傳分別提供給來源與目標裝置的 token。 */
     async function create(input: Parameters<AuthenticationSessionQrCodeLoginStore['create']>[0]) {
