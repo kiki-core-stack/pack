@@ -178,6 +178,16 @@
       "import": null,
       "require": null
     },
+    "./stores/lru": {
+      "types": "./src/stores/lru/index.ts",
+      "import": "./src/stores/lru/index.ts",
+      "require": null
+    },
+    "./stores/lru/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./stores/redis": {
       "types": "./src/stores/redis/index.ts",
       "import": "./src/stores/redis/index.ts",

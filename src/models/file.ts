@@ -69,8 +69,8 @@ schema.post<Query<FileDocument[], File>>(
                     createdAt: item.createdAt?.toISOString(),
                 };
 
-                lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
-                return redisStore.fileDocumentData.setItemWithTtl(
+                lruStore.file.documentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
+                return redisStore.file.documentData.setItemWithTtl(
                     3600,
                     fileDocumentData,
                     fileDocumentData._id,
@@ -95,8 +95,8 @@ schema.pre<Query<FileDocument[], File>>(
         const allFileDocumentData = await Promise.all(
             ids.map((id) => {
                 return (
-                    lruStore.fileDocumentData.getItem(id, projectionKey)
-                    || redisStore.fileDocumentData.getItem(id, projectionKey)
+                    lruStore.file.documentData.getItem(id, projectionKey)
+                    || redisStore.file.documentData.getItem(id, projectionKey)
                 );
             }),
         );
@@ -126,8 +126,8 @@ schema.post<Query<FileDocument | null, File>>(
             createdAt: result.createdAt?.toISOString(),
         };
 
-        lruStore.fileDocumentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
-        await redisStore.fileDocumentData.setItemWithTtl(3600, fileDocumentData, fileDocumentData._id, projectionKey);
+        lruStore.file.documentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
+        await redisStore.file.documentData.setItemWithTtl(3600, fileDocumentData, fileDocumentData._id, projectionKey);
     },
 );
 
@@ -137,8 +137,8 @@ schema.pre<Query<FileDocument | null, File>>(
         const filter = this.getFilter();
         if (!isEligibleIdQuery(this, 'single')) return;
         const projectionKey = serializeProjection(this.projection());
-        let fileDocumentData = lruStore.fileDocumentData.getItem(filter._id, projectionKey);
-        if (!fileDocumentData) fileDocumentData = await redisStore.fileDocumentData.getItem(filter._id, projectionKey);
+        let fileDocumentData = lruStore.file.documentData.getItem(filter._id, projectionKey);
+        if (!fileDocumentData) fileDocumentData = await redisStore.file.documentData.getItem(filter._id, projectionKey);
         if (fileDocumentData) {
             this._mongooseOptions.isFromCache = true;
             const model = this.model;

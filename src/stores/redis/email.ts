@@ -3,7 +3,7 @@ import { createRedisKeyedStore } from '@kikiutils/shared/storages/redis/keyed-st
 import { redisMsgpackStorage } from '../../storages/redis/msgpack';
 import type { EmailOtpCodeType } from '../../types/otp';
 
-export const emailOtpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
+export const otpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
     (type: EmailOtpCodeType, email: string, additionalKey?: string) => {
         let key = `emailOtpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
