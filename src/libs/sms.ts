@@ -1,8 +1,9 @@
 import { mongooseConnections } from '@kikiutils/mongoose/constants';
 
 import { JobType } from '../constants/job';
-import { JobOutboxEventModel } from '../models/job/outbox-event';
 import { SmsSendRecordModel } from '../models/sms/send-record';
+
+import { createJobOutboxEvents } from './job';
 
 // Functions
 export function enqueueSmsSendJobs(to: string | string[], content: string) {
@@ -15,12 +16,12 @@ export function enqueueSmsSendJobs(to: string | string[], content: string) {
             { session },
         );
 
-        await JobOutboxEventModel.insertMany(
+        await createJobOutboxEvents(
             smsSendRecords.map((smsSendRecord) => ({
                 payload: { recordId: smsSendRecord._id.toHexString() },
                 type: JobType.SendSms,
             })),
-            { session },
+            session,
         );
 
         return smsSendRecords;

@@ -5,7 +5,8 @@ import { JobType } from '../constants/job';
 import { EmailSendRecordModel } from '../models/email/send-record';
 import { EmailSenderIdentityModel } from '../models/email/sender-identity';
 import type { EmailSenderIdentityDocument } from '../models/email/sender-identity';
-import { JobOutboxEventModel } from '../models/job/outbox-event';
+
+import { createJobOutboxEvents } from './job';
 
 // Functions
 export async function enqueueEmailSendJobs(
@@ -44,12 +45,12 @@ export async function enqueueEmailSendJobs(
             { session },
         );
 
-        await JobOutboxEventModel.insertMany(
+        await createJobOutboxEvents(
             emailSendRecords.map((emailSendRecord) => ({
                 payload: { recordId: emailSendRecord._id.toHexString() },
                 type: JobType.SendEmail,
             })),
-            { session },
+            session,
         );
 
         return emailSendRecords;
