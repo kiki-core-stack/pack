@@ -1,20 +1,7 @@
 import { Types } from 'mongoose';
 import * as z from 'zod';
 
-export function objectId() {
-    return z
-        .string()
-        .check((ctx) => {
-            if (Types.ObjectId.isValid(ctx.value)) return;
-            ctx.issues.push({
-                code: 'invalid_format',
-                format: 'objectid',
-                input: ctx.value,
-                message: 'Invalid ObjectId',
-            });
-        })
-        .transform((value) => new Types.ObjectId(value));
-}
+export const objectId = () => objectIdString().transform((value) => new Types.ObjectId(value));
 
 export function objectIdOrEmptyString() {
     return z
@@ -29,4 +16,18 @@ export function objectIdOrEmptyString() {
             });
         })
         .transform((value) => value === '' ? value : new Types.ObjectId(value));
+}
+
+export function objectIdString() {
+    return z
+        .string()
+        .check((ctx) => {
+            if (Types.ObjectId.isValid(ctx.value)) return;
+            ctx.issues.push({
+                code: 'invalid_format',
+                format: 'objectid',
+                input: ctx.value,
+                message: 'Invalid ObjectId',
+            });
+        });
 }

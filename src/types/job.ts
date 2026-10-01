@@ -1,16 +1,14 @@
+import type * as z from 'zod';
+
 import type { JobType } from '../constants/job';
+import type { jobPayloadSchemas } from '../libs/job';
 
-// A discriminated union keeps each job type paired with its own payload.
-export type CreateJobOutboxEventInput = {
-    [T in keyof JobPayloadByType]: {
+export type CreateJobOutboxEventInput<T extends JobType = JobType> = {
+    [K in T]: {
         nextPublishAt?: Date;
-        payload: JobPayloadByType[T];
-        type: T;
+        payload: JobPayloadByType[K];
+        type: K;
     };
-}[keyof JobPayloadByType];
+}[T];
 
-// Add a matching payload entry here when introducing a new job type.
-export interface JobPayloadByType {
-    [JobType.SendEmail]: { recordId: string };
-    [JobType.SendSms]: { recordId: string };
-}
+export type JobPayloadByType = { [T in keyof typeof jobPayloadSchemas]: z.output<(typeof jobPayloadSchemas)[T]>; };
