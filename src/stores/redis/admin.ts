@@ -1,8 +1,7 @@
-import { createRedisKeyedStore } from '@kikiutils/shared/storages/redis/keyed-store';
-
-import { redisMsgpackStorage } from '../../storages/redis/msgpack';
 import type { CachedAdminPermission } from '../../types/admin';
 
-export const permission = /* @__PURE__ */ createRedisKeyedStore<CachedAdminPermission>(redisMsgpackStorage)(
+import { createProjectRedisKeyedStore } from './_internals';
+
+export const permission = /* @__PURE__ */ createProjectRedisKeyedStore<CachedAdminPermission>()(
     (adminId: string) => `admin:permission:${adminId}`,
 );

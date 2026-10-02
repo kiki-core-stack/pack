@@ -3,6 +3,7 @@ import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import { consola as logger } from 'consola';
 import { nanoid } from 'nanoid';
 
+import { projectRedisKeyPrefix } from './constants';
 import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
 import { EmailProviderModel } from './models/email/provider';
@@ -26,17 +27,7 @@ export async function initializeSystemStartup() {
     // Run default initialization tasks with redis lock
     // TODO: 此處應該改方法 避免初始化完成之前其餘服務或thread直接跳過這個lock進入service ready的錯誤狀態
     // 或是正式環境時需要由一個init docker startup container/image開始執行
-    const locked = await redisClient.send(
-        'SET',
-        [
-            'system:initialize',
-            '1',
-            'EX',
-            '10',
-            'NX',
-        ],
-    );
-
+    const locked = await redisClient.set(`${projectRedisKeyPrefix}:system:initialize`, '1', 'EX', '10', 'NX');
     if (locked) {
         await mongooseConnections.default!.transaction(async (session) => {
             let admin = await AdminModel.findOne({}, undefined, { session });
