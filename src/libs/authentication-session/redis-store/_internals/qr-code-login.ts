@@ -9,6 +9,7 @@ import type {
     AuthenticationSessionPrincipalType,
     AuthenticationSessionQrCodeLoginStore,
 } from '../../../../types/authentication-session';
+import { createRedisScriptRunner } from '../../../redis/script-runner';
 import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
@@ -19,7 +20,6 @@ import {
 import type { ParsedAuthenticationSessionToken } from '../../_token';
 
 import { createRedisAuthenticationSessionKeys } from './keys';
-import { createRedisScriptRunner } from './script-runner';
 
 /** Redis request 依 state 決定是否已保存來源 Session 綁定資料。 */
 type StoredAuthenticationSessionQrCodeLogin =

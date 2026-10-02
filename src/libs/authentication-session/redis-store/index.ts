@@ -16,6 +16,7 @@ import type {
     AuthenticationSessionData,
     AuthenticationSessionListItemData,
 } from '../../../types/data/authentication-session';
+import { createRedisScriptRunner } from '../../redis/script-runner';
 import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
@@ -25,7 +26,6 @@ import type { ParsedAuthenticationSessionToken } from '../_token';
 
 import { createRedisAuthenticationSessionKeys } from './_internals/keys';
 import { createRedisAuthenticationSessionQrCodeLoginStore } from './_internals/qr-code-login';
-import { createRedisScriptRunner } from './_internals/script-runner';
 import {
     parseStoredAuthenticationSession,
     parseStoredAuthenticationSessionData,

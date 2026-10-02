@@ -82,11 +82,6 @@
       "import": null,
       "require": null
     },
-    "./libs/authentication-session/redis-store/_internals/script-runner": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
     "./libs/authentication-session/redis-store/_internals/stored-session": {
       "types": null,
       "import": null,
