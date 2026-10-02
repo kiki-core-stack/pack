@@ -12,9 +12,18 @@ describe.concurrent('redis authentication session keys', () => {
         const stagingKeys = createRedisAuthenticationSessionKeys('admin', ' staging ');
 
         expect(applicationKeys.session('selector'))
-            .toBe('kiki-core-stack:authenticationSession:admin:selector');
+            .toBe('kiki-core-stack:authenticationSession:session:admin:selector');
 
         expect(stagingKeys.epoch('admin-id'))
-            .toBe('kiki-core-stack:staging:authenticationSessionEpoch:admin:admin-id');
+            .toBe('kiki-core-stack:staging:authenticationSession:epoch:admin:admin-id');
+
+        expect(stagingKeys.index('admin-id', 'epoch-id'))
+            .toBe('kiki-core-stack:staging:authenticationSession:index:admin:admin-id:epoch-id');
+
+        expect(stagingKeys.qrCodeLogin('selector'))
+            .toBe('kiki-core-stack:staging:authenticationSession:qrCodeLogin:admin:selector');
+
+        expect(stagingKeys.session('selector'))
+            .toBe('kiki-core-stack:staging:authenticationSession:session:admin:selector');
     });
 });

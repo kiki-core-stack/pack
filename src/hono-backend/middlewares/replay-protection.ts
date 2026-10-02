@@ -29,8 +29,8 @@ export function createReplayProtectionMiddleware(
 
         const nonceRedisKey =
             nonceRedisKeyScope
-                ? `replayProtectionNonce:${nonceRedisKeyScope}:${nonce}`
-                : `replayProtectionNonce:${nonce}`;
+                ? `replayProtection:nonce:${nonceRedisKeyScope}:${nonce}`
+                : `replayProtection:nonce:${nonce}`;
 
         if (
             !await redisClient.send(

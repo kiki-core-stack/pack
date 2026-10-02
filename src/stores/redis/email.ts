@@ -5,7 +5,7 @@ import type { EmailOtpCodeType } from '../../types/otp';
 
 export const otpCode = /* @__PURE__ */ createRedisKeyedStore<string>(redisMsgpackStorage)(
     (type: EmailOtpCodeType, email: string, additionalKey?: string) => {
-        let key = `emailOtpCode:${type}:`;
+        let key = `email:otpCode:${type}:`;
         if (additionalKey) key += `${additionalKey}:`;
         return `${key}${email}`;
     },

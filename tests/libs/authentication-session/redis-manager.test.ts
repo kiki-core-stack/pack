@@ -39,7 +39,7 @@ describe.concurrent('redis authentication session manager', () => {
         });
 
         expect(client.zrange).toHaveBeenCalledWith(
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:admin-id:epoch`,
             '+inf',
             '(15000',
             'BYSCORE',
@@ -179,7 +179,7 @@ describe.concurrent('redis authentication session manager', () => {
         ).resolves.toEqual([]);
 
         expect(zrem).toHaveBeenCalledWith(
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:admin-id:epoch`,
             'missing',
             'expired',
             'wrong-epoch',
@@ -223,7 +223,7 @@ describe.concurrent('redis authentication session manager', () => {
         await expect(manager.revoke('selector')).resolves.toBe(true);
         expect(send).toHaveBeenCalledTimes(1);
         expect(send.mock.calls[0]?.[1]).toContain(
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:admin-id:epoch`,
         );
     });
 
@@ -250,13 +250,13 @@ describe.concurrent('redis authentication session manager', () => {
             [
                 expect.any(String),
                 '1',
-                `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
+                `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:admin-id`,
             ],
         ]);
 
         expect(send.mock.calls[1]).toEqual([
             'UNLINK',
-            [`${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:old-epoch`],
+            [`${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:admin-id:old-epoch`],
         ]);
     });
 

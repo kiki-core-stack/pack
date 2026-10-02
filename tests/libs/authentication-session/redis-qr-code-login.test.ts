@@ -42,7 +42,7 @@ describe.concurrent('redis authentication session QR code login', () => {
             expect.any(String),
             '1',
             // eslint-disable-next-line style/max-len
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionQrCodeLogin:admin:${approvalBytes.subarray(0, 16).toString('base64url')}`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:qrCodeLogin:admin:${approvalBytes.subarray(0, 16).toString('base64url')}`,
             expect.any(String),
             '192.0.2.10',
             'target-agent',
@@ -122,13 +122,13 @@ describe.concurrent('redis authentication session QR code login', () => {
         const approvalArguments = send.mock.calls[1]?.[1] as string[];
         expect(approvalArguments.slice(1, 4)).toEqual([
             '3',
-            expect.stringContaining('authenticationSessionQrCodeLogin:admin:'),
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:admin:${sourceSession.id}`,
+            expect.stringContaining('authenticationSession:qrCodeLogin:admin:'),
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:session:admin:${sourceSession.id}`,
         ]);
 
         expect(approvalArguments).toContain(
             // eslint-disable-next-line style/max-len
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:${sourceSession.principalId}`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:${sourceSession.principalId}`,
         );
     });
 
@@ -225,13 +225,13 @@ describe.concurrent('redis authentication session QR code login', () => {
         expect(completionArguments).toEqual([
             expect.any(String),
             '5',
-            expect.stringContaining('authenticationSessionQrCodeLogin:admin:'),
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:admin:${sourceSession.id}`,
+            expect.stringContaining('authenticationSession:qrCodeLogin:admin:'),
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:session:admin:${sourceSession.id}`,
             // eslint-disable-next-line style/max-len
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:${sourceSession.principalId}`,
-            expect.stringContaining('authenticationSession:admin:'),
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:${sourceSession.principalId}`,
+            expect.stringContaining('authenticationSession:session:admin:'),
             // eslint-disable-next-line style/max-len
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:${sourceSession.principalId}:${sourceSession.epoch}`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:${sourceSession.principalId}:${sourceSession.epoch}`,
             expect.any(String),
             sourceSession.id,
             sourceSession.epoch,

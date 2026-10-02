@@ -212,9 +212,9 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[3]?.[1]).toEqual([
             expect.any(String),
             '3',
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:admin:${created.session.id}`,
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessions:admin:admin-id:epoch`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:session:admin:${created.session.id}`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:admin-id`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:admin-id:epoch`,
             'epoch',
             '2592001000',
             created.session.id,
@@ -243,7 +243,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[2]?.[1]).toEqual([
             expect.any(String),
             '1',
-            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSessionEpoch:admin:admin-id`,
+            `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:admin-id`,
             expect.any(String),
             '2592000',
         ]);

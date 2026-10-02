@@ -4,5 +4,5 @@ import { redisMsgpackStorage } from '../../storages/redis/msgpack';
 import type { CachedAdminPermission } from '../../types/admin';
 
 export const permission = /* @__PURE__ */ createRedisKeyedStore<CachedAdminPermission>(redisMsgpackStorage)(
-    (adminId: string) => `adminPermission:${adminId}`,
+    (adminId: string) => `admin:permission:${adminId}`,
 );

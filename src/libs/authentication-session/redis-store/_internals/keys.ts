@@ -22,13 +22,13 @@ export function createRedisAuthenticationSessionKeys(
 
     return {
         // epoch 是主體目前有效的撤銷世代。
-        epoch: (principalId: string) => `${keyPrefix}authenticationSessionEpoch:${principalType}:${principalId}`,
+        epoch: (principalId: string) => `${keyPrefix}authenticationSession:epoch:${principalType}:${principalId}`,
         // index 以到期時間排序該主體在特定世代下的全部 Session selector。
         index: (principalId: string, epoch: string) =>
-            `${keyPrefix}authenticationSessions:${principalType}:${principalId}:${epoch}`,
+            `${keyPrefix}authenticationSession:index:${principalType}:${principalId}:${epoch}`,
         // QR Code Login request 以其隨機 selector 定位。
-        qrCodeLogin: (selector: string) => `${keyPrefix}authenticationSessionQrCodeLogin:${principalType}:${selector}`,
+        qrCodeLogin: (selector: string) => `${keyPrefix}authenticationSession:qrCodeLogin:${principalType}:${selector}`,
         // Session hash 以 token selector 定位，不在 key 中暴露 validator。
-        session: (selector: string) => `${keyPrefix}authenticationSession:${principalType}:${selector}`,
+        session: (selector: string) => `${keyPrefix}authenticationSession:session:${principalType}:${selector}`,
     };
 }
