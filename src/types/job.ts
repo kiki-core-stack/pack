@@ -11,4 +11,4 @@ export type CreateJobOutboxEventInput<T extends JobType = JobType> = {
     };
 }[T];
 
-export type JobPayloadByType = { [T in keyof typeof jobPayloadSchemas]: z.output<(typeof jobPayloadSchemas)[T]>; };
+export type JobPayloadByType = { [T in keyof typeof jobPayloadSchemas]: z.infer<(typeof jobPayloadSchemas)[T]>; };
