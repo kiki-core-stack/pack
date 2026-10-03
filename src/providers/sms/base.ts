@@ -2,13 +2,11 @@ import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 
 import type { SmsSendRecord } from '../../models/sms/send-record';
-import type { SmsProviderConfigs } from '../../types/sms';
+import type { SmsProviderConfig } from '../../types/sms';
 import type { AxiosProxyAgents } from '../utils/axios';
 import { createAxiosProxyAgentOptions } from '../utils/axios';
 
 import type { LeanedSmsProvider } from './';
-
-type SmsProviderConfig = SmsProviderConfigs.Mitake | SmsProviderConfigs.TwSms;
 
 export abstract class BaseSmsProvider<C extends SmsProviderConfig> {
     readonly #axiosProxyAgents: AxiosProxyAgents;

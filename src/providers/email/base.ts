@@ -1,11 +1,9 @@
 import type { Promisable } from 'type-fest';
 
 import type { EmailSendRecord } from '../../models/email/send-record';
-import type { EmailProviderConfigs } from '../../types/email';
+import type { EmailProviderConfig } from '../../types/email';
 
 import type { LeanedEmailProvider } from './';
-
-type EmailProviderConfig = EmailProviderConfigs.Smtp;
 
 export abstract class BaseEmailProvider<C extends EmailProviderConfig> {
     protected readonly apiProxyUrl?: string;

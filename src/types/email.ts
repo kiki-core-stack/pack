@@ -1,3 +1,5 @@
+export type EmailProviderConfig = EmailProviderConfigs.Smtp;
+
 // eslint-disable-next-line ts/no-namespace
 export namespace EmailProviderConfigs {
     export interface Smtp {

@@ -1,3 +1,5 @@
+export type SmsProviderConfig = SmsProviderConfigs.Mitake | SmsProviderConfigs.TwSms;
+
 // eslint-disable-next-line ts/no-namespace
 export namespace SmsProviderConfigs {
     export interface Mitake {
