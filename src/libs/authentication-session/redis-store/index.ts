@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 
+import { chunk } from 'es-toolkit';
 import { nanoid } from 'nanoid';
 
 import * as redisScripts from '../../../redis-scripts';
@@ -131,8 +132,7 @@ export function createRedisAuthenticationSessionManager(
 
         // 分批讀取 Session hash，避免單一帳號的大量 Session 同時壓入事件迴圈。
         const list: AuthenticationSessionListItemData[] = [];
-        for (let index = 0; index < selectors.length; index += authenticationSessionListReadBatchSize) {
-            const batch = selectors.slice(index, index + authenticationSessionListReadBatchSize);
+        for (const batch of chunk(selectors, authenticationSessionListReadBatchSize)) {
             const rows = await Promise.all(
                 batch.map(
                     async (selector) => [

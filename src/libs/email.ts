@@ -1,4 +1,5 @@
 import { mongooseConnections } from '@kikiutils/mongoose/constants';
+import type { Arrayable } from 'type-fest';
 
 import type { EmailSenderIdentityKey } from '../constants/email';
 import { JobType } from '../constants/job';
@@ -11,7 +12,7 @@ import { createJobOutboxEvents } from './job';
 // Functions
 export async function enqueueEmailSendJobs(
     senderIdentity: EmailSenderIdentityDocument | EmailSenderIdentityKey,
-    to: string | string[],
+    to: Arrayable<string>,
     subject: string,
     body: string,
 ) {
