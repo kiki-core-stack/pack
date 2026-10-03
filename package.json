@@ -242,9 +242,10 @@
   "peerDependencies": {
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^7.0.3",
-    "@kikiutils/shared": "^18.0.1",
+    "@kikiutils/shared": "^18.1.0",
     "axios": "^1.20.0",
     "consola": "^3.4.2",
+    "date-fns": "^4.4.0",
     "es-toolkit": "^1.52.0",
     "file-type": "^22.0.2",
     "hono": "^4.13.5",
@@ -273,6 +274,9 @@
       "optional": true
     },
     "consola": {
+      "optional": true
+    },
+    "date-fns": {
       "optional": true
     },
     "es-toolkit": {
@@ -321,34 +325,35 @@
     "@johnnymorganz/stylua-bin": "^2.5.2",
     "@kikiutils/eslint-config": "^9.2.1",
     "@kikiutils/mongoose": "^7.1.0",
-    "@kikiutils/shared": "^18.0.1",
+    "@kikiutils/shared": "^18.1.0",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@types/bun": "^1.4.2",
-    "@types/node": "^26.6.3",
-    "@vitest/coverage-v8": "^5.0.2",
+    "@types/node": "^26.6.4",
+    "@vitest/coverage-v8": "^5.0.3",
     "axios": "^1.20.0",
     "changelogen": "^0.6.2",
     "consola": "^3.4.2",
+    "date-fns": "^4.4.0",
     "es-toolkit": "^1.52.0",
     "eslint": "^10.11.0",
     "file-type": "^22.1.1",
-    "hono": "^4.13.11",
+    "hono": "^4.13.12",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
-    "knip": "^6.38.0",
+    "knip": "^6.39.0",
     "lru-cache": "^11.5.3",
     "mongoose": "^9.10.3",
     "msgpackr": "^2.1.0",
     "nanoid": "^6.0.1",
     "nodemailer": "^10.0.13",
-    "publint": "^0.3.24",
+    "publint": "^0.3.25",
     "sharp": "^0.35.5",
     "tsdown": "^0.23.0",
     "type-fest": "^5.10.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.0.2",
-    "ws.io-client": "^0.4.0",
+    "vitest": "^5.0.3",
+    "ws.io-client": "^0.4.1",
     "zod": "^4.6.5"
   }
 }

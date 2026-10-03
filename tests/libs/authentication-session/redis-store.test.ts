@@ -251,6 +251,29 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[2]?.[1][3]).toMatch(/^[\w-]{43}$/);
     });
 
+    it('preserves milliseconds when calculating absolute and idle expiration', async ({ expect }) => {
+        const send = vi.fn().mockResolvedValueOnce('epoch').mockResolvedValueOnce(1);
+        const store = createStore(createClient({ send }), {
+            absoluteTtlSeconds: 60,
+            idleTtlSeconds: 10,
+            touchIntervalSeconds: 0,
+        });
+
+        const created = await store.create({
+            ip: '127.0.0.1',
+            now: 1_234,
+            principalAuthenticationRevision: 3,
+            principalId: 'admin-id',
+        });
+
+        expect(created.session.absoluteExpiresAt).toBe(61_234);
+        expect(created.session.loggedAt).toBe(1_234);
+        expect(send.mock.calls[1]?.[1].slice(-2)).toEqual([
+            '10',
+            '11234',
+        ]);
+    });
+
     it('fails session creation when its epoch changes', async ({ expect }) => {
         const store = createStore(
             createClient({ send: vi.fn().mockResolvedValueOnce('epoch').mockResolvedValueOnce(0) }),
@@ -287,6 +310,7 @@ describe.concurrent('redis authentication session store', () => {
             const options of [
                 { absoluteTtlSeconds: 0 },
                 { absoluteTtlSeconds: Number.MAX_SAFE_INTEGER },
+                { absoluteTtlSeconds: 8_640_000_000_000 },
                 { idleTtlSeconds: Number.NaN },
                 { idleTtlSeconds: 1.5 },
                 { touchIntervalSeconds: -1 },

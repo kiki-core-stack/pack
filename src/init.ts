@@ -1,5 +1,7 @@
 import { mongooseConnections } from '@kikiutils/mongoose/constants';
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
+import { delay } from '@kikiutils/shared/time';
 import { consola as logger } from 'consola';
 import { nanoid } from 'nanoid';
 
@@ -9,17 +11,18 @@ import { AdminModel } from './models/admin';
 import { EmailProviderModel } from './models/email/provider';
 import { SmsProviderModel } from './models/sms/provider';
 
-const sleep = (durationMs: number) => new Promise((resolve) => void setTimeout(resolve, durationMs));
-
 export async function initializeSystemStartup() {
     logger.info('Initializing startup...');
 
     logger.info('Waiting for MongoDB connection...');
-    const startAt = Date.now();
+    const deadline = new EnhancedDate().addSeconds(10);
     while (mongooseConnections.default?.readyState !== 1) {
-        if (Date.now() - startAt > 10000) return logger.error('Database connection timed out after 10 seconds');
-        if (mongooseConnections.default?.readyState === 2) await sleep(50);
-        else await sleep(1000);
+        if (deadline.isBefore(EnhancedDate.now())) {
+            return logger.error('Database connection timed out after 10 seconds');
+        }
+
+        if (mongooseConnections.default?.readyState === 2) await delay(50);
+        else await delay(1000);
     }
 
     logger.success('Database connected');

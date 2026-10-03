@@ -1,5 +1,7 @@
 import { Buffer } from 'node:buffer';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+import { createRedisScriptRunner } from '@kikiutils/shared/redis/script-runner';
 import { chunk } from 'es-toolkit';
 import { nanoid } from 'nanoid';
 
@@ -17,7 +19,6 @@ import type {
     AuthenticationSessionData,
     AuthenticationSessionListItemData,
 } from '../../../types/data/authentication-session';
-import { createRedisScriptRunner } from '../../redis/script-runner';
 import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
@@ -91,13 +92,13 @@ const defaultQrCodeLoginApprovalTtlSeconds = 5;
 /** QR 登入請求建立後最多等待來源裝置掃描 60 秒。 */
 const defaultQrCodeLoginRequestTtlSeconds = 60;
 
-/** 驗證所有秒數設定能安全換算成 JavaScript 毫秒時間戳。 */
+/** 驗證所有秒數設定能換算成有效的日期時間戳。 */
 function assertValidAuthenticationSessionDuration(name: string, value: number, minimum: number) {
-    // 拒絕小數、越界值及換算後超出 safe integer 的期限。
+    // 拒絕小數、越界值及超出 Date 可表示範圍的期限。
     if (
         !Number.isSafeInteger(value)
         || value < minimum
-        || !Number.isSafeInteger(Date.now() + value * 1000)
+        || !new EnhancedDate().addSeconds(value).isValid()
     ) throw new TypeError(`${name} must be a safe integer greater than or equal to ${minimum}`);
 }
 
@@ -126,7 +127,7 @@ export function createRedisAuthenticationSessionManager(
 
         // Sorted Set score 保存有效期限，只讀取嚴格晚於目前時間的 selector。
         const indexKey = keys.index(input.principalId, epoch);
-        const now = input.now ?? Date.now();
+        const now = input.now ?? EnhancedDate.now();
         const activeScoreMinimum = `(${now}`;
         const selectors = await client.zrange(indexKey, '+inf', activeScoreMinimum, 'BYSCORE', 'REV');
 
@@ -307,8 +308,8 @@ export function createRedisAuthenticationSessionStore(
         }
 
         // absolute expiry 固定於建立時間；實際 Redis TTL 取 absolute 與 idle 的較早者。
-        const now = input.now ?? Date.now();
-        const absoluteExpiresAt = now + absoluteTtlSeconds * 1000;
+        const now = input.now ?? EnhancedDate.now();
+        const absoluteExpiresAt = new EnhancedDate(now).addSeconds(absoluteTtlSeconds).getTime();
         const { expiresAt, ttlSeconds } = getAuthenticationSessionExpiration(absoluteExpiresAt, now, idleTtlSeconds);
 
         // 第一次登入才以 SET NX 建立隨機 epoch；既有主體沿用目前 epoch。
@@ -402,10 +403,10 @@ export function createRedisAuthenticationSessionStore(
         ) return;
 
         // 在進行外部主體查詢前先拒絕 absolute/idle 已到期的 Session。
-        const now = input.now ?? Date.now();
+        const now = input.now ?? EnhancedDate.now();
         if (
             storedSession.absoluteExpiresAt <= now
-            || storedSession.lastActiveAt + idleTtlSeconds * 1000 <= now
+            || new EnhancedDate(storedSession.lastActiveAt).addSeconds(idleTtlSeconds).getTime() <= now
         ) return;
 
         // digest 只供內部 Lua 最終確認，不暴露到公開 Session data。
@@ -484,7 +485,7 @@ export function createRedisAuthenticationSessionStore(
         if (!parsedToken) return;
 
         // rotate 與 authenticate 共用同一時間，避免兩段流程產生邊界差異。
-        const now = input.now ?? Date.now();
+        const now = input.now ?? EnhancedDate.now();
         const authenticated = await authenticateParsedToken(
             {
                 ...input,
@@ -564,7 +565,7 @@ export function createRedisAuthenticationSessionStore(
 /** 取 absolute expiry 與下一個 idle expiry 中較早者，產生 Redis TTL。 */
 function getAuthenticationSessionExpiration(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
     // 活動只能延長 idle 期限，不能突破 absolute expiry。
-    const expiresAt = Math.min(absoluteExpiresAt, now + idleTtlSeconds * 1000);
+    const expiresAt = Math.min(absoluteExpiresAt, new EnhancedDate(now).addSeconds(idleTtlSeconds).getTime());
 
     return {
         expiresAt,

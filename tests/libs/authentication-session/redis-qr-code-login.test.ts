@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import {
     describe,
     it,
@@ -14,7 +15,7 @@ import {
 } from './_fixtures';
 
 const sourceSession = createAuthenticationSessionData({
-    absoluteExpiresAt: Date.now() + 60 * 60 * 1000,
+    absoluteExpiresAt: new EnhancedDate().addHours(1).getTime(),
     id: 'source-selector',
 });
 
@@ -137,7 +138,7 @@ describe.concurrent('redis authentication session QR code login', () => {
             .mockResolvedValueOnce('61000')
             .mockResolvedValueOnce([
                 '13',
-                '0',
+                '123456',
             ])
             .mockResolvedValueOnce([
                 2_592_000,
@@ -218,7 +219,7 @@ describe.concurrent('redis authentication session QR code login', () => {
             [],
         ]);
 
-        expect(targetAbsoluteExpiresAt).toBe(13_000 + 60 * 60 * 24 * 30 * 1000);
+        expect(targetAbsoluteExpiresAt).toBe(2_592_013_123);
         expect(completed?.state === 'completed' && completed.session.absoluteExpiresAt)
             .toBe(targetAbsoluteExpiresAt);
 

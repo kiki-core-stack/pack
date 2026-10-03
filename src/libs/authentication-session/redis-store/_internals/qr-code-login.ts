@@ -4,12 +4,14 @@ import {
     randomBytes,
 } from 'node:crypto';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+import { createRedisScriptRunner } from '@kikiutils/shared/redis/script-runner';
+
 import * as redisScripts from '../../../../redis-scripts';
 import type {
     AuthenticationSessionPrincipalType,
     AuthenticationSessionQrCodeLoginStore,
 } from '../../../../types/authentication-session';
-import { createRedisScriptRunner } from '../../../redis/script-runner';
 import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
@@ -295,11 +297,13 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
 
         // 先使用 Redis TIME 建立目標 Session binding，與 Lua 完成時間維持同一時間來源。
         const [redisSeconds, redisMicroseconds] = await client.send('TIME', []) as [string, string];
-        const redisNow = Number(redisSeconds) * 1000 + Math.floor(Number(redisMicroseconds) / 1000);
+        const redisNow = EnhancedDate.fromUnixSeconds(Number(redisSeconds))
+            .addMilliseconds(Math.floor(Number(redisMicroseconds) / 1000))
+            .getTime();
 
         // QR 登入視為全新登入，因此 absolute expiry 從目標裝置完成時重新計算。
         const binding = {
-            absoluteExpiresAt: redisNow + absoluteTtlSeconds * 1000,
+            absoluteExpiresAt: new EnhancedDate(redisNow).addSeconds(absoluteTtlSeconds).getTime(),
             epoch: request.sourceEpoch,
             principalAuthenticationRevision: request.principalAuthenticationRevision,
             principalId: request.principalId,

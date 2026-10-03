@@ -1,10 +1,9 @@
+import { createRedisScriptRunner } from '@kikiutils/shared/redis/script-runner';
 import {
     describe,
     it,
     vi,
 } from 'vitest';
-
-import { createRedisScriptRunner } from '../../../src/libs/redis/script-runner';
 
 describe.concurrent('redis script runner', () => {
     it('shares one script load between concurrent callers', async ({ expect }) => {
@@ -74,6 +73,15 @@ describe.concurrent('redis script runner', () => {
             'SCRIPT',
             'EVALSHA',
         ]);
+    });
+
+    it('does not reload for errors only containing NOSCRIPT in their text', async ({ expect }) => {
+        const error = new Error('ERR Lua failure mentioning NOSCRIPT');
+        const send = vi.fn().mockRejectedValue(error);
+        const execute = createRedisScriptRunner({ send }, 'return 1');
+
+        await expect(execute([], [])).rejects.toBe(error);
+        expect(send).toHaveBeenCalledTimes(1);
     });
 
     it('preserves Redis errors unrelated to missing scripts', async ({ expect }) => {

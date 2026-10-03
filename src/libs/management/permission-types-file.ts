@@ -1,9 +1,4 @@
-import {
-    mkdir,
-    writeFile,
-} from 'node:fs/promises';
-import { dirname } from 'node:path';
-
+import { Path } from '@kikiutils/shared/classes/path';
 import { upperFirst } from 'es-toolkit';
 
 import type { ManagementType } from '../../types';
@@ -35,6 +30,7 @@ export async function writeManagementPermissionTypesFile(
         ),
     ];
 
-    await mkdir(dirname(targetFilePath), { recursive: true });
-    await writeFile(targetFilePath, `${fileContents.join('\n')}\n`);
+    const targetPath = new Path(targetFilePath);
+    await targetPath.parent.mkdir({ recursive: true });
+    await targetPath.writeFile(`${fileContents.join('\n')}\n`);
 }

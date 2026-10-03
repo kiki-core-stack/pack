@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import {
     describe,
     it,
@@ -26,6 +27,15 @@ describe.concurrent('strict iso date string', () => {
         });
     });
 
+    it.for([
+        '2026-02-29T00:00:00.000Z',
+        '2026-05-15T05:00:00Z',
+        '2026-05-15T13:00:00.000+08:00',
+    ])(
+        'should reject non-canonical or normalized dates: %s',
+        (value, { expect }) => expect(z.strictIsoDateString().safeParse(value).success).toBe(false),
+    );
+
     it('should reject impossible date strings', ({ expect }) => {
         const result = z.strictIsoDateString().safeParse('not-a-date');
 
@@ -41,6 +51,7 @@ describe.concurrent('strict iso date', () => {
 
         expect(result.success).toBe(true);
         expect(result.data).toBeInstanceOf(Date);
+        expect(result.data).toBeInstanceOf(EnhancedDate);
         expect(result.data?.toISOString()).toBe(value);
     });
 });

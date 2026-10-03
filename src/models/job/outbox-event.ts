@@ -4,6 +4,7 @@ import type {
     BaseMongoosePaginateModel,
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
@@ -21,7 +22,7 @@ export type JobOutboxEventDocument = MongooseHydratedDocument<JobOutboxEvent>;
 type JobOutboxEventModel = BaseMongoosePaginateModel<JobOutboxEvent>;
 
 const schema = new Schema<JobOutboxEvent, JobOutboxEventModel>({
-    nextPublishAt: s.date().default(() => new Date()).required,
+    nextPublishAt: s.date().default(() => new EnhancedDate()).required,
     payload: {
         required: true,
         type: Schema.Types.Mixed,
