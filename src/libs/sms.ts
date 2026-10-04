@@ -1,4 +1,4 @@
-import { mongooseConnections } from '@kikiutils/mongoose/constants';
+import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import type { Arrayable } from 'type-fest';
 
 import { JobType } from '../constants/job';
@@ -8,7 +8,7 @@ import { createJobOutboxEvents } from './job';
 
 // Functions
 export function enqueueSmsSendJobs(to: Arrayable<string>, content: string) {
-    return mongooseConnections.default!.transaction(async (session) => {
+    return getDefaultMongooseConnection().transaction(async (session) => {
         const smsSendRecords = await SmsSendRecordModel.insertMany(
             [to].flat().map((t) => ({
                 content,

@@ -21,11 +21,7 @@ const schema = new Schema<AdminLog, AdminLogModel>(
     {
         admin: mongooseRefSchemas.admin().required,
         ip: s.string().trim.nonRequired,
-        metadata: {
-            _id: false,
-            required: false,
-            type: Schema.Types.Mixed,
-        },
+        metadata: s.mixed().nonRequired,
         note: s.string().trim.nonRequired,
         type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
     },

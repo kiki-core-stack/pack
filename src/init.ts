@@ -1,4 +1,4 @@
-import { mongooseConnections } from '@kikiutils/mongoose/constants';
+import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import { delay } from '@kikiutils/shared/time';
@@ -15,13 +15,14 @@ export async function initializeSystemStartup() {
     logger.info('Initializing startup...');
 
     logger.info('Waiting for MongoDB connection...');
+    const mongooseConnection = getDefaultMongooseConnection();
     const deadline = new EnhancedDate().addSeconds(10);
-    while (mongooseConnections.default?.readyState !== 1) {
+    while (mongooseConnection.readyState !== 1) {
         if (deadline.isBefore(EnhancedDate.now())) {
             return logger.error('Database connection timed out after 10 seconds');
         }
 
-        if (mongooseConnections.default?.readyState === 2) await delay(50);
+        if (mongooseConnection.readyState === 2) await delay(50);
         else await delay(1000);
     }
 
@@ -32,7 +33,7 @@ export async function initializeSystemStartup() {
     // 或是正式環境時需要由一個init docker startup container/image開始執行
     const locked = await redisClient.set(`${projectRedisKeyPrefix}:system:initialize`, '1', 'EX', '10', 'NX');
     if (locked) {
-        await mongooseConnections.default!.transaction(async (session) => {
+        await mongooseConnection.transaction(async (session) => {
             let admin = await AdminModel.findOne({}, undefined, { session });
             if (!admin) {
                 logger.box('No admin found → creating default super admin');
@@ -62,7 +63,7 @@ export async function initializeSystemStartup() {
 
         // 2026-07-20 backfill the initial authentication revision for admins
         // created before session revision tracking
-        AdminModel.updateMany(
+        await AdminModel.updateMany(
             { authenticationRevision: { $exists: false } },
             { $set: { authenticationRevision: 0 } },
         );

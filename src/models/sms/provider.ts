@@ -20,15 +20,13 @@ const schema = new Schema<SmsProvider, SmsProviderModel>({
     apiProxyUrl: s.string().trim.nonRequired,
     cacheKey: s.string().trim.unique.required,
     code: s.number().enum(getEnumNumberValues(SmsProviderCode)).immutable.required,
-    config: {
-        required: true,
-        type: Schema.Types.Mixed,
-    },
+    config: s.mixed().required,
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(64).trim.unique.required,
-    priority: s.number().default(0).required,
+    // @ts-expect-error Ignore this error.
+    priority: s.int32().default(0).required,
 });
 
 export const SmsProviderModel = buildMongooseModel<SmsProvider, SmsProviderModel>(

@@ -25,7 +25,7 @@ interface AdminMethodsAndOverrides {
 
 const schema = new Schema<Admin, AdminModel, AdminMethodsAndOverrides>({
     account: s.string().maxlength(64).trim.unique.required,
-    authenticationRevision: s.number().default(0).min(0).private.required,
+    authenticationRevision: s.int32().default(0).min(0).private.required,
     email: s.string().lowercase.trim.nonRequired,
     enabled: s.boolean().default(false).required,
     isSuperAdmin: s.boolean().default(false).required,

@@ -1,12 +1,11 @@
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
+  - '@kikiutils/mongoose' # TODO: remove it
+  - '@kikiutils/shared' # TODO: remove it
   - '@types/bun'
   - bun-types
 
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - why-is-node-running@3.2.2
-
 shellEmulator: true
 
 allowBuilds:

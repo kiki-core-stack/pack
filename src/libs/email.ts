@@ -1,4 +1,4 @@
-import { mongooseConnections } from '@kikiutils/mongoose/constants';
+import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import type { Arrayable } from 'type-fest';
 
 import type { EmailSenderIdentityKey } from '../constants/email';
@@ -35,7 +35,7 @@ export async function enqueueEmailSendJobs(
         from = emailSenderIdentity.from;
     }
 
-    return await mongooseConnections.default!.transaction(async (session) => {
+    return await getDefaultMongooseConnection().transaction(async (session) => {
         const emailSendRecords = await EmailSendRecordModel.insertMany(
             [to].flat().map((t) => ({
                 content: body,

@@ -565,7 +565,12 @@ export function createRedisAuthenticationSessionStore(
 /** 取 absolute expiry 與下一個 idle expiry 中較早者，產生 Redis TTL。 */
 function getAuthenticationSessionExpiration(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
     // 活動只能延長 idle 期限，不能突破 absolute expiry。
-    const expiresAt = Math.min(absoluteExpiresAt, new EnhancedDate(now).addSeconds(idleTtlSeconds).getTime());
+    const expiresAt = EnhancedDate
+        .min([
+            absoluteExpiresAt,
+            new EnhancedDate(now).addSeconds(idleTtlSeconds),
+        ])
+        .getTime();
 
     return {
         expiresAt,
