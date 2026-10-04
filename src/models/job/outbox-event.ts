@@ -25,7 +25,7 @@ const schema = new Schema<JobOutboxEvent, JobOutboxEventModel>({
     nextPublishAt: s.date().default(() => new EnhancedDate()).required,
     payload: s.mixed().required,
     // @ts-expect-error Ignore this error.
-    publishAttempts: s.int32().default(0).min(0).required,
+    publishAttemptCount: s.int32().default(0).min(0).required,
     publishClaimId: s.string().trim.nonRequired,
     publishLeaseUntil: s.date().nonRequired,
     type: s.number().enum(getEnumNumberValues(JobType)).required,
