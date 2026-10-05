@@ -117,6 +117,7 @@ describe.concurrent('redis authentication session manager', () => {
                 await new Promise<void>((resolve) => {
                     queueMicrotask(resolve);
                 });
+
                 activeReads -= 1;
                 return [];
             }),

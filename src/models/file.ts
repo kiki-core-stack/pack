@@ -93,12 +93,11 @@ schema.pre<Query<FileDocument[], File>>(
         });
 
         const allFileDocumentData = await Promise.all(
-            ids.map((id) => {
-                return (
+            ids.map(
+                (id) =>
                     lruStore.file.documentData.getItem(id, projectionKey)
-                    || redisStore.file.documentData.getItem(id, projectionKey)
-                );
-            }),
+                    || redisStore.file.documentData.getItem(id, projectionKey),
+            ),
         );
 
         if (!allFileDocumentData.includes(null)) {

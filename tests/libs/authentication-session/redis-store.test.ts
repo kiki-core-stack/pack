@@ -124,42 +124,40 @@ describe.concurrent('redis authentication session store', () => {
 
     it('rejects malformed stored sessions before principal validation', async ({ expect }) => {
         const generated = generateStoredSessionToken();
-        for (
-            const [fieldIndex, invalidValue] of [
-                [
-                    0,
-                    'invalid',
-                ],
-                [
-                    2,
-                    null,
-                ],
-                [
-                    3,
-                    'invalid',
-                ],
-                [
-                    7,
-                    null,
-                ],
-                [
-                    7,
-                    '-1',
-                ],
-                [
-                    7,
-                    '1.5',
-                ],
-                [
-                    7,
-                    String(Number.MAX_SAFE_INTEGER + 1),
-                ],
-                [
-                    10,
-                    null,
-                ],
-            ] as const
-        ) {
+        for (const [fieldIndex, invalidValue] of [
+            [
+                0,
+                'invalid',
+            ],
+            [
+                2,
+                null,
+            ],
+            [
+                3,
+                'invalid',
+            ],
+            [
+                7,
+                null,
+            ],
+            [
+                7,
+                '-1',
+            ],
+            [
+                7,
+                '1.5',
+            ],
+            [
+                7,
+                String(Number.MAX_SAFE_INTEGER + 1),
+            ],
+            [
+                10,
+                null,
+            ],
+        ] as const) {
             const storedSession = createStoredSessionRow({
                 id: generated.selector,
                 validatorDigest: generated.validatorDigest,
@@ -253,11 +251,14 @@ describe.concurrent('redis authentication session store', () => {
 
     it('preserves milliseconds when calculating absolute and idle expiration', async ({ expect }) => {
         const send = vi.fn().mockResolvedValueOnce('epoch').mockResolvedValueOnce(1);
-        const store = createStore(createClient({ send }), {
-            absoluteTtlSeconds: 60,
-            idleTtlSeconds: 10,
-            touchIntervalSeconds: 0,
-        });
+        const store = createStore(
+            createClient({ send }),
+            {
+                absoluteTtlSeconds: 60,
+                idleTtlSeconds: 10,
+                touchIntervalSeconds: 0,
+            },
+        );
 
         const created = await store.create({
             ip: '127.0.0.1',
@@ -289,12 +290,10 @@ describe.concurrent('redis authentication session store', () => {
     });
 
     it('rejects an invalid token HMAC key when creating the store', ({ expect }) => {
-        for (
-            const invalidTokenHmacKey of [
-                'short',
-                new Uint8Array(31),
-            ]
-        ) {
+        for (const invalidTokenHmacKey of [
+            'short',
+            new Uint8Array(31),
+        ]) {
             expect(
                 () => createRedisAuthenticationSessionStore({
                     client: createClient(),
@@ -306,46 +305,42 @@ describe.concurrent('redis authentication session store', () => {
     });
 
     it('rejects invalid authentication session durations', ({ expect }) => {
-        for (
-            const options of [
-                { absoluteTtlSeconds: 0 },
-                { absoluteTtlSeconds: Number.MAX_SAFE_INTEGER },
-                { absoluteTtlSeconds: 8_640_000_000_000 },
-                { idleTtlSeconds: Number.NaN },
-                { idleTtlSeconds: 1.5 },
-                { touchIntervalSeconds: -1 },
-                {
-                    idleTtlSeconds: 10,
-                    touchIntervalSeconds: 10,
-                },
-                { qrCodeLoginApprovalTtlSeconds: 0 },
-                { qrCodeLoginRequestTtlSeconds: 1.5 },
-                {
-                    qrCodeLoginApprovalTtlSeconds: 11,
-                    qrCodeLoginRequestTtlSeconds: 10,
-                },
-            ]
-        ) {
+        for (const options of [
+            { absoluteTtlSeconds: 0 },
+            { absoluteTtlSeconds: Number.MAX_SAFE_INTEGER },
+            { absoluteTtlSeconds: 8_640_000_000_000 },
+            { idleTtlSeconds: Number.NaN },
+            { idleTtlSeconds: 1.5 },
+            { touchIntervalSeconds: -1 },
+            {
+                idleTtlSeconds: 10,
+                touchIntervalSeconds: 10,
+            },
+            { qrCodeLoginApprovalTtlSeconds: 0 },
+            { qrCodeLoginRequestTtlSeconds: 1.5 },
+            {
+                qrCodeLoginApprovalTtlSeconds: 11,
+                qrCodeLoginRequestTtlSeconds: 10,
+            },
+        ]) {
             expect(() => createStore(createClient(), options)).toThrow(TypeError);
         }
     });
 
     it('rejects expired sessions before authoritative validation', async ({ expect }) => {
-        for (
-            const { rowOverrides, storeOptions } of [
-                {
-                    rowOverrides: { absoluteExpiresAt: 10_000 },
-                    storeOptions: {},
+        for (const { rowOverrides, storeOptions } of [
+            {
+                rowOverrides: { absoluteExpiresAt: 10_000 },
+                storeOptions: {},
+            },
+            {
+                rowOverrides: { lastActiveAt: 5_000 },
+                storeOptions: {
+                    idleTtlSeconds: 5,
+                    touchIntervalSeconds: 1,
                 },
-                {
-                    rowOverrides: { lastActiveAt: 5_000 },
-                    storeOptions: {
-                        idleTtlSeconds: 5,
-                        touchIntervalSeconds: 1,
-                    },
-                },
-            ]
-        ) {
+            },
+        ]) {
             const generated = generateStoredSessionToken(rowOverrides);
             const validateStoredPrincipal = vi.fn().mockResolvedValue(true);
             const send = vi.fn();
@@ -378,13 +373,11 @@ describe.concurrent('redis authentication session store', () => {
     it('rejects an invalid principal authentication revision', async ({ expect }) => {
         const store = createStore();
 
-        for (
-            const principalAuthenticationRevision of [
-                -1,
-                1.5,
-                Number.NaN,
-            ]
-        ) {
+        for (const principalAuthenticationRevision of [
+            -1,
+            1.5,
+            Number.NaN,
+        ]) {
             await expect(
                 store.create({
                     ip: '127.0.0.1',

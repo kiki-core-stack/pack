@@ -60,26 +60,24 @@ describe.concurrent('authentication session token', () => {
         const generated = generateAuthenticationSessionToken(tokenBinding, tokenHmacKey);
         const parsed = parseAuthenticationSessionToken(generated.token)!;
 
-        for (
-            const changedBinding of [
-                {
-                    ...tokenBinding,
-                    absoluteExpiresAt: tokenBinding.absoluteExpiresAt + 1,
-                },
-                {
-                    ...tokenBinding,
-                    epoch: 'another-epoch',
-                },
-                {
-                    ...tokenBinding,
-                    principalAuthenticationRevision: 4,
-                },
-                {
-                    ...tokenBinding,
-                    principalId: 'another-admin',
-                },
-            ]
-        ) {
+        for (const changedBinding of [
+            {
+                ...tokenBinding,
+                absoluteExpiresAt: tokenBinding.absoluteExpiresAt + 1,
+            },
+            {
+                ...tokenBinding,
+                epoch: 'another-epoch',
+            },
+            {
+                ...tokenBinding,
+                principalAuthenticationRevision: 4,
+            },
+            {
+                ...tokenBinding,
+                principalId: 'another-admin',
+            },
+        ]) {
             expect(
                 verifyAuthenticationSessionToken(
                     changedBinding,

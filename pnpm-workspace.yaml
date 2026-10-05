@@ -1,5 +1,6 @@
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
+  - '@kikiutils/eslint-config' # TODO: remove it
   - '@kikiutils/mongoose' # TODO: remove it
   - '@kikiutils/shared' # TODO: remove it
   - '@types/bun'

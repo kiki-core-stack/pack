@@ -67,10 +67,13 @@ describe.concurrent('hono authentication session', () => {
             .post(
                 '/rotate',
                 async (ctx) => ctx.json({
-                    session: await authenticationSession.rotate(ctx, {
-                        ip: '127.0.0.1',
-                        principalId: 'admin-id',
-                    }),
+                    session: await authenticationSession.rotate(
+                        ctx,
+                        {
+                            ip: '127.0.0.1',
+                            principalId: 'admin-id',
+                        },
+                    ),
                 }),
             );
 
@@ -215,10 +218,13 @@ describe.concurrent('hono authentication session', () => {
             .post(
                 '/rotate',
                 async (ctx) => ctx.json({
-                    session: await authenticationSession.rotate(ctx, {
-                        ip: '127.0.0.1',
-                        principalId: 'admin-id',
-                    }),
+                    session: await authenticationSession.rotate(
+                        ctx,
+                        {
+                            ip: '127.0.0.1',
+                            principalId: 'admin-id',
+                        },
+                    ),
                 }),
             );
 
@@ -266,10 +272,13 @@ describe.concurrent('hono authentication session', () => {
         const app = new Hono()
             .post(
                 '/rotate',
-                async (ctx) => ctx.json(await authenticationSession.rotate(ctx, {
-                    ip: '127.0.0.2',
-                    principalId: 'admin-id',
-                })),
+                async (ctx) => ctx.json(await authenticationSession.rotate(
+                    ctx,
+                    {
+                        ip: '127.0.0.2',
+                        principalId: 'admin-id',
+                    },
+                )),
             )
             .delete(
                 '/',
@@ -394,10 +403,13 @@ describe.concurrent('hono authentication session', () => {
 
         const app = new Hono().post(
             '/',
-            async (ctx) => ctx.json(await authenticationSession.completeQrCodeLogin(ctx, {
-                completionToken: 'completion-token',
-                ip: '127.0.0.2',
-            })),
+            async (ctx) => ctx.json(await authenticationSession.completeQrCodeLogin(
+                ctx,
+                {
+                    completionToken: 'completion-token',
+                    ip: '127.0.0.2',
+                },
+            )),
         );
 
         const response = await app.request('/', { method: 'POST' });

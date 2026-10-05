@@ -45,23 +45,24 @@ describe.concurrent('redis authentication session scripts', () => {
             'qr-code-login/create',
             redisScripts.authenticationSession.qrCodeLogin.create,
         ],
-    ])('imports %s as Lua source text', async ([name, script], { expect }) => {
-        const source = await readFile(
-            new URL(`../../../src/redis-scripts/authentication-session/${name}.lua`, import.meta.url),
-            'utf8',
-        );
+    ])(
+        'imports %s as Lua source text',
+        async ([name, script], { expect }) => {
+            const source = await readFile(
+                new URL(`../../../src/redis-scripts/authentication-session/${name}.lua`, import.meta.url),
+                'utf8',
+            );
 
-        expect(script).toBe(source);
-    });
+            expect(script).toBe(source);
+        },
+    );
 
     it('bounds session indexes and preserves authoritative metadata', ({ expect }) => {
-        for (
-            const script of [
-                redisScripts.authenticationSession.create,
-                redisScripts.authenticationSession.finalize,
-                redisScripts.authenticationSession.rotate,
-            ]
-        ) {
+        for (const script of [
+            redisScripts.authenticationSession.create,
+            redisScripts.authenticationSession.finalize,
+            redisScripts.authenticationSession.rotate,
+        ]) {
             expect(script).toMatch(/redis\.call\(\s*['"]ZRANGEBYSCORE['"]/);
             expect(script).toMatch(/['"]LIMIT['"],\s*0,\s*256/);
             expect(script).toMatch(/redis\.call\(\s*['"]TTL['"]/);

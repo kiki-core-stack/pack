@@ -183,11 +183,12 @@ export function createRedisAuthenticationSessionManager(
         if (await client.get(epochKey) !== epoch) return [];
 
         // 目前裝置永遠第一，其餘依最近活動、登入時間及 id 穩定排序。
-        list.sort((a, b) =>
-            Number(b.isCurrent) - Number(a.isCurrent)
-            || b.lastActiveAt - a.lastActiveAt
-            || b.loggedAt - a.loggedAt
-            || a.id.localeCompare(b.id),
+        list.sort(
+            (a, b) =>
+                Number(b.isCurrent) - Number(a.isCurrent)
+                || b.lastActiveAt - a.lastActiveAt
+                || b.loggedAt - a.loggedAt
+                || a.id.localeCompare(b.id),
         );
 
         return list;
