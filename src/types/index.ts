@@ -10,8 +10,14 @@ export type ManagementType = 'admin';
 export type ZodValidatorType<
     Output = any,
     O extends Exclude<keyof Output, ZodValidatorTypeExcludeField> = never,
+    Exclude_idField extends boolean = true,
 > = ZodType<
-    OmitMongooseTimestampAndOtherFields<Output, O | ZodValidatorTypeExcludeField>
+    OmitMongooseTimestampAndOtherFields<
+        Output,
+        | (Exclude_idField extends true ? '_id' : never)
+        | O
+        | ZodValidatorTypeExcludeField
+    >
 >;
 
 type ZodValidatorTypeExcludeField = 'id' | keyof WithAdminAuditData;
