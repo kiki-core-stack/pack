@@ -9,5 +9,8 @@ minimumReleaseAgeExclude:
 trustPolicy: no-downgrade
 shellEmulator: true
 
+overrides:
+  '@typescript-eslint/eslint-plugin': 8.71.0
+
 allowBuilds:
   msgpackr-extract: true
