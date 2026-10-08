@@ -24,7 +24,6 @@ type JobOutboxEventModel = BaseMongoosePaginateModel<JobOutboxEvent>;
 const schema = new Schema<JobOutboxEvent, JobOutboxEventModel>({
     nextPublishAt: s.date().default(() => new EnhancedDate()).required,
     payload: s.mixed().required,
-    // @ts-expect-error Ignore this error.
     publishAttemptCount: s.int32().default(0).min(0).required,
     publishClaimId: s.string().trim.nonRequired,
     publishLeaseUntil: s.date().nonRequired,

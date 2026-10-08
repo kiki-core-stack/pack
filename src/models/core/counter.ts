@@ -17,7 +17,6 @@ type CoreCounterModel = BaseMongoosePaginateModel<CoreCounter>;
 
 const schema = new Schema<CoreCounter, CoreCounterModel>({
     _id: s.number().enum(getEnumNumberValues(CoreCounterType)).required,
-    // @ts-expect-error Ignore this error.
     seq: s.int32().default(0).min(0).required,
 });
 

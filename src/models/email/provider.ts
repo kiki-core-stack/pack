@@ -25,7 +25,6 @@ const schema = new Schema<EmailProvider, EmailProviderModel>({
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(64).trim.unique.required,
-    // @ts-expect-error Ignore this error.
     priority: s.int32().default(0).required,
 });
 
