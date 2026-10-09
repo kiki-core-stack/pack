@@ -1,7 +1,7 @@
 {
   "name": "@kiki-core-stack/pack",
   "type": "module",
-  "version": "0.96.0",
+  "version": "0.0.0",
   "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
@@ -11,10 +11,8 @@
   },
   "keywords": [],
   "sideEffects": [
-    "./src/hono-backend/setups/mongoose-model-statics/assert-update-one-by-route-id.ts",
-    "./src/hono-backend/setups/mongoose-model-statics/find-by-route-id-or-throw-not-found-error.ts",
-    "./src/hono-backend/setups/mongoose-model-statics/find-by-route-id.ts",
-    "./src/hono-backend/setups/mongoose-model-statics/index.ts"
+    "./src/hono-backend/setups/mongoose-model-statics/**/*",
+    "./src/models/**/*"
   ],
   "exports": {
     "./constants": {
