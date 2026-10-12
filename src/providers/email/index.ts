@@ -30,10 +30,8 @@ export async function closeEmailProviderInstances() {
 export function getOrCreateEmailProviderInstance(provider: LeanedEmailProvider) {
     let instance = instances.get(provider.cacheKey);
     if (instance) return instance;
-    const instanceClass = providerCodeToInstanceClassMap[provider.code];
-    if (!instanceClass) throw new EmailProviderError('Unsupported Email provider', 'not-accepted');
-
-    // eslint-disable-next-line new-cap
-    instances.set(provider.cacheKey, instance = new instanceClass(provider));
+    const InstanceClass = providerCodeToInstanceClassMap[provider.code];
+    if (!InstanceClass) throw new EmailProviderError('Unsupported Email provider', 'not-accepted');
+    instances.set(provider.cacheKey, instance = new InstanceClass(provider));
     return instance;
 }

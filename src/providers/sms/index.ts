@@ -34,10 +34,8 @@ export async function closeSmsProviderInstances() {
 export function getOrCreateSmsProviderInstance(provider: LeanedSmsProvider) {
     let instance = instances.get(provider.cacheKey);
     if (instance) return instance;
-    const instanceClass = providerCodeToInstanceClassMap[provider.code];
-    if (!instanceClass) throw new SmsProviderError('Unsupported Sms provider', 'not-accepted');
-
-    // eslint-disable-next-line new-cap
-    instances.set(provider.cacheKey, instance = new instanceClass(provider));
+    const InstanceClass = providerCodeToInstanceClassMap[provider.code];
+    if (!InstanceClass) throw new SmsProviderError('Unsupported Sms provider', 'not-accepted');
+    instances.set(provider.cacheKey, instance = new InstanceClass(provider));
     return instance;
 }

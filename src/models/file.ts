@@ -102,10 +102,9 @@ schema.pre<Query<FileDocument[], File>>(
 
         if (!allFileDocumentData.includes(null)) {
             this._mongooseOptions.isFromCache = true;
-            const model = this.model;
+            const Model = this.model;
             (this as any)._find = function () {
-                // eslint-disable-next-line new-cap
-                return allFileDocumentData.map((fileDocumentData) => new model(fileDocumentData));
+                return allFileDocumentData.map((fileDocumentData) => new Model(fileDocumentData));
             };
         }
     },
