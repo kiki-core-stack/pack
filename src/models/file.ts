@@ -139,10 +139,9 @@ schema.pre<Query<FileDocument | null, File>>(
         if (!fileDocumentData) fileDocumentData = await redisStore.file.documentData.getItem(filter._id, projectionKey);
         if (fileDocumentData) {
             this._mongooseOptions.isFromCache = true;
-            const model = this.model;
+            const Model = this.model;
             (this as any)._findOne = function () {
-                // eslint-disable-next-line new-cap
-                return new model(fileDocumentData);
+                return new Model(fileDocumentData);
             };
         }
     },
