@@ -74,10 +74,7 @@ function getAuthenticationSessionTokenDigestBytes(
     tokenBytes: Uint8Array,
     tokenHmacKey: string | Uint8Array,
 ) {
-    // Bun runtime 使用原生 CryptoHasher；其他相容環境退回 Node HMAC。
-    const hasher = typeof Bun !== 'undefined'
-        ? new Bun.CryptoHasher('sha256', tokenHmacKey)
-        : createHmac('sha256', tokenHmacKey);
+    const hasher = createHmac('sha256', tokenHmacKey);
 
     // 使用固定欄位順序序列化 domain binding，避免不同語意資料產生相同輸入。
     hasher.update(JSON.stringify([

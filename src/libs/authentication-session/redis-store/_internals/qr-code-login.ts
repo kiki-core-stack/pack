@@ -425,10 +425,7 @@ function getAuthenticationSessionQrCodeLoginTokenDigestBytes(
     tokenBytes: Uint8Array,
     tokenHmacKey: string | Uint8Array,
 ) {
-    // Bun runtime 優先使用原生 CryptoHasher，其他相容環境使用 Node HMAC。
-    const hasher = typeof Bun !== 'undefined'
-        ? new Bun.CryptoHasher('sha256', tokenHmacKey)
-        : createHmac('sha256', tokenHmacKey);
+    const hasher = createHmac('sha256', tokenHmacKey);
 
     // 固定 domain、principal type 與 capability 用途，隔離一般 Session 及另一種 capability。
     hasher.update(JSON.stringify([
