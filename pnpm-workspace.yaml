@@ -1,13 +1,15 @@
+minimumReleaseAge: 1440
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
-  - '@kikiutils/eslint-config' # TODO: remove it
-  - '@kikiutils/mongoose' # TODO: remove it
-  - '@kikiutils/shared' # TODO: remove it
   - '@types/bun'
   - bun-types
 
+resolutionMode: highest
 trustPolicy: no-downgrade
+strictSsl: true
+preferFrozenLockfile: true
 shellEmulator: true
+updateNotifier: false
 
 overrides:
   '@typescript-eslint/eslint-plugin': 8.71.0
