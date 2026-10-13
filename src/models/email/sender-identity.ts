@@ -8,7 +8,7 @@ import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
 import { EmailSenderIdentityKey } from '../../constants/email';
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { EmailSenderIdentityData } from '../../types/data/email';
 

@@ -8,8 +8,8 @@ import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import type { SetFieldType } from 'type-fest';
 
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import { registerMongooseSchemaArgon2HashFieldHandlers } from '../../libs/mongoose';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminData } from '../../types/data/admin';
 

@@ -7,8 +7,8 @@ import type {
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import { PlatformConfigScope } from '../../constants/platform';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { PlatformConfigData } from '../../types/data/platform';
 

@@ -9,11 +9,11 @@ import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import type { SetFieldType } from 'type-fest';
 
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
 import {
     PlatformIpAccessPolicyMode,
     PlatformIpAccessPolicyScope,
 } from '../../constants/platform';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { PlatformIpAccessPolicyData } from '../../types/data/platform';
 import { AdminModel } from '../admin';

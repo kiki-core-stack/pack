@@ -6,7 +6,7 @@ import type {
 } from '@kikiutils/mongoose/types';
 import { Schema } from 'mongoose';
 
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminRoleData } from '../../types/data/admin';
 

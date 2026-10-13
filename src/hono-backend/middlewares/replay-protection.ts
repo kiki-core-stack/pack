@@ -4,8 +4,8 @@ import type {
     Next,
 } from 'hono';
 
+import { redisClient } from '../../connections/redis';
 import { projectRedisKeyPrefix } from '../../constants';
-import { redisClient } from '../../constants/redis';
 import { throwApiError } from '../libs/api';
 
 export function createReplayProtectionMiddleware(

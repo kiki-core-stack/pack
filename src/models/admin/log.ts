@@ -8,8 +8,7 @@ import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
 import { AdminLogType } from '../../constants/admin';
-import { schemaTimestampsConfigOnlyCreatedAt } from '../../constants/mongoose';
-import * as mongooseRefSchemas from '../../constants/mongoose/ref-schemas';
+import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { AdminLogData } from '../../types/data/admin';
 
@@ -25,7 +24,12 @@ const schema = new Schema<AdminLog, AdminLogModel>(
         note: s.string().trim.nonRequired,
         type: s.number().enum(getEnumNumberValues(AdminLogType)).required,
     },
-    { timestamps: schemaTimestampsConfigOnlyCreatedAt },
+    {
+        timestamps: {
+            createdAt: true,
+            updatedAt: false,
+        },
+    },
 );
 
 export const AdminLogModel = buildMongooseModel<AdminLog, AdminLogModel>('admin.logs', 'AdminLog', schema);

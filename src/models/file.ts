@@ -16,7 +16,6 @@ import type {
 } from 'mongoose';
 
 import { FileStorageProvider } from '../constants/file';
-import { schemaTimestampsConfigOnlyCreatedAt } from '../constants/mongoose';
 import * as lruStore from '../stores/lru';
 import * as redisStore from '../stores/redis';
 import type { SmartDataToBaseMongooseDocType } from '../types/data';
@@ -32,7 +31,12 @@ const schema = new Schema<File, FileModel>(
         path: s.string().trim.required,
         provider: s.number().enum(getEnumNumberValues(FileStorageProvider)).required,
     },
-    { timestamps: schemaTimestampsConfigOnlyCreatedAt },
+    {
+        timestamps: {
+            createdAt: true,
+            updatedAt: false,
+        },
+    },
 );
 
 function isEligibleIdQuery(

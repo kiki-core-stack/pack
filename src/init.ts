@@ -10,12 +10,12 @@ import {
 } from 'es-toolkit';
 import { nanoid } from 'nanoid';
 
+import { redisClient } from './connections/redis';
 import { projectRedisKeyPrefix } from './constants';
 import {
     defaultPlatformConfigs,
     PlatformConfigScope,
 } from './constants/platform';
-import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
 import { EmailProviderModel } from './models/email/provider';
 import { PlatformConfigModel } from './models/platform/config';
