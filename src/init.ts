@@ -7,15 +7,15 @@ import { consola as logger } from 'consola';
 import { nanoid } from 'nanoid';
 
 import { projectRedisKeyPrefix } from './constants';
-import { redisClient } from './constants/redis';
 import {
-    defaultSystemConfigs,
-    SystemConfigScope,
-} from './constants/system';
+    defaultPlatformConfigs,
+    PlatformConfigScope,
+} from './constants/platform';
+import { redisClient } from './constants/redis';
 import { AdminModel } from './models/admin';
 import { EmailProviderModel } from './models/email/provider';
+import { PlatformConfigModel } from './models/platform/config';
 import { SmsProviderModel } from './models/sms/provider';
-import { SystemConfigModel } from './models/system/config';
 
 export async function initializeSystemStartup() {
     logger.info('Initializing startup...');
@@ -62,14 +62,14 @@ export async function initializeSystemStartup() {
 
             // Run other initialization tasks with session
 
-            // Create default system configs
-            for (const systemConfigScope of getEnumNumberValues(SystemConfigScope)) {
+            // Create default platform configs
+            for (const platformConfigScope of getEnumNumberValues(PlatformConfigScope)) {
                 const now = new EnhancedDate();
-                await SystemConfigModel.updateOne(
-                    { scope: systemConfigScope },
+                await PlatformConfigModel.updateOne(
+                    { scope: platformConfigScope },
                     {
                         $setOnInsert: {
-                            config: defaultSystemConfigs[systemConfigScope],
+                            config: defaultPlatformConfigs[platformConfigScope],
                             createdAt: now,
                             createdByAdmin: admin._id,
                             updatedAt: now,
