@@ -4,8 +4,8 @@ import type {
     Next,
 } from 'hono';
 
-import { redisClient } from '../../connections/redis';
 import { projectRedisKeyPrefix } from '../../constants';
+import { tryClaimRedisKey } from '../../libs/redis/lock';
 import { throwApiError } from '../libs/api';
 
 export function createReplayProtectionMiddleware(
@@ -13,7 +13,7 @@ export function createReplayProtectionMiddleware(
     timeoutMs: number = 5 * 1000,
     nonceMaxLength: number = 32,
     nonceRedisKeyNamespace?: ((ctx: Context) => string) | string,
-    nonceRedisTtlBufferSeconds: number = 3,
+    nonceRedisTtlBufferMilliseconds: number = 3 * 1000,
 ) {
     return async (ctx: Context, next: Next) => {
         if (shouldProtect && !shouldProtect(ctx)) return await next();
@@ -34,16 +34,7 @@ export function createReplayProtectionMiddleware(
                 ? `${projectRedisKeyPrefix}:replayProtection:nonce:${nonceRedisKeyScope}:${nonce}`
                 : `${projectRedisKeyPrefix}:replayProtection:nonce:${nonce}`;
 
-        if (
-            !await redisClient.set(
-                nonceRedisKey,
-                '',
-                'EX',
-                (Math.ceil(timeoutMs / 1000) + nonceRedisTtlBufferSeconds).toString(),
-                'NX',
-            )
-        ) throwApiError(403);
-
+        if (!await tryClaimRedisKey(nonceRedisKey, timeoutMs + nonceRedisTtlBufferMilliseconds)) throwApiError(403);
         return await next();
     };
 }

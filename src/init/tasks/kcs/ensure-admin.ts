@@ -1,5 +1,5 @@
 import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
-import { consola as logger } from 'consola';
+import logger from 'consola';
 import type { ClientSession } from 'mongoose';
 import { nanoid } from 'nanoid';
 
