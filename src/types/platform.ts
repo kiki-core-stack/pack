@@ -8,7 +8,6 @@ import type {
 } from '../constants/platform';
 import type { platformConfigValidators } from '../schemas/platform/config';
 
-import type { AuthenticationSessionPrincipalType } from './authentication-session';
 import type { PlatformIpAccessPolicyData } from './data/platform';
 import type { IpAddressRange } from './ip';
 
@@ -23,8 +22,8 @@ export type PlatformIpAccessPolicyTarget =
   | {
       /** null 表示該身分類型的所有帳號；指定帳號時必須為非空陣列。 */
       principalIds: null | string[];
-      principalType: AuthenticationSessionPrincipalType;
-      scope: PlatformIpAccessPolicyScope;
+      principalType: 'admin';
+      scope: PlatformIpAccessPolicyScope.AdminManagement;
   }
   | {
       principalIds: null;
