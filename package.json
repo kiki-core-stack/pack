@@ -25,16 +25,6 @@
       "import": null,
       "require": null
     },
-    "./constants/mongoose": {
-      "types": "./src/constants/mongoose/index.ts",
-      "import": "./src/constants/mongoose/index.ts",
-      "require": null
-    },
-    "./constants/mongoose/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
     "./hono-backend/libs/api": {
       "types": "./src/hono-backend/libs/api/index.ts",
       "import": "./src/hono-backend/libs/api/index.ts",
