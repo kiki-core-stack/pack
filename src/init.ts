@@ -1,5 +1,6 @@
 import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import { delay } from '@kikiutils/shared/time';
 import { consola as logger } from 'consola';
@@ -7,9 +8,14 @@ import { nanoid } from 'nanoid';
 
 import { projectRedisKeyPrefix } from './constants';
 import { redisClient } from './constants/redis';
+import {
+    defaultSystemConfigs,
+    SystemConfigScope,
+} from './constants/system';
 import { AdminModel } from './models/admin';
 import { EmailProviderModel } from './models/email/provider';
 import { SmsProviderModel } from './models/sms/provider';
+import { SystemConfigModel } from './models/system/config';
 
 export async function initializeSystemStartup() {
     logger.info('Initializing startup...');
@@ -55,6 +61,27 @@ export async function initializeSystemStartup() {
             }
 
             // Run other initialization tasks with session
+
+            // Create default system configs
+            for (const systemConfigScope of getEnumNumberValues(SystemConfigScope)) {
+                const now = new EnhancedDate();
+                await SystemConfigModel.updateOne(
+                    { scope: systemConfigScope },
+                    {
+                        $setOnInsert: {
+                            config: defaultSystemConfigs[systemConfigScope],
+                            createdAt: now,
+                            createdByAdmin: admin._id,
+                            updatedAt: now,
+                        },
+                    },
+                    {
+                        session,
+                        timestamps: false,
+                        upsert: true,
+                    },
+                );
+            }
 
             // Others downstream projects tasks with session
         });
