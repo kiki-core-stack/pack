@@ -252,7 +252,7 @@ function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {
 
 function getPlatformIpAccessPolicyTargetKey(
     scope: PlatformIpAccessPolicyTarget['scope'],
-    principalType?: PlatformIpAccessPolicyTarget['principalType'],
+    principalType?: AuthenticationSessionPrincipalType | null,
     principalId?: string,
 ) {
     if (scope === null) return 'global';
