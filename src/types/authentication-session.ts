@@ -5,6 +5,7 @@ import type {
     AuthenticationSessionQrCodeLoginCreationData,
 } from './data/authentication-session';
 
+// TODO: 已經在第二個非預期地方被使用，之後完全重寫auth相關項目時，改名或搬遷
 export type AuthenticationSessionPrincipalType = 'admin';
 
 /**
