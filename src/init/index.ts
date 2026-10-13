@@ -1,6 +1,5 @@
 import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
-import { delay } from '@kikiutils/shared/time';
 import logger from 'consola';
 
 import { projectRedisKeyPrefix } from '../constants';
@@ -17,8 +16,8 @@ export async function initializeSystemStartup() {
             return logger.error('Database connection timed out after 10 seconds');
         }
 
-        if (mongooseConnection.readyState === 2) await delay(50);
-        else await delay(1000);
+        if (mongooseConnection.readyState === 2) await Bun.sleep(50);
+        else await Bun.sleep(1000);
     }
 
     logger.success('Database connected');
