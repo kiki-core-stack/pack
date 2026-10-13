@@ -39,7 +39,7 @@ export enum PlatformIpAccessPolicyScope {
 
 export const defaultPlatformConfigs: Readonly<PlatformConfigScopeToValuesMap> = {
     [PlatformConfigScope.AdminManagement]: {},
-    [PlatformConfigScope.System]: { ipAccessPolicy: { enabled: true } },
+    [PlatformConfigScope.System]: { ipAccessPolicy: { enabled: false } },
 };
 
 export const platformConfigScopeToTextMap: ReadonlyRecord<PlatformConfigScope, string> = {
