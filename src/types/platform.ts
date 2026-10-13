@@ -2,11 +2,15 @@ import type * as z from 'zod';
 
 import type {
     PlatformConfigScope,
+    PlatformIpAccessPolicyCheckReason,
+    PlatformIpAccessPolicyMode,
     PlatformIpAccessPolicyScope,
 } from '../constants/platform';
 import type { platformConfigValidators } from '../schemas/platform/config';
 
 import type { AuthenticationSessionPrincipalType } from './authentication-session';
+import type { PlatformIpAccessPolicyData } from './data/platform';
+import type { IpAddressRange } from './ip';
 
 export type PlatformConfigScopeToValuesMap = {
     [S in PlatformConfigScope]: z.infer<(typeof platformConfigValidators)[S]>;
@@ -37,4 +41,38 @@ export type PlatformIpAccessPolicyTarget =
 export namespace PlatformConfigs {
     export type AdminManagement = z.infer<(typeof platformConfigValidators)[PlatformConfigScope.AdminManagement]>;
     export type System = z.infer<(typeof platformConfigValidators)[PlatformConfigScope.System]>;
+}
+
+export type PlatformIpAccessPolicyCheckResult =
+  | {
+      allowed: false;
+      policyId: string;
+      reason: PlatformIpAccessPolicyCheckReason.AllowlistMiss | PlatformIpAccessPolicyCheckReason.BlacklistMatch;
+  }
+  | {
+      allowed: false;
+      reason: PlatformIpAccessPolicyCheckReason.InvalidIp;
+  }
+  | {
+      allowed: true;
+      reason:
+        | PlatformIpAccessPolicyCheckReason.Allowed
+        | PlatformIpAccessPolicyCheckReason.Disabled
+        | PlatformIpAccessPolicyCheckReason.NoApplicablePolicy;
+  };
+
+export interface CachedPlatformIpAccessPolicySnapshot {
+    enabled: boolean;
+    policies: Pick<PlatformIpAccessPolicyData, 'id' | 'ipEntries' | 'mode' | 'targets'>[];
+}
+
+export interface CompiledPlatformIpAccessPolicy {
+    id: string;
+    mode: PlatformIpAccessPolicyMode;
+    ranges: { ipv4: IpAddressRange[]; ipv6: IpAddressRange[] };
+}
+
+export interface CompiledPlatformIpAccessPolicySnapshot {
+    enabled: boolean;
+    targetKeyToPlatformIpAccessPoliciesMap: Map<string, CompiledPlatformIpAccessPolicy[]>;
 }

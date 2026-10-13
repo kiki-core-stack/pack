@@ -1,6 +1,7 @@
 minimumReleaseAge: 1440
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
+  - '@kikiutils/shared'
   - '@types/bun'
   - bun-types
 
