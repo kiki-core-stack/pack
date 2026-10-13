@@ -50,6 +50,16 @@
       "import": null,
       "require": null
     },
+    "./init": {
+      "types": "./src/init/index.ts",
+      "import": "./src/init/index.ts",
+      "require": null
+    },
+    "./init/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./libs/authentication-session/_token": {
       "types": null,
       "import": null,
