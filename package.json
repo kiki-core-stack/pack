@@ -171,6 +171,16 @@
       "import": null,
       "require": null
     },
+    "./redis-scripts/lock": {
+      "types": "./src/redis-scripts/lock/index.ts",
+      "import": "./src/redis-scripts/lock/index.ts",
+      "require": null
+    },
+    "./redis-scripts/lock/index": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./stores/lru": {
       "types": "./src/stores/lru/index.ts",
       "import": "./src/stores/lru/index.ts",
@@ -345,7 +355,7 @@
     "ipaddr.js": "^2.5.0",
     "knip": "^6.41.0",
     "lru-cache": "^11.5.3",
-    "mongoose": "^9.11.1",
+    "mongoose": "^9.11.2",
     "msgpackr": "^2.1.0",
     "nanoid": "^6.0.2",
     "nodemailer": "^10.1.0",
@@ -357,6 +367,6 @@
     "unplugin-unused": "^0.6.0",
     "vitest": "^5.0.4",
     "ws.io-client": "^0.4.1",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   }
 }
