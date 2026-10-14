@@ -71,6 +71,8 @@ export class LocalFileStorage extends BaseFileStorage {
     }
 
     // Public methods
+
+    // TODO(async-style): 待所有專案統一 try/catch、then、catch、finally 的使用準則後再整理，必要時由 ESLint 規範。
     delete(filePath: PathLike) {
         return Promise.resolve()
             .then(() => this.#resolveStoragePath(filePath))

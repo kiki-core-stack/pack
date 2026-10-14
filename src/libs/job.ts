@@ -1,12 +1,9 @@
-import type { ReadonlyRecord } from '@kikiutils/shared/types';
 import type { ClientSession } from 'mongoose';
-import type {
-    ZodSafeParseResult,
-    ZodType,
-} from 'zod';
+import type { ZodSafeParseResult } from 'zod';
 
 import { JobType } from '../constants/job';
 import { JobOutboxEventModel } from '../models/job/outbox-event';
+import { jobPayloadSchemas } from '../schemas/job';
 import type {
     CreateJobOutboxEventInput,
     JobPayloadByType,
@@ -15,17 +12,11 @@ import type {
 import * as z from './zod';
 
 // Constants/Variables
-// TODO: 移動到constants/job/ 看要怎樣拆分
 const createJobOutboxEventInputSchema = z.object({
     nextPublishAt: z.date().optional(),
     payload: z.unknown(),
     type: z.enum(JobType),
 });
-
-export const jobPayloadSchemas = {
-    [JobType.SendEmail]: z.object({ recordId: z.objectIdString() }),
-    [JobType.SendSms]: z.object({ recordId: z.objectIdString() }),
-} satisfies ReadonlyRecord<JobType, ZodType>;
 
 // Functions
 
