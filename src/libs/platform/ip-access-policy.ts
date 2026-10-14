@@ -126,6 +126,11 @@ export async function checkPlatformIpAccessPolicy(
     };
 }
 
+export async function clearPlatformIpAccessPolicyCache() {
+    lruStore.platform.compiledIpAccessPolicySnapshot.removeItem();
+    await redisStore.platform.ipAccessPolicySnapshot.removeItem();
+}
+
 function compilePlatformIpAccessPolicySnapshot(
     platformIpAccessPolicySnapshot: CachedPlatformIpAccessPolicySnapshot,
 ): CompiledPlatformIpAccessPolicySnapshot {

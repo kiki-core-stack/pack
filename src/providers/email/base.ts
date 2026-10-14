@@ -1,3 +1,4 @@
+import { cloneDeep } from 'es-toolkit';
 import type { Promisable } from 'type-fest';
 
 import type { EmailSendRecord } from '../../models/email/send-record';
@@ -11,7 +12,7 @@ export abstract class BaseEmailProvider<C extends EmailProviderConfig> {
 
     constructor(provider: LeanedEmailProvider) {
         this.apiProxyUrl = provider.apiProxyUrl;
-        this.config = provider.config as C;
+        this.config = cloneDeep(provider.config) as C;
     }
 
     // Public methods

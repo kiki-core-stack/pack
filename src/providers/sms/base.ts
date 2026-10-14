@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
+import { cloneDeep } from 'es-toolkit';
 
 import type { SmsSendRecord } from '../../models/sms/send-record';
 import type { SmsProviderConfig } from '../../types/sms';
@@ -15,7 +16,7 @@ export abstract class BaseSmsProvider<C extends SmsProviderConfig> {
     protected readonly config: C;
 
     constructor(provider: LeanedSmsProvider) {
-        this.config = provider.config as C;
+        this.config = cloneDeep(provider.config) as C;
         this.#axiosProxyAgents = createAxiosProxyAgentOptions(provider.apiProxyUrl);
         this.axiosInstance = axios.create({
             baseURL: this.config.apiUrl,
