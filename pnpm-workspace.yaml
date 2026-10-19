@@ -12,8 +12,5 @@ preferFrozenLockfile: true
 shellEmulator: true
 updateNotifier: false
 
-overrides:
-  '@typescript-eslint/eslint-plugin': 8.71.0
-
 allowBuilds:
   msgpackr-extract: true
