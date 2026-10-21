@@ -1,12 +1,6 @@
 #!/usr/bin/env node
 
-import {
-    mkdir,
-    rm,
-    writeFile,
-} from 'node:fs/promises';
-import { join } from 'node:path';
-
+import { Path } from '@kikiutils/shared/classes/path';
 import {
     constantCase,
     snakeCase,
@@ -15,16 +9,26 @@ import {
 // @ts-expect-error Ignore this error.
 import * as WsIoEventNames from '../src/constants/ws.io-event-names.ts';
 
-const outputDirPath = join(import.meta.dirname, '..', 'generated', 'ws_io_event_names');
-await rm(
-    outputDirPath,
-    {
-        force: true,
-        recursive: true,
-    },
-);
+const eventNamesByValue = new Map<string, string>();
+for (const [zone, names] of Object.entries(WsIoEventNames)) {
+    for (const [key, value] of Object.entries(names)) {
+        const eventName = `${zone}.${key}`;
+        const existingEventName = eventNamesByValue.get(value);
+        if (existingEventName !== undefined) {
+            throw new Error(`WS.IO event key collision: "${value}" is used by ${existingEventName} and ${eventName}`);
+        }
 
-await mkdir(outputDirPath, { recursive: true });
+        eventNamesByValue.set(value, eventName);
+    }
+}
+
+const outputDirPath = new Path(import.meta.dirname, '..', 'generated', 'ws_io_event_names');
+await outputDirPath.rm({
+    force: true,
+    recursive: true,
+});
+
+await outputDirPath.mkdir({ recursive: true });
 await Promise.all(
     Object.entries(WsIoEventNames).map(([zone, names]) => {
         const fileName = `${snakeCase(zone)}.rs`;
@@ -32,6 +36,6 @@ await Promise.all(
             .entries(names)
             .map(([key, value]) => `pub const ${constantCase(key)}: &str = "${value}";`);
 
-        return writeFile(join(outputDirPath, fileName), `${fileContentLines.join('\n')}\n`);
+        return outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
     }),
 );
