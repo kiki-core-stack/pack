@@ -39,3 +39,7 @@ await Promise.all(
         return outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
     }),
 );
+
+await outputDirPath
+    .join('mod.rs')
+    .writeFile(`${Object.keys(WsIoEventNames).sort().map((zone) => `pub mod ${snakeCase(zone)};`).join('\n')}\n`);
