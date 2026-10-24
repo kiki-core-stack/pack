@@ -1,9 +1,11 @@
 minimumReleaseAge: 1440
 minimumReleaseAgeExcludePrune: true
 minimumReleaseAgeExclude:
-  - '@kikiutils/shared'
   - '@types/bun'
   - bun-types
+
+  - '@kikiutils/eslint-config' # TODO: remove it
+  - '@kikiutils/shared' # TODO: remove it
 
 resolutionMode: highest
 trustPolicy: no-downgrade
