@@ -1,10 +1,10 @@
 import { createRedisScriptRunner } from '@kikiutils/shared/redis/script-runner';
-import logger from 'consola';
 import { nanoid } from 'nanoid';
 import type { Promisable } from 'type-fest';
 
 import { redisClient } from '../../connections/redis';
 import * as redisScripts from '../../redis-scripts';
+import { logger } from '../_logger';
 
 export type RedisLockExecutionResult<T> =
   | { acquired: false }

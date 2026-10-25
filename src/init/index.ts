@@ -1,8 +1,8 @@
 import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
-import logger from 'consola';
 
 import { projectRedisKeyPrefix } from '../constants';
+import { logger } from '../libs/_logger';
 import { tryClaimRedisKey } from '../libs/redis/lock';
 
 export async function initializeSystemStartup() {

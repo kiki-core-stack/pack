@@ -1,3 +1,4 @@
+import type { Logger } from '@kikiutils/shared/logger/types';
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 import type {
     Context,
@@ -45,7 +46,7 @@ const notFoundError = new ApiError(404);
 // Functions
 export function setupHonoAppErrorHandling(
     honoApp: Hono,
-    logger: { error: (...args: any[]) => any },
+    logger: Logger,
     customErrorHandler?: ErrorHandler,
     customNotFoundHandler?: NotFoundHandler,
 ) {

@@ -60,6 +60,11 @@
       "import": null,
       "require": null
     },
+    "./libs/_logger": {
+      "types": null,
+      "import": null,
+      "require": null
+    },
     "./libs/authentication-session/_token": {
       "types": null,
       "import": null,
@@ -250,22 +255,22 @@
   "peerDependencies": {
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^9.0.1",
-    "@kikiutils/shared": "^18.2.0",
+    "@kikiutils/shared": "^19.0.0",
     "axios": "^1.20.0",
     "date-fns": "^4.4.0",
-    "es-toolkit": "^1.52.0",
-    "file-type": "^22.1.1",
-    "hono": "^4.13.13",
+    "es-toolkit": "^1.53.0",
+    "file-type": "^22.2.0",
+    "hono": "^4.13.14",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
     "ipaddr.js": "^2.5.0",
     "lru-cache": "^11.5.3",
-    "mongoose": "^9.11.2",
+    "mongoose": "^9.11.4",
     "nanoid": "^6.0.2",
-    "nodemailer": "^10.1.0",
+    "nodemailer": "^10.2.1",
     "sharp": "^0.35.5",
     "type-fest": "^5.10.0",
-    "ws.io-client": "^0.4.1",
+    "ws.io-client": "^0.6.0",
     "zod": "^4.6.7"
   },
   "peerDependenciesMeta": {
