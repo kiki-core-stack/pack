@@ -255,23 +255,13 @@
   "peerDependencies": {
     "@hono/zod-validator": "^0.9.1",
     "@kikiutils/mongoose": "^9.0.1",
-    "@kikiutils/shared": "^19.0.0",
     "axios": "^1.20.0",
-    "date-fns": "^4.4.0",
-    "es-toolkit": "^1.53.0",
-    "file-type": "^22.2.0",
     "hono": "^4.13.14",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
-    "ipaddr.js": "^2.5.0",
-    "lru-cache": "^11.5.3",
     "mongoose": "^9.11.4",
-    "nanoid": "^6.0.2",
     "nodemailer": "^10.2.1",
-    "sharp": "^0.35.5",
-    "type-fest": "^5.10.0",
-    "ws.io-client": "^0.6.0",
-    "zod": "^4.6.7"
+    "sharp": "^0.35.5"
   },
   "peerDependenciesMeta": {
     "@hono/zod-validator": {
@@ -280,19 +270,7 @@
     "@kikiutils/mongoose": {
       "optional": true
     },
-    "@kikiutils/shared": {
-      "optional": true
-    },
     "axios": {
-      "optional": true
-    },
-    "date-fns": {
-      "optional": true
-    },
-    "es-toolkit": {
-      "optional": true
-    },
-    "file-type": {
       "optional": true
     },
     "hono": {
@@ -304,16 +282,7 @@
     "https-proxy-agent": {
       "optional": true
     },
-    "ipaddr.js": {
-      "optional": true
-    },
-    "lru-cache": {
-      "optional": true
-    },
     "mongoose": {
-      "optional": true
-    },
-    "nanoid": {
       "optional": true
     },
     "nodemailer": {
@@ -321,52 +290,45 @@
     },
     "sharp": {
       "optional": true
-    },
-    "type-fest": {
-      "optional": true
-    },
-    "ws.io-client": {
-      "optional": true
-    },
-    "zod": {
-      "optional": true
     }
+  },
+  "dependencies": {
+    "@kikiutils/shared": "^19.0.0",
+    "date-fns": "^4.4.0",
+    "es-toolkit": "^1.53.0",
+    "file-type": "^22.2.0",
+    "ipaddr.js": "^2.5.0",
+    "lru-cache": "^11.5.3",
+    "msgpackr": "^2.1.2",
+    "nanoid": "^6.0.2",
+    "type-fest": "^5.10.0",
+    "ws.io-client": "^0.6.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
     "@hono/zod-validator": "^0.9.1",
     "@johnnymorganz/stylua-bin": "^2.6.0",
-    "@kikiutils/eslint-config": "^9.3.1",
+    "@kikiutils/eslint-config": "^9.3.2",
     "@kikiutils/mongoose": "^9.0.1",
-    "@kikiutils/shared": "^19.0.0",
     "@kikiutils/tsconfigs": "^7.0.0",
     "@types/bun": "^1.4.4",
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^5.0.5",
     "axios": "^1.20.0",
     "changelogen": "^0.6.2",
-    "date-fns": "^4.4.0",
-    "es-toolkit": "^1.53.0",
     "eslint": "^10.13.0",
-    "file-type": "^22.2.0",
-    "hono": "^4.13.13",
+    "hono": "^4.13.14",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
-    "ipaddr.js": "^2.5.0",
     "knip": "^6.43.0",
-    "lru-cache": "^11.5.3",
     "mongoose": "^9.11.4",
-    "msgpackr": "^2.1.2",
-    "nanoid": "^6.0.2",
     "nodemailer": "^10.2.1",
     "publint": "^0.3.25",
     "sharp": "^0.35.5",
     "tsdown": "^0.23.2",
-    "type-fest": "^5.10.0",
     "typescript": "^6.0.3",
     "unplugin-unused": "^0.6.0",
-    "vitest": "^5.0.5",
-    "ws.io-client": "^0.4.1",
-    "zod": "^4.6.7"
+    "vitest": "^5.0.5"
   }
 }
