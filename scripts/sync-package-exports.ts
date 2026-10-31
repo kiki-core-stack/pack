@@ -20,9 +20,18 @@ interface PackageExportEntry {
     types: null | string;
 }
 
+// Constants/Variables
 const packageJsonPath = join(import.meta.dirname, '../package.json');
+const privatePathNames = new Set([
+    '_internal',
+    '_internals',
+    'internal',
+    'internals',
+]);
+
 const sourceDirectoryPath = join(import.meta.dirname, '../src');
 
+// Functions
 function createBlockedExportEntry(): PackageExportEntry {
     return {
         /* eslint-disable perfectionist/sort-objects */
@@ -41,7 +50,12 @@ async function createPackageExports() {
         const sourcePath = `./src/${filePath}`;
         const exportPath = `./${join(parsedPath.dir, parsedPath.name)}`;
 
-        if (filePath.includes('_')) {
+        if (
+            [
+                ...parsedPath.dir.split('/'),
+                parsedPath.name,
+            ].some((name) => privatePathNames.has(name))
+        ) {
             exports[exportPath] = createBlockedExportEntry();
             continue;
         }

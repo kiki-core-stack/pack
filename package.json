@@ -2,14 +2,8 @@
   "name": "@kiki-core-stack/pack",
   "type": "module",
   "version": "0.0.0",
-  "description": "",
   "author": "kiki-kanri",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kiki-core-stack/pack.git"
-  },
-  "keywords": [],
   "sideEffects": [
     "./src/hono-backend/setups/mongoose-model-statics/**/*",
     "./src/models/**/*"
@@ -56,16 +50,6 @@
       "require": null
     },
     "./init/index": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/_logger": {
-      "types": null,
-      "import": null,
-      "require": null
-    },
-    "./libs/authentication-session/_token": {
       "types": null,
       "import": null,
       "require": null
@@ -244,20 +228,17 @@
     "./*": "./src/*.ts"
   },
   "files": [
-    "./dist",
     "./src"
   ],
   "engines": {
     "node": ">=24.0.0"
   },
   "scripts": {
-    "build": "tsdown",
-    "bumplog": "changelogen --bump --hideAuthorEmail",
     "knip:deps": "knip --dependencies",
     "knip:exports": "knip --exports",
     "lint": "eslint --max-warnings 0 && stylua --check src/redis-scripts",
     "lint:fix": "eslint --fix --max-warnings 0 && stylua src/redis-scripts",
-    "release": "./scripts/sync-package-exports.ts && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && changelogen --hideAuthorEmail --push --release && ./scripts/print-release-tag.ts",
+    "lint:package": "publint --pack pnpm",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
     "typecheck": "tsc -b --noEmit"
@@ -317,7 +298,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
-    "@arethetypeswrong/core": "^0.18.5",
     "@hono/zod-validator": "^0.9.1",
     "@johnnymorganz/stylua-bin": "^2.6.0",
     "@kikiutils/eslint-config": "^9.3.2",
@@ -327,7 +307,6 @@
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.0.5",
     "axios": "^1.21.0",
-    "changelogen": "^0.6.2",
     "eslint": "^10.14.0",
     "hono": "^4.13.14",
     "http-proxy-agent": "^9.1.0",
@@ -337,9 +316,7 @@
     "nodemailer": "^10.3.1",
     "publint": "^0.3.25",
     "sharp": "^0.35.5",
-    "tsdown": "^0.23.4",
     "typescript": "^6.0.3",
-    "unplugin-unused": "^0.6.0",
     "vitest": "^5.0.5"
   }
 }
