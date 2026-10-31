@@ -2,16 +2,7 @@
 
 // Linux-only script: path handling intentionally assumes POSIX separators.
 
-import {
-    glob,
-    readFile,
-    writeFile,
-} from 'node:fs/promises';
-import {
-    join,
-    parse,
-} from 'node:path';
-
+import { Path } from '@kikiutils/shared/classes/path';
 import type { PackageJson } from 'type-fest';
 
 interface PackageExportEntry {
@@ -21,7 +12,7 @@ interface PackageExportEntry {
 }
 
 // Constants/Variables
-const packageJsonPath = join(import.meta.dirname, '../package.json');
+const packageJsonPath = new Path(import.meta.dirname, '../package.json');
 const privatePathNames = new Set([
     '_internal',
     '_internals',
@@ -29,26 +20,17 @@ const privatePathNames = new Set([
     'internals',
 ]);
 
-const sourceDirectoryPath = join(import.meta.dirname, '../src');
+const sourceDirectoryPath = new Path(import.meta.dirname, '../src');
 
 // Functions
-function createBlockedExportEntry(): PackageExportEntry {
-    return {
-        /* eslint-disable perfectionist/sort-objects */
-        types: null,
-        import: null,
-        require: null,
-        /* eslint-enable perfectionist/sort-objects */
-    };
-}
-
 async function createPackageExports() {
-    const exports: Record<string, PackageExportEntry | string> = { './package.json': './package.json' };
+    const exports: Record<string, null | PackageExportEntry | string> = { './package.json': './package.json' };
 
-    for await (const filePath of glob('**/*.ts', { cwd: sourceDirectoryPath })) {
-        const parsedPath = parse(filePath);
+    for (const filePath of await sourceDirectoryPath.readdir({ recursive: true })) {
+        if (!filePath.endsWith('.ts') || filePath.split('/').some((name) => name.startsWith('.'))) continue;
+        const parsedPath = new Path(filePath).parse();
         const sourcePath = `./src/${filePath}`;
-        const exportPath = `./${join(parsedPath.dir, parsedPath.name)}`;
+        const exportPath = `./${new Path(parsedPath.dir, parsedPath.name)}`;
 
         if (
             [
@@ -56,7 +38,7 @@ async function createPackageExports() {
                 parsedPath.name,
             ].some((name) => privatePathNames.has(name))
         ) {
-            exports[exportPath] = createBlockedExportEntry();
+            exports[exportPath] = null;
             continue;
         }
 
@@ -71,7 +53,7 @@ async function createPackageExports() {
             /* eslint-enable perfectionist/sort-objects */
         };
 
-        exports[exportPath] = createBlockedExportEntry();
+        exports[exportPath] = null;
     }
 
     return {
@@ -80,6 +62,6 @@ async function createPackageExports() {
     };
 }
 
-const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as PackageJson;
+const packageJson = JSON.parse(await packageJsonPath.readFile('utf8')) as PackageJson;
 packageJson.exports = await createPackageExports();
-await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
+await packageJsonPath.writeFile(`${JSON.stringify(packageJson, null, 2)}\n`);
