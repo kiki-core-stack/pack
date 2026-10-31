@@ -2,7 +2,7 @@ import { getDefaultMongooseConnection } from '@kikiutils/mongoose/connection';
 import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 
 import { projectRedisKeyPrefix } from '../constants';
-import { logger } from '../libs/_logger';
+import { logger } from '../libs/_internals/logger';
 import { tryClaimRedisKey } from '../libs/redis/lock';
 
 export async function initializeSystemStartup() {

@@ -2,7 +2,7 @@ import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import type { ClientSession } from 'mongoose';
 import { nanoid } from 'nanoid';
 
-import { logger } from '../../../libs/_logger';
+import { logger } from '../../../libs/_internals/logger';
 import type { AdminDocument } from '../../../models/admin';
 import { AdminModel } from '../../../models/admin';
 

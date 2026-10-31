@@ -9,7 +9,7 @@ import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
     verifyAuthenticationSessionToken,
-} from '../../../src/libs/authentication-session/_token';
+} from '../../../src/libs/authentication-session/_internals/token';
 
 // Constants
 const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes';

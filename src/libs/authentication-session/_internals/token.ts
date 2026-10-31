@@ -5,7 +5,7 @@ import {
     timingSafeEqual,
 } from 'node:crypto';
 
-import type { AuthenticationSessionData } from '../../types/data/authentication-session';
+import type { AuthenticationSessionData } from '../../../types/data/authentication-session';
 
 /** Token digest 必須綁定這些不可變的工作階段安全欄位，避免 token 被搬到其他主體或世代使用。 */
 type AuthenticationSessionTokenBindingData = Pick<

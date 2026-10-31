@@ -1,7 +1,7 @@
 import type { Except } from 'type-fest';
 import { vi } from 'vitest';
 
-import { generateAuthenticationSessionToken } from '../../../src/libs/authentication-session/_token';
+import { generateAuthenticationSessionToken } from '../../../src/libs/authentication-session/_internals/token';
 import {
     createRedisAuthenticationSessionManager,
     createRedisAuthenticationSessionStore,

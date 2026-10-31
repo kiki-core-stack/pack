@@ -4,7 +4,7 @@ import type { Promisable } from 'type-fest';
 
 import { redisClient } from '../../connections/redis';
 import * as redisScripts from '../../redis-scripts';
-import { logger } from '../_logger';
+import { logger } from '../_internals/logger';
 
 export type RedisLockExecutionResult<T> =
   | { acquired: false }

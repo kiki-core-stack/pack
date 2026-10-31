@@ -23,8 +23,8 @@ import {
     generateAuthenticationSessionToken,
     parseAuthenticationSessionToken,
     verifyAuthenticationSessionToken,
-} from '../_token';
-import type { ParsedAuthenticationSessionToken } from '../_token';
+} from '../_internals/token';
+import type { ParsedAuthenticationSessionToken } from '../_internals/token';
 
 import { createRedisAuthenticationSessionKeys } from './_internals/keys';
 import { createRedisAuthenticationSessionQrCodeLoginStore } from './_internals/qr-code-login';

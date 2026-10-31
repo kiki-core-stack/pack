@@ -18,8 +18,8 @@ import {
     tokenSelectorByteLength,
     tokenValidatorByteLength,
     verifyAuthenticationSessionTokenDigest,
-} from '../../_token';
-import type { ParsedAuthenticationSessionToken } from '../../_token';
+} from '../../_internals/token';
+import type { ParsedAuthenticationSessionToken } from '../../_internals/token';
 
 import { createRedisAuthenticationSessionKeys } from './keys';
 
