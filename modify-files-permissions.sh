@@ -10,6 +10,7 @@ cd "${SCRIPT_DIR}"
 # Entries use 'octal-mode:literal-file-path', relative to this script.
 # Ignored paths take precedence over these permissions.
 CUSTOM_FILE_PERMISSIONS=(
+    '700:.githooks/pre-commit'
     '700:scripts/generate-rust-ws.io-event-names.ts'
     '700:scripts/sync-package-exports.ts'
     '700:scripts/update-peer-dependencies-meta.ts'

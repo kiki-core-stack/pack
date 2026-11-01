@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+import '../scripts/sync-package-exports.ts';
+
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { isDeepStrictEqual } from 'node:util';
+
+const staged = JSON.parse(
+    execFileSync(
+        'git',
+        [
+            'show',
+            ':package.json',
+        ],
+        { encoding: 'utf8' },
+    ),
+);
+
+const working = JSON.parse(readFileSync('package.json', 'utf8'));
+
+if (!isDeepStrictEqual(staged.exports, working.exports)) {
+    console.error('Commit blocked: package.json exports has unstaged changes. Review and stage them, then retry.');
+    process.exit(1);
+}
