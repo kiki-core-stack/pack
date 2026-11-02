@@ -1,1 +1,1 @@
-export const registerStaticFunctions: ((...args: any) => void)[] = [];
+export const registerStaticFunctions: Array<(...args: any) => void> = [];

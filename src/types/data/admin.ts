@@ -16,7 +16,7 @@ export interface AdminData extends BaseMongooseModelData {
     enabled: boolean;
     isSuperAdmin: boolean;
     password?: string;
-    roles: Partial<AdminRoleData>[];
+    roles: Array<Partial<AdminRoleData>>;
 }
 
 export interface AdminLogData extends BaseMongooseModelData<true, false> {

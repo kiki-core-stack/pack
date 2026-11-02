@@ -48,7 +48,7 @@ function expectSecureHostCookie(expect: ExpectStatic, value: null | string, toke
 
 // Tests
 describe.concurrent('hono authentication session', () => {
-    it('does not call the store when the request has no session cookie', async ({ expect }) => {
+    it('should not call the store when the request has no session cookie', async ({ expect }) => {
         const store = createStore();
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
@@ -88,7 +88,7 @@ describe.concurrent('hono authentication session', () => {
         expect(store.rotate).not.toHaveBeenCalled();
     });
 
-    it('creates a session and writes its token as a secure host cookie', async ({ expect }) => {
+    it('should create a session and writes its token as a secure host cookie', async ({ expect }) => {
         const store = createStore();
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
@@ -117,7 +117,7 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('can write the token as a browser session cookie', async ({ expect }) => {
+    it('should write the token as a browser session cookie', async ({ expect }) => {
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             cookieOptions: { persistence: 'session' },
@@ -152,7 +152,7 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('authenticates from the host cookie without rewriting it after a touch', async ({ expect }) => {
+    it('should authenticate from the host cookie without rewriting it after a touch', async ({ expect }) => {
         const validateContextPrincipal = vi.fn().mockResolvedValue(true);
         const authenticate = vi.fn(async (input) => {
             await input.validatePrincipal({
@@ -200,7 +200,7 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('does not delete a possibly superseded cookie after invalid authentication', async ({ expect }) => {
+    it('should not delete a possibly superseded cookie after invalid authentication', async ({ expect }) => {
         const authenticationSession = createHonoAuthenticationSession({
             cookieName: 'admin-session',
             store: createStore(),
@@ -247,7 +247,7 @@ describe.concurrent('hono authentication session', () => {
         expect(rotateResponse.headers.get('cache-control')).toBeNull();
     });
 
-    it('rotates the cookie token and exposes an explicit cookie deletion operation', async ({ expect }) => {
+    it('should rotate the cookie token and exposes an explicit cookie deletion operation', async ({ expect }) => {
         const validateContextPrincipal = vi.fn().mockResolvedValue(true);
         const rotate = vi.fn(async (input) => {
             await input.validatePrincipal({
@@ -328,7 +328,7 @@ describe.concurrent('hono authentication session', () => {
         expect(deletedResponse.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('completes an approved QR code login and writes the issued session cookie', async ({ expect }) => {
+    it('should complete an approved QR code login and writes the issued session cookie', async ({ expect }) => {
         const validateContextPrincipal = vi.fn().mockResolvedValue(true);
         const complete = vi.fn(async (input) => {
             await input.validatePrincipal({
@@ -391,7 +391,7 @@ describe.concurrent('hono authentication session', () => {
         expect(response.headers.get('cache-control')).toBe('no-store');
     });
 
-    it('prevents caching while a QR code login is pending', async ({ expect }) => {
+    it('should prevent caching while a QR code login is pending', async ({ expect }) => {
         const store = createStore();
         store.qrCodeLogin.complete = vi.fn().mockResolvedValue({ state: 'pending' });
 

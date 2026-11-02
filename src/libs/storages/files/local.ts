@@ -25,14 +25,12 @@ export class LocalFileStorage extends BaseFileStorage {
         try {
             mkdirSync(this.#basePath.toString(), { recursive: true });
         } catch {
-            // eslint-disable-next-line style/max-len
             throw new Error(`Failed to initialize storage directory: ${this.#basePath}\nPlease check if the directory exists and has correct permissions`);
         }
 
         try {
             chmodSync(this.#basePath.toString(), 0o755);
         } catch {
-            // eslint-disable-next-line style/max-len
             throw new Error(`Failed to set permissions (755) for storage directory: ${this.#basePath}\nPlease check filesystem permissions for this directory`);
         }
     }

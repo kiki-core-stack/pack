@@ -46,7 +46,7 @@ describe.concurrent('redis authentication session scripts', () => {
             redisScripts.authenticationSession.qrCodeLogin.create,
         ],
     ])(
-        'imports %s as Lua source text',
+        'should import %s as Lua source text',
         async ([name, script], { expect }) => {
             const source = await readFile(
                 new URL(`../../../src/redis-scripts/authentication-session/${name}.lua`, import.meta.url),
@@ -57,7 +57,7 @@ describe.concurrent('redis authentication session scripts', () => {
         },
     );
 
-    it('bounds session indexes and preserves authoritative metadata', ({ expect }) => {
+    it('should bound session indexes and preserves authoritative metadata', ({ expect }) => {
         for (const script of [
             redisScripts.authenticationSession.create,
             redisScripts.authenticationSession.finalize,

@@ -1,12 +1,16 @@
 import type { AuthenticationSessionPrincipalType } from '../../../../types/authentication-session';
 import type { AuthenticationSessionData } from '../../../../types/data/authentication-session';
 
-/** Redis hash 比公開 Session data 多保存不可回傳給客戶端的 validator digest。 */
+/**
+ * Redis hash 比公開 Session data 多保存不可回傳給客戶端的 validator digest。
+ */
 interface StoredAuthenticationSessionData extends AuthenticationSessionData {
     validatorDigest: string;
 }
 
-/** HMGET 與 Lua HMSET 共用固定欄位順序；解析器依此順序解構資料。 */
+/**
+ * HMGET 與 Lua HMSET 共用固定欄位順序；解析器依此順序解構資料。
+ */
 export const storedAuthenticationSessionDataFields = [
     'absoluteExpiresAt',
     'epoch',
@@ -27,9 +31,11 @@ export const storedAuthenticationSessionFields = [
     'validatorDigest',
 ] as const;
 
-/** 解析驗證流程需要的完整 Redis Session hash，包含 validator digest。 */
+/**
+ * 解析驗證流程需要的完整 Redis Session hash，包含 validator digest。
+ */
 export function parseStoredAuthenticationSession(
-    values: (null | string)[],
+    values: Array<null | string>,
     expectedPrincipalType: AuthenticationSessionPrincipalType,
 ): StoredAuthenticationSessionData | undefined {
     // 先使用共用解析器驗證所有公開 Session 欄位。
@@ -47,9 +53,11 @@ export function parseStoredAuthenticationSession(
     };
 }
 
-/** 將 Redis HMGET 字串陣列轉回型別安全的公開 Session data。 */
+/**
+ * 將 Redis HMGET 字串陣列轉回型別安全的公開 Session data。
+ */
 export function parseStoredAuthenticationSessionData(
-    values: (null | string)[],
+    values: Array<null | string>,
     expectedPrincipalType: AuthenticationSessionPrincipalType,
 ): AuthenticationSessionData | undefined {
     // 解構順序必須與 storedAuthenticationSessionDataFields 完全一致。

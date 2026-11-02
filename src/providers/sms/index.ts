@@ -22,9 +22,9 @@ const providerCodeToInstanceClassMap = {
 
 // Functions
 export async function closeSmsProviderInstances() {
-    const results = await Promise.allSettled([...instances.values()].map(async (instance) => {
-        await instance.close();
-    }));
+    const results = await Promise.allSettled(
+        [...instances.values()].map((instance) => Promise.resolve().then(() => instance.close())),
+    );
 
     instances.clear();
     const errors = results.filter((result) => result.status === 'rejected').map((result) => result.reason);

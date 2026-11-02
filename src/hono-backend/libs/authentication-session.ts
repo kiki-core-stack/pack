@@ -39,55 +39,81 @@ type HonoAuthenticationSessionQrCodeLoginCompletionResult =
   };
 
 interface HonoAuthenticationSession {
-    /** 從 request Cookie 取得 token 並驗證 Session。 */
+    /**
+     * 從 request Cookie 取得 token 並驗證 Session。
+     */
     authenticate: (
         ctx: Context,
         input: Except<AuthenticateAuthenticationSessionInput, 'token' | 'validatePrincipal'>,
     ) => Promise<AuthenticationSessionData | undefined>;
 
-    /** 以 completion token 完成 QR 登入並在成功時寫入 Cookie。 */
+    /**
+     * 以 completion token 完成 QR 登入並在成功時寫入 Cookie。
+     */
     completeQrCodeLogin: (
         ctx: Context,
         input: Except<CompleteAuthenticationSessionQrCodeLoginInput, 'validatePrincipal'>,
     ) => Promise<HonoAuthenticationSessionQrCodeLoginCompletionResult | undefined>;
 
-    /** 一般登入成功後建立 Session 並寫入 Cookie。 */
+    /**
+     * 一般登入成功後建立 Session 並寫入 Cookie。
+     */
     create: (ctx: Context, input: CreateAuthenticationSessionInput) => Promise<AuthenticationSessionData>;
 
-    /** 登出或明確失效時刪除瀏覽器 Cookie。 */
+    /**
+     * 登出或明確失效時刪除瀏覽器 Cookie。
+     */
     deleteCookie: (ctx: Context) => void;
 
-    /** 驗證既有 token 後原子輪換並覆寫 Cookie。 */
+    /**
+     * 驗證既有 token 後原子輪換並覆寫 Cookie。
+     */
     rotate: (ctx: Context, input: Except<RotateAuthenticationSessionInput, 'token' | 'validatePrincipal'>) => Promise<
         AuthenticationSessionData | undefined
     >;
 }
 
-/** 將 Authentication Session store 組合成 Hono Cookie adapter 所需依賴。 */
+/**
+ * 將 Authentication Session store 組合成 Hono Cookie adapter 所需依賴。
+ */
 export interface HonoAuthenticationSessionCookieOptions {
-    /** Cookie 保存策略；persistent 依 Session absolute TTL 設定 Max-Age，session 則於瀏覽器工作階段結束時失效。 */
+    /**
+     * Cookie 保存策略；persistent 依 Session absolute TTL 設定 Max-Age，session 則於瀏覽器工作階段結束時失效。
+     */
     persistence?: 'persistent' | 'session';
 }
 
 export interface HonoAuthenticationSessionOptions {
-    /** 不含 __Host- prefix 的 Cookie 名稱，由 Hono prefix 選項統一套用。 */
+    /**
+     * 不含 __Host- prefix 的 Cookie 名稱，由 Hono prefix 選項統一套用。
+     */
     cookieName: string;
 
-    /** Cookie 保存策略，預設使用 persistent。 */
+    /**
+     * Cookie 保存策略，預設使用 persistent。
+     */
     cookieOptions?: HonoAuthenticationSessionCookieOptions;
 
-    /** HTTP adapter 實際需要的最小 Session store 能力集合。 */
+    /**
+     * HTTP adapter 實際需要的最小 Session store 能力集合。
+     */
     store: Pick<AuthenticationSessionStore, 'authenticate' | 'create' | 'qrCodeLogin' | 'rotate'>;
 
-    /** 可存取 Hono context 的權威主體驗證器。 */
+    /**
+     * 可存取 Hono context 的權威主體驗證器。
+     */
     validatePrincipal: HonoAuthenticationSessionPrincipalValidator;
 }
 
 // Functions
 
-/** 建立只負責 HTTP Cookie 與 request context 邊界的 Authentication Session adapter。 */
+/**
+ * 建立只負責 HTTP Cookie 與 request context 邊界的 Authentication Session adapter。
+ */
 export function createHonoAuthenticationSession(options: HonoAuthenticationSessionOptions): HonoAuthenticationSession {
-    /** 使用與設定時相同的 __Host Cookie 屬性刪除登入 Cookie。 */
+    /**
+     * 使用與設定時相同的 __Host Cookie 屬性刪除登入 Cookie。
+     */
     function deleteCookie(ctx: Context) {
         // __Host- Cookie 必須使用根路徑、Secure 且不能設定 Domain。
         deleteHonoCookie(
@@ -104,7 +130,9 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         ctx.header('cache-control', 'no-store');
     }
 
-    /** 寫入新的 opaque token；持久 Cookie 才設定 Max-Age，最終有效期限仍由伺服端判斷。 */
+    /**
+     * 寫入新的 opaque token；持久 Cookie 才設定 Max-Age，最終有效期限仍由伺服端判斷。
+     */
     function writeCookie(ctx: Context, token: string, maxAgeSeconds: number) {
         // 共用 Cookie 安全屬性；只有持久 Cookie 才補上本次 Session 的 Max-Age。
         setCookie(
@@ -122,7 +150,9 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         ctx.header('cache-control', 'no-store');
     }
 
-    /** 驗證 request 中的 Session Cookie，不主動刪除可能已被並行請求輪換的舊 Cookie。 */
+    /**
+     * 驗證 request 中的 Session Cookie，不主動刪除可能已被並行請求輪換的舊 Cookie。
+     */
     async function authenticate(
         ctx: Context,
         input: Except<AuthenticateAuthenticationSessionInput, 'token' | 'validatePrincipal'>,
@@ -147,7 +177,9 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         return authenticated;
     }
 
-    /** 一般登入成功後簽發 Session，並將 token 留在 HttpOnly Cookie 中。 */
+    /**
+     * 一般登入成功後簽發 Session，並將 token 留在 HttpOnly Cookie 中。
+     */
     async function create(ctx: Context, input: CreateAuthenticationSessionInput) {
         // store 建立 Redis 狀態並回傳一次性的明文 token。
         const created = await options.store.create(input);
@@ -157,7 +189,9 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         return created.session;
     }
 
-    /** 輪詢 QR 登入結果；只有原子完成後才寫入正式 Session Cookie。 */
+    /**
+     * 輪詢 QR 登入結果；只有原子完成後才寫入正式 Session Cookie。
+     */
     async function completeQrCodeLogin(
         ctx: Context,
         input: Except<CompleteAuthenticationSessionQrCodeLoginInput, 'validatePrincipal'>,
@@ -184,7 +218,9 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         };
     }
 
-    /** 驗證並輪換既有 Session token，保留原 absolute expiry。 */
+    /**
+     * 驗證並輪換既有 Session token，保留原 absolute expiry。
+     */
     async function rotate(
         ctx: Context,
         input: Except<RotateAuthenticationSessionInput, 'token' | 'validatePrincipal'>,

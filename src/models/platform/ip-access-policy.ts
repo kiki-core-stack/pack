@@ -22,7 +22,7 @@ export type PlatformIpAccessPolicy = SmartDataToBaseMongooseDocType<
     SetFieldType<
         PlatformIpAccessPolicyData,
         'targets',
-        SetFieldType<PlatformIpAccessPolicyData['targets'][number], 'principalIds', null | Types.ObjectId[]>[]
+        Array<SetFieldType<PlatformIpAccessPolicyData['targets'][number], 'principalIds', null | Types.ObjectId[]>>
     >
 >;
 

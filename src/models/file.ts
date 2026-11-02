@@ -91,14 +91,14 @@ schema.pre<Query<FileDocument[], File>>(
         const filter = this.getFilter();
         if (!isEligibleIdQuery(this, 'in')) return;
         const projectionKey = serializeProjection(this.projection());
-        const ids = (filter._id.$in as (string | Types.ObjectId)[]).map((id) => {
+        const ids = (filter._id.$in as Array<string | Types.ObjectId>).map((id) => {
             if (id instanceof Types.ObjectId) return id.toHexString();
             return id;
         });
 
         const allFileDocumentData = await Promise.all(
             ids.map(
-                (id) =>
+                async (id) =>
                     lruStore.file.documentData.getItem(id, projectionKey)
                     || redisStore.file.documentData.getItem(id, projectionKey),
             ),

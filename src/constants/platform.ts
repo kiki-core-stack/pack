@@ -52,9 +52,7 @@ export const platformIpAccessPolicyModeToTextMap: ReadonlyRecord<PlatformIpAcces
     [PlatformIpAccessPolicyMode.Blacklist]: '黑名單',
 };
 
-// eslint-disable-next-line style/max-len
 export const platformIpAccessPolicyScopeToTextMap: ReadonlyRecord<PlatformIpAccessPolicyScope, string> = { [PlatformIpAccessPolicyScope.AdminManagement]: '總後台' };
-
 export const platformIpAccessPolicyCheckReasonToTextMap: ReadonlyRecord<PlatformIpAccessPolicyCheckReason, string> = {
     [PlatformIpAccessPolicyCheckReason.Allowed]: '通過IP存取檢查',
     [PlatformIpAccessPolicyCheckReason.AllowlistMiss]: '未命中白名單',

@@ -40,7 +40,7 @@ export async function convertImage(
     outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
     outputOptions?: Parameters<Sharp['toFormat']>[1],
 ) {
-    return await sharp(
+    return sharp(
         await toBuffer(input),
         {
             autoOrient: true,

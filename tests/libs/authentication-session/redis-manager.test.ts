@@ -12,7 +12,7 @@ import {
 } from './_fixtures';
 
 describe.concurrent('redis authentication session manager', () => {
-    it('uses typed Redis methods to read all active sessions', async ({ expect }) => {
+    it('should use typed Redis methods to read all active sessions', async ({ expect }) => {
         const client = createClient({
             get: vi.fn().mockResolvedValue('epoch'),
             hmget: vi.fn().mockResolvedValue(createStoredSessionRow()),
@@ -49,7 +49,7 @@ describe.concurrent('redis authentication session manager', () => {
         expect(client.send).not.toHaveBeenCalled();
     });
 
-    it('lists the current session first and remaining sessions by recent activity', async ({ expect }) => {
+    it('should list the current session first and remaining sessions by recent activity', async ({ expect }) => {
         const sessions = {
             'current': createStoredSessionRow({
                 id: 'current',
@@ -105,7 +105,7 @@ describe.concurrent('redis authentication session manager', () => {
         ]);
     });
 
-    it('bounds concurrent Redis reads while listing all active sessions', async ({ expect }) => {
+    it('should bound concurrent Redis reads while listing all active sessions', async ({ expect }) => {
         let activeReads = 0;
         let maximumActiveReads = 0;
         const selectors = Array.from({ length: 101 }, (_, index) => `selector-${index}`);
@@ -139,7 +139,7 @@ describe.concurrent('redis authentication session manager', () => {
         ]);
     });
 
-    it('returns an empty list without an epoch and removes stale index members', async ({ expect }) => {
+    it('should return an empty list without an epoch and removes stale index members', async ({ expect }) => {
         const emptyManager = createManager();
 
         await expect(emptyManager.list({ principalId: 'admin-id' })).resolves.toEqual([]);
@@ -187,7 +187,7 @@ describe.concurrent('redis authentication session manager', () => {
         );
     });
 
-    it('does not return sessions revoked while the list is being read', async ({ expect }) => {
+    it('should not return sessions revoked while the list is being read', async ({ expect }) => {
         const client = createClient({
             get: vi.fn()
                 .mockResolvedValueOnce('epoch')
@@ -204,7 +204,7 @@ describe.concurrent('redis authentication session manager', () => {
         ).resolves.toEqual([]);
     });
 
-    it('revokes a session using its stored principal', async ({ expect }) => {
+    it('should revoke a session using its stored principal', async ({ expect }) => {
         const hmget = vi.fn()
             .mockResolvedValueOnce([])
             .mockResolvedValueOnce([
@@ -228,7 +228,7 @@ describe.concurrent('redis authentication session manager', () => {
         );
     });
 
-    it('deletes the epoch atomically before cleaning revoked session indexes', async ({ expect }) => {
+    it('should delete the epoch atomically before cleaning revoked session indexes', async ({ expect }) => {
         const get = vi.fn().mockResolvedValue(null);
         const send = vi.fn().mockResolvedValueOnce('old-epoch').mockResolvedValueOnce(2);
         const manager = createManager(
@@ -261,7 +261,7 @@ describe.concurrent('redis authentication session manager', () => {
         ]);
     });
 
-    it('does not unlink an index when no previous epoch exists', async ({ expect }) => {
+    it('should not unlink an index when no previous epoch exists', async ({ expect }) => {
         const send = vi.fn().mockResolvedValue('');
         const manager = createManager(createClient({ send }));
 

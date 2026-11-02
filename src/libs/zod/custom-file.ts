@@ -23,7 +23,7 @@ export interface ZodCustomFile extends ZodFile {
     maxSize: (bytes: number) => this;
     maxSizeKb: (kb: number) => this;
     maxSizeMb: (mb: number) => this;
-    mimeType: (...mimeTypes: MaybeReadonly<Arrayable<string>>[]) => this;
+    mimeType: (...mimeTypes: Array<MaybeReadonly<Arrayable<string>>>) => this;
     minSize: (bytes: number) => this;
     minSizeKb: (kb: number) => this;
     minSizeMb: (mb: number) => this;
@@ -61,7 +61,6 @@ export function customFile() {
                 ctx.issues.push({
                     code: 'custom',
                     input: ctx.value,
-                    // eslint-disable-next-line style/max-len
                     message: `Invalid MIME type: ${detectedMimeType}, allowed types: ${[...allowedMimeTypes].join(', ')}`,
                 });
             }
@@ -117,7 +116,7 @@ export function customFile() {
             };
         }
 
-        function mimeType(...mimeTypes: MaybeReadonly<Arrayable<string>>[]) {
+        function mimeType(...mimeTypes: Array<MaybeReadonly<Arrayable<string>>>) {
             mimeTypes.flat().forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
             return proxy;
         }

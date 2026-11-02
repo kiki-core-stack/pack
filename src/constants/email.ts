@@ -30,8 +30,5 @@ export enum EmailSendRecordStatus {
     Succeeded = CommonStatus.Succeeded,
 }
 
-// eslint-disable-next-line style/max-len
 export const emailProviderCodeToTextMap: ReadonlyRecord<EmailProviderCode, string> = { [EmailProviderCode.Smtp]: 'SMTP' };
-
-// eslint-disable-next-line style/max-len
 export const emailSenderIdentityKeyToTextMap: ReadonlyRecord<EmailSenderIdentityKey, string> = { [EmailSenderIdentityKey.Admin]: '總後台' };

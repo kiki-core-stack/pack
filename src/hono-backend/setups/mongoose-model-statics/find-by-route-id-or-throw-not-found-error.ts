@@ -44,7 +44,7 @@ registerStaticFunctions.push(
                 if (!Types.ObjectId.isValid(id)) throwApiError(400);
                 const document = await this.findOne(
                     {
-                        ...(filter || {}) as QueryFilter<DocType>,
+                        ...filter || {},
                         _id: id,
                     },
                     projection,

@@ -14,7 +14,9 @@ export type RedisLockExecutionResult<T> =
   };
 
 export interface RedisLockContext {
-    /** 檢查目前 key 是否仍屬於此鎖；不保證後續操作期間仍持有鎖。 */
+    /**
+     * 檢查目前 key 是否仍屬於此鎖；不保證後續操作期間仍持有鎖。
+     */
     isOwned: () => Promise<boolean>;
     readonly key: string;
     readonly token: string;

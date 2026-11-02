@@ -20,7 +20,7 @@ const sourceSession = createAuthenticationSessionData({
 });
 
 describe.concurrent('redis authentication session QR code login', () => {
-    it('creates separate approval and completion bearer tokens for one request', async ({ expect }) => {
+    it('should create separate approval and completion bearer tokens for one request', async ({ expect }) => {
         const send = vi.fn().mockResolvedValue('61000');
         const store = createStore(createClient({ send }));
         const created = await store.qrCodeLogin.create({
@@ -42,7 +42,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         expect(scriptArguments).toEqual([
             expect.any(String),
             '1',
-            // eslint-disable-next-line style/max-len
+
             `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:qrCodeLogin:admin:${approvalBytes.subarray(0, 16).toString('base64url')}`,
             expect.any(String),
             '192.0.2.10',
@@ -52,7 +52,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         ]);
     });
 
-    it('keeps approval and completion token capabilities separate', async ({ expect }) => {
+    it('should keep approval and completion token capabilities separate', async ({ expect }) => {
         const send = vi.fn().mockResolvedValue('61000');
         const hmget = vi.fn();
         const store = createStore(
@@ -105,7 +105,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         ).resolves.toBeUndefined();
     });
 
-    it('binds approval to the authenticated source session', async ({ expect }) => {
+    it('should bind approval to the authenticated source session', async ({ expect }) => {
         const send = vi.fn()
             .mockResolvedValueOnce('61000')
             .mockResolvedValueOnce(1);
@@ -128,12 +128,12 @@ describe.concurrent('redis authentication session QR code login', () => {
         ]);
 
         expect(approvalArguments).toContain(
-            // eslint-disable-next-line style/max-len
+
             `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:${sourceSession.principalId}`,
         );
     });
 
-    it('validates the principal before atomically issuing a new target session', async ({ expect }) => {
+    it('should validate the principal before atomically issuing a new target session', async ({ expect }) => {
         const send = vi.fn()
             .mockResolvedValueOnce('61000')
             .mockResolvedValueOnce([
@@ -228,10 +228,10 @@ describe.concurrent('redis authentication session QR code login', () => {
             '5',
             expect.stringContaining('authenticationSession:qrCodeLogin:admin:'),
             `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:session:admin:${sourceSession.id}`,
-            // eslint-disable-next-line style/max-len
+
             `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:epoch:admin:${sourceSession.principalId}`,
             expect.stringContaining('authenticationSession:session:admin:'),
-            // eslint-disable-next-line style/max-len
+
             `${expectedRedisAuthenticationSessionKeyPrefix}authenticationSession:index:admin:${sourceSession.principalId}:${sourceSession.epoch}`,
             expect.any(String),
             sourceSession.id,
@@ -247,7 +247,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         ]);
     });
 
-    it('does not run the complete script when authoritative validation fails', async ({ expect }) => {
+    it('should not run the complete script when authoritative validation fails', async ({ expect }) => {
         const send = vi.fn().mockResolvedValueOnce('61000');
         const hmget = vi.fn();
         const store = createStore(
@@ -285,7 +285,7 @@ describe.concurrent('redis authentication session QR code login', () => {
         expect(send).toHaveBeenCalledTimes(1);
     });
 
-    it('rejects malformed tokens without reading or mutating Redis', async ({ expect }) => {
+    it('should reject malformed tokens without reading or mutating Redis', async ({ expect }) => {
         const client = createClient();
         const store = createStore(client);
 

@@ -17,10 +17,14 @@ export type PlatformConfigScopeToValuesMap = {
 
 export type PlatformConfigValues = PlatformConfigScopeToValuesMap[PlatformConfigScope];
 
-/** 同一目標內的條件為 AND，不同目標之間為 OR；null 表示不限制。 */
+/**
+ * 同一目標內的條件為 AND，不同目標之間為 OR；null 表示不限制。
+ */
 export type PlatformIpAccessPolicyTarget =
   | {
-      /** null 表示該身分類型的所有帳號；指定帳號時必須為非空陣列。 */
+      /**
+       * null 表示該身分類型的所有帳號；指定帳號時必須為非空陣列。
+       */
       principalIds: null | string[];
       principalType: 'admin';
       scope: PlatformIpAccessPolicyScope.AdminManagement;
@@ -62,7 +66,7 @@ export type PlatformIpAccessPolicyCheckResult =
 
 export interface CachedPlatformIpAccessPolicySnapshot {
     enabled: boolean;
-    policies: Pick<PlatformIpAccessPolicyData, 'id' | 'ipEntries' | 'mode' | 'targets'>[];
+    policies: Array<Pick<PlatformIpAccessPolicyData, 'id' | 'ipEntries' | 'mode' | 'targets'>>;
 }
 
 export interface CompiledPlatformIpAccessPolicy {

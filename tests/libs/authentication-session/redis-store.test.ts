@@ -19,7 +19,7 @@ import {
 const expectedDefaultIdleTtlSeconds = 60 * 60 * 24 * 7;
 
 describe.concurrent('redis authentication session store', () => {
-    it('does not run Redis scripts for malformed or digest-mismatched tokens', async ({ expect }) => {
+    it('should not run Redis scripts for malformed or digest-mismatched tokens', async ({ expect }) => {
         const client = createClient();
         const store = createStore(client);
 
@@ -55,7 +55,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(digestMismatchClient.send).not.toHaveBeenCalled();
     });
 
-    it('requires the authoritative principal to accept the stored authentication revision', async ({ expect }) => {
+    it('should require the authoritative principal to accept the stored authentication revision', async ({ expect }) => {
         const generated = generateStoredSessionToken({ principalAuthenticationRevision: 7 });
         const validateStoredPrincipal = vi.fn().mockResolvedValue(false);
         const send = vi.fn();
@@ -85,7 +85,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(send).not.toHaveBeenCalled();
     });
 
-    it('rejects authentication when revokeAll linearizes after principal validation', async ({ expect }) => {
+    it('should reject authentication when revokeAll linearizes after principal validation', async ({ expect }) => {
         const generated = generateStoredSessionToken();
         const send = vi.fn()
             .mockResolvedValueOnce('epoch')
@@ -122,7 +122,7 @@ describe.concurrent('redis authentication session store', () => {
         ]);
     });
 
-    it('rejects malformed stored sessions before principal validation', async ({ expect }) => {
+    it('should reject malformed stored sessions before principal validation', async ({ expect }) => {
         const generated = generateStoredSessionToken();
         for (const [fieldIndex, invalidValue] of [
             [
@@ -180,7 +180,7 @@ describe.concurrent('redis authentication session store', () => {
         }
     });
 
-    it('loads a missing script before retrying session creation', async ({ expect }) => {
+    it('should load a missing script before retrying session creation', async ({ expect }) => {
         const send = vi.fn()
             .mockRejectedValueOnce(new Error('NOSCRIPT No matching script'))
             .mockResolvedValueOnce('sha')
@@ -249,7 +249,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(send.mock.calls[2]?.[1][3]).toMatch(/^[\w-]{43}$/);
     });
 
-    it('preserves milliseconds when calculating absolute and idle expiration', async ({ expect }) => {
+    it('should preserve milliseconds when calculating absolute and idle expiration', async ({ expect }) => {
         const send = vi.fn().mockResolvedValueOnce('epoch').mockResolvedValueOnce(1);
         const store = createStore(
             createClient({ send }),
@@ -275,7 +275,7 @@ describe.concurrent('redis authentication session store', () => {
         ]);
     });
 
-    it('fails session creation when its epoch changes', async ({ expect }) => {
+    it('should fail session creation when its epoch changes', async ({ expect }) => {
         const store = createStore(
             createClient({ send: vi.fn().mockResolvedValueOnce('epoch').mockResolvedValueOnce(0) }),
         );
@@ -289,7 +289,7 @@ describe.concurrent('redis authentication session store', () => {
         ).rejects.toThrow('authentication session epoch changed during creation');
     });
 
-    it('rejects an invalid token HMAC key when creating the store', ({ expect }) => {
+    it('should reject an invalid token HMAC key when creating the store', ({ expect }) => {
         for (const invalidTokenHmacKey of [
             'short',
             new Uint8Array(31),
@@ -304,7 +304,7 @@ describe.concurrent('redis authentication session store', () => {
         }
     });
 
-    it('rejects invalid authentication session durations', ({ expect }) => {
+    it('should reject invalid authentication session durations', ({ expect }) => {
         for (const options of [
             { absoluteTtlSeconds: 0 },
             { absoluteTtlSeconds: Number.MAX_SAFE_INTEGER },
@@ -327,7 +327,7 @@ describe.concurrent('redis authentication session store', () => {
         }
     });
 
-    it('rejects expired sessions before authoritative validation', async ({ expect }) => {
+    it('should reject expired sessions before authoritative validation', async ({ expect }) => {
         for (const { rowOverrides, storeOptions } of [
             {
                 rowOverrides: { absoluteExpiresAt: 10_000 },
@@ -370,7 +370,7 @@ describe.concurrent('redis authentication session store', () => {
         }
     });
 
-    it('rejects an invalid principal authentication revision', async ({ expect }) => {
+    it('should reject an invalid principal authentication revision', async ({ expect }) => {
         const store = createStore();
 
         for (const principalAuthenticationRevision of [
@@ -388,7 +388,7 @@ describe.concurrent('redis authentication session store', () => {
         }
     });
 
-    it('returns authentication activity only when Redis touches the session', async ({ expect }) => {
+    it('should return authentication activity only when Redis touches the session', async ({ expect }) => {
         const generated = generateStoredSessionToken();
         const send = vi.fn()
             .mockResolvedValueOnce(1)
@@ -443,7 +443,7 @@ describe.concurrent('redis authentication session store', () => {
         ).resolves.toBeUndefined();
     });
 
-    it('preserves the absolute lifetime and login metadata when rotating a token', async ({ expect }) => {
+    it('should preserve the absolute lifetime and login metadata when rotating a token', async ({ expect }) => {
         const generated = generateStoredSessionToken();
         const send = vi.fn().mockResolvedValue(1);
         const store = createStore(
@@ -488,7 +488,7 @@ describe.concurrent('redis authentication session store', () => {
         expect(send).toHaveBeenCalledTimes(2);
     });
 
-    it('does not rotate another principal session or a session changed concurrently', async ({ expect }) => {
+    it('should not rotate another principal session or a session changed concurrently', async ({ expect }) => {
         const otherPrincipalGenerated = generateStoredSessionToken({ principalId: 'another-admin' });
         const otherPrincipalSend = vi.fn().mockResolvedValue(1);
         const otherPrincipalStore = createStore(

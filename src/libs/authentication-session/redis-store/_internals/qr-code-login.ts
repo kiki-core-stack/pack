@@ -23,98 +23,158 @@ import type { ParsedAuthenticationSessionToken } from '../../_internals/token';
 
 import { createRedisAuthenticationSessionKeys } from './keys';
 
-/** Redis request 依 state 決定是否已保存來源 Session 綁定資料。 */
+/**
+ * Redis request 依 state 決定是否已保存來源 Session 綁定資料。
+ */
 type StoredAuthenticationSessionQrCodeLogin =
   | ApprovedStoredAuthenticationSessionQrCodeLogin
   | PendingStoredAuthenticationSessionQrCodeLogin;
 
 interface ApprovedStoredAuthenticationSessionQrCodeLogin extends StoredAuthenticationSessionQrCodeLoginCommonData {
-    /** 核准後的短效絕對到期時間。 */
+    /**
+     * 核准後的短效絕對到期時間。
+     */
     approvalExpiresAt: number;
 
-    /** 完成登入前必須重新由權威資料驗證的主體快照。 */
+    /**
+     * 完成登入前必須重新由權威資料驗證的主體快照。
+     */
     principalAuthenticationRevision: number;
 
-    /** 核准來源 Session 所屬主體識別碼。 */
+    /**
+     * 核准來源 Session 所屬主體識別碼。
+     */
     principalId: string;
 
-    /** 核准此請求的來源 Session 身分與撤銷世代。 */
+    /**
+     * 核准此請求的來源 Session 身分與撤銷世代。
+     */
     sourceEpoch: string;
 
-    /** 核准來源 Session 的 selector/id。 */
+    /**
+     * 核准來源 Session 的 selector/id。
+     */
     sourceSessionId: string;
 
-    /** discriminant，表示請求已進入短效完成窗口。 */
+    /**
+     * discriminant，表示請求已進入短效完成窗口。
+     */
     state: 'approved';
 }
 
-/** 共用 selector 但 validator 完全獨立的 approval/completion capability。 */
+/**
+ * 共用 selector 但 validator 完全獨立的 approval/completion capability。
+ */
 interface AuthenticationSessionQrCodeLoginTokenPair {
-    /** 來源裝置持有的完整核准 token。 */
+    /**
+     * 來源裝置持有的完整核准 token。
+     */
     approvalToken: string;
 
-    /** approval token 的 HMAC digest。 */
+    /**
+     * approval token 的 HMAC digest。
+     */
     approvalValidatorDigest: string;
 
-    /** 目標裝置持有的完整完成 token。 */
+    /**
+     * 目標裝置持有的完整完成 token。
+     */
     completionToken: string;
 
-    /** completion token 的 HMAC digest。 */
+    /**
+     * completion token 的 HMAC digest。
+     */
     completionValidatorDigest: string;
 
-    /** 兩個 token 共用的 Redis request selector。 */
+    /**
+     * 兩個 token 共用的 Redis request selector。
+     */
     selector: string;
 }
 
-/** QR Login store 由外層 Session store 注入的完整安全設定。 */
+/**
+ * QR Login store 由外層 Session store 注入的完整安全設定。
+ */
 interface CreateRedisAuthenticationSessionQrCodeLoginStoreOptions {
-    /** 目標 Session 的完整 absolute TTL。 */
+    /**
+     * 目標 Session 的完整 absolute TTL。
+     */
     absoluteTtlSeconds: number;
 
-    /** approved request 的短效存活時間。 */
+    /**
+     * approved request 的短效存活時間。
+     */
     approvalTtlSeconds: number;
 
-    /** QR store 實際需要的最小 Redis command 集合。 */
+    /**
+     * QR store 實際需要的最小 Redis command 集合。
+     */
     client: Pick<Bun.RedisClient, 'hmget' | 'send'>;
 
-    /** 來源及目標 Session 共用的 idle TTL。 */
+    /**
+     * 來源及目標 Session 共用的 idle TTL。
+     */
     idleTtlSeconds: number;
 
-    /** 此 store 固定處理的主體種類。 */
+    /**
+     * 此 store 固定處理的主體種類。
+     */
     principalType: AuthenticationSessionPrincipalType;
 
-    /** pending request 的等待核准期限。 */
+    /**
+     * pending request 的等待核准期限。
+     */
     qrCodeLoginRequestTtlSeconds: number;
 
-    /** capability 與正式 Session token 共用的 HMAC key。 */
+    /**
+     * capability 與正式 Session token 共用的 HMAC key。
+     */
     tokenHmacKey: string | Uint8Array;
 }
 
-/** 尚未由來源裝置核准的 request 不含任何 principal 資料。 */
+/**
+ * 尚未由來源裝置核准的 request 不含任何 principal 資料。
+ */
 interface PendingStoredAuthenticationSessionQrCodeLogin extends StoredAuthenticationSessionQrCodeLoginCommonData {
-    /** discriminant，表示請求尚未由來源裝置核准。 */
+    /**
+     * discriminant，表示請求尚未由來源裝置核准。
+     */
     state: 'pending';
 }
 
-/** pending 與 approved request 都必須保存的目標裝置與 capability 資料。 */
+/**
+ * pending 與 approved request 都必須保存的目標裝置與 capability 資料。
+ */
 interface StoredAuthenticationSessionQrCodeLoginCommonData {
-    /** approval capability 的 HMAC digest。 */
+    /**
+     * approval capability 的 HMAC digest。
+     */
     approvalValidatorDigest: string;
 
-    /** completion capability 的 HMAC digest。 */
+    /**
+     * completion capability 的 HMAC digest。
+     */
     completionValidatorDigest: string;
 
-    /** 原始 pending request 的到期毫秒時間戳。 */
+    /**
+     * 原始 pending request 的到期毫秒時間戳。
+     */
     expiresAt: number;
 
-    /** 目標裝置建立 request 時的 IP。 */
+    /**
+     * 目標裝置建立 request 時的 IP。
+     */
     targetIp: string;
 
-    /** 目標裝置建立 request 時的 User-Agent。 */
+    /**
+     * 目標裝置建立 request 時的 User-Agent。
+     */
     targetUserAgent?: string;
 }
 
-/** HMGET 使用固定欄位順序，pending 狀態後半部欄位會是 null。 */
+/**
+ * HMGET 使用固定欄位順序，pending 狀態後半部欄位會是 null。
+ */
 const storedAuthenticationSessionQrCodeLoginFields = [
     'approvalValidatorDigest',
     'expiresAt',
@@ -129,7 +189,9 @@ const storedAuthenticationSessionQrCodeLoginFields = [
     'sourceSessionId',
 ] as const;
 
-/** 建立與特定 principal type 及 Session 策略綁定的 QR Code Login store。 */
+/**
+ * 建立與特定 principal type 及 Session 策略綁定的 QR Code Login store。
+ */
 export function createRedisAuthenticationSessionQrCodeLoginStore(
     options: CreateRedisAuthenticationSessionQrCodeLoginStoreOptions,
 ): AuthenticationSessionQrCodeLoginStore {
@@ -163,7 +225,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         redisScripts.authenticationSession.qrCodeLogin.create,
     );
 
-    /** 建立 pending request，回傳分別提供給來源與目標裝置的 token。 */
+    /**
+     * 建立 pending request，回傳分別提供給來源與目標裝置的 token。
+     */
     async function create(input: Parameters<AuthenticationSessionQrCodeLoginStore['create']>[0]) {
         // 兩個 capability 共用 selector 定位同一 request，但 validator 各自獨立。
         const generated = generateAuthenticationSessionQrCodeLoginTokenPair(principalType, tokenHmacKey);
@@ -190,7 +254,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         };
     }
 
-    /** 讓來源裝置用 approval token 查詢目標裝置資訊與目前狀態。 */
+    /**
+     * 讓來源裝置用 approval token 查詢目標裝置資訊與目前狀態。
+     */
     async function getApprovalRequest(approvalToken: string) {
         // 格式不正確時不查詢 Redis。
         const parsedToken = parseAuthenticationSessionToken(approvalToken);
@@ -222,7 +288,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         };
     }
 
-    /** 已登入來源裝置以自己的有效 Session 核准 pending request。 */
+    /**
+     * 已登入來源裝置以自己的有效 Session 核准 pending request。
+     */
     async function approve(input: Parameters<AuthenticationSessionQrCodeLoginStore['approve']>[0]) {
         // token 格式或 principal type 不符時拒絕跨 scope 核准。
         const parsedToken = parseAuthenticationSessionToken(input.approvalToken);
@@ -260,7 +328,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
         return result === 1;
     }
 
-    /** 目標裝置輪詢 completion token，核准後原子建立全新正式 Session。 */
+    /**
+     * 目標裝置輪詢 completion token，核准後原子建立全新正式 Session。
+     */
     async function complete(input: Parameters<AuthenticationSessionQrCodeLoginStore['complete']>[0]) {
         // 格式錯誤的 completion token 不查詢 Redis。
         const parsedToken = parseAuthenticationSessionToken(input.completionToken);
@@ -378,7 +448,9 @@ export function createRedisAuthenticationSessionQrCodeLoginStore(
     };
 }
 
-/** 一次產生共用 selector、獨立 validator 的 approval 與 completion token。 */
+/**
+ * 一次產生共用 selector、獨立 validator 的 approval 與 completion token。
+ */
 function generateAuthenticationSessionQrCodeLoginTokenPair(
     principalType: AuthenticationSessionPrincipalType,
     tokenHmacKey: string | Uint8Array,
@@ -418,7 +490,9 @@ function generateAuthenticationSessionQrCodeLoginTokenPair(
     };
 }
 
-/** 計算 QR capability 專用的 HMAC-SHA256 digest。 */
+/**
+ * 計算 QR capability 專用的 HMAC-SHA256 digest。
+ */
 function getAuthenticationSessionQrCodeLoginTokenDigestBytes(
     use: 'approval' | 'completion',
     principalType: AuthenticationSessionPrincipalType,
@@ -441,9 +515,11 @@ function getAuthenticationSessionQrCodeLoginTokenDigestBytes(
     return hasher.digest();
 }
 
-/** 依固定 HMGET 順序解析 pending 或 approved Redis request。 */
+/**
+ * 依固定 HMGET 順序解析 pending 或 approved Redis request。
+ */
 function parseStoredAuthenticationSessionQrCodeLogin(
-    row: (null | string)[],
+    row: Array<null | string>,
 ): StoredAuthenticationSessionQrCodeLogin | undefined {
     // 解構順序必須與 storedAuthenticationSessionQrCodeLoginFields 一致。
     const [
@@ -522,7 +598,9 @@ function parseStoredAuthenticationSessionQrCodeLogin(
     };
 }
 
-/** 以指定 capability domain 重算 digest 並固定時間比對 Redis 保存值。 */
+/**
+ * 以指定 capability domain 重算 digest 並固定時間比對 Redis 保存值。
+ */
 function verifyAuthenticationSessionQrCodeLoginToken(
     use: 'approval' | 'completion',
     principalType: AuthenticationSessionPrincipalType,

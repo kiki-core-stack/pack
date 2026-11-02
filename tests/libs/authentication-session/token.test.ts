@@ -23,7 +23,7 @@ const tokenBinding = {
 
 // Tests
 describe.concurrent('authentication session token', () => {
-    it('generates a fixed-length opaque selector and token', ({ expect }) => {
+    it('should generate a fixed-length opaque selector and token', ({ expect }) => {
         const generated = generateAuthenticationSessionToken(tokenBinding, tokenHmacKey);
         const parsed = parseAuthenticationSessionToken(generated.token);
 
@@ -40,7 +40,7 @@ describe.concurrent('authentication session token', () => {
         ).toBe(true);
     });
 
-    it('rejects malformed and tampered tokens', ({ expect }) => {
+    it('should reject malformed and tampered tokens', ({ expect }) => {
         const generated = generateAuthenticationSessionToken(tokenBinding, tokenHmacKey);
         const tampered = `${generated.token.slice(0, -1)}${generated.token.endsWith('A') ? 'B' : 'A'}`;
 
@@ -56,7 +56,7 @@ describe.concurrent('authentication session token', () => {
         ).toBe(false);
     });
 
-    it('binds immutable session authorization metadata to the token digest', ({ expect }) => {
+    it('should bind immutable session authorization metadata to the token digest', ({ expect }) => {
         const generated = generateAuthenticationSessionToken(tokenBinding, tokenHmacKey);
         const parsed = parseAuthenticationSessionToken(generated.token)!;
 

@@ -35,64 +35,104 @@ import {
     storedAuthenticationSessionFields,
 } from './_internals/stored-session';
 
-/** 只提供列表與撤銷功能的管理端依賴，不需要 token HMAC key。 */
+/**
+ * 只提供列表與撤銷功能的管理端依賴，不需要 token HMAC key。
+ */
 export interface RedisAuthenticationSessionManagerOptions {
-    /** 管理介面只要求列表與撤銷實際使用的 Redis commands。 */
+    /**
+     * 管理介面只要求列表與撤銷實際使用的 Redis commands。
+     */
     client: Pick<Bun.RedisClient, 'get' | 'hmget' | 'send' | 'zrange' | 'zrem'>;
 
-    /** 固定此 manager 可管理的主體種類及 Redis key scope。 */
+    /**
+     * 固定此 manager 可管理的主體種類及 Redis key scope。
+     */
     principalType: AuthenticationSessionPrincipalType;
 }
 
-/** 完整 Session store 的 TTL、簽章金鑰與 QR Login 設定。 */
+/**
+ * 完整 Session store 的 TTL、簽章金鑰與 QR Login 設定。
+ */
 export interface RedisAuthenticationSessionStoreOptions extends RedisAuthenticationSessionManagerOptions {
-    /** Session 絕對存活上限，預設 30 天。 */
+    /**
+     * Session 絕對存活上限，預設 30 天。
+     */
     absoluteTtlSeconds?: number;
 
-    /** Session 最大閒置時間，預設 7 天。 */
+    /**
+     * Session 最大閒置時間，預設 7 天。
+     */
     idleTtlSeconds?: number;
 
-    /** QR 請求核准後的短效完成窗口，預設 5 秒。 */
+    /**
+     * QR 請求核准後的短效完成窗口，預設 5 秒。
+     */
     qrCodeLoginApprovalTtlSeconds?: number;
 
-    /** QR pending request 的等待核准期限，預設 60 秒。 */
+    /**
+     * QR pending request 的等待核准期限，預設 60 秒。
+     */
     qrCodeLoginRequestTtlSeconds?: number;
 
-    /** HMAC-SHA256 金鑰，至少包含 32 bytes。 */
+    /**
+     * HMAC-SHA256 金鑰，至少包含 32 bytes。
+     */
     tokenHmacKey: string | Uint8Array;
 
-    /** 更新最近活動資訊的最小間隔，預設 10 分鐘。 */
+    /**
+     * 更新最近活動資訊的最小間隔，預設 10 分鐘。
+     */
     touchIntervalSeconds?: number;
 }
 
-/** 通過 token、TTL、主體及 Redis 最終確認後的內部驗證結果。 */
+/**
+ * 通過 token、TTL、主體及 Redis 最終確認後的內部驗證結果。
+ */
 interface ValidatedAuthenticationSession {
-    /** 已移除內部 validator digest 的公開 Session data。 */
+    /**
+     * 已移除內部 validator digest 的公開 Session data。
+     */
     session: AuthenticationSessionData;
 
-    /** rotate Lua 最終確認舊 token 所需的 digest。 */
+    /**
+     * rotate Lua 最終確認舊 token 所需的 digest。
+     */
     validatorDigest: string;
 }
 
-/** 列表以固定批次並行 HMGET，避免一次建立無上限的 Redis 命令陣列。 */
+/**
+ * 列表以固定批次並行 HMGET，避免一次建立無上限的 Redis 命令陣列。
+ */
 const authenticationSessionListReadBatchSize = 100;
 
-/** 工作階段最多存在 30 天，活動不會延長此期限。 */
+/**
+ * 工作階段最多存在 30 天，活動不會延長此期限。
+ */
 const defaultAbsoluteTtlSeconds = 60 * 60 * 24 * 30;
 
-/** 超過 7 天沒有有效活動就視為閒置到期。 */
+/**
+ * 超過 7 天沒有有效活動就視為閒置到期。
+ */
 const defaultIdleTtlSeconds = 60 * 60 * 24 * 7;
 
-/** 最多每 10 分鐘更新一次活動時間，降低 Redis 寫入量。 */
+/**
+ * 最多每 10 分鐘更新一次活動時間，降低 Redis 寫入量。
+ */
 const defaultTouchIntervalSeconds = 60 * 10;
 
-/** 已由來源裝置核准後，目標裝置必須在 5 秒內完成兌換。 */
+/**
+ * 已由來源裝置核准後，目標裝置必須在 5 秒內完成兌換。
+ */
 const defaultQrCodeLoginApprovalTtlSeconds = 5;
 
-/** QR 登入請求建立後最多等待來源裝置掃描 60 秒。 */
+/**
+ * QR 登入請求建立後最多等待來源裝置掃描 60 秒。
+ */
 const defaultQrCodeLoginRequestTtlSeconds = 60;
 
-/** 驗證所有秒數設定能換算成有效的日期時間戳。 */
+/**
+ * 驗證所有秒數設定能換算成有效的日期時間戳。
+ */
 function assertValidAuthenticationSessionDuration(name: string, value: number, minimum: number) {
     // 拒絕小數、越界值及超出 Date 可表示範圍的期限。
     if (
@@ -102,7 +142,9 @@ function assertValidAuthenticationSessionDuration(name: string, value: number, m
     ) throw new TypeError(`${name} must be a safe integer greater than or equal to ${minimum}`);
 }
 
-/** 建立不持有 HMAC key 的 Session 列表與撤銷管理介面。 */
+/**
+ * 建立不持有 HMAC key 的 Session 列表與撤銷管理介面。
+ */
 export function createRedisAuthenticationSessionManager(
     options: RedisAuthenticationSessionManagerOptions,
 ): AuthenticationSessionManager {
@@ -117,7 +159,9 @@ export function createRedisAuthenticationSessionManager(
         redisScripts.authenticationSession.revokeAll,
     );
 
-    /** 列出指定主體目前 epoch 下尚未到期的全部工作階段。 */
+    /**
+     * 列出指定主體目前 epoch 下尚未到期的全部工作階段。
+     */
     async function list(input: ListAuthenticationSessionsInput) {
         // 先取得目前 epoch；沒有 epoch 代表從未建立或已撤銷全部 Session。
         const epochKey = keys.epoch(input.principalId);
@@ -194,7 +238,9 @@ export function createRedisAuthenticationSessionManager(
         return list;
     }
 
-    /** 原子撤銷單一 Session 並從對應主體 index 移除。 */
+    /**
+     * 原子撤銷單一 Session 並從對應主體 index 移除。
+     */
     async function revoke(sessionId: string) {
         // 先讀取 index 定位所需欄位；缺少資料代表 Session 已不存在。
         const sessionKey = keys.session(sessionId);
@@ -218,7 +264,9 @@ export function createRedisAuthenticationSessionManager(
         return revokeResult === 1;
     }
 
-    /** 以 epoch 世代切換立即使指定主體的全部既有 Session 失效。 */
+    /**
+     * 以 epoch 世代切換立即使指定主體的全部既有 Session 失效。
+     */
     async function revokeAll(principalId: string) {
         // Lua 原子刪除並回傳舊 epoch；後續認證因 epoch 不存在立即失敗。
         const epochKey = keys.epoch(principalId);
@@ -238,7 +286,9 @@ export function createRedisAuthenticationSessionManager(
     };
 }
 
-/** 建立可簽發、認證、輪換、QR 登入及撤銷的完整 Redis Session store。 */
+/**
+ * 建立可簽發、認證、輪換、QR 登入及撤銷的完整 Redis Session store。
+ */
 export function createRedisAuthenticationSessionStore(
     options: RedisAuthenticationSessionStoreOptions,
 ): AuthenticationSessionStore {
@@ -301,7 +351,9 @@ export function createRedisAuthenticationSessionStore(
     const finalizeAuthentication = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.finalize);
     const rotateStoredSession = createRedisScriptRunner<number>(client, redisScripts.authenticationSession.rotate);
 
-    /** 一般登入成功後建立全新 Session 與 opaque token。 */
+    /**
+     * 一般登入成功後建立全新 Session 與 opaque token。
+     */
     async function create(input: CreateAuthenticationSessionInput) {
         // revision 會進入 HMAC binding，必須先保證是可穩定序列化的非負整數。
         if (!Number.isSafeInteger(input.principalAuthenticationRevision) || input.principalAuthenticationRevision < 0) {
@@ -380,7 +432,9 @@ export function createRedisAuthenticationSessionStore(
         };
     }
 
-    /** 執行 token、TTL、權威主體與 Redis 狀態的完整認證流程。 */
+    /**
+     * 執行 token、TTL、權威主體與 Redis 狀態的完整認證流程。
+     */
     async function authenticateParsedToken(
         input: AuthenticateAuthenticationSessionInput,
         parsedToken: ParsedAuthenticationSessionToken,
@@ -470,7 +524,9 @@ export function createRedisAuthenticationSessionStore(
         };
     }
 
-    /** 驗證外部輸入的完整 token，成功時只回傳公開 Session data。 */
+    /**
+     * 驗證外部輸入的完整 token，成功時只回傳公開 Session data。
+     */
     async function authenticate(input: AuthenticateAuthenticationSessionInput) {
         // 格式錯誤的 token 不查詢 Redis。
         const parsedToken = parseAuthenticationSessionToken(input.token);
@@ -479,7 +535,9 @@ export function createRedisAuthenticationSessionStore(
         return (await authenticateParsedToken(input, parsedToken))?.session;
     }
 
-    /** 原子撤銷舊 token 並建立新 token，保留原始登入與 absolute expiry。 */
+    /**
+     * 原子撤銷舊 token 並建立新 token，保留原始登入與 absolute expiry。
+     */
     async function rotate(input: RotateAuthenticationSessionInput) {
         // 先解析 token，避免畸形輸入進入認證流程。
         const parsedToken = parseAuthenticationSessionToken(input.token);
@@ -563,7 +621,9 @@ export function createRedisAuthenticationSessionStore(
     };
 }
 
-/** 取 absolute expiry 與下一個 idle expiry 中較早者，產生 Redis TTL。 */
+/**
+ * 取 absolute expiry 與下一個 idle expiry 中較早者，產生 Redis TTL。
+ */
 function getAuthenticationSessionExpiration(absoluteExpiresAt: number, now: number, idleTtlSeconds: number) {
     // 活動只能延長 idle 期限，不能突破 absolute expiry。
     const expiresAt = EnhancedDate

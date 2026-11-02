@@ -6,7 +6,7 @@ import {
 } from 'vitest';
 
 describe.concurrent('redis script runner', () => {
-    it('shares one script load between concurrent callers', async ({ expect }) => {
+    it('should share one script load between concurrent callers', async ({ expect }) => {
         let loaded = false;
         const send = vi.fn(async (command: string) => {
             if (command === 'SCRIPT') {
@@ -34,7 +34,7 @@ describe.concurrent('redis script runner', () => {
         expect(send.mock.calls.filter(([command]) => command === 'SCRIPT')).toHaveLength(1);
     });
 
-    it('retries one additional script reload across a failover window', async ({ expect }) => {
+    it('should retry one additional script reload across a failover window', async ({ expect }) => {
         const send = vi.fn()
             .mockRejectedValueOnce(new Error('NOSCRIPT first failover'))
             .mockResolvedValueOnce('sha')
@@ -54,7 +54,7 @@ describe.concurrent('redis script runner', () => {
         ]);
     });
 
-    it('stops retrying after two script reloads', async ({ expect }) => {
+    it('should stop retrying after two script reloads', async ({ expect }) => {
         const finalError = new Error('NOSCRIPT final failover');
         const send = vi.fn()
             .mockRejectedValueOnce(new Error('NOSCRIPT first failover'))
@@ -75,7 +75,7 @@ describe.concurrent('redis script runner', () => {
         ]);
     });
 
-    it('does not reload for errors only containing NOSCRIPT in their text', async ({ expect }) => {
+    it('should not reload for errors only containing NOSCRIPT in their text', async ({ expect }) => {
         const error = new Error('ERR Lua failure mentioning NOSCRIPT');
         const send = vi.fn().mockRejectedValue(error);
         const execute = createRedisScriptRunner({ send }, 'return 1');
@@ -84,7 +84,7 @@ describe.concurrent('redis script runner', () => {
         expect(send).toHaveBeenCalledTimes(1);
     });
 
-    it('preserves Redis errors unrelated to missing scripts', async ({ expect }) => {
+    it('should preserve Redis errors unrelated to missing scripts', async ({ expect }) => {
         const error = new Error('Redis unavailable');
         const execute = createRedisScriptRunner({ send: vi.fn().mockRejectedValue(error) }, 'return 1');
 

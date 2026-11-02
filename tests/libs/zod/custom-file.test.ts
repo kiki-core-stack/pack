@@ -354,7 +354,7 @@ describe('customFile', () => {
             const schema = z.customFile().png().optional().nullable().default(null);
 
             const result = await schema.parseAsync(undefined);
-            expect(result).toBe(null);
+            expect(result).toBeNull();
         });
     });
 

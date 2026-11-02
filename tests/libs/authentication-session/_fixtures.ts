@@ -94,7 +94,7 @@ function createStoredSessionData(
 
 export function createStoredSessionRow(
     overrides: Partial<StoredAuthenticationSessionData> = {},
-): (null | string)[] {
+): Array<null | string> {
     const session = createStoredSessionData(overrides);
 
     return [

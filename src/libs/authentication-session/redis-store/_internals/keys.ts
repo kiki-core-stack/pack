@@ -1,7 +1,9 @@
 import { projectRedisKeyPrefix } from '../../../../constants';
 import type { AuthenticationSessionPrincipalType } from '../../../../types/authentication-session';
 
-/** 建立同一 principal type 下所有 Authentication Session Redis key。 */
+/**
+ * 建立同一 principal type 下所有 Authentication Session Redis key。
+ */
 export function createRedisAuthenticationSessionKeys(
     principalType: AuthenticationSessionPrincipalType,
     environment?: string,
