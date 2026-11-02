@@ -13,7 +13,7 @@ import { createAuthenticationSessionData } from '../../libs/authentication-sessi
 // Constants
 const session = createAuthenticationSessionData({ absoluteExpiresAt: 30_000 });
 
-const validatePrincipal = () => Promise.resolve(true);
+const validatePrincipal = async () => await Promise.resolve(true);
 
 // Functions
 function createStore(

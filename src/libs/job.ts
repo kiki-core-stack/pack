@@ -23,7 +23,7 @@ const createJobOutboxEventInputSchema = z.object({
 // Pass the business transaction's session to persist its changes and events atomically.
 // These helpers do not start or commit a transaction themselves.
 export async function createJobOutboxEvents(events: CreateJobOutboxEventInput[], session?: ClientSession) {
-    return JobOutboxEventModel.insertMany(
+    return await JobOutboxEventModel.insertMany(
         events.map((event) => {
             const input = createJobOutboxEventInputSchema.parse(event);
             return {

@@ -16,7 +16,7 @@ const animatedMimeTypes = new Set([
 ]);
 
 // Functions
-export function autoConvertAnimatedImageToWebp(
+export async function autoConvertAnimatedImageToWebp(
     input: Exclude<BinaryInput, ArrayBuffer | Buffer | Uint8Array> | { buffer: BinaryInput; type: string },
     inputOptions?: SharpOptions,
     outputOptions?: WebpOptions,
@@ -31,7 +31,7 @@ export function autoConvertAnimatedImageToWebp(
         ...outputOptions,
     };
 
-    return convertImage('buffer' in input ? input.buffer : input, inputOptions, 'webp', outputOptions);
+    return await convertImage('buffer' in input ? input.buffer : input, inputOptions, 'webp', outputOptions);
 }
 
 export async function convertImage(
@@ -40,7 +40,7 @@ export async function convertImage(
     outputFormat: Parameters<Sharp['toFormat']>[0] = 'webp',
     outputOptions?: Parameters<Sharp['toFormat']>[1],
 ) {
-    return sharp(
+    return await sharp(
         await toBuffer(input),
         {
             autoOrient: true,

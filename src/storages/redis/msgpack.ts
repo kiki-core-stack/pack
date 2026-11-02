@@ -11,17 +11,17 @@ import * as redisScripts from '../../redis-scripts';
 const getAndDeleteHex = createRedisScriptRunner<null | string>(redisClient, redisScripts.storage.getAndDeleteHex);
 
 export const redisMsgpackStorage: RedisMsgpackStorage = createRedisMsgpackStorage({
-    delete: (key) => redisClient.del(key),
-    getBuffer: (key) => redisClient.getBuffer(key),
+    delete: async (key) => await redisClient.del(key),
+    getBuffer: async (key) => await redisClient.getBuffer(key),
     async getBufferAndDelete(key) {
         const hex = await getAndDeleteHex([key], []);
         return hex === null ? null : Buffer.from(hex, 'hex');
     },
-    has: (key) => redisClient.exists(key),
-    setBuffer: (key, value) => redisClient.set(key, value),
-    setBufferEx: (key, ttlSeconds, value) => redisClient.setex(key, ttlSeconds, value),
-    setBufferExNx(key, ttlSeconds, value) {
-        return redisClient.set(key, value, 'EX', ttlSeconds.toString(), 'NX') as Promise<'OK' | null>;
+    has: async (key) => await redisClient.exists(key),
+    setBuffer: async (key, value) => await redisClient.set(key, value),
+    setBufferEx: async (key, ttlSeconds, value) => await redisClient.setex(key, ttlSeconds, value),
+    async setBufferExNx(key, ttlSeconds, value) {
+        return await (redisClient.set(key, value, 'EX', ttlSeconds.toString(), 'NX') as Promise<'OK' | null>);
     },
-    ttl: (key) => redisClient.ttl(key),
+    ttl: async (key) => await redisClient.ttl(key),
 });

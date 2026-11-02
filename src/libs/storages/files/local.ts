@@ -71,18 +71,18 @@ export class LocalFileStorage extends BaseFileStorage {
     // Public methods
 
     // TODO(async-style): 待所有專案統一 try/catch、then、catch、finally 的使用準則後再整理，必要時由 ESLint 規範。
-    delete(filePath: PathLike) {
-        return Promise.resolve()
+    async delete(filePath: PathLike) {
+        return await Promise.resolve()
             .then(() => this.#resolveStoragePath(filePath))
-            .then((resolvedFilePath) => resolvedFilePath.rm({ force: true }))
+            .then(async (resolvedFilePath) => await resolvedFilePath.rm({ force: true }))
             .then(() => this.createResult())
             .catch((error) => this.createResult(new Error(`Delete file failed: ${filePath}, error: ${error}`)));
     }
 
-    exists(filePath: PathLike) {
-        return Promise.resolve()
+    async exists(filePath: PathLike) {
+        return await Promise.resolve()
             .then(() => this.#resolveStoragePath(filePath))
-            .then((resolvedFilePath) => resolvedFilePath.access())
+            .then(async (resolvedFilePath) => await resolvedFilePath.access())
             .then(() => this.createResult(true))
             .catch((error) => {
                 if ((error as NodeJS.ErrnoException).code === 'ENOENT') return this.createResult(false);
@@ -90,10 +90,10 @@ export class LocalFileStorage extends BaseFileStorage {
             });
     }
 
-    read(filePath: PathLike) {
-        return Promise.resolve()
+    async read(filePath: PathLike) {
+        return await Promise.resolve()
             .then(() => this.#resolveStoragePath(filePath))
-            .then((resolvedFilePath) => resolvedFilePath.readFile())
+            .then(async (resolvedFilePath) => await resolvedFilePath.readFile())
             .then((buffer) => this.createResult(buffer))
             .catch((error) => this.createResult(new Error(`Read file failed: ${filePath}, error: ${error}`)));
     }

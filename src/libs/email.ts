@@ -35,7 +35,7 @@ export async function enqueueEmailSendJobs(
         from = emailSenderIdentity.from;
     }
 
-    return getDefaultMongooseConnection().transaction(async (session) => {
+    return await getDefaultMongooseConnection().transaction(async (session) => {
         const emailSendRecords = await EmailSendRecordModel.insertMany(
             [to].flat().map((t) => ({
                 content: body,

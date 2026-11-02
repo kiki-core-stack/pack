@@ -232,7 +232,7 @@ function compilePlatformIpAccessPolicySnapshot(
     };
 }
 
-function getCompiledPlatformIpAccessPolicySnapshot() {
+async function getCompiledPlatformIpAccessPolicySnapshot() {
     const cachedCompiledPlatformIpAccessPolicySnapshot = lruStore.platform.compiledIpAccessPolicySnapshot.getItem();
 
     if (cachedCompiledPlatformIpAccessPolicySnapshot) return cachedCompiledPlatformIpAccessPolicySnapshot;
@@ -246,7 +246,7 @@ function getCompiledPlatformIpAccessPolicySnapshot() {
             .finally(() => pendingCompiledPlatformIpAccessPolicySnapshotLoad = undefined);
     }
 
-    return pendingCompiledPlatformIpAccessPolicySnapshotLoad;
+    return await pendingCompiledPlatformIpAccessPolicySnapshotLoad;
 }
 
 function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {

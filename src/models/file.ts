@@ -66,7 +66,7 @@ schema.post<Query<FileDocument[], File>>(
         if (!isEligibleIdQuery(this, 'in')) return;
         const projectionKey = serializeProjection(this.projection());
         await Promise.all(
-            result.map((item) => {
+            result.map(async (item) => {
                 const fileDocumentData = {
                     ...item.toObject(),
                     _id: item._id.toHexString(),
@@ -74,7 +74,7 @@ schema.post<Query<FileDocument[], File>>(
                 };
 
                 lruStore.file.documentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
-                return redisStore.file.documentData.setItemWithTtl(
+                return await redisStore.file.documentData.setItemWithTtl(
                     3600,
                     fileDocumentData,
                     fileDocumentData._id,
@@ -99,8 +99,10 @@ schema.pre<Query<FileDocument[], File>>(
         const allFileDocumentData = await Promise.all(
             ids.map(
                 async (id) =>
-                    lruStore.file.documentData.getItem(id, projectionKey)
-                    || redisStore.file.documentData.getItem(id, projectionKey),
+                    await (
+                        lruStore.file.documentData.getItem(id, projectionKey)
+                        || redisStore.file.documentData.getItem(id, projectionKey)
+                    ),
             ),
         );
 

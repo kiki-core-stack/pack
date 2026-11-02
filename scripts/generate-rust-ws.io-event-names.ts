@@ -30,13 +30,13 @@ await outputDirPath.rm({
 
 await outputDirPath.mkdir({ recursive: true });
 await Promise.all(
-    Object.entries(WsIoEventNames).map(([zone, names]) => {
+    Object.entries(WsIoEventNames).map(async ([zone, names]) => {
         const fileName = `${snakeCase(zone)}.rs`;
         const fileContentLines = Object
             .entries(names)
             .map(([key, value]) => `pub const ${constantCase(key)}: &str = "${value}";`);
 
-        return outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
+        return await outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
     }),
 );
 

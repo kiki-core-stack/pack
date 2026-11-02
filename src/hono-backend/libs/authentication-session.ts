@@ -165,7 +165,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         const authenticated = await options.store.authenticate({
             ...input,
             token,
-            validatePrincipal: (data) => options.validatePrincipal(ctx, data),
+            validatePrincipal: async (data) => await options.validatePrincipal(ctx, data),
         });
 
         // 無效 Session 直接回傳 undefined，由呼叫端拒絕授權。
@@ -202,7 +202,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         // 主體權威驗證仍在建立目標 Session 前執行。
         const completed = await options.store.qrCodeLogin.complete({
             ...input,
-            validatePrincipal: (data) => options.validatePrincipal(ctx, data),
+            validatePrincipal: async (data) => await options.validatePrincipal(ctx, data),
         });
 
         // 無效或尚未核准時不建立 Cookie。
@@ -233,7 +233,7 @@ export function createHonoAuthenticationSession(options: HonoAuthenticationSessi
         const rotated = await options.store.rotate({
             ...input,
             token,
-            validatePrincipal: (data) => options.validatePrincipal(ctx, data),
+            validatePrincipal: async (data) => await options.validatePrincipal(ctx, data),
         });
 
         // 任何驗證或競態失敗都不覆寫現有 Cookie。

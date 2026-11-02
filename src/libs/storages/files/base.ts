@@ -50,8 +50,8 @@ export abstract class BaseFileStorage {
     abstract delete(filePath: PathLike): Promise<Result>;
     abstract exists(filePath: PathLike): Promise<Result<boolean>>;
 
-    getBuffer(filePath: PathLike): Promise<Result<Buffer>> {
-        return this.read(filePath);
+    async getBuffer(filePath: PathLike): Promise<Result<Buffer>> {
+        return await this.read(filePath);
     }
 
     abstract read(filePath: PathLike): Promise<Result<Buffer>>;

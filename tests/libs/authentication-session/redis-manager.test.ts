@@ -80,7 +80,7 @@ describe.concurrent('redis authentication session manager', () => {
 
         const client = createClient({
             get: vi.fn().mockResolvedValue('epoch'),
-            hmget: vi.fn((key) => Promise.resolve(sessions[key.split(':').at(-1) as keyof typeof sessions])),
+            hmget: vi.fn(async (key) => await Promise.resolve(sessions[key.split(':').at(-1) as keyof typeof sessions])),
             zrange: vi.fn().mockResolvedValue([
                 'older',
                 'same-b',
@@ -147,17 +147,17 @@ describe.concurrent('redis authentication session manager', () => {
         const zrem = vi.fn().mockResolvedValue(3);
         const client = createClient({
             get: vi.fn().mockResolvedValue('epoch'),
-            hmget: vi.fn((key) => {
+            hmget: vi.fn(async (key) => {
                 const selector = key.split(':').at(-1);
-                if (selector === 'missing') return Promise.resolve([]);
+                if (selector === 'missing') return await Promise.resolve([]);
                 if (selector === 'expired') {
-                    return Promise.resolve(createStoredSessionRow({
+                    return await Promise.resolve(createStoredSessionRow({
                         absoluteExpiresAt: 15_000,
                         id: selector,
                     }));
                 }
 
-                return Promise.resolve(createStoredSessionRow({
+                return await Promise.resolve(createStoredSessionRow({
                     epoch: 'old-epoch',
                     id: selector,
                 }));

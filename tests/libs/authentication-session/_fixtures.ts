@@ -25,7 +25,7 @@ export const expectedRedisAuthenticationSessionKeyPrefix = environment
 const tokenHmacKey = 'a-secure-test-only-token-hmac-key-with-more-than-32-bytes';
 
 // Functions
-export const validatePrincipal = () => Promise.resolve(true);
+export const validatePrincipal = async () => await Promise.resolve(true);
 
 export function createAuthenticationSessionData(
     overrides: Partial<AuthenticationSessionData> = {},

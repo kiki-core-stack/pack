@@ -20,5 +20,5 @@ export async function uploadImageAndCreateFileDocument(
         convertImageOutputOptions,
     );
 
-    return uploadFileAndCreateDocument(convertedImage, storage, 'webp');
+    return await uploadFileAndCreateDocument(convertedImage, storage, 'webp');
 }

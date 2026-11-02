@@ -32,7 +32,7 @@ beforeEach(() => {
 afterEach(async () => {
     await Promise.all(
         tempDirPaths.map(
-            (tempDirPath) => rm(
+            async (tempDirPath) => await rm(
                 tempDirPath,
                 {
                     force: true,

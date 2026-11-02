@@ -7,8 +7,8 @@ import { SmsSendRecordModel } from '../models/sms/send-record';
 import { createJobOutboxEvents } from './job';
 
 // Functions
-export function enqueueSmsSendJobs(to: Arrayable<string>, content: string) {
-    return getDefaultMongooseConnection().transaction(async (session) => {
+export async function enqueueSmsSendJobs(to: Arrayable<string>, content: string) {
+    return await getDefaultMongooseConnection().transaction(async (session) => {
         const smsSendRecords = await SmsSendRecordModel.insertMany(
             [to].flat().map((t) => ({
                 content,
