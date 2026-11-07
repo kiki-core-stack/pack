@@ -1,20 +1,16 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 
+import type { PlatformIpAccessPolicyMode } from '../../constants/platform';
 import type {
-    PlatformConfigScope,
-    PlatformIpAccessPolicyMode,
-} from '../../constants/platform';
-import type {
-    PlatformConfigValues,
+    PlatformConfigVariant,
     PlatformIpAccessPolicyTarget,
 } from '../platform';
 
 import type { WithAdminAuditData } from './';
 
-export interface PlatformConfigData extends BaseMongooseModelData, WithAdminAuditData {
-    config: PlatformConfigValues;
-    scope: PlatformConfigScope;
-}
+export type PlatformConfigData = PlatformConfigBaseData & PlatformConfigVariant;
+
+export interface PlatformConfigBaseData extends BaseMongooseModelData, WithAdminAuditData {}
 
 export interface PlatformIpAccessPolicyData extends BaseMongooseModelData, WithAdminAuditData {
     enabled: boolean;

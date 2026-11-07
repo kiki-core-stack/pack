@@ -2,8 +2,8 @@ import type { ReadonlyRecord } from '@kikiutils/shared/types';
 import type { AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
 
+import type { SmsProviderCode } from '../../constants/sms';
 import type { SmsSendRecord } from '../../models/sms/send-record';
-import type { SmsProviderConfigs } from '../../types/sms';
 import { getErrorMessage } from '../utils/error';
 
 import { BaseSmsProvider } from './base';
@@ -48,7 +48,7 @@ const retryableApiErrorResponseCodes = new Set([
     '99999',
 ]);
 
-export class SmsTwSmsProvider extends BaseSmsProvider<SmsProviderConfigs.TwSms> {
+export class SmsTwSmsProvider extends BaseSmsProvider<SmsProviderCode.TwSms> {
     constructor(provider: LeanedSmsProvider) {
         super(provider);
     }

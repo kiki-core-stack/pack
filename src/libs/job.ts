@@ -1,13 +1,9 @@
 import type { ClientSession } from 'mongoose';
-import type { ZodSafeParseResult } from 'zod';
 
 import { JobType } from '../constants/job';
 import { JobOutboxEventModel } from '../models/job/outbox-event';
-import { jobPayloadSchemas } from '../schemas/job';
-import type {
-    CreateJobOutboxEventInput,
-    JobPayloadByType,
-} from '../types/job';
+import { parseJobOutboxEventPayload } from '../schemas/job';
+import type { CreateJobOutboxEventInput } from '../types/job';
 
 import * as z from './zod';
 
@@ -24,17 +20,13 @@ const createJobOutboxEventInputSchema = z.object({
 // These helpers do not start or commit a transaction themselves.
 export async function createJobOutboxEvents(events: CreateJobOutboxEventInput[], session?: ClientSession) {
     return await JobOutboxEventModel.insertMany(
-        events.map((event) => {
-            const input = createJobOutboxEventInputSchema.parse(event);
+        await Promise.all(events.map(async (event) => {
+            const input = await createJobOutboxEventInputSchema.parseAsync(event);
             return {
                 ...input,
-                payload: jobPayloadSchemas[input.type].parse(input.payload),
+                payload: await parseJobOutboxEventPayload(input.type, input.payload),
             };
-        }),
+        })),
         { session },
     );
-}
-
-export function safeParseJobPayload<T extends JobType>(type: T, input: unknown) {
-    return jobPayloadSchemas[type].safeParse(input) as ZodSafeParseResult<JobPayloadByType[T]>;
 }

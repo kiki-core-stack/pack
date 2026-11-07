@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import * as z from '../libs/zod';
 
 export const ipAddressOrCidrSchema = z.string().trim().pipe(z.union([
     z.ipv4(),

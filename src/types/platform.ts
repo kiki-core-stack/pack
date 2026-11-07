@@ -1,21 +1,46 @@
-import type * as z from 'zod';
-
 import type {
     PlatformConfigScope,
     PlatformIpAccessPolicyCheckReason,
     PlatformIpAccessPolicyMode,
     PlatformIpAccessPolicyScope,
 } from '../constants/platform';
-import type { platformConfigValidators } from '../schemas/platform/config';
+import type { platformConfigSchemas } from '../schemas/platform';
 
 import type { PlatformIpAccessPolicyData } from './data/platform';
 import type { IpAddressRange } from './ip';
 
-export type PlatformConfigScopeToValuesMap = {
-    [S in PlatformConfigScope]: z.infer<(typeof platformConfigValidators)[S]>;
-};
+import type {
+    DiscriminatedFieldVariant,
+    ZodSchemaMapInput,
+    ZodSchemaMapOutput,
+} from './';
 
-export type PlatformConfigValues = PlatformConfigScopeToValuesMap[PlatformConfigScope];
+export type PlatformConfigByScope = ZodSchemaMapOutput<typeof platformConfigSchemas>;
+export type PlatformConfigInputByScope = ZodSchemaMapInput<typeof platformConfigSchemas>;
+export type PlatformConfigVariant<S extends PlatformConfigScope = PlatformConfigScope> = DiscriminatedFieldVariant<
+    'scope',
+    'config',
+    PlatformConfigByScope,
+    S
+>;
+
+export type PlatformIpAccessPolicyCheckResult =
+  | {
+      allowed: false;
+      policyId: string;
+      reason: PlatformIpAccessPolicyCheckReason.AllowlistMiss | PlatformIpAccessPolicyCheckReason.BlacklistMatch;
+  }
+  | {
+      allowed: false;
+      reason: PlatformIpAccessPolicyCheckReason.InvalidIp;
+  }
+  | {
+      allowed: true;
+      reason:
+        | PlatformIpAccessPolicyCheckReason.Allowed
+        | PlatformIpAccessPolicyCheckReason.Disabled
+        | PlatformIpAccessPolicyCheckReason.NoApplicablePolicy;
+  };
 
 /**
  * 同一目標內的條件為 AND，不同目標之間為 OR；null 表示不限制。
@@ -38,30 +63,6 @@ export type PlatformIpAccessPolicyTarget =
       principalIds: null;
       principalType: null;
       scope: PlatformIpAccessPolicyScope;
-  };
-
-// eslint-disable-next-line ts/no-namespace
-export namespace PlatformConfigs {
-    export type AdminManagement = z.infer<(typeof platformConfigValidators)[PlatformConfigScope.AdminManagement]>;
-    export type System = z.infer<(typeof platformConfigValidators)[PlatformConfigScope.System]>;
-}
-
-export type PlatformIpAccessPolicyCheckResult =
-  | {
-      allowed: false;
-      policyId: string;
-      reason: PlatformIpAccessPolicyCheckReason.AllowlistMiss | PlatformIpAccessPolicyCheckReason.BlacklistMatch;
-  }
-  | {
-      allowed: false;
-      reason: PlatformIpAccessPolicyCheckReason.InvalidIp;
-  }
-  | {
-      allowed: true;
-      reason:
-        | PlatformIpAccessPolicyCheckReason.Allowed
-        | PlatformIpAccessPolicyCheckReason.Disabled
-        | PlatformIpAccessPolicyCheckReason.NoApplicablePolicy;
   };
 
 export interface CachedPlatformIpAccessPolicySnapshot {

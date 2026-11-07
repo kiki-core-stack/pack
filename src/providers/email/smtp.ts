@@ -2,15 +2,15 @@ import { createTransport } from 'nodemailer';
 import type { Mail } from 'nodemailer';
 import type * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 
+import type { EmailProviderCode } from '../../constants/email';
 import type { EmailSendRecord } from '../../models/email/send-record';
-import type { EmailProviderConfigs } from '../../types/email';
 
 import { BaseEmailProvider } from './base';
 import { EmailProviderError } from './error';
 
 import type { LeanedEmailProvider } from './';
 
-export class EmailSmtpProvider extends BaseEmailProvider<EmailProviderConfigs.Smtp> {
+export class EmailSmtpProvider extends BaseEmailProvider<EmailProviderCode.Smtp> {
     readonly #transport: Mail<SMTPTransport.SMTPSentMessageInfo>;
 
     constructor(provider: LeanedEmailProvider) {

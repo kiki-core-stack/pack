@@ -1,16 +1,17 @@
-export type SmsProviderConfig = SmsProviderConfigs.Mitake | SmsProviderConfigs.TwSms;
+import type { SmsProviderCode } from '../constants/sms';
+import type { smsProviderConfigSchemas } from '../schemas/sms';
 
-// eslint-disable-next-line ts/no-namespace
-export namespace SmsProviderConfigs {
-    export interface Mitake {
-        apiUrl: string;
-        password: string;
-        username: string;
-    }
+import type {
+    DiscriminatedFieldVariant,
+    ZodSchemaMapInput,
+    ZodSchemaMapOutput,
+} from './';
 
-    export interface TwSms {
-        apiUrl: string;
-        password: string;
-        username: string;
-    }
-}
+export type SmsProviderConfigByCode = ZodSchemaMapOutput<typeof smsProviderConfigSchemas>;
+export type SmsProviderConfigInputByCode = ZodSchemaMapInput<typeof smsProviderConfigSchemas>;
+export type SmsProviderConfigVariant<C extends SmsProviderCode = SmsProviderCode> = DiscriminatedFieldVariant<
+    'code',
+    'config',
+    SmsProviderConfigByCode,
+    C
+>;

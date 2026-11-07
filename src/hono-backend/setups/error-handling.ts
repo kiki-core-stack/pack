@@ -8,8 +8,8 @@ import type {
 } from 'hono';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { mongo } from 'mongoose';
-import { ZodError } from 'zod';
 
+import * as z from '../../libs/zod';
 import { isDebugMode as isDebugModeFn } from '../../utils/env';
 import { ApiError } from '../libs/api/error';
 
@@ -67,7 +67,7 @@ export function setupHonoAppErrorHandling(
         }
 
         // TODO: pretty error
-        if (error instanceof ZodError) {
+        if (error instanceof z.ZodError) {
             if (isDebugMode) logger.error(error);
             return ctx.json({ issues: error.issues }, 400);
         }

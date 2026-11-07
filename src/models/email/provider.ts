@@ -10,9 +10,10 @@ import { Schema } from 'mongoose';
 import { EmailProviderCode } from '../../constants/email';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { EmailProviderData } from '../../types/data/email';
+import type { EmailProviderBaseData } from '../../types/data/email';
+import type { EmailProviderConfigVariant } from '../../types/email';
 
-export type EmailProvider = SmartDataToBaseMongooseDocType<EmailProviderData>;
+export type EmailProvider = EmailProviderConfigVariant & SmartDataToBaseMongooseDocType<EmailProviderBaseData>;
 export type EmailProviderDocument = MongooseHydratedDocument<EmailProvider>;
 type EmailProviderModel = BaseMongoosePaginateModel<EmailProvider>;
 

@@ -2,16 +2,13 @@ import { cloneDeep } from 'es-toolkit';
 
 import { PlatformConfigScope } from '../../constants/platform';
 import { PlatformConfigModel } from '../../models/platform/config';
-import { platformConfigValidators } from '../../schemas/platform/config';
+import { parsePlatformConfig } from '../../schemas/platform';
 import * as lruStore from '../../stores/lru';
 import * as redisStore from '../../stores/redis';
-import type {
-    PlatformConfigScopeToValuesMap,
-    PlatformConfigValues,
-} from '../../types/platform';
+import type { PlatformConfigByScope } from '../../types/platform';
 
 // Constants/Variables
-const pendingPlatformConfigLoads = new Map<PlatformConfigScope, Promise<PlatformConfigValues>>();
+const pendingPlatformConfigLoads = new Map<PlatformConfigScope, Promise<PlatformConfigByScope[PlatformConfigScope]>>();
 
 // Functions
 export async function clearPlatformConfigCache(scope: PlatformConfigScope) {
@@ -32,18 +29,18 @@ export async function getPlatformConfig<S extends PlatformConfigScope>(scope: S)
         pendingPlatformConfigLoads.set(scope, pendingPlatformConfigLoad);
     }
 
-    return cloneDeep(await pendingPlatformConfigLoad) as PlatformConfigScopeToValuesMap[S];
+    return cloneDeep(await pendingPlatformConfigLoad) as PlatformConfigByScope[S];
 }
 
 async function loadPlatformConfig<S extends PlatformConfigScope>(scope: S) {
     const cachedPlatformConfig = await redisStore.platform.config.getItem(scope);
     if (cachedPlatformConfig !== null && cachedPlatformConfig !== undefined) {
-        return platformConfigValidators[scope].parse(cachedPlatformConfig) as PlatformConfigScopeToValuesMap[S];
+        return await parsePlatformConfig(scope, cachedPlatformConfig);
     }
 
     const platformConfig = await PlatformConfigModel.findOne({ scope }).select('config').lean();
     if (!platformConfig) throw new Error(`Platform config not found for scope ${scope}`);
-    const config = platformConfigValidators[scope].parse(platformConfig.config) as PlatformConfigScopeToValuesMap[S];
+    const config = await parsePlatformConfig(scope, platformConfig.config);
     await redisStore.platform.config.setItemWithTtl(60, config, scope);
     return config;
 }

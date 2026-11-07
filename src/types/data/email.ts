@@ -1,19 +1,18 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 
 import type {
-    EmailProviderCode,
     EmailSenderIdentityKey,
     EmailSendRecordStatus,
 } from '../../constants/email';
-import type { EmailProviderConfig } from '../email';
+import type { EmailProviderConfigVariant } from '../email';
 
 import type { WithAdminAuditData } from './';
 
-export interface EmailProviderData extends BaseMongooseModelData, WithAdminAuditData {
+export type EmailProviderData = EmailProviderBaseData & EmailProviderConfigVariant;
+
+export interface EmailProviderBaseData extends BaseMongooseModelData, WithAdminAuditData {
     apiProxyUrl?: string;
     cacheKey: string;
-    code: EmailProviderCode;
-    config: EmailProviderConfig;
     enabled: boolean;
     name: string;
     priority: number;

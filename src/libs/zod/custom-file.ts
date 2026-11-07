@@ -1,16 +1,10 @@
 import type { MaybeReadonly } from '@kikiutils/shared/types';
 import type { Arrayable } from 'type-fest';
 import * as z from 'zod';
-import { ZodType } from 'zod';
-import type {
-    ZodFile,
-    ZodPreprocess,
-} from 'zod';
-import type { ParsePayload } from 'zod/v4/core';
 
 import { getFileMimeType } from '../../utils/file';
 
-export interface ZodCustomFile extends ZodFile {
+export interface ZodCustomFile extends z.ZodFile {
     commonImages: () => this;
     getMaxSize: () => number | undefined;
     getMaxSizeKb: () => number | undefined;
@@ -28,7 +22,7 @@ export interface ZodCustomFile extends ZodFile {
     minSizeKb: (kb: number) => this;
     minSizeMb: (mb: number) => this;
     png: () => this;
-    toRawSchema: () => ZodPreprocess<ZodFile>;
+    toRawSchema: () => z.ZodPreprocess<z.ZodFile>;
     webp: () => this;
 }
 
@@ -93,7 +87,7 @@ export function customFile() {
                     if (typeof originalProperty === 'function') {
                         return (...args: any[]) => {
                             const result = originalProperty.apply(schema, args);
-                            return result instanceof ZodType ? decorate(result) : result;
+                            return result instanceof z.ZodType ? decorate(result) : result;
                         };
                     }
 
@@ -104,7 +98,7 @@ export function customFile() {
 
         function maxSize(bytes: number) {
             maxSizeBytes = bytes;
-            return (ctx: ParsePayload<File>) => {
+            return (ctx: z.core.ParsePayload<File>) => {
                 if (ctx.value.size > bytes) {
                     ctx.issues.push({
                         code: 'custom',
@@ -123,7 +117,7 @@ export function customFile() {
 
         function minSize(bytes: number) {
             minSizeBytes = bytes;
-            return (ctx: ParsePayload<File>) => {
+            return (ctx: z.core.ParsePayload<File>) => {
                 if (ctx.value.size < bytes) {
                     ctx.issues.push({
                         code: 'custom',

@@ -9,10 +9,11 @@ import { Schema } from 'mongoose';
 
 import { AdminLogType } from '../../constants/admin';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
+import type { AdminLogMetadataVariant } from '../../types/admin';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { AdminLogData } from '../../types/data/admin';
+import type { AdminLogBaseData } from '../../types/data/admin';
 
-export type AdminLog = SmartDataToBaseMongooseDocType<AdminLogData, 'admin'>;
+export type AdminLog = AdminLogMetadataVariant & SmartDataToBaseMongooseDocType<AdminLogBaseData, 'admin'>;
 export type AdminLogDocument = MongooseHydratedDocument<AdminLog>;
 type AdminLogModel = BaseMongoosePaginateModel<AdminLog>;
 

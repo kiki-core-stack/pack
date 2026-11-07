@@ -1,15 +1,23 @@
 import type { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
-import type * as z from 'zod';
 
 import type { JobType } from '../constants/job';
-import type { jobPayloadSchemas } from '../schemas/job';
+import type { jobOutboxEventPayloadSchemas } from '../schemas/job';
 
-export type CreateJobOutboxEventInput<T extends JobType = JobType> = {
-    [K in T]: {
-        nextPublishAt?: EnhancedDate;
-        payload: JobPayloadByType[K];
-        type: K;
-    };
-}[T];
+import type {
+    DiscriminatedFieldVariant,
+    ZodSchemaMapInput,
+    ZodSchemaMapOutput,
+} from './';
 
-export type JobPayloadByType = { [T in keyof typeof jobPayloadSchemas]: z.infer<(typeof jobPayloadSchemas)[T]>; };
+export type CreateJobOutboxEventInput<T extends JobType = JobType> =
+  & DiscriminatedFieldVariant<'type', 'payload', JobOutboxEventPayloadInputByType, T>
+  & { nextPublishAt?: EnhancedDate };
+
+export type JobOutboxEventPayloadByType = ZodSchemaMapOutput<typeof jobOutboxEventPayloadSchemas>;
+export type JobOutboxEventPayloadInputByType = ZodSchemaMapInput<typeof jobOutboxEventPayloadSchemas>;
+export type JobOutboxEventPayloadVariant<T extends JobType = JobType> = DiscriminatedFieldVariant<
+    'type',
+    'payload',
+    JobOutboxEventPayloadByType,
+    T
+>;

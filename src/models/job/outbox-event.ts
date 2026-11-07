@@ -10,13 +10,12 @@ import { Schema } from 'mongoose';
 
 import { JobType } from '../../constants/job';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { JobOutboxEventData } from '../../types/data/job';
+import type { JobOutboxEventBaseData } from '../../types/data/job';
+import type { JobOutboxEventPayloadVariant } from '../../types/job';
 
-export type JobOutboxEvent = SmartDataToBaseMongooseDocType<
-    JobOutboxEventData,
-    never,
-    'nextPublishAt' | 'publishLeaseUntil'
->;
+export type JobOutboxEvent =
+  & JobOutboxEventPayloadVariant
+  & SmartDataToBaseMongooseDocType<JobOutboxEventBaseData, never, 'nextPublishAt' | 'publishLeaseUntil'>;
 
 export type JobOutboxEventDocument = MongooseHydratedDocument<JobOutboxEvent>;
 type JobOutboxEventModel = BaseMongoosePaginateModel<JobOutboxEvent>;

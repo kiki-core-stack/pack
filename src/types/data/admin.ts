@@ -1,8 +1,10 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 
-import type { AdminLogType } from '../../constants/admin';
+import type { AdminLogMetadataVariant } from '../admin';
 
 import type { WithAdminAuditData } from './';
+
+export type AdminLogData = AdminLogBaseData & AdminLogMetadataVariant;
 
 export interface AdminChangePasswordData {
     newPassword: string;
@@ -19,12 +21,10 @@ export interface AdminData extends BaseMongooseModelData {
     roles: Array<Partial<AdminRoleData>>;
 }
 
-export interface AdminLogData extends BaseMongooseModelData<true, false> {
+export interface AdminLogBaseData extends BaseMongooseModelData<true, false> {
     admin: Partial<AdminData>;
     ip?: string;
-    metadata?: Record<string, any>;
     note?: string;
-    type: AdminLogType;
 }
 
 export interface AdminLoginFormData {

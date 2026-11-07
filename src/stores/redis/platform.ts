@@ -1,12 +1,12 @@
 import type { PlatformConfigScope } from '../../constants/platform';
 import type {
     CachedPlatformIpAccessPolicySnapshot,
-    PlatformConfigValues,
+    PlatformConfigByScope,
 } from '../../types/platform';
 
 import { createProjectRedisKeyedStore } from './_internals';
 
-export const config = /* @__PURE__ */ createProjectRedisKeyedStore<PlatformConfigValues>()(
+export const config = /* @__PURE__ */ createProjectRedisKeyedStore<PlatformConfigByScope[PlatformConfigScope]>()(
     (scope: PlatformConfigScope) => `platform:config:${scope}`,
 );
 

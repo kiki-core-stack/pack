@@ -1,12 +1,12 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 
-import type { JobType } from '../../constants/job';
+import type { JobOutboxEventPayloadVariant } from '../job';
 
-export interface JobOutboxEventData extends BaseMongooseModelData {
+export type JobOutboxEventData = JobOutboxEventBaseData & JobOutboxEventPayloadVariant;
+
+export interface JobOutboxEventBaseData extends BaseMongooseModelData {
     nextPublishAt: string;
-    payload: Record<string, any>;
     publishAttemptCount: number;
     publishClaimId?: string;
     publishLeaseUntil?: string;
-    type: JobType;
 }

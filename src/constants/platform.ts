@@ -1,6 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
-import type { PlatformConfigScopeToValuesMap } from '../types/platform';
+import type { PlatformConfigByScope } from '../types/platform';
 
 export enum PlatformConfigScope {
     AdminManagement = 1,
@@ -8,6 +8,7 @@ export enum PlatformConfigScope {
 
     // Values below 1000 are reserved for upstream shared base types.
     // Downstream projects must assign project-specific values starting at 1000.
+    // Uncomment the eslint-disable/enable lines below if `eslint --fix` would reorder these values.
     // /* eslint-disable perfectionist/sort-enums */
 
     // /* eslint-enable perfectionist/sort-enums */
@@ -32,12 +33,13 @@ export enum PlatformIpAccessPolicyScope {
 
     // Values below 1000 are reserved for upstream shared base types.
     // Downstream projects must assign project-specific values starting at 1000.
+    // Uncomment the eslint-disable/enable lines below if `eslint --fix` would reorder these values.
     // /* eslint-disable perfectionist/sort-enums */
 
     // /* eslint-enable perfectionist/sort-enums */
 }
 
-export const defaultPlatformConfigs: Readonly<PlatformConfigScopeToValuesMap> = {
+export const defaultPlatformConfigs: Readonly<PlatformConfigByScope> = {
     [PlatformConfigScope.AdminManagement]: {},
     [PlatformConfigScope.System]: { ipAccessPolicy: { enabled: false } },
 };

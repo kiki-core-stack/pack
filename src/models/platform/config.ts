@@ -10,9 +10,10 @@ import { Schema } from 'mongoose';
 import { PlatformConfigScope } from '../../constants/platform';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { PlatformConfigData } from '../../types/data/platform';
+import type { PlatformConfigBaseData } from '../../types/data/platform';
+import type { PlatformConfigVariant } from '../../types/platform';
 
-export type PlatformConfig = SmartDataToBaseMongooseDocType<PlatformConfigData>;
+export type PlatformConfig = PlatformConfigVariant & SmartDataToBaseMongooseDocType<PlatformConfigBaseData>;
 export type PlatformConfigDocument = MongooseHydratedDocument<PlatformConfig>;
 type PlatformConfigModel = BaseMongoosePaginateModel<PlatformConfig>;
 

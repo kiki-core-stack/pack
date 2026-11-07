@@ -1,5 +1,4 @@
 import ipaddr from 'ipaddr.js';
-import * as z from 'zod';
 
 import {
     PlatformConfigScope,
@@ -19,6 +18,7 @@ import type {
     PlatformIpAccessPolicyCheckResult,
     PlatformIpAccessPolicyTarget,
 } from '../../types/platform';
+import * as z from '../zod';
 
 import { getPlatformConfig } from './config';
 
@@ -95,7 +95,7 @@ export async function checkPlatformIpAccessPolicy(
         };
     }
 
-    const parsedIp = ipAddressSchema.safeParse(ip);
+    const parsedIp = await ipAddressSchema.safeParseAsync(ip);
     if (!parsedIp.success) {
         return {
             allowed: false,

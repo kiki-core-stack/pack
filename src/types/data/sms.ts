@@ -1,18 +1,15 @@
 import type { BaseMongooseModelData } from '@kikiutils/mongoose/types/data';
 
-import type {
-    SmsProviderCode,
-    SmsSendRecordStatus,
-} from '../../constants/sms';
-import type { SmsProviderConfig } from '../sms';
+import type { SmsSendRecordStatus } from '../../constants/sms';
+import type { SmsProviderConfigVariant } from '../sms';
 
 import type { WithAdminAuditData } from './';
 
-export interface SmsProviderData extends BaseMongooseModelData, WithAdminAuditData {
+export type SmsProviderData = SmsProviderBaseData & SmsProviderConfigVariant;
+
+export interface SmsProviderBaseData extends BaseMongooseModelData, WithAdminAuditData {
     apiProxyUrl?: string;
     cacheKey: string;
-    code: SmsProviderCode;
-    config: SmsProviderConfig;
     enabled: boolean;
     name: string;
     priority: number;

@@ -10,9 +10,10 @@ import { Schema } from 'mongoose';
 import { SmsProviderCode } from '../../constants/sms';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
-import type { SmsProviderData } from '../../types/data/sms';
+import type { SmsProviderBaseData } from '../../types/data/sms';
+import type { SmsProviderConfigVariant } from '../../types/sms';
 
-export type SmsProvider = SmartDataToBaseMongooseDocType<SmsProviderData>;
+export type SmsProvider = SmartDataToBaseMongooseDocType<SmsProviderBaseData> & SmsProviderConfigVariant;
 export type SmsProviderDocument = MongooseHydratedDocument<SmsProvider>;
 type SmsProviderModel = BaseMongoosePaginateModel<SmsProvider>;
 
