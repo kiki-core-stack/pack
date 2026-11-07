@@ -6,6 +6,19 @@ import { mongo } from 'mongoose';
 import { FileModel } from '../models/file';
 
 import type { BaseFileStorage } from './storages/files/base';
+import * as z from './zod';
+
+export function fileIdSchema() {
+    return z.objectId().check(async (ctx) => {
+        if (await FileModel.exists({ _id: ctx.value })) return;
+        ctx.issues.push({
+            code: 'custom',
+            input: ctx.value,
+            message: 'File not found',
+            params: { reason: 'fileNotFound' },
+        });
+    });
+}
 
 export async function uploadFileAndCreateDocument(input: BinaryInput, storage: BaseFileStorage, extension?: string) {
     const buffer = await toBuffer(input);
