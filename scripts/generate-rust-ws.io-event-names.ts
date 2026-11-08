@@ -5,13 +5,17 @@ import {
     constantCase,
     snakeCase,
 } from 'es-toolkit';
+import {
+    objectEntries,
+    objectKeys,
+} from 'ts-extras';
 
 // @ts-expect-error Ignore this error.
 import * as WsIoEventNames from '../src/constants/ws.io-event-names.ts';
 
 const eventNamesByValue = new Map<string, string>();
-for (const [zone, names] of Object.entries(WsIoEventNames)) {
-    for (const [key, value] of Object.entries(names)) {
+for (const [zone, names] of objectEntries(WsIoEventNames)) {
+    for (const [key, value] of objectEntries(names)) {
         const eventName = `${zone}.${key}`;
         const existingEventName = eventNamesByValue.get(value);
         if (existingEventName !== undefined) {
@@ -30,11 +34,11 @@ await outputDirPath.rm({
 
 await outputDirPath.mkdir({ recursive: true });
 await Promise.all(
-    Object.entries(WsIoEventNames).map(async ([zone, names]) => {
+    objectEntries(WsIoEventNames).map(async ([zone, names]) => {
         const fileName = `${snakeCase(zone)}.rs`;
-        const fileContentLines = Object
-            .entries(names)
-            .map(([key, value]) => `pub const ${constantCase(key)}: &str = "${value}";`);
+        const fileContentLines = objectEntries(names).map(
+            ([key, value]) => `pub const ${constantCase(key)}: &str = "${value}";`,
+        );
 
         return await outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
     }),
@@ -42,4 +46,4 @@ await Promise.all(
 
 await outputDirPath
     .join('mod.rs')
-    .writeFile(`${Object.keys(WsIoEventNames).sort().map((zone) => `pub mod ${snakeCase(zone)};`).join('\n')}\n`);
+    .writeFile(`${objectKeys(WsIoEventNames).sort().map((zone) => `pub mod ${snakeCase(zone)};`).join('\n')}\n`);

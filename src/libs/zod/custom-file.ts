@@ -1,4 +1,5 @@
 import type { MaybeReadonly } from '@kikiutils/shared/types';
+import { objectEntries } from 'ts-extras';
 import type { Arrayable } from 'type-fest';
 import * as z from 'zod';
 
@@ -65,7 +66,7 @@ export function customFile() {
     function decorate(schema: any): ZodCustomFile {
         const clonedSchema = Object.create(Object.getPrototypeOf(schema));
         const descriptors = Object.getOwnPropertyDescriptors(schema);
-        for (const [key, descriptor] of Object.entries(descriptors)) {
+        for (const [key, descriptor] of objectEntries(descriptors)) {
             Object.defineProperty(
                 clonedSchema,
                 key,

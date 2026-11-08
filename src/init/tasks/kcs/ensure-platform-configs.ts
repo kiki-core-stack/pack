@@ -8,6 +8,8 @@ import type {
     ClientSession,
     Types,
 } from 'mongoose';
+import { objectEntries } from 'ts-extras';
+import type { UnknownRecord } from 'type-fest';
 
 import {
     defaultPlatformConfigs,
@@ -16,9 +18,9 @@ import {
 import { PlatformConfigModel } from '../../../models/platform/config';
 import { parsePlatformConfig } from '../../../schemas/platform';
 
-function applyMissingPlatformConfigDefaults(config: Record<string, unknown>, defaults: Record<string, unknown>) {
+function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: UnknownRecord) {
     let changed = false;
-    for (const [key, defaultValue] of Object.entries(defaults)) {
+    for (const [key, defaultValue] of objectEntries(defaults)) {
         const value = config[key];
         if (value === undefined) {
             config[key] = cloneDeep(defaultValue);

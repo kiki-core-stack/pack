@@ -3,6 +3,7 @@
 // Linux-only script: path handling intentionally assumes POSIX separators.
 
 import { Path } from '@kikiutils/shared/classes/path';
+import { objectEntries } from 'ts-extras';
 import type { PackageJson } from 'type-fest';
 
 interface PackageExportEntry {
@@ -57,7 +58,7 @@ async function createPackageExports() {
     }
 
     return {
-        ...Object.fromEntries(Object.entries(exports).sort(([left], [right]) => left.localeCompare(right))),
+        ...Object.fromEntries(objectEntries(exports).sort(([left], [right]) => left.localeCompare(right))),
         './*': './src/*.ts',
     };
 }

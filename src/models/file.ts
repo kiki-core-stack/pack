@@ -14,6 +14,10 @@ import type {
     ProjectionFields,
     Query,
 } from 'mongoose';
+import {
+    objectEntries,
+    objectKeys,
+} from 'ts-extras';
 
 import { FileStorageProvider } from '../constants/file';
 import * as lruStore from '../stores/lru';
@@ -44,18 +48,18 @@ function isEligibleIdQuery(
     mode: 'in' | 'single',
 ) {
     const filter = query.getFilter();
-    if (Object.keys(filter).length !== 1 || !filter._id) return false;
+    if (objectKeys(filter).length !== 1 || !filter._id) return false;
     if (mode === 'single') return typeof filter._id === 'string' || filter._id instanceof Types.ObjectId;
     return (
         typeof filter._id === 'object'
-        && Object.keys(filter._id).length === 1
+        && objectKeys(filter._id).length === 1
         && Array.isArray(filter._id.$in)
     );
 }
 
 function serializeProjection(projection?: ProjectionFields<any>) {
-    if (!projection || !Object.keys(projection).length) return;
-    return Object.entries(projection).map(([key, value]) => `${key}:${value}`).sort().join(',');
+    if (!projection || !objectKeys(projection).length) return;
+    return objectEntries(projection).map(([key, value]) => `${key}:${value}`).sort().join(',');
 }
 
 // find
