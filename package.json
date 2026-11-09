@@ -56,6 +56,12 @@
       "import": "./src/libs/zod/index.ts",
       "require": null
     },
+    "./libs/zod/backend": {
+      "types": "./src/libs/zod/backend/index.ts",
+      "import": "./src/libs/zod/backend/index.ts",
+      "require": null
+    },
+    "./libs/zod/backend/index": null,
     "./libs/zod/index": null,
     "./models/admin": {
       "types": "./src/models/admin/index.ts",
