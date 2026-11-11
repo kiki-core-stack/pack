@@ -15,5 +15,6 @@ export function strictIsoDateString() {
                 input: ctx.value,
                 message: 'Invalid ISO 8601 date string',
             });
-        });
+        })
+        .meta({ format: 'date-time' });
 }
