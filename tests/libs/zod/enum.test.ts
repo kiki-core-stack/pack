@@ -3,8 +3,16 @@ import {
     it,
 } from 'vitest';
 
-import { CommonStatus } from '../../../src/constants';
+import {
+    CommonStatus,
+    commonStatusToTextMap,
+} from '../../../src/constants';
 import * as z from '../../../src/libs/zod';
+
+enum TestProvider {
+    Local = 'local',
+    S3 = 's3',
+}
 
 enum TestStatus {
     Disabled = 0,
@@ -12,41 +20,59 @@ enum TestStatus {
 }
 
 describe.concurrent('enum with meta', () => {
-    it('should preserve enum parsing behavior', ({ expect }) => {
-        const schema = z.enumWithMeta('TestStatus', TestStatus);
+    it('should parse enum values and numeric strings of numeric values', ({ expect }) => {
+        const schema = z.enumWithMeta('TestStatusParse', TestStatus);
 
-        expect(schema.safeParse(TestStatus.Enabled).success).toBe(true);
+        expect(schema.safeParse(TestStatus.Enabled).data).toBe(TestStatus.Enabled);
+        expect(schema.safeParse('0').data).toBe(TestStatus.Disabled);
         expect(schema.safeParse(99).success).toBe(false);
+        expect(schema.safeParse('99').success).toBe(false);
+        expect(schema.safeParse('').success).toBe(false);
     });
 
-    it('should attach varnames and provided descriptions as metadata', ({ expect }) => {
-        const schema = z.enumWithMeta(
-            'TestStatus',
-            TestStatus,
-            'test status',
-            {
-                [TestStatus.Disabled]: 'disabled',
-                [TestStatus.Enabled]: 'enabled',
-            },
-        );
+    it('should document each value as a shared component', ({ expect }) => {
+        const schema = z.enumWithMeta('TestStatusDocs', TestStatus, { [TestStatus.Enabled]: 'enabled' });
 
-        expect(schema.description).toBe('test status');
-        expect(schema.meta()).toMatchObject({
-            'id': 'TestStatus',
-            'x-enum-descriptions': [
-                'disabled',
-                'enabled',
-            ],
-            'x-enum-varnames': [
-                'Disabled',
-                'Enabled',
-            ],
+        expect(z.toJSONSchema(z.object({ status: schema.describe('status') }), { io: 'input' })).toMatchObject({
+            $defs: {
+                TestStatusDocs: {
+                    'enum': [
+                        0,
+                        1,
+                    ],
+                    'x-enum-descriptions': [
+                        'Disabled',
+                        'enabled',
+                    ],
+                    'x-enum-varnames': [
+                        'Disabled',
+                        'Enabled',
+                    ],
+                },
+            },
+            properties: {
+                status: {
+                    $ref: '#/$defs/TestStatusDocs',
+                    description: 'status',
+                },
+            },
         });
     });
 
-    it('should fall back to common status text metadata', ({ expect }) => {
-        const schema = z.enumWithMeta('CommonStatus', CommonStatus);
+    it('should use only the given text map, falling back to enum keys', ({ expect }) => {
+        const commonSchema = z.toJSONSchema(z.enumWithMeta('CommonStatus', CommonStatus, commonStatusToTextMap));
+        const providerSchema = z.toJSONSchema(z.enumWithMeta('TestProvider', TestProvider));
+        const statusSchema = z.toJSONSchema(z.enumWithMeta('TestStatusKeys', TestStatus));
 
-        expect(schema.meta()?.['x-enum-descriptions']).toContain('成功');
+        expect(JSON.stringify(commonSchema)).toContain('成功');
+        expect(providerSchema.$defs?.TestProvider?.['x-enum-descriptions']).toStrictEqual([
+            'Local',
+            'S3',
+        ]);
+
+        expect(statusSchema.$defs?.TestStatusKeys?.['x-enum-descriptions']).toStrictEqual([
+            'Disabled',
+            'Enabled',
+        ]);
     });
 });
