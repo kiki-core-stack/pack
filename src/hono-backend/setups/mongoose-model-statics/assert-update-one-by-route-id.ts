@@ -8,7 +8,8 @@ import type {
     UpdateQuery,
 } from 'mongoose';
 
-import { throwApiError } from '../../libs/api';
+import * as apiErrors from '../../api-errors';
+import { throwApiError } from '../../libs/api/error';
 
 import { registerStaticFunctions } from './_internals';
 
@@ -42,7 +43,7 @@ registerStaticFunctions.push(
                 expectedModifiedCount: number = 1,
             ) {
                 const id = ctx.req.param('id');
-                if (!id) throwApiError(404);
+                if (!id) throwApiError(apiErrors.common.notFound);
                 const updateResult = await this.updateOne(
                     {
                         ...filter || {},
@@ -53,7 +54,7 @@ registerStaticFunctions.push(
                 );
 
                 if (!updateResult.acknowledged) throw new Error('Update was not acknowledged');
-                if (updateResult.matchedCount !== 1) throwApiError(404);
+                if (updateResult.matchedCount !== 1) throwApiError(apiErrors.common.notFound);
                 if (updateResult.modifiedCount < expectedModifiedCount) {
                     throw new Error(`Expected to modify at least ${expectedModifiedCount} document(s), but modified ${updateResult.modifiedCount}`);
                 }

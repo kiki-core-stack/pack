@@ -1,10 +1,10 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 import type { AxiosResponse } from 'axios';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 
 import type { SmsProviderCode } from '../../constants/sms';
 import type { SmsSendRecord } from '../../models/sms/send-record';
-import { getErrorMessage } from '../utils/error';
+import { getErrorMessage } from '../../utils/error';
 
 import { BaseSmsProvider } from './base';
 import { SmsProviderError } from './error';
@@ -55,7 +55,7 @@ export class SmsTwSmsProvider extends BaseSmsProvider<SmsProviderCode.TwSms> {
 
     // Private methods
     #deliveryFailure(error: unknown) {
-        const responseStatus = error instanceof AxiosError ? error.response?.status : undefined;
+        const responseStatus = isAxiosError(error) ? error.response?.status : undefined;
         const notAccepted = typeof responseStatus === 'number'
           && responseStatus >= 400
           && responseStatus < 500
@@ -90,7 +90,7 @@ export class SmsTwSmsProvider extends BaseSmsProvider<SmsProviderCode.TwSms> {
                 },
             );
         } catch (error) {
-            if (!(error instanceof AxiosError) || !error.response) throw this.#deliveryFailure(error);
+            if (!isAxiosError(error) || !error.response) throw this.#deliveryFailure(error);
             else {
                 response = error.response;
                 responseError = error;

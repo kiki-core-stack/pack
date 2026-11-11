@@ -9,7 +9,8 @@ import type {
     Schema,
 } from 'mongoose';
 
-import { throwApiError } from '../../libs/api';
+import * as apiErrors from '../../api-errors';
+import { throwApiError } from '../../libs/api/error';
 
 import { registerStaticFunctions } from './_internals';
 
@@ -40,8 +41,8 @@ registerStaticFunctions.push(
                 options?: null | QueryOptions<DocType>,
             ) {
                 const id = ctx.req.param('id');
-                if (!id) throwApiError(404);
-                if (!Types.ObjectId.isValid(id)) throwApiError(400);
+                if (!id) throwApiError(apiErrors.common.notFound);
+                if (!Types.ObjectId.isValid(id)) throwApiError(apiErrors.common.notFound);
                 const document = await this.findOne(
                     {
                         ...filter || {},
@@ -51,7 +52,7 @@ registerStaticFunctions.push(
                     options,
                 );
 
-                if (!document) throwApiError(404);
+                if (!document) throwApiError(apiErrors.common.notFound);
                 return document;
             },
         );

@@ -1,36 +1,75 @@
-import type { ContentfulStatusCode } from 'hono/utils/http-status';
+import { objectEntries } from 'ts-extras';
 
-import { statusCodeToApiResponseErrorCodeMap } from '../../constants/response';
-import type { CommonApiResponseErrorCode } from '../../types/api';
+import type { ApiErrorResponseData } from '../../../types/data';
+import type {
+    ApiErrorArgs,
+    ApiErrorDataOf,
+    ApiErrorDefinition,
+    ApiErrorDefinitionInput,
+    ApiErrorDefinitions,
+} from '../../types/api';
 
-export class ApiError<
-    D extends object | undefined = undefined,
-    E extends CommonApiResponseErrorCode | (string & {}) = string,
-> extends Error {
-    readonly data: D;
-    readonly errorCode: E;
-    readonly statusCode: ContentfulStatusCode;
+// Classes
+export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition> extends Error {
+    readonly data: ApiErrorDataOf<Definition>;
+    readonly definition: Definition;
 
-    constructor(statusCode: ContentfulStatusCode = 500, errorCode?: E, data?: D, message?: string) {
-        super(message?.trim());
-        this.data = data as D;
-        errorCode = errorCode ?? statusCodeToApiResponseErrorCodeMap[statusCode] as E;
-        if (!errorCode) {
-            if (statusCode < 400 || statusCode >= 600) errorCode = 'unknownError' as E;
-            else errorCode = (statusCode < 500 ? 'unknownClientError' : 'unknownServerError') as E;
-        }
-
-        this.errorCode = errorCode;
-        this.statusCode = statusCode;
-        Error.captureStackTrace?.(this, this.constructor);
+    constructor(definition: Definition, ...[options]: ApiErrorArgs<Definition>) {
+        super(options?.message?.trim() ?? '', { cause: options?.cause });
+        this.data = options?.data as ApiErrorDataOf<Definition>;
+        this.definition = definition;
+        this.name = 'ApiError';
     }
 
-    get responseData() {
+    // Public getter
+    get errorCode(): Definition['code'] {
+        return this.definition.code;
+    }
+
+    get statusCode() {
+        return this.definition.status;
+    }
+
+    // Public methods
+    toResponseData(requestId?: string): ApiErrorResponseData<Definition['code'], ApiErrorDataOf<Definition>> {
         return {
             data: this.data,
             errorCode: this.errorCode,
-            message: this.message.trim() || undefined,
+            message: this.message || undefined,
+            requestId,
             success: false,
         };
     }
+}
+
+// Functions
+
+/**
+ * Defines API errors keyed by error code; each key becomes the `errorCode` sent to clients.
+ *
+ * @example
+ * ```ts
+ * export const { otpTooManyAttempts } = defineApiErrors({
+ *     otpTooManyAttempts: { description: '驗證碼嘗試次數過多', status: 429 },
+ * });
+ * ```
+ */
+export function defineApiErrors<const Inputs extends Record<string, ApiErrorDefinitionInput>>(inputs: Inputs) {
+    const definitions: Record<string, ApiErrorDefinition> = {};
+    for (const [code, { data, ...input }] of objectEntries(inputs)) {
+        definitions[code] = Object.freeze({
+            ...input,
+            code,
+            dataSchema: data,
+        });
+    }
+
+    return definitions as ApiErrorDefinitions<Inputs>;
+}
+
+export function throwApiError<Definition extends ApiErrorDefinition>(
+    definition: Definition,
+    ...args: ApiErrorArgs<Definition>
+): never {
+    throw new ApiError(definition, ...args);
 }

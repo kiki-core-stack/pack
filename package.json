@@ -15,6 +15,12 @@
       "require": null
     },
     "./constants/index": null,
+    "./hono-backend/api-errors": {
+      "types": "./src/hono-backend/api-errors/index.ts",
+      "import": "./src/hono-backend/api-errors/index.ts",
+      "require": null
+    },
+    "./hono-backend/api-errors/index": null,
     "./hono-backend/libs/api": {
       "types": "./src/hono-backend/libs/api/index.ts",
       "import": "./src/hono-backend/libs/api/index.ts",
@@ -156,10 +162,11 @@
     "typecheck": "tsc -b --noEmit"
   },
   "peerDependencies": {
-    "@hono/zod-validator": "^0.9.1",
+    "@hono/standard-validator": "^0.4.1",
     "@kikiutils/mongoose": "^9.0.1",
     "axios": "^1.20.0",
     "hono": "^4.13.14",
+    "hono-openapi": "^1.5.0",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
     "mongoose": "^9.11.4",
@@ -167,7 +174,7 @@
     "sharp": "^0.35.5"
   },
   "peerDependenciesMeta": {
-    "@hono/zod-validator": {
+    "@hono/standard-validator": {
       "optional": true
     },
     "@kikiutils/mongoose": {
@@ -177,6 +184,9 @@
       "optional": true
     },
     "hono": {
+      "optional": true
+    },
+    "hono-openapi": {
       "optional": true
     },
     "http-proxy-agent": {
@@ -211,7 +221,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
-    "@hono/zod-validator": "^0.9.1",
+    "@hono/standard-validator": "^0.4.1",
     "@johnnymorganz/stylua-bin": "^2.6.0",
     "@kikiutils/eslint-config": "^11.0.1",
     "@kikiutils/mongoose": "^9.0.3",
@@ -222,6 +232,7 @@
     "axios": "^1.21.1",
     "eslint": "^10.14.0",
     "hono": "^4.13.17",
+    "hono-openapi": "^1.5.0",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
     "knip": "^6.44.2",

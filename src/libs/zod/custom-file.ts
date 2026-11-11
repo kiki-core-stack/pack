@@ -1,33 +1,49 @@
-import type { MaybeReadonly } from '@kikiutils/shared/types';
-import { objectEntries } from 'ts-extras';
-import type { Arrayable } from 'type-fest';
 import * as z from 'zod';
 
 import { getFileMimeType } from '../../utils/file';
 
-export interface ZodCustomFile extends z.ZodFile {
-    commonImages: () => this;
+type CustomFileSchema = ReturnType<typeof createSchema>;
+
+interface CustomFileOptions {
+    maxSize?: number;
+    mimeTypes: readonly string[];
+    minSize?: number;
+}
+
+export interface ZodCustomFile extends CustomFileSchema {
+    commonImages: () => ZodCustomFile;
     getMaxSize: () => number | undefined;
     getMaxSizeKb: () => number | undefined;
     getMaxSizeMb: () => number | undefined;
     getMinSize: () => number | undefined;
     getMinSizeKb: () => number | undefined;
     getMinSizeMb: () => number | undefined;
-    gif: () => this;
-    jpeg: () => this;
-    maxSize: (bytes: number) => this;
-    maxSizeKb: (kb: number) => this;
-    maxSizeMb: (mb: number) => this;
-    mimeType: (...mimeTypes: Array<MaybeReadonly<Arrayable<string>>>) => this;
-    minSize: (bytes: number) => this;
-    minSizeKb: (kb: number) => this;
-    minSizeMb: (mb: number) => this;
-    png: () => this;
-    toRawSchema: () => z.ZodPreprocess<z.ZodFile>;
-    webp: () => this;
+    gif: () => ZodCustomFile;
+    jpeg: () => ZodCustomFile;
+
+    /**
+     * Max size in bytes.
+     */
+    maxSize: (bytes: number) => ZodCustomFile;
+    maxSizeKb: (kb: number) => ZodCustomFile;
+    maxSizeMb: (mb: number) => ZodCustomFile;
+
+    /**
+     * Allowed MIME types, matched against the type detected from the file content.
+     */
+    mimeType: (...mimeTypes: Array<readonly string[] | string>) => ZodCustomFile;
+
+    /**
+     * Min size in bytes.
+     */
+    minSize: (bytes: number) => ZodCustomFile;
+    minSizeKb: (kb: number) => ZodCustomFile;
+    minSizeMb: (mb: number) => ZodCustomFile;
+    png: () => ZodCustomFile;
+    webp: () => ZodCustomFile;
 }
 
-const commonImageMimeTypes: readonly string[] = [
+export const commonImageMimeTypes: readonly string[] = [
     'image/bmp',
     'image/heic',
     'image/heif',
@@ -37,122 +53,82 @@ const commonImageMimeTypes: readonly string[] = [
     'image/webp',
 ];
 
-export function customFile() {
-    const allowedMimeTypes = new Set<string>();
-    let maxSizeBytes: number | undefined;
-    let minSizeBytes: number | undefined;
-    const zodCustomFile = z
-        .preprocess(
-            (value) => {
-                if (value instanceof Blob) return new File([value], '', { type: value.type });
-                return value;
-            },
-            z.file(),
-        )
-        .check(async (ctx) => {
-            if (!allowedMimeTypes.size) return;
-            const detectedMimeType = await getFileMimeType(ctx.value);
-            if (!detectedMimeType || !allowedMimeTypes.has(detectedMimeType)) {
-                ctx.issues.push({
-                    code: 'custom',
-                    input: ctx.value,
-                    message: `Invalid MIME type: ${detectedMimeType}, allowed types: ${[...allowedMimeTypes].join(', ')}`,
-                });
-            }
+// Functions
+function createCustomFile(options: CustomFileOptions): ZodCustomFile {
+    const divide = (bytes: number | undefined, divisor: number) => bytes === undefined ? undefined : bytes / divisor;
+    const withOptions = (newOptions: Partial<CustomFileOptions>) => createCustomFile({
+        ...options,
+        ...newOptions,
+    });
 
-            if (ctx.value.type !== detectedMimeType) ctx.value = new File([ctx.value], '', { type: detectedMimeType });
-        });
+    const mimeType = (...mimeTypes: Array<readonly string[] | string>) => withOptions({
+        mimeTypes: [
+            ...new Set([
+                ...options.mimeTypes,
+                ...mimeTypes.flat().map((value) => value.toLowerCase()),
+            ]),
+        ],
+    });
 
-    function decorate(schema: any): ZodCustomFile {
-        const clonedSchema = Object.create(Object.getPrototypeOf(schema));
-        const descriptors = Object.getOwnPropertyDescriptors(schema);
-        for (const [key, descriptor] of objectEntries(descriptors)) {
-            Object.defineProperty(
-                clonedSchema,
-                key,
-                {
-                    ...descriptor,
-                    configurable: true,
-                },
-            );
-        }
-
-        const proxy = new Proxy(
-            clonedSchema,
-            {
-                get(target, prop, receiver) {
-                    if (prop === 'toRawSchema') return () => clonedSchema;
-                    // eslint-disable-next-line ts/no-use-before-define
-                    if (prop in customMethods) return customMethods[prop as keyof typeof customMethods];
-                    const originalProperty = Reflect.get(target, prop, receiver);
-                    if (typeof originalProperty === 'function') {
-                        return (...args: any[]) => {
-                            const result = originalProperty.apply(schema, args);
-                            return result instanceof z.ZodType ? decorate(result) : result;
-                        };
-                    }
-
-                    return originalProperty;
-                },
-            },
-        );
-
-        function maxSize(bytes: number) {
-            maxSizeBytes = bytes;
-            return (ctx: z.core.ParsePayload<File>) => {
-                if (ctx.value.size > bytes) {
-                    ctx.issues.push({
-                        code: 'custom',
-                        input: ctx.value,
-                        message: `File too large! Max ${bytes} bytes allowed`,
-                        params: { reason: 'fileTooLarge' },
-                    });
-                }
-            };
-        }
-
-        function mimeType(...mimeTypes: Array<MaybeReadonly<Arrayable<string>>>) {
-            mimeTypes.flat().forEach((mimeType) => allowedMimeTypes.add(mimeType.toLowerCase()));
-            return proxy;
-        }
-
-        function minSize(bytes: number) {
-            minSizeBytes = bytes;
-            return (ctx: z.core.ParsePayload<File>) => {
-                if (ctx.value.size < bytes) {
-                    ctx.issues.push({
-                        code: 'custom',
-                        input: ctx.value,
-                        message: `File too small! Min ${bytes} bytes allowed`,
-                        params: { reason: 'fileTooSmall' },
-                    });
-                }
-            };
-        }
-
-        const customMethods = {
+    return Object.assign(
+        createSchema(options),
+        {
             commonImages: () => mimeType(commonImageMimeTypes),
-            getMaxSize: () => maxSizeBytes,
-            getMaxSizeKb: () => maxSizeBytes ? maxSizeBytes / 1024 : undefined,
-            getMaxSizeMb: () => maxSizeBytes ? maxSizeBytes / 1024 / 1024 : undefined,
-            getMinSize: () => minSizeBytes,
-            getMinSizeKb: () => minSizeBytes ? minSizeBytes / 1024 : undefined,
-            getMinSizeMb: () => minSizeBytes ? minSizeBytes / 1024 / 1024 : undefined,
+            getMaxSize: () => options.maxSize,
+            getMaxSizeKb: () => divide(options.maxSize, 1024),
+            getMaxSizeMb: () => divide(options.maxSize, 1024 * 1024),
+            getMinSize: () => options.minSize,
+            getMinSizeKb: () => divide(options.minSize, 1024),
+            getMinSizeMb: () => divide(options.minSize, 1024 * 1024),
             gif: () => mimeType('image/gif'),
             jpeg: () => mimeType('image/jpeg'),
-            maxSize: (bytes: number) => proxy.check(maxSize(bytes)),
-            maxSizeKb: (kb: number) => proxy.check(maxSize(kb * 1024)),
-            maxSizeMb: (mb: number) => proxy.check(maxSize(mb * 1024 * 1024)),
+            maxSize: (bytes: number) => withOptions({ maxSize: bytes }),
+            maxSizeKb: (kb: number) => withOptions({ maxSize: kb * 1024 }),
+            maxSizeMb: (mb: number) => withOptions({ maxSize: mb * 1024 * 1024 }),
             mimeType,
-            minSize: (bytes: number) => proxy.check(minSize(bytes)),
-            minSizeKb: (kb: number) => proxy.check(minSize(kb * 1024)),
-            minSizeMb: (mb: number) => proxy.check(minSize(mb * 1024 * 1024)),
+            minSize: (bytes: number) => withOptions({ minSize: bytes }),
+            minSizeKb: (kb: number) => withOptions({ minSize: kb * 1024 }),
+            minSizeMb: (mb: number) => withOptions({ minSize: mb * 1024 * 1024 }),
             png: () => mimeType('image/png'),
             webp: () => mimeType('image/webp'),
-        };
-
-        return proxy as ZodCustomFile;
-    }
-
-    return decorate(zodCustomFile);
+        },
+    );
 }
+
+function createSchema(options: CustomFileOptions) {
+    let schema = z.file();
+    if (options.minSize !== undefined) schema = schema.min(options.minSize);
+    if (options.maxSize !== undefined) schema = schema.max(options.maxSize);
+    if (options.mimeTypes.length) schema = schema.mime([...options.mimeTypes]);
+    return z.preprocess(
+        async (value) => {
+            if (!(value instanceof Blob)) return value;
+            const detectedMimeType = await getFileMimeType(value) ?? '';
+            const file = value instanceof File ? value : undefined;
+            if (file?.type === detectedMimeType) return file;
+            return new File(
+                [value],
+                file?.name ?? '',
+                {
+                    lastModified: file?.lastModified,
+                    type: detectedMimeType,
+                },
+            );
+        },
+        schema,
+    );
+}
+
+/**
+ * File schema accepting `File` or `Blob`, whose `type` is replaced by the MIME type detected from the file content
+ * (empty when unknown), so MIME rules cannot be bypassed by a forged `Content-Type`.
+ *
+ * Every chained call returns a new schema. Size and MIME rules use Zod's native file checks, so they keep Zod's issue
+ * codes and appear in JSON Schema. Call Zod methods such as `.optional()` last; they return plain Zod schemas.
+ *
+ * @example
+ * ```ts
+ * z.customFile().png().jpeg().maxSizeMb(5)
+ * ```
+ */
+export const customFile = () => createCustomFile({ mimeTypes: [] });

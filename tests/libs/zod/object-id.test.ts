@@ -23,7 +23,7 @@ describe.concurrent('object id', () => {
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]).toMatchObject({
             code: 'invalid_format',
-            format: 'objectid',
+            format: 'regex',
             message: 'Invalid ObjectId',
         });
     });
@@ -53,7 +53,7 @@ describe.concurrent('object id or empty string', () => {
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]).toMatchObject({
             code: 'invalid_format',
-            format: 'objectid',
+            format: 'regex',
             message: 'Invalid ObjectId or empty string',
         });
     });
