@@ -156,7 +156,6 @@
     "typecheck": "tsc -b --noEmit"
   },
   "peerDependencies": {
-    "@hono/standard-validator": "^0.4.1",
     "@kikiutils/mongoose": "^9.0.1",
     "axios": "^1.20.0",
     "hono": "^4.13.14",
@@ -164,13 +163,12 @@
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
     "mongoose": "^9.11.4",
+    "node-ciphers": "^6.1.5",
     "nodemailer": "^10.2.1",
+    "on-change": "^6.0.2",
     "sharp": "^0.35.5"
   },
   "peerDependenciesMeta": {
-    "@hono/standard-validator": {
-      "optional": true
-    },
     "@kikiutils/mongoose": {
       "optional": true
     },
@@ -192,7 +190,13 @@
     "mongoose": {
       "optional": true
     },
+    "node-ciphers": {
+      "optional": true
+    },
     "nodemailer": {
+      "optional": true
+    },
+    "on-change": {
       "optional": true
     },
     "sharp": {
@@ -215,7 +219,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^10.0.0",
-    "@hono/standard-validator": "^0.4.1",
     "@johnnymorganz/stylua-bin": "^2.6.0",
     "@kikiutils/eslint-config": "^11.0.1",
     "@kikiutils/mongoose": "^9.0.3",
@@ -231,7 +234,9 @@
     "https-proxy-agent": "^9.1.0",
     "knip": "^6.44.2",
     "mongoose": "^9.12.1",
+    "node-ciphers": "^6.1.5",
     "nodemailer": "^10.4.0",
+    "on-change": "^6.0.2",
     "publint": "^0.3.25",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3",
