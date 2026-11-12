@@ -33,8 +33,8 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
     // Public methods
     toResponseData(requestId?: string): ApiErrorResponseData<Definition['code'], ApiErrorDataOf<Definition>> {
         return {
-            data: this.data,
             errorCode: this.errorCode,
+            errorData: this.data,
             message: this.message || undefined,
             requestId,
             success: false,

@@ -35,8 +35,8 @@ export function apiErrorResponses(...definitions: ApiErrorDefinition[]) {
 function toApiErrorResponseSchema(definition: ApiErrorDefinition) {
     return z
         .object({
-            ...definition.dataSchema ? { data: definition.dataSchema } : {},
             errorCode: z.literal(definition.code),
+            ...definition.dataSchema ? { errorData: definition.dataSchema } : {},
             message: z.string().optional(),
             requestId: z.string().optional(),
             success: z.literal(false),

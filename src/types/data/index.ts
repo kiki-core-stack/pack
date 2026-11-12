@@ -3,6 +3,10 @@ import type { UnknownRecord } from 'type-fest';
 
 import type { AdminData } from './admin';
 
+export type ApiResponseData<D extends object | undefined = undefined, E extends string = string> =
+  | ApiErrorResponseData<E>
+  | ApiSuccessResponseData<D>;
+
 type EffectiveObjectIdFields<
     T,
     O extends keyof T,
@@ -23,18 +27,15 @@ export type SmartDataToBaseMongooseDocType<
 >;
 
 export interface ApiErrorResponseData<E extends string = string, D = unknown> {
-    data?: D;
+    /**
+     * Always absent on failures, so `data` is present only on success; error details are in `errorData`.
+     */
+    data?: undefined;
     errorCode: E;
+    errorData?: D;
     message?: string;
     requestId?: string;
     success: false;
-}
-
-export interface ApiResponseData<D extends object | undefined = undefined, E extends string | undefined = undefined> {
-    data?: D;
-    errorCode?: E;
-    message?: string;
-    success: boolean;
 }
 
 export interface ApiSuccessResponseData<D extends object | undefined = undefined> {
