@@ -18,13 +18,18 @@ export type PermissionMap<T extends PermissionTree, Prefix extends string = ''> 
 
 /**
  * A permission key, or `group.*` for "any permission within the group".
+ *
+ * Takes plain unions so both sides can use it: backends via `PermissionGroups<T>`/`PermissionKeys<T>`, frontends via
+ * their generated group/key unions.
  */
-export type PermissionPattern<T extends PermissionTree> = `${PermissionGroups<T>}.*` | PermissionKeys<T>;
+export type PermissionPattern<Group extends string, Key extends string> = `${Group}.*` | Key;
 
 /**
  * A pattern, or `!pattern` to exclude matches from the other patterns of the same requirement.
  */
-export type PermissionRequirement<T extends PermissionTree> = `!${PermissionPattern<T>}` | PermissionPattern<T>;
+export type PermissionRequirement<Group extends string, Key extends string> =
+  | `!${PermissionPattern<Group, Key>}`
+  | PermissionPattern<Group, Key>;
 
 /**
  * Permission definition tree: nested group objects whose leaves are `true`, e.g. `{ admin: { create: true } }`.

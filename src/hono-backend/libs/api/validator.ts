@@ -27,7 +27,7 @@ export const apiValidator = ((target: any, schema: any, hook?: any, options?: an
 )) as typeof validator;
 
 export function toApiValidationError(issues: readonly StandardSchemaIssue[]) {
-    return new ApiError(apiErrors.common.validationFailed, { data: { issues: issues.map(toApiValidationIssue) } });
+    return new ApiError(apiErrors.common.validationFailed, { errorData: { issues: issues.map(toApiValidationIssue) } });
 }
 
 function toApiValidationIssue(issue: StandardSchemaIssue): ApiValidationIssue {

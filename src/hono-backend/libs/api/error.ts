@@ -1,4 +1,7 @@
-import { objectEntries } from 'ts-extras';
+import {
+    objectEntries,
+    objectValues,
+} from 'ts-extras';
 
 import type { ApiErrorResponseData } from '../../../types/data';
 import type {
@@ -11,12 +14,12 @@ import type {
 
 // Classes
 export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition> extends Error {
-    readonly data: ApiErrorDataOf<Definition>;
+    readonly errorData: ApiErrorDataOf<Definition>;
     readonly definition: Definition;
 
     constructor(definition: Definition, ...[options]: ApiErrorArgs<Definition>) {
         super(options?.message?.trim() ?? '', { cause: options?.cause });
-        this.data = options?.data as ApiErrorDataOf<Definition>;
+        this.errorData = options?.errorData as ApiErrorDataOf<Definition>;
         this.definition = definition;
         this.name = 'ApiError';
     }
@@ -34,7 +37,7 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
     toResponseData(requestId?: string): ApiErrorResponseData<Definition['code'], ApiErrorDataOf<Definition>> {
         return {
             errorCode: this.errorCode,
-            errorData: this.data,
+            errorData: this.errorData,
             message: this.message || undefined,
             requestId,
             success: false,
@@ -56,15 +59,35 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
  */
 export function defineApiErrors<const Inputs extends Record<string, ApiErrorDefinitionInput>>(inputs: Inputs) {
     const definitions: Record<string, ApiErrorDefinition> = {};
-    for (const [code, { data, ...input }] of objectEntries(inputs)) {
+    for (const [code, { errorData, ...input }] of objectEntries(inputs)) {
         definitions[code] = Object.freeze({
             ...input,
             code,
-            dataSchema: data,
+            errorDataSchema: errorData,
         });
     }
 
     return definitions as ApiErrorDefinitions<Inputs>;
+}
+
+/**
+ * Lists the sorted error codes of a backend's error namespaces (its `apiErrors`), throwing when two different
+ * definitions share a code: the code is the only identifier clients see (responses, translations).
+ */
+export function listApiErrorCodes(namespaces: Readonly<Record<string, Readonly<Record<string, ApiErrorDefinition>>>>) {
+    const codeToDefinitionMap = new Map<string, ApiErrorDefinition>();
+    for (const namespace of objectValues(namespaces)) {
+        for (const definition of objectValues(namespace)) {
+            const registeredDefinition = codeToDefinitionMap.get(definition.code);
+            if (registeredDefinition && registeredDefinition !== definition) {
+                throw new Error(`Duplicate API error code "${definition.code}"`);
+            }
+
+            codeToDefinitionMap.set(definition.code, definition);
+        }
+    }
+
+    return [...codeToDefinitionMap.keys()].toSorted();
 }
 
 export function throwApiError<Definition extends ApiErrorDefinition>(

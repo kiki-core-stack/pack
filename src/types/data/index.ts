@@ -7,6 +7,14 @@ export type ApiResponseData<D extends object | undefined = undefined, E extends 
   | ApiErrorResponseData<E>
   | ApiSuccessResponseData<D>;
 
+/**
+ * Error codes a client synthesizes when no API error response exists.
+ *
+ * - `aborted`: the request was canceled (e.g. superseded by a newer one); never shown to the user.
+ * - `networkError`: no response was received (offline, DNS, timeout, CORS...).
+ */
+export type ClientApiErrorCode = 'aborted' | 'networkError';
+
 type EffectiveObjectIdFields<
     T,
     O extends keyof T,

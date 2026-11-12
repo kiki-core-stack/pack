@@ -30,10 +30,10 @@ const mongoServerErrorCodeToApiErrorMap: Readonly<Partial<Record<number, ApiErro
     13436: apiErrors.common.serviceUnavailable, // NotPrimaryOrSecondary
 };
 
-// Generic (data-less) common error per status, used for errors that only carry a status code.
+// Common error per status without `errorData`, used for errors that only carry a status code.
 const statusToCommonApiErrorMap = new Map<number, ApiErrorDefinition>();
 for (const definition of objectValues(apiErrors.common)) {
-    if (!definition.dataSchema && !statusToCommonApiErrorMap.has(definition.status)) {
+    if (!definition.errorDataSchema && !statusToCommonApiErrorMap.has(definition.status)) {
         statusToCommonApiErrorMap.set(definition.status, definition);
     }
 }
@@ -97,7 +97,7 @@ function toApiError(error: unknown): ApiError {
                 apiErrors.common.duplicateKey,
                 {
                     cause: error,
-                    data: { fields: objectKeys(error.keyPattern ?? error.keyValue ?? {}) },
+                    errorData: { fields: objectKeys(error.keyPattern ?? error.keyValue ?? {}) },
                 },
             );
         }

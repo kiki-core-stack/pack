@@ -26,8 +26,8 @@ export const {
         status: 409,
     },
     duplicateKey: {
-        data: z.object({ fields: z.array(z.string()) }),
         description: '資料重複，`fields` 為重複的欄位',
+        errorData: z.object({ fields: z.array(z.string()) }),
         status: 409,
     },
     forbidden: {
@@ -67,7 +67,8 @@ export const {
         status: 401,
     },
     validationFailed: {
-        data: z.object({
+        description: '請求資料驗證失敗，`issues` 為各欄位的錯誤',
+        errorData: z.object({
             issues: z.array(z.object({
                 code: z.string().optional(),
                 message: z.string(),
@@ -78,7 +79,6 @@ export const {
                 ])),
             })),
         }),
-        description: '請求資料驗證失敗，`issues` 為各欄位的錯誤',
         status: 400,
     },
 });

@@ -51,6 +51,8 @@
     "./libs/authentication-session/redis-store/_internals/qr-code-login": null,
     "./libs/authentication-session/redis-store/_internals/stored-session": null,
     "./libs/authentication-session/redis-store/index": null,
+    "./libs/codegen/_internals/fetch-api-data": null,
+    "./libs/codegen/_internals/write-generated-file": null,
     "./libs/zod": {
       "types": "./src/libs/zod/index.ts",
       "import": "./src/libs/zod/index.ts",

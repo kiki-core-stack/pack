@@ -36,7 +36,7 @@ function toApiErrorResponseSchema(definition: ApiErrorDefinition) {
     return z
         .object({
             errorCode: z.literal(definition.code),
-            ...definition.dataSchema ? { errorData: definition.dataSchema } : {},
+            ...definition.errorDataSchema ? { errorData: definition.errorDataSchema } : {},
             message: z.string().optional(),
             requestId: z.string().optional(),
             success: z.literal(false),
