@@ -25,8 +25,3 @@ export type CreateAdminLogInput<T extends AdminLogType = AdminLogType> =
       ip?: string;
       note?: string;
   };
-
-export interface CachedAdminPermission {
-    isSuperAdmin: boolean;
-    permissions: string[];
-}

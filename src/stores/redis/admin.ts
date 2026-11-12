@@ -1,9 +1,9 @@
 import type { Types } from 'mongoose';
 
-import type { CachedAdminPermission } from '../../types/admin';
+import type { PrincipalPermissions } from '../../types/permission';
 
 import { createProjectRedisKeyedStore } from './_internals';
 
-export const permission = /* @__PURE__ */ createProjectRedisKeyedStore<CachedAdminPermission>()(
+export const permission = /* @__PURE__ */ createProjectRedisKeyedStore<PrincipalPermissions>()(
     (adminId: string | Types.ObjectId) => `admin:permission:${adminId.toString()}`,
 );

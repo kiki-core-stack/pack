@@ -51,12 +51,6 @@
     "./libs/authentication-session/redis-store/_internals/qr-code-login": null,
     "./libs/authentication-session/redis-store/_internals/stored-session": null,
     "./libs/authentication-session/redis-store/index": null,
-    "./libs/management": {
-      "types": "./src/libs/management/index.ts",
-      "import": "./src/libs/management/index.ts",
-      "require": null
-    },
-    "./libs/management/index": null,
     "./libs/zod": {
       "types": "./src/libs/zod/index.ts",
       "import": "./src/libs/zod/index.ts",
