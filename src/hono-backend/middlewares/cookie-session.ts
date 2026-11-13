@@ -47,7 +47,7 @@ const ivLength = 16;
  * It is stateless: nothing is stored on the server, so an old token stays valid until it expires. Do not rely on it for
  * single-use values or revocation; use a server-side store for those.
  */
-export function createCookieSession(options: CookieSessionOptions): MiddlewareHandler {
+export function cookieSession(options: CookieSessionOptions): MiddlewareHandler {
     // Base64 never contains commas, so a comma-separated string (e.g. from an env variable) is a list of keys.
     const keys = [options.keys].flat().flatMap((value) => value.split(',')).map((key) => key.trim()).filter(Boolean);
     const ciphers = keys.map((key) => {

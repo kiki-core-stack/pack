@@ -9,10 +9,10 @@ import {
 } from 'vitest';
 
 import {
-    createCookieSession,
+    cookieSession,
     createCookieTokenHandler,
     createHeaderTokenHandler,
-} from '../../../src/hono-backend/libs/cookie-session';
+} from '../../../src/hono-backend/middlewares/cookie-session';
 import type { CookieSessionOptions } from '../../../src/hono-backend/types/cookie-session';
 
 declare module '../../../src/hono-backend/types/cookie-session' {
@@ -28,7 +28,7 @@ const createKey = () => randomBytes(32).toString('base64');
 function createApp(options: Partial<CookieSessionOptions> = {}) {
     const app = new Hono();
     app.use(
-        createCookieSession({
+        cookieSession({
             keys: createKey(),
             tokenHandler: createCookieTokenHandler(),
             ...options,
@@ -141,7 +141,7 @@ describe.concurrent('cookie session', () => {
         const app = createApp({ keys: ` ${newKey} , ${oldKey},` });
 
         expect(await (await app.request('/read', withToken(oldToken))).json()).toStrictEqual({ state: 'abc' });
-        expect(() => createCookieSession({
+        expect(() => cookieSession({
             keys: ' , ',
             tokenHandler: createCookieTokenHandler(),
         })).toThrow('At least one');
@@ -173,12 +173,12 @@ describe.concurrent('cookie session', () => {
         const response = await app.request(`/set?state=${'x'.repeat(200)}`);
 
         expect(response.status).toBe(500);
-        expect(() => createCookieSession({
+        expect(() => cookieSession({
             keys: Buffer.from('short').toString('base64'),
             tokenHandler: createCookieTokenHandler(),
         })).toThrow('32-byte');
 
-        expect(() => createCookieSession({
+        expect(() => cookieSession({
             keys: [],
             tokenHandler: createCookieTokenHandler(),
         })).toThrow('At least one');
