@@ -1,4 +1,8 @@
 import { validator } from 'hono-openapi';
+import {
+    objectEntries,
+    objectKeys,
+} from 'ts-extras';
 import type { UnknownRecord } from 'type-fest';
 
 import type { ApiValidationIssue } from '../../../types/data';
@@ -10,6 +14,20 @@ interface StandardSchemaIssue {
     readonly message: string;
     readonly path?: ReadonlyArray<PropertyKey | { readonly key: PropertyKey }>;
 }
+
+// Constants/Variables
+// Issue fields that are standard, nested, internal or carry the input; everything else is sent as `details`.
+const nonDetailIssueKeys = new Set([
+    'code',
+    'continue',
+    'errors',
+    'input',
+    'inst',
+    'issues',
+    'message',
+    'path',
+    'schema',
+]);
 
 // Functions
 
@@ -31,15 +49,26 @@ export function toApiValidationError(issues: readonly StandardSchemaIssue[]) {
 }
 
 function toApiValidationIssue(issue: StandardSchemaIssue): ApiValidationIssue {
-    // Zod issues carry `code` and optional `params` at runtime beyond the Standard Schema shape.
-    const { code, params } = issue as { code?: unknown; params?: unknown };
+    // Zod issues carry `code` and per-code fields at runtime beyond the Standard Schema shape.
+    const details: UnknownRecord = {};
+    for (const [key, value] of objectEntries(issue as unknown as UnknownRecord)) {
+        if (!nonDetailIssueKeys.has(key) && value !== undefined) details[key] = toJsonSafeValue(value);
+    }
+
+    const { code } = issue as { code?: unknown };
     return {
         code: typeof code === 'string' ? code : undefined,
+        details: objectKeys(details).length ? details : undefined,
         message: issue.message,
-        params: params && typeof params === 'object' ? params as UnknownRecord : undefined,
         path: (issue.path ?? []).map((segment) => {
             const key = typeof segment === 'object' ? segment.key : segment;
             return typeof key === 'number' ? key : String(key);
         }),
     };
+}
+
+// BigInt bounds and values (e.g. `z.bigint().min()`) are not JSON serializable.
+function toJsonSafeValue(value: unknown): unknown {
+    if (typeof value === 'bigint') return value.toString();
+    return Array.isArray(value) ? value.map(toJsonSafeValue) : value;
 }

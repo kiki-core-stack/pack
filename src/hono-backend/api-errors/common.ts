@@ -71,8 +71,8 @@ export const {
         errorData: z.object({
             issues: z.array(z.object({
                 code: z.string().optional(),
+                details: z.record(z.string(), z.unknown()).optional(),
                 message: z.string(),
-                params: z.record(z.string(), z.unknown()).optional(),
                 path: z.array(z.union([
                     z.number(),
                     z.string(),

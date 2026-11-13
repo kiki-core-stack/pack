@@ -54,8 +54,18 @@ export interface ApiSuccessResponseData<D extends object | undefined = undefined
 
 export interface ApiValidationIssue {
     code?: string;
+
+    /**
+     * The schema issue's own fields (Zod: `expected`, `origin`, `minimum`, `maximum`, `inclusive`, `format`,
+     * `pattern`, `values`, `params`...), so clients can translate the issue by `code`, e.g. with a Zod locale.
+     * Never includes the input.
+     */
+    details?: UnknownRecord;
+
+    /**
+     * Server-side message (English); clients should translate by `code` and `details` instead.
+     */
     message: string;
-    params?: UnknownRecord;
     path: Array<number | string>;
 }
 
