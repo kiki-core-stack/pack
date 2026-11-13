@@ -4,7 +4,7 @@ import { validator } from 'hono-openapi';
 import type {
     ApiValidationIssue,
     ValidationFailedErrorData,
-} from '../../../types/data';
+} from '../../../types/api';
 import type { Locale } from '../../../types/i18n';
 import * as apiErrors from '../../api-errors';
 import { getRequestLocale } from '../../middlewares/locale';

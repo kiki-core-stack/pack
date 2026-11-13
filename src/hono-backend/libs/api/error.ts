@@ -3,7 +3,7 @@ import {
     objectValues,
 } from 'ts-extras';
 
-import type { ApiErrorResponseData } from '../../../types/data';
+import type { ApiErrorResponseData } from '../../../types/api';
 import type { Locale } from '../../../types/i18n';
 import type {
     ApiErrorArgs,
