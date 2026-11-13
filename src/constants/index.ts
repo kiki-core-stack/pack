@@ -1,6 +1,8 @@
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
+import type { LocalizedMessages } from '../types/i18n';
+
 export enum CommonStatus {
     Aborted = 0,
     Active = 15,
@@ -45,40 +47,139 @@ export enum CommonStatus {
 }
 
 export const commonStatuses: readonly CommonStatus[] = getEnumNumberValues(CommonStatus);
-export const commonStatusToTextMap: ReadonlyRecord<CommonStatus, string> = {
-    [CommonStatus.Aborted]: '已中止',
-    [CommonStatus.Active]: '啟用中',
-    [CommonStatus.Approved]: '已通過',
-    [CommonStatus.Attached]: '已附加',
-    [CommonStatus.Available]: '可使用',
-    [CommonStatus.AwaitingPayment]: '待付款',
-    [CommonStatus.Cancelled]: '已取消',
-    [CommonStatus.Completed]: '已完成',
-    [CommonStatus.Created]: '已建立',
-    [CommonStatus.DeadLettered]: '已進入死信',
-    [CommonStatus.Deleted]: '已刪除',
-    [CommonStatus.DeliveryStatusUnknown]: '送達狀態未知',
-    [CommonStatus.Draft]: '草稿',
-    [CommonStatus.Expired]: '已過期',
-    [CommonStatus.Failed]: '失敗',
-    [CommonStatus.Hidden]: '已隱藏',
-    [CommonStatus.Idle]: '閒置',
-    [CommonStatus.Pending]: '待處理',
-    [CommonStatus.PendingReview]: '待核實',
-    [CommonStatus.Processing]: '處理中',
-    [CommonStatus.Provisioning]: '配置中',
-    [CommonStatus.Published]: '已發布',
-    [CommonStatus.Ready]: '已就緒',
-    [CommonStatus.Rejected]: '已拒絕',
-    [CommonStatus.Released]: '已釋放',
-    [CommonStatus.Returned]: '已退回',
-    [CommonStatus.Running]: '執行中',
-    [CommonStatus.Settled]: '已結算',
-    [CommonStatus.Skipped]: '已跳過',
-    [CommonStatus.Succeeded]: '成功',
-    [CommonStatus.ThirdPartyProcessing]: '三方處理中',
-    [CommonStatus.Unknown]: '未知',
-    [CommonStatus.Uploading]: '上傳中',
+export const commonStatusToLabelMap: ReadonlyRecord<CommonStatus, LocalizedMessages> = {
+    [CommonStatus.Aborted]: {
+        'en': 'Aborted',
+        'zh-TW': '已中止',
+    },
+    [CommonStatus.Active]: {
+        'en': 'Active',
+        'zh-TW': '啟用中',
+    },
+    [CommonStatus.Approved]: {
+        'en': 'Approved',
+        'zh-TW': '已通過',
+    },
+    [CommonStatus.Attached]: {
+        'en': 'Attached',
+        'zh-TW': '已附加',
+    },
+    [CommonStatus.Available]: {
+        'en': 'Available',
+        'zh-TW': '可使用',
+    },
+    [CommonStatus.AwaitingPayment]: {
+        'en': 'Awaiting payment',
+        'zh-TW': '待付款',
+    },
+    [CommonStatus.Cancelled]: {
+        'en': 'Cancelled',
+        'zh-TW': '已取消',
+    },
+    [CommonStatus.Completed]: {
+        'en': 'Completed',
+        'zh-TW': '已完成',
+    },
+    [CommonStatus.Created]: {
+        'en': 'Created',
+        'zh-TW': '已建立',
+    },
+    [CommonStatus.DeadLettered]: {
+        'en': 'Dead-lettered',
+        'zh-TW': '已進入死信',
+    },
+    [CommonStatus.Deleted]: {
+        'en': 'Deleted',
+        'zh-TW': '已刪除',
+    },
+    [CommonStatus.DeliveryStatusUnknown]: {
+        'en': 'Delivery status unknown',
+        'zh-TW': '送達狀態未知',
+    },
+    [CommonStatus.Draft]: {
+        'en': 'Draft',
+        'zh-TW': '草稿',
+    },
+    [CommonStatus.Expired]: {
+        'en': 'Expired',
+        'zh-TW': '已過期',
+    },
+    [CommonStatus.Failed]: {
+        'en': 'Failed',
+        'zh-TW': '失敗',
+    },
+    [CommonStatus.Hidden]: {
+        'en': 'Hidden',
+        'zh-TW': '已隱藏',
+    },
+    [CommonStatus.Idle]: {
+        'en': 'Idle',
+        'zh-TW': '閒置',
+    },
+    [CommonStatus.Pending]: {
+        'en': 'Pending',
+        'zh-TW': '待處理',
+    },
+    [CommonStatus.PendingReview]: {
+        'en': 'Pending review',
+        'zh-TW': '待核實',
+    },
+    [CommonStatus.Processing]: {
+        'en': 'Processing',
+        'zh-TW': '處理中',
+    },
+    [CommonStatus.Provisioning]: {
+        'en': 'Provisioning',
+        'zh-TW': '配置中',
+    },
+    [CommonStatus.Published]: {
+        'en': 'Published',
+        'zh-TW': '已發布',
+    },
+    [CommonStatus.Ready]: {
+        'en': 'Ready',
+        'zh-TW': '已就緒',
+    },
+    [CommonStatus.Rejected]: {
+        'en': 'Rejected',
+        'zh-TW': '已拒絕',
+    },
+    [CommonStatus.Released]: {
+        'en': 'Released',
+        'zh-TW': '已釋放',
+    },
+    [CommonStatus.Returned]: {
+        'en': 'Returned',
+        'zh-TW': '已退回',
+    },
+    [CommonStatus.Running]: {
+        'en': 'Running',
+        'zh-TW': '執行中',
+    },
+    [CommonStatus.Settled]: {
+        'en': 'Settled',
+        'zh-TW': '已結算',
+    },
+    [CommonStatus.Skipped]: {
+        'en': 'Skipped',
+        'zh-TW': '已跳過',
+    },
+    [CommonStatus.Succeeded]: {
+        'en': 'Succeeded',
+        'zh-TW': '成功',
+    },
+    [CommonStatus.ThirdPartyProcessing]: {
+        'en': 'Third-party processing',
+        'zh-TW': '三方處理中',
+    },
+    [CommonStatus.Unknown]: {
+        'en': 'Unknown',
+        'zh-TW': '未知',
+    },
+    [CommonStatus.Uploading]: {
+        'en': 'Uploading',
+        'zh-TW': '上傳中',
+    },
 };
 
 /**

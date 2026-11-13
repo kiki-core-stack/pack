@@ -1,6 +1,8 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import type * as z from 'zod';
 
+import type { LocalizedMessages } from '../../types/i18n';
+
 export type ApiErrorArgs<Definition extends ApiErrorDefinition> = undefined extends ApiErrorDataOf<Definition>
     ? [options?: ApiErrorOptions<ApiErrorDataOf<Definition>>]
     : [options: ApiErrorOptions<ApiErrorDataOf<Definition>> & { errorData: ApiErrorDataOf<Definition> }];
@@ -17,18 +19,22 @@ export type ApiErrorDefinitions<Inputs extends Record<string, ApiErrorDefinition
 
 export interface ApiErrorDefinition<Code extends string = string, Data = unknown> {
     readonly code: Code;
-    readonly description?: string;
 
     /**
      * Schema of the `errorData` field, used for docs and typing.
      */
     readonly errorDataSchema?: z.ZodType<Data>;
+
+    /**
+     * Message sent to clients in the request's locale; also the route docs description.
+     */
+    readonly message: LocalizedMessages;
     readonly status: ContentfulStatusCode;
 }
 
 export interface ApiErrorDefinitionInput {
-    description?: string;
     errorData?: z.ZodType;
+    message: LocalizedMessages;
     status: ContentfulStatusCode;
 }
 
@@ -40,7 +46,7 @@ export interface ApiErrorOptions<Data = unknown> {
     errorData?: Data;
 
     /**
-     * Extra detail for debugging; clients should translate by `errorCode` instead.
+     * Detail for the server log; never sent to the client, which gets the definition's localized message.
      */
     message?: string;
 }

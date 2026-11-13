@@ -1,11 +1,19 @@
 import type { DataToBaseMongooseDocType } from '@kikiutils/mongoose/types/data';
-import type { UnknownRecord } from 'type-fest';
+
+import type * as z from '../../libs/zod';
+import type {
+    apiValidationIssueSchema,
+    duplicateKeyErrorDataSchema,
+    validationFailedErrorDataSchema,
+} from '../../schemas/api';
 
 import type { AdminData } from './admin';
 
 export type ApiResponseData<D extends object | undefined = undefined, E extends string = string> =
   | ApiErrorResponseData<E>
   | ApiSuccessResponseData<D>;
+
+export type ApiValidationIssue = z.output<typeof apiValidationIssueSchema>;
 
 /**
  * Error codes a client synthesizes when no API error response exists.
@@ -14,6 +22,8 @@ export type ApiResponseData<D extends object | undefined = undefined, E extends 
  * - `networkError`: no response was received (offline, DNS, timeout, CORS...).
  */
 export type ClientApiErrorCode = 'aborted' | 'networkError';
+
+export type DuplicateKeyErrorData = z.output<typeof duplicateKeyErrorDataSchema>;
 
 type EffectiveObjectIdFields<
     T,
@@ -34,6 +44,8 @@ export type SmartDataToBaseMongooseDocType<
     T extends { updatedAt: string } ? true : false
 >;
 
+export type ValidationFailedErrorData = z.output<typeof validationFailedErrorDataSchema>;
+
 export interface ApiErrorResponseData<E extends string = string, D = unknown> {
     /**
      * Always absent on failures, so `data` is present only on success; error details are in `errorData`.
@@ -41,7 +53,11 @@ export interface ApiErrorResponseData<E extends string = string, D = unknown> {
     data?: undefined;
     errorCode: E;
     errorData?: D;
-    message?: string;
+
+    /**
+     * Message of the error code in the request's locale (`Accept-Language`), ready to show to users.
+     */
+    message: string;
     requestId?: string;
     success: false;
 }
@@ -52,21 +68,12 @@ export interface ApiSuccessResponseData<D extends object | undefined = undefined
     success: true;
 }
 
-export interface ApiValidationIssue {
-    code?: string;
-
-    /**
-     * The schema issue's own fields (Zod: `expected`, `origin`, `minimum`, `maximum`, `inclusive`, `format`,
-     * `pattern`, `values`, `params`...), so clients can translate the issue by `code`, e.g. with a Zod locale.
-     * Never includes the input.
-     */
-    details?: UnknownRecord;
-
-    /**
-     * Server-side message (English); clients should translate by `code` and `details` instead.
-     */
-    message: string;
-    path: Array<number | string>;
+/**
+ * `errorData` of the common API errors that carry it, keyed by error code.
+ */
+export interface CommonApiErrorDataMap {
+    duplicateKey: DuplicateKeyErrorData;
+    validationFailed: ValidationFailedErrorData;
 }
 
 export interface TableRowData {

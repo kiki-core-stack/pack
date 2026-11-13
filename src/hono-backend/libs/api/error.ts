@@ -4,6 +4,7 @@ import {
 } from 'ts-extras';
 
 import type { ApiErrorResponseData } from '../../../types/data';
+import type { Locale } from '../../../types/i18n';
 import type {
     ApiErrorArgs,
     ApiErrorDataOf,
@@ -34,11 +35,11 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
     }
 
     // Public methods
-    toResponseData(requestId?: string): ApiErrorResponseData<Definition['code'], ApiErrorDataOf<Definition>> {
+    toResponseData(locale: Locale, requestId?: string): ApiErrorResponseData<Definition['code'], ApiErrorDataOf<Definition>> {
         return {
             errorCode: this.errorCode,
             errorData: this.errorData,
-            message: this.message || undefined,
+            message: this.definition.message[locale],
             requestId,
             success: false,
         };
@@ -53,7 +54,7 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
  * @example
  * ```ts
  * export const { otpTooManyAttempts } = defineApiErrors({
- *     otpTooManyAttempts: { description: '驗證碼嘗試次數過多', status: 429 },
+ *     otpTooManyAttempts: { message: { 'en': 'Too many attempts', 'zh-TW': '驗證碼嘗試次數過多' }, status: 429 },
  * });
  * ```
  */

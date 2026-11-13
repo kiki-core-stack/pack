@@ -1,12 +1,14 @@
 import * as z from 'zod';
 
+import { defaultLocale } from '../../../constants/i18n';
 import type { ApiErrorDefinition } from '../../types/api';
 
 // Functions
 /**
  * Builds route docs responses for API errors, grouped by status.
  *
- * Errors sharing a status become a union discriminated by `errorCode`; each branch keeps its code and description.
+ * Errors sharing a status become a union discriminated by `errorCode`; each branch keeps its code and (default locale)
+ * message.
  * Pass all errors of a route in one call: spreading several calls overwrites responses with the same status.
  *
  * @example
@@ -37,12 +39,12 @@ function toApiErrorResponseSchema(definition: ApiErrorDefinition) {
         .object({
             errorCode: z.literal(definition.code),
             ...definition.errorDataSchema ? { errorData: definition.errorDataSchema } : {},
-            message: z.string().optional(),
+            message: z.string(),
             requestId: z.string().optional(),
             success: z.literal(false),
         })
         .meta({
-            description: definition.description,
+            description: definition.message[defaultLocale],
             title: definition.code,
         });
 }

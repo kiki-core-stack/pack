@@ -5,7 +5,7 @@ import {
 
 import {
     CommonStatus,
-    commonStatusToTextMap,
+    commonStatusToLabelMap,
 } from '../../../src/constants';
 import * as z from '../../../src/libs/zod';
 
@@ -31,7 +31,16 @@ describe.concurrent('enum with meta', () => {
     });
 
     it('should document each value as a shared component', ({ expect }) => {
-        const schema = z.enumWithMeta('TestStatusDocs', TestStatus, { [TestStatus.Enabled]: 'enabled' });
+        const schema = z.enumWithMeta(
+            'TestStatusDocs',
+            TestStatus,
+            {
+                [TestStatus.Enabled]: {
+                    'en': 'enabled',
+                    'zh-TW': '啟用',
+                },
+            },
+        );
 
         expect(z.toJSONSchema(z.object({ status: schema.describe('status') }), { io: 'input' })).toMatchObject({
             $defs: {
@@ -42,7 +51,7 @@ describe.concurrent('enum with meta', () => {
                     ],
                     'x-enum-descriptions': [
                         'Disabled',
-                        'enabled',
+                        '啟用',
                     ],
                     'x-enum-varnames': [
                         'Disabled',
@@ -60,7 +69,7 @@ describe.concurrent('enum with meta', () => {
     });
 
     it('should use only the given text map, falling back to enum keys', ({ expect }) => {
-        const commonSchema = z.toJSONSchema(z.enumWithMeta('CommonStatus', CommonStatus, commonStatusToTextMap));
+        const commonSchema = z.toJSONSchema(z.enumWithMeta('CommonStatus', CommonStatus, commonStatusToLabelMap));
         const providerSchema = z.toJSONSchema(z.enumWithMeta('TestProvider', TestProvider));
         const statusSchema = z.toJSONSchema(z.enumWithMeta('TestStatusKeys', TestStatus));
 

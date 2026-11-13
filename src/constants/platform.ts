@@ -1,5 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
+import type { LocalizedMessages } from '../types/i18n';
 import type { PlatformConfigByScope } from '../types/platform';
 
 export enum PlatformConfigScope {
@@ -44,22 +45,61 @@ export const defaultPlatformConfigs: Readonly<PlatformConfigByScope> = {
     [PlatformConfigScope.System]: { ipAccessPolicy: { enabled: false } },
 };
 
-export const platformConfigScopeToTextMap: ReadonlyRecord<PlatformConfigScope, string> = {
-    [PlatformConfigScope.AdminManagement]: '總後台',
-    [PlatformConfigScope.System]: '全系統',
+export const platformConfigScopeToLabelMap: ReadonlyRecord<PlatformConfigScope, LocalizedMessages> = {
+    [PlatformConfigScope.AdminManagement]: {
+        'en': 'Admin management',
+        'zh-TW': '總後台',
+    },
+    [PlatformConfigScope.System]: {
+        'en': 'System',
+        'zh-TW': '全系統',
+    },
 };
 
-export const platformIpAccessPolicyModeToTextMap: ReadonlyRecord<PlatformIpAccessPolicyMode, string> = {
-    [PlatformIpAccessPolicyMode.Allowlist]: '白名單',
-    [PlatformIpAccessPolicyMode.Blacklist]: '黑名單',
+export const platformIpAccessPolicyModeToLabelMap: ReadonlyRecord<PlatformIpAccessPolicyMode, LocalizedMessages> = {
+    [PlatformIpAccessPolicyMode.Allowlist]: {
+        'en': 'Allowlist',
+        'zh-TW': '白名單',
+    },
+    [PlatformIpAccessPolicyMode.Blacklist]: {
+        'en': 'Blacklist',
+        'zh-TW': '黑名單',
+    },
 };
 
-export const platformIpAccessPolicyScopeToTextMap: ReadonlyRecord<PlatformIpAccessPolicyScope, string> = { [PlatformIpAccessPolicyScope.AdminManagement]: '總後台' };
-export const platformIpAccessPolicyCheckReasonToTextMap: ReadonlyRecord<PlatformIpAccessPolicyCheckReason, string> = {
-    [PlatformIpAccessPolicyCheckReason.Allowed]: '通過IP存取檢查',
-    [PlatformIpAccessPolicyCheckReason.AllowlistMiss]: '未命中白名單',
-    [PlatformIpAccessPolicyCheckReason.BlacklistMatch]: '命中黑名單',
-    [PlatformIpAccessPolicyCheckReason.Disabled]: 'IP存取規則已停用',
-    [PlatformIpAccessPolicyCheckReason.InvalidIp]: '來源IP無效',
-    [PlatformIpAccessPolicyCheckReason.NoApplicablePolicy]: '沒有適用的IP存取規則',
+export const platformIpAccessPolicyScopeToLabelMap: ReadonlyRecord<PlatformIpAccessPolicyScope, LocalizedMessages> = {
+    [PlatformIpAccessPolicyScope.AdminManagement]: {
+        'en': 'Admin management',
+        'zh-TW': '總後台',
+    },
+};
+
+export const platformIpAccessPolicyCheckReasonToLabelMap: ReadonlyRecord<
+    PlatformIpAccessPolicyCheckReason,
+    LocalizedMessages
+> = {
+    [PlatformIpAccessPolicyCheckReason.Allowed]: {
+        'en': 'Passed the IP access check',
+        'zh-TW': '通過IP存取檢查',
+    },
+    [PlatformIpAccessPolicyCheckReason.AllowlistMiss]: {
+        'en': 'Not in the allowlist',
+        'zh-TW': '未命中白名單',
+    },
+    [PlatformIpAccessPolicyCheckReason.BlacklistMatch]: {
+        'en': 'Matched the blacklist',
+        'zh-TW': '命中黑名單',
+    },
+    [PlatformIpAccessPolicyCheckReason.Disabled]: {
+        'en': 'IP access policies are disabled',
+        'zh-TW': 'IP存取規則已停用',
+    },
+    [PlatformIpAccessPolicyCheckReason.InvalidIp]: {
+        'en': 'Invalid source IP',
+        'zh-TW': '來源IP無效',
+    },
+    [PlatformIpAccessPolicyCheckReason.NoApplicablePolicy]: {
+        'en': 'No applicable IP access policy',
+        'zh-TW': '沒有適用的IP存取規則',
+    },
 };

@@ -5,6 +5,7 @@ import type {
 
 } from 'type-fest';
 
+import type { LocalizedMessages } from '../types/i18n';
 import type {
     PermissionCatalog,
     PermissionTree,
@@ -16,21 +17,25 @@ import type {
 /**
  * Defines the permission catalog of one principal type.
  *
- * Leaves are `true`; each leaf's key is its dotted path. The catalog is the single source of permission keys, so
- * routes reference `permissions.admin.create` instead of repeating strings.
+ * Groups are `{ label, children }` and permissions `{ label }`; each key is its dotted path. The catalog is the single
+ * source of permission keys and labels, so routes reference `permissions.admin.create` instead of repeating strings.
  *
  * @example
  * ```ts
  * export const adminPermissions = definePermissions({
- *     admin: { create: true, role: { list: true } },
+ *     admin: {
+ *         children: { create: { label: { 'en': 'Create admins', 'zh-TW': '建立管理員' } } },
+ *         label: { 'en': 'Admins', 'zh-TW': '管理員' },
+ *     },
  * });
  *
- * adminPermissions.permissions.admin.role.list; // 'admin.role.list'
+ * adminPermissions.permissions.admin.create; // 'admin.create'
  * ```
  */
 export function definePermissions<const T extends PermissionTree>(tree: T): PermissionCatalog<T> {
     const groups: string[] = [];
     const keys: string[] = [];
+    const labels: Record<string, LocalizedMessages> = {};
     const walk = (node: PermissionTree, prefix: string) => {
         const entries = objectEntries(node);
         if (!entries.length) throw new Error(`Permission group "${prefix.slice(0, -1) || '<root>'}" has no children`);
@@ -38,12 +43,13 @@ export function definePermissions<const T extends PermissionTree>(tree: T): Perm
         for (const [name, child] of entries) {
             if (!/^[\w-]+$/.test(name)) throw new Error(`Invalid permission name "${name}" under "${prefix}"`);
             const path = `${prefix}${name}`;
-            if (child === true) {
+            labels[path] = child.label;
+            if ('children' in child) {
+                groups.push(path);
+                map[name] = walk(child.children, `${path}.`);
+            } else {
                 keys.push(path);
                 map[name] = path;
-            } else {
-                groups.push(path);
-                map[name] = walk(child, `${path}.`);
             }
         }
 
@@ -53,6 +59,7 @@ export function definePermissions<const T extends PermissionTree>(tree: T): Perm
     return {
         groups,
         keys,
+        labels,
         permissions: walk(tree, ''),
     } as unknown as PermissionCatalog<T>;
 }

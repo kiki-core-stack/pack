@@ -2,7 +2,6 @@ import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
 import { SmsProviderCode } from '../constants/sms';
 import * as z from '../libs/zod';
-import type { SmsProviderConfigByCode } from '../types/sms';
 
 export const smsProviderConfigSchemas = {
     [SmsProviderCode.Mitake]: z.object({
@@ -18,6 +17,25 @@ export const smsProviderConfigSchemas = {
 } satisfies ReadonlyRecord<SmsProviderCode, z.ZodType>;
 
 // Functions
-export async function parseSmsProviderConfig<C extends SmsProviderCode>(code: C, input: unknown) {
-    return await smsProviderConfigSchemas[code].parseAsync(input) as SmsProviderConfigByCode[C];
+
+/**
+ * SMS provider input schema: the given fields plus `code` and the `config` of that code, so config issues are reported
+ * under `config.*` like any other field.
+ */
+export function createSmsProviderInputSchema<Shape extends z.ZodRawShape>(shape: Shape) {
+    return z.discriminatedUnion(
+        'code',
+        [
+            z.object({
+                ...shape,
+                code: z.literal(SmsProviderCode.Mitake),
+                config: smsProviderConfigSchemas[SmsProviderCode.Mitake],
+            }),
+            z.object({
+                ...shape,
+                code: z.literal(SmsProviderCode.TwSms),
+                config: smsProviderConfigSchemas[SmsProviderCode.TwSms],
+            }),
+        ],
+    );
 }

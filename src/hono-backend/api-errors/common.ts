@@ -1,5 +1,7 @@
-import * as z from 'zod';
-
+import {
+    duplicateKeyErrorDataSchema,
+    validationFailedErrorDataSchema,
+} from '../../schemas/api';
 import { defineApiErrors } from '../libs/api/error';
 
 export const {
@@ -18,67 +20,96 @@ export const {
     validationFailed,
 } = defineApiErrors({
     badRequest: {
-        description: '請求無效',
+        message: {
+            'en': 'Invalid request',
+            'zh-TW': '請求無效',
+        },
         status: 400,
     },
     conflict: {
-        description: '與資源目前的狀態衝突',
+        message: {
+            'en': 'The data has changed or is in use; refresh and try again',
+            'zh-TW': '資料狀態已變更或使用中，請重新整理後再試',
+        },
         status: 409,
     },
     duplicateKey: {
-        description: '資料重複，`fields` 為重複的欄位',
-        errorData: z.object({ fields: z.array(z.string()) }),
+        errorData: duplicateKeyErrorDataSchema,
+        message: {
+            'en': 'Duplicate data',
+            'zh-TW': '資料重複',
+        },
         status: 409,
     },
     forbidden: {
-        description: '權限不足',
+        message: {
+            'en': 'Permission denied',
+            'zh-TW': '沒有權限',
+        },
         status: 403,
     },
     gatewayTimeout: {
-        description: '上游服務逾時',
+        message: {
+            'en': 'Upstream service timed out',
+            'zh-TW': '上游服務逾時',
+        },
         status: 504,
     },
     gone: {
-        description: '資源已失效或不再可用',
+        message: {
+            'en': 'The data has expired or is no longer available',
+            'zh-TW': '資料已過期或不再可用',
+        },
         status: 410,
     },
     internalServerError: {
-        description: '伺服器內部錯誤',
+        message: {
+            'en': 'Internal server error',
+            'zh-TW': '系統錯誤',
+        },
         status: 500,
     },
     notFound: {
-        description: '找不到資源',
+        message: {
+            'en': 'Not found',
+            'zh-TW': '找不到資料',
+        },
         status: 404,
     },
     payloadTooLarge: {
-        description: '請求內容過大',
+        message: {
+            'en': 'Request payload too large',
+            'zh-TW': '請求內容過大',
+        },
         status: 413,
     },
     serviceUnavailable: {
-        description: '服務暫時無法使用',
+        message: {
+            'en': 'Service temporarily unavailable',
+            'zh-TW': '服務暫時無法使用',
+        },
         status: 503,
     },
     tooManyRequests: {
-        description: '請求過於頻繁',
+        message: {
+            'en': 'Too many requests',
+            'zh-TW': '請求過於頻繁',
+        },
         status: 429,
     },
     unauthorized: {
-        description: '未登入',
+        message: {
+            'en': 'Not logged in',
+            'zh-TW': '尚未登入',
+        },
         status: 401,
     },
     validationFailed: {
-        description: '請求資料驗證失敗，`issues` 為各欄位的錯誤',
-        errorData: z.object({
-            issues: z.array(z.object({
-                code: z.string().optional(),
-                details: z.record(z.string(), z.unknown()).optional(),
-                message: z.string(),
-                path: z.array(z.union([
-                    z.number(),
-                    z.string(),
-                ])),
-            })),
-        }),
+        errorData: validationFailedErrorDataSchema,
+        message: {
+            'en': 'Invalid data',
+            'zh-TW': '資料格式錯誤',
+        },
         status: 400,
     },
 });

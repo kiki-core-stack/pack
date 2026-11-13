@@ -16,9 +16,11 @@ import {
 } from 'ts-extras';
 
 import * as z from '../../libs/zod';
+import type { Locale } from '../../types/i18n';
 import * as apiErrors from '../api-errors';
 import { ApiError } from '../libs/api/error';
 import { toApiValidationError } from '../libs/api/validator';
+import { getRequestLocale } from '../middlewares/locale';
 import type { ApiErrorDefinition } from '../types/api';
 
 // Constants/Variables
@@ -39,14 +41,14 @@ for (const definition of objectValues(apiErrors.common)) {
 }
 
 // Functions
-function apiErrorToResponse(ctx: Context, error: ApiError) {
+function apiErrorToResponse(ctx: Context, error: ApiError, locale = getRequestLocale(ctx)) {
     const requestId = ctx.get('requestId' as never) as string | undefined;
-    return ctx.json(error.toResponseData(requestId), error.statusCode);
+    return ctx.json(error.toResponseData(locale, requestId), error.statusCode);
 }
 
 /**
- * Sends every error as the API error format: `ApiError` as is, validation errors as `validationFailed`, known
- * Hono/MongoDB errors as their common errors, and anything else as `internalServerError`.
+ * Sends every error as the API error format with messages in the request's locale: `ApiError` as is, validation errors
+ * as `validationFailed`, known Hono/MongoDB errors as their common errors, and anything else as `internalServerError`.
  *
  * Server errors (5xx) are logged as errors with their cause; client errors (4xx) only at debug level.
  */
@@ -67,17 +69,18 @@ export function setupHonoAppErrorHandling(
         if (customErrorHandlerResult) return customErrorHandlerResult;
         if (error instanceof HTTPException && error.res) return error.getResponse();
 
-        const apiError = toApiError(error);
+        const locale = getRequestLocale(ctx);
+        const apiError = toApiError(error, locale);
         if (apiError.statusCode >= 500) logger.error(error);
         else logger.debug(error);
 
-        return apiErrorToResponse(ctx, apiError);
+        return apiErrorToResponse(ctx, apiError, locale);
     });
 }
 
-function toApiError(error: unknown): ApiError {
+function toApiError(error: unknown, locale: Locale): ApiError {
     if (error instanceof ApiError) return error;
-    if (error instanceof z.ZodError) return toApiValidationError(error.issues);
+    if (error instanceof z.ZodError) return toApiValidationError(error.issues, locale);
 
     if (error instanceof HTTPException) {
         const definition = statusToCommonApiErrorMap.get(error.status);

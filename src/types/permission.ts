@@ -1,18 +1,20 @@
+import type { LocalizedMessages } from './i18n';
+
 export type PermissionGroups<T extends PermissionTree, Prefix extends string = ''> = {
-    [K in keyof T & string]: T[K] extends PermissionTree
-        ? `${Prefix}${K}` | PermissionGroups<T[K], `${Prefix}${K}.`>
+    [K in keyof T & string]: T[K] extends PermissionGroupNode
+        ? `${Prefix}${K}` | PermissionGroups<T[K]['children'], `${Prefix}${K}.`>
         : never;
 }[keyof T & string];
 
 export type PermissionKeys<T extends PermissionTree, Prefix extends string = ''> = {
-    [K in keyof T & string]: T[K] extends PermissionTree
-        ? PermissionKeys<T[K], `${Prefix}${K}.`>
+    [K in keyof T & string]: T[K] extends PermissionGroupNode
+        ? PermissionKeys<T[K]['children'], `${Prefix}${K}.`>
         : `${Prefix}${K}`;
 }[keyof T & string];
 
 export type PermissionMap<T extends PermissionTree, Prefix extends string = ''> = {
-    readonly [K in keyof T & string]: T[K] extends PermissionTree
-        ? PermissionMap<T[K], `${Prefix}${K}.`>
+    readonly [K in keyof T & string]: T[K] extends PermissionGroupNode
+        ? PermissionMap<T[K]['children'], `${Prefix}${K}.`>
         : `${Prefix}${K}`;
 };
 
@@ -32,9 +34,10 @@ export type PermissionRequirement<Group extends string, Key extends string> =
   | PermissionPattern<Group, Key>;
 
 /**
- * Permission definition tree: nested group objects whose leaves are `true`, e.g. `{ admin: { create: true } }`.
+ * Permission definition tree: named groups (`{ label, children }`) and permissions (`{ label }`), e.g.
+ * `{ admin: { label, children: { create: { label } } } }`.
  */
-export type PermissionTree = { readonly [Name in string]: PermissionTree | true };
+export type PermissionTree = { readonly [Name in string]: PermissionGroupNode | PermissionLeafNode };
 
 export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
     /**
@@ -48,9 +51,23 @@ export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
     readonly keys: ReadonlyArray<PermissionKeys<T>>;
 
     /**
+     * Label of every group and key.
+     */
+    readonly labels: Readonly<Record<PermissionGroups<T> | PermissionKeys<T>, LocalizedMessages>>;
+
+    /**
      * The definition tree with each leaf replaced by its full key: `permissions.admin.role.create`.
      */
     readonly permissions: PermissionMap<T>;
+}
+
+export interface PermissionGroupNode {
+    readonly children: PermissionTree;
+    readonly label: LocalizedMessages;
+}
+
+export interface PermissionLeafNode {
+    readonly label: LocalizedMessages;
 }
 
 export interface PrincipalPermissions {

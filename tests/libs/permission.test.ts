@@ -8,15 +8,29 @@ import {
     hasPermission,
 } from '../../src/libs/permission';
 
+const label = {
+    'en': 'label',
+    'zh-TW': '標籤',
+};
+
 const catalog = definePermissions({
     admin: {
-        create: true,
-        role: {
-            list: true,
-            update: true,
+        children: {
+            create: { label },
+            role: {
+                children: {
+                    list: { label },
+                    update: { label },
+                },
+                label,
+            },
         },
+        label,
     },
-    log: { list: true },
+    log: {
+        children: { list: { label } },
+        label,
+    },
 });
 
 describe.concurrent('definePermissions', () => {
@@ -34,12 +48,18 @@ describe.concurrent('definePermissions', () => {
             'log',
         ]);
 
+        expect(catalog.labels['admin.role']).toBe(label);
         expect(catalog.permissions.admin.role.list).toBe('admin.role.list');
     });
 
     it('should reject invalid definitions', ({ expect }) => {
-        expect(() => definePermissions({ 'a.b': true })).toThrow('Invalid permission name');
-        expect(() => definePermissions({ admin: {} })).toThrow('has no children');
+        expect(() => definePermissions({ 'a.b': { label } })).toThrow('Invalid permission name');
+        expect(() => definePermissions({
+            admin: {
+                children: {},
+                label,
+            },
+        })).toThrow('has no children');
     });
 });
 

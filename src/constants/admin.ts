@@ -1,5 +1,7 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
+import type { LocalizedMessages } from '../types/i18n';
+
 export enum AdminLogType {
     LoginFailure = 0,
     LoginSuccess = 1,
@@ -12,7 +14,13 @@ export enum AdminLogType {
     // /* eslint-enable perfectionist/sort-enums */
 }
 
-export const adminLogTypeToTextMap: ReadonlyRecord<AdminLogType, string> = {
-    [AdminLogType.LoginFailure]: '登入失敗',
-    [AdminLogType.LoginSuccess]: '登入成功',
+export const adminLogTypeToLabelMap: ReadonlyRecord<AdminLogType, LocalizedMessages> = {
+    [AdminLogType.LoginFailure]: {
+        'en': 'Login failed',
+        'zh-TW': '登入失敗',
+    },
+    [AdminLogType.LoginSuccess]: {
+        'en': 'Login succeeded',
+        'zh-TW': '登入成功',
+    },
 };
