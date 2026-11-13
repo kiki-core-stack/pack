@@ -9,134 +9,73 @@
     "./src/models/**/*"
   ],
   "exports": {
-    "./constants": {
-      "types": "./src/constants/index.ts",
-      "import": "./src/constants/index.ts",
-      "require": null
+    "./constants": "./src/constants/index.ts",
+    "./hono-backend/api-errors": "./src/hono-backend/api-errors/index.ts",
+    "./hono-backend/libs/api": "./src/hono-backend/libs/api/index.ts",
+    "./hono-backend/setups/mongoose-model-statics": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
+    "./init": "./src/init/index.ts",
+    "./libs/authentication-session/redis-store": "./src/libs/authentication-session/redis-store/index.ts",
+    "./libs/storages/files/types": {
+      "types": "./src/libs/storages/files/types.ts",
+      "default": null
+    },
+    "./libs/zod": "./src/libs/zod/index.ts",
+    "./libs/zod/backend": "./src/libs/zod/backend/index.ts",
+    "./models/admin": "./src/models/admin/index.ts",
+    "./package.json": "./package.json",
+    "./providers/email": "./src/providers/email/index.ts",
+    "./providers/sms": "./src/providers/sms/index.ts",
+    "./redis-scripts": "./src/redis-scripts/index.ts",
+    "./redis-scripts/authentication-session": "./src/redis-scripts/authentication-session/index.ts",
+    "./redis-scripts/authentication-session/qr-code-login": "./src/redis-scripts/authentication-session/qr-code-login/index.ts",
+    "./redis-scripts/lock": "./src/redis-scripts/lock/index.ts",
+    "./redis-scripts/storage": "./src/redis-scripts/storage/index.ts",
+    "./stores/lru": "./src/stores/lru/index.ts",
+    "./stores/redis": "./src/stores/redis/index.ts",
+    "./types": {
+      "types": "./src/types/index.ts",
+      "default": null
+    },
+    "./types/data": {
+      "types": "./src/types/data/index.ts",
+      "default": null
+    },
+    "./hono-backend/types/*": {
+      "types": "./src/hono-backend/types/*.ts",
+      "default": null
+    },
+    "./types/*": {
+      "types": "./src/types/*.ts",
+      "default": null
     },
     "./constants/index": null,
-    "./hono-backend/api-errors": {
-      "types": "./src/hono-backend/api-errors/index.ts",
-      "import": "./src/hono-backend/api-errors/index.ts",
-      "require": null
-    },
     "./hono-backend/api-errors/index": null,
-    "./hono-backend/libs/api": {
-      "types": "./src/hono-backend/libs/api/index.ts",
-      "import": "./src/hono-backend/libs/api/index.ts",
-      "require": null
-    },
     "./hono-backend/libs/api/index": null,
-    "./hono-backend/setups/mongoose-model-statics": {
-      "types": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
-      "import": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
-      "require": null
-    },
     "./hono-backend/setups/mongoose-model-statics/_internals": null,
     "./hono-backend/setups/mongoose-model-statics/index": null,
-    "./init": {
-      "types": "./src/init/index.ts",
-      "import": "./src/init/index.ts",
-      "require": null
-    },
     "./init/index": null,
     "./libs/_internals/logger": null,
     "./libs/authentication-session/_internals/token": null,
-    "./libs/authentication-session/redis-store": {
-      "types": "./src/libs/authentication-session/redis-store/index.ts",
-      "import": "./src/libs/authentication-session/redis-store/index.ts",
-      "require": null
-    },
     "./libs/authentication-session/redis-store/_internals/keys": null,
     "./libs/authentication-session/redis-store/_internals/qr-code-login": null,
     "./libs/authentication-session/redis-store/_internals/stored-session": null,
     "./libs/authentication-session/redis-store/index": null,
     "./libs/codegen/_internals/fetch-api-data": null,
     "./libs/codegen/_internals/write-generated-file": null,
-    "./libs/zod": {
-      "types": "./src/libs/zod/index.ts",
-      "import": "./src/libs/zod/index.ts",
-      "require": null
-    },
-    "./libs/zod/backend": {
-      "types": "./src/libs/zod/backend/index.ts",
-      "import": "./src/libs/zod/backend/index.ts",
-      "require": null
-    },
     "./libs/zod/backend/index": null,
     "./libs/zod/index": null,
-    "./models/admin": {
-      "types": "./src/models/admin/index.ts",
-      "import": "./src/models/admin/index.ts",
-      "require": null
-    },
     "./models/admin/index": null,
-    "./package.json": "./package.json",
-    "./providers/email": {
-      "types": "./src/providers/email/index.ts",
-      "import": "./src/providers/email/index.ts",
-      "require": null
-    },
     "./providers/email/index": null,
-    "./providers/sms": {
-      "types": "./src/providers/sms/index.ts",
-      "import": "./src/providers/sms/index.ts",
-      "require": null
-    },
     "./providers/sms/index": null,
-    "./redis-scripts": {
-      "types": "./src/redis-scripts/index.ts",
-      "import": "./src/redis-scripts/index.ts",
-      "require": null
-    },
-    "./redis-scripts/authentication-session": {
-      "types": "./src/redis-scripts/authentication-session/index.ts",
-      "import": "./src/redis-scripts/authentication-session/index.ts",
-      "require": null
-    },
     "./redis-scripts/authentication-session/index": null,
-    "./redis-scripts/authentication-session/qr-code-login": {
-      "types": "./src/redis-scripts/authentication-session/qr-code-login/index.ts",
-      "import": "./src/redis-scripts/authentication-session/qr-code-login/index.ts",
-      "require": null
-    },
     "./redis-scripts/authentication-session/qr-code-login/index": null,
     "./redis-scripts/index": null,
-    "./redis-scripts/lock": {
-      "types": "./src/redis-scripts/lock/index.ts",
-      "import": "./src/redis-scripts/lock/index.ts",
-      "require": null
-    },
     "./redis-scripts/lock/index": null,
-    "./redis-scripts/storage": {
-      "types": "./src/redis-scripts/storage/index.ts",
-      "import": "./src/redis-scripts/storage/index.ts",
-      "require": null
-    },
     "./redis-scripts/storage/index": null,
-    "./stores/lru": {
-      "types": "./src/stores/lru/index.ts",
-      "import": "./src/stores/lru/index.ts",
-      "require": null
-    },
+    "./redis-scripts/types.d": null,
     "./stores/lru/index": null,
-    "./stores/redis": {
-      "types": "./src/stores/redis/index.ts",
-      "import": "./src/stores/redis/index.ts",
-      "require": null
-    },
     "./stores/redis/_internals": null,
     "./stores/redis/index": null,
-    "./types": {
-      "types": "./src/types/index.ts",
-      "import": null,
-      "require": null
-    },
-    "./types/data": {
-      "types": "./src/types/data/index.ts",
-      "import": null,
-      "require": null
-    },
     "./types/data/index": null,
     "./types/index": null,
     "./*": "./src/*.ts"
@@ -206,7 +145,7 @@
     }
   },
   "dependencies": {
-    "@kikiutils/shared": "^20.1.1",
+    "@kikiutils/shared": "^20.1.2",
     "date-fns": "^4.4.0",
     "es-toolkit": "^1.53.2",
     "file-type": "^22.3.0",
@@ -230,11 +169,11 @@
     "@vitest/coverage-v8": "^5.1.0",
     "axios": "^1.21.1",
     "eslint": "^10.14.0",
-    "hono": "^4.13.17",
+    "hono": "^4.13.18",
     "hono-openapi": "^1.5.0",
     "http-proxy-agent": "^9.1.0",
     "https-proxy-agent": "^9.1.0",
-    "knip": "^6.45.0",
+    "knip": "^6.45.1",
     "mongoose": "^9.12.1",
     "node-ciphers": "^6.1.5",
     "nodemailer": "^10.5.0",

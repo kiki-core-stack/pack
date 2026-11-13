@@ -5,11 +5,13 @@
 import { Path } from '@kikiutils/shared/classes/path';
 import { objectEntries } from 'ts-extras';
 import type { PackageJson } from 'type-fest';
+import typescript from 'typescript';
 
-interface PackageExportEntry {
-    import: null | string;
-    require: null;
-    types: null | string;
+type PackageExportTarget = null | string | TypesOnlyExportTarget;
+
+interface TypesOnlyExportTarget {
+    default: null;
+    types: string;
 }
 
 // Constants/Variables
@@ -24,41 +26,90 @@ const privatePathNames = new Set([
 const sourceDirectoryPath = new Path(import.meta.dirname, '../src');
 
 // Functions
+async function assertTypesOnlyModule(filePath: string) {
+    const { outputText } = typescript.transpileModule(
+        await sourceDirectoryPath.join(filePath).readFile('utf8'),
+        {
+            compilerOptions: {
+                module: typescript.ModuleKind.ESNext,
+                removeComments: true,
+                target: typescript.ScriptTarget.ESNext,
+            },
+            fileName: filePath,
+        },
+    );
+
+    if (outputText.replace(/^export \{\};$/m, '').trim()) {
+        throw new Error(`Types-only module "src/${filePath}" must not contain runtime code`);
+    }
+}
+
+function createExportTarget(sourcePath: string, typesOnly: boolean): PackageExportTarget {
+    if (!typesOnly) return sourcePath;
+    return {
+        /* eslint-disable perfectionist/sort-objects */
+        types: sourcePath,
+        default: null,
+        /* eslint-enable perfectionist/sort-objects */
+    };
+}
+
+/**
+ * Exposes every non-private source module through `./*`, with explicit entries for directory indexes.
+ *
+ * - Private modules (`_internal`, `_internals`, `internal`, `internals` path segments), declaration files,
+ *   hidden paths and `index` aliases are blocked with `null`.
+ * - Modules under a `types` path segment or named `types` are exported as types only.
+ * - Explicit entries precede the wildcards and `./*` comes last, because TypeScript generates auto-import
+ *   specifiers from the first matching key.
+ */
 async function createPackageExports() {
-    const exports: Record<string, null | PackageExportEntry | string> = { './package.json': './package.json' };
+    const exports: Record<string, PackageExportTarget> = { './package.json': './package.json' };
+    const typesDirectories = new Set<string>();
 
     for (const filePath of await sourceDirectoryPath.readdir({ recursive: true })) {
-        if (!filePath.endsWith('.ts') || filePath.split('/').some((name) => name.startsWith('.'))) continue;
+        if (!filePath.endsWith('.ts')) continue;
         const parsedPath = new Path(filePath).parse();
-        const sourcePath = `./src/${filePath}`;
-        const exportPath = `./${new Path(parsedPath.dir, parsedPath.name)}`;
+        const segments = [
+            ...parsedPath.dir.split('/').filter(Boolean),
+            parsedPath.name,
+        ];
 
+        const sourcePath = `./src/${filePath}`;
+        const exportPath = `./${segments.join('/')}`;
         if (
-            [
-                ...parsedPath.dir.split('/'),
-                parsedPath.name,
-            ].some((name) => privatePathNames.has(name))
+            filePath.endsWith('.d.ts')
+            || segments.some((segment) => segment.startsWith('.') || privatePathNames.has(segment))
         ) {
             exports[exportPath] = null;
             continue;
         }
 
-        if (parsedPath.name !== 'index') continue;
+        const typesSegmentIndex = segments.indexOf('types');
+        const typesOnly = typesSegmentIndex !== -1;
+        if (typesOnly) await assertTypesOnlyModule(filePath);
+        const inTypesDirectory = typesOnly && typesSegmentIndex < segments.length - 1;
+        if (inTypesDirectory) typesDirectories.add(segments.slice(0, typesSegmentIndex + 1).join('/'));
 
-        const directoryExportPath = parsedPath.dir ? `./${parsedPath.dir}` : '.';
-        exports[directoryExportPath] = {
-            /* eslint-disable perfectionist/sort-objects */
-            types: sourcePath,
-            import: parsedPath.dir.startsWith('types') ? null : sourcePath,
-            require: null,
-            /* eslint-enable perfectionist/sort-objects */
-        };
-
-        exports[exportPath] = null;
+        if (parsedPath.name === 'index') {
+            exports[parsedPath.dir ? `./${parsedPath.dir}` : '.'] = createExportTarget(sourcePath, typesOnly);
+            exports[exportPath] = null;
+        } else if (typesOnly && !inTypesDirectory) {
+            exports[exportPath] = createExportTarget(sourcePath, true);
+        }
     }
 
+    for (const directory of typesDirectories) exports[`./${directory}/*`] = createExportTarget(`./src/${directory}/*.ts`, true);
+
+    const getKeyGroup = (key: string) => {
+        if (exports[key] === null) return 2;
+        return key.includes('*') ? 1 : 0;
+    };
+
+    const entries = objectEntries(exports);
+    entries.sort(([a], [b]) => getKeyGroup(a) - getKeyGroup(b) || a.localeCompare(b));
     return {
-        ...Object.fromEntries(objectEntries(exports).sort(([left], [right]) => left.localeCompare(right))),
+        ...Object.fromEntries(entries),
         './*': './src/*.ts',
     };
 }
