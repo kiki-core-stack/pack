@@ -59,6 +59,12 @@ export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
      * The definition tree with each leaf replaced by its full key: `permissions.admin.role.create`.
      */
     readonly permissions: PermissionMap<T>;
+
+    /**
+     * Every key's required keys, resolved to full keys and including indirect ones (keys without requirements are
+     * absent).
+     */
+    readonly requirements: Readonly<Partial<Record<PermissionKeys<T>, ReadonlyArray<PermissionKeys<T>>>>>;
 }
 
 export interface PermissionGroupNode {
@@ -68,6 +74,12 @@ export interface PermissionGroupNode {
 
 export interface PermissionLeafNode {
     readonly label: LocalizedMessages;
+
+    /**
+     * Permissions this one is unusable without (e.g. `create` needs `list` to reach the page): sibling action names
+     * (`list`) or full keys of other nodes (`admin.role.list`).
+     */
+    readonly requires?: readonly string[];
 }
 
 export interface PrincipalPermissions {

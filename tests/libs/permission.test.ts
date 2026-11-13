@@ -5,6 +5,7 @@ import {
 
 import {
     definePermissions,
+    expandPermissionRequirements,
     hasPermission,
 } from '../../src/libs/permission';
 
@@ -52,6 +53,46 @@ describe.concurrent('definePermissions', () => {
         expect(catalog.permissions.admin.role.list).toBe('admin.role.list');
     });
 
+    it('should resolve sibling, cross-node and indirect requirements', ({ expect }) => {
+        const { requirements } = definePermissions({
+            admin: {
+                children: {
+                    create: {
+                        label,
+                        requires: [
+                            'update',
+                            'log.list',
+                        ],
+                    },
+                    list: { label },
+                    update: {
+                        label,
+                        requires: ['list'],
+                    },
+                },
+                label,
+            },
+            log: {
+                children: { list: { label } },
+                label,
+            },
+        });
+
+        expect(requirements).toStrictEqual({
+            'admin.create': [
+                'admin.list',
+                'admin.update',
+                'log.list',
+            ],
+            'admin.update': ['admin.list'],
+        });
+
+        expect(expandPermissionRequirements(requirements, ['admin.update']).toSorted()).toStrictEqual([
+            'admin.list',
+            'admin.update',
+        ]);
+    });
+
     it('should reject invalid definitions', ({ expect }) => {
         expect(() => definePermissions({ 'a.b': { label } })).toThrow('Invalid permission name');
         expect(() => definePermissions({
@@ -60,6 +101,18 @@ describe.concurrent('definePermissions', () => {
                 label,
             },
         })).toThrow('has no children');
+
+        expect(() => definePermissions({
+            admin: {
+                children: {
+                    create: {
+                        label,
+                        requires: ['list'],
+                    },
+                },
+                label,
+            },
+        })).toThrow('requires unknown permission "admin.list"');
     });
 });
 

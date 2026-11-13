@@ -1,5 +1,6 @@
 import type { PathLike } from '@kikiutils/shared/classes/path';
 import { upperFirst } from 'es-toolkit';
+import { objectKeys } from 'ts-extras';
 
 import type { ManagementType } from '../../types';
 import type { LocalizedMessages } from '../../types/i18n';
@@ -17,11 +18,11 @@ interface GenerateManagementPermissionTypesFileOptions {
 }
 
 /**
- * Generates the permission file of a management frontend: group/key arrays, their union types and the label of every
- * group and key (defined with the permissions in the backend).
+ * Generates the permission file of a management frontend: group/key arrays, their union types, the label of every
+ * group and key, and each key's required keys (all defined with the permissions in the backend).
  *
  * Needs the development-only backend route `GET /api/<managementType>/<managementType>/permission/list` (the
- * management's own principal-management section), which returns the catalog's `{ groups, keys, labels }`.
+ * management's own principal-management section), which returns the catalog's `{ groups, keys, labels, requirements }`.
  */
 export async function generateManagementPermissionTypesFile(options: GenerateManagementPermissionTypesFileOptions) {
     const { managementType } = options;
@@ -29,6 +30,7 @@ export async function generateManagementPermissionTypesFile(options: GenerateMan
         groups: string[];
         keys: string[];
         labels: Record<string, LocalizedMessages>;
+        requirements: Record<string, string[]>;
     }>(
         `${options.apiBaseUrl}/api/${managementType}/${managementType}/permission/list`,
     );
@@ -47,6 +49,10 @@ export async function generateManagementPermissionTypesFile(options: GenerateMan
         .toSorted()
         .map((path) => `  '${path}': ${JSON.stringify(catalog.labels[path])},`);
 
+    const requirementMapEntries = objectKeys(catalog.requirements)
+        .toSorted()
+        .map((key) => `  '${key}': ${JSON.stringify(catalog.requirements[key])},`);
+
     const fileContents = [
         `import type { LocalizedMessages } from '@kcs-project/pack/types/i18n';`,
         '',
@@ -59,6 +65,10 @@ export async function generateManagementPermissionTypesFile(options: GenerateMan
         '',
         `export const ${managementType}PermissionLabelMap: Readonly<Record<${prefix}PermissionGroup | ${prefix}PermissionKey, LocalizedMessages>> = {`,
         ...labelMapEntries,
+        '};',
+        '',
+        `export const ${managementType}PermissionRequirementMap: Readonly<Partial<Record<${prefix}PermissionKey, readonly ${prefix}PermissionKey[]>>> = {`,
+        ...requirementMapEntries,
         '};',
     ];
 
