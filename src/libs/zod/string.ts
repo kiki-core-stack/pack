@@ -5,5 +5,8 @@ import * as z from 'zod';
  * value of an empty form field as is.
  */
 export function blankToUndefined<T extends z.ZodType>(schema: T) {
-    return z.preprocess((value) => typeof value === 'string' && !value.trim() ? undefined : value, schema.optional());
+    return z.preprocess(
+        (value: string | undefined | z.input<T>) => typeof value === 'string' && !value.trim() ? undefined : value,
+        schema.optional(),
+    );
 }
