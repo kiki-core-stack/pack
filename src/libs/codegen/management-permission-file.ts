@@ -8,7 +8,7 @@ import type { LocalizedMessages } from '../../types/i18n';
 import { fetchApiData } from './_internals/fetch-api-data';
 import { writeGeneratedFile } from './_internals/write-generated-file';
 
-interface GenerateManagementPermissionTypesFileOptions {
+interface GenerateManagementPermissionFileOptions {
     /**
      * Base URL of the running development backend.
      */
@@ -24,7 +24,7 @@ interface GenerateManagementPermissionTypesFileOptions {
  * Needs the development-only backend route `GET /api/<managementType>/<managementType>/permission/list` (the
  * management's own principal-management section), which returns the catalog's `{ groups, keys, labels, requirements }`.
  */
-export async function generateManagementPermissionTypesFile(options: GenerateManagementPermissionTypesFileOptions) {
+export async function generateManagementPermissionFile(options: GenerateManagementPermissionFileOptions) {
     const { managementType } = options;
     const catalog = await fetchApiData<{
         groups: string[];

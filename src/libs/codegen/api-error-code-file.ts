@@ -3,7 +3,7 @@ import type { PathLike } from '@kikiutils/shared/classes/path';
 import { fetchApiData } from './_internals/fetch-api-data';
 import { writeGeneratedFile } from './_internals/write-generated-file';
 
-interface GenerateApiErrorCodeTypesFileOptions {
+interface GenerateApiErrorCodeFileOptions {
     /**
      * Base URL of the running development backend.
      */
@@ -14,12 +14,12 @@ interface GenerateApiErrorCodeTypesFileOptions {
 /**
  * Generates the API error code file of a frontend: the code array plus its union type.
  *
- * Frontends type their error translations on it (`Record<ApiErrorCode, string>`), so an error code added in the
- * backend breaks their type check until translated.
+ * Frontends check specific failures by code (`errorCode === 'invalidCredentials'`) against it, so a renamed or removed
+ * code breaks their type check.
  *
  * Needs the development-only backend route `GET /api/public/api-error-code/list`, which returns `{ codes }`.
  */
-export async function generateApiErrorCodeTypesFile(options: GenerateApiErrorCodeTypesFileOptions) {
+export async function generateApiErrorCodeFile(options: GenerateApiErrorCodeFileOptions) {
     const { codes } = await fetchApiData<{ codes: string[] }>(`${options.apiBaseUrl}/api/public/api-error-code/list`);
     const fileContents = [
         'export const apiErrorCodes = [',
