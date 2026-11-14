@@ -1,5 +1,5 @@
 import type { SmsProviderCode } from '../constants/sms';
-import type { smsProviderConfigSchemas } from '../schemas/sms';
+import type { smsProviderConfigVariants } from '../schemas/sms';
 
 import type {
     DiscriminatedFieldVariant,
@@ -7,8 +7,8 @@ import type {
     ZodSchemaMapOutput,
 } from './';
 
-export type SmsProviderConfigByCode = ZodSchemaMapOutput<typeof smsProviderConfigSchemas>;
-export type SmsProviderConfigInputByCode = ZodSchemaMapInput<typeof smsProviderConfigSchemas>;
+export type SmsProviderConfigByCode = ZodSchemaMapOutput<typeof smsProviderConfigVariants['schemas']>;
+export type SmsProviderConfigInputByCode = ZodSchemaMapInput<typeof smsProviderConfigVariants['schemas']>;
 export type SmsProviderConfigVariant<C extends SmsProviderCode = SmsProviderCode> = DiscriminatedFieldVariant<
     'code',
     'config',

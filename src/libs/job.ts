@@ -2,7 +2,7 @@ import type { ClientSession } from 'mongoose';
 
 import { JobType } from '../constants/job';
 import { JobOutboxEventModel } from '../models/job/outbox-event';
-import { parseJobOutboxEventPayload } from '../schemas/job';
+import { jobOutboxEventPayloadVariants } from '../schemas/job';
 import type { CreateJobOutboxEventInput } from '../types/job';
 
 import * as z from './zod';
@@ -24,7 +24,7 @@ export async function createJobOutboxEvents(events: CreateJobOutboxEventInput[],
             const input = await createJobOutboxEventInputSchema.parseAsync(event);
             return {
                 ...input,
-                payload: await parseJobOutboxEventPayload(input.type, input.payload),
+                payload: await jobOutboxEventPayloadVariants.parse(input.type, input.payload),
             };
         })),
         { session },

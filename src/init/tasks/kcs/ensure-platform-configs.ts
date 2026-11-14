@@ -16,7 +16,7 @@ import {
     PlatformConfigScope,
 } from '../../../constants/platform';
 import { PlatformConfigModel } from '../../../models/platform/config';
-import { parsePlatformConfig } from '../../../schemas/platform';
+import { platformConfigVariants } from '../../../schemas/platform';
 
 function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: UnknownRecord) {
     let changed = false;
@@ -48,7 +48,7 @@ export async function run(session: ClientSession, adminId: Types.ObjectId) {
                 defaultPlatformConfigs[platformConfigScope],
             );
 
-            await parsePlatformConfig(platformConfigScope, config);
+            await platformConfigVariants.parse(platformConfigScope, config);
             if (!changed) continue;
 
             await PlatformConfigModel.updateOne(

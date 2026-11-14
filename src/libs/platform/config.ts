@@ -2,7 +2,7 @@ import { cloneDeep } from 'es-toolkit';
 
 import { PlatformConfigScope } from '../../constants/platform';
 import { PlatformConfigModel } from '../../models/platform/config';
-import { parsePlatformConfig } from '../../schemas/platform';
+import { platformConfigVariants } from '../../schemas/platform';
 import * as lruStore from '../../stores/lru';
 import * as redisStore from '../../stores/redis';
 import type { PlatformConfigByScope } from '../../types/platform';
@@ -35,12 +35,12 @@ export async function getPlatformConfig<S extends PlatformConfigScope>(scope: S)
 async function loadPlatformConfig<S extends PlatformConfigScope>(scope: S) {
     const cachedPlatformConfig = await redisStore.platform.config.getItem(scope);
     if (cachedPlatformConfig !== null && cachedPlatformConfig !== undefined) {
-        return await parsePlatformConfig(scope, cachedPlatformConfig);
+        return await platformConfigVariants.parse(scope, cachedPlatformConfig);
     }
 
     const platformConfig = await PlatformConfigModel.findOne({ scope }).select('config').lean();
     if (!platformConfig) throw new Error(`Platform config not found for scope ${scope}`);
-    const config = await parsePlatformConfig(scope, platformConfig.config);
+    const config = await platformConfigVariants.parse(scope, platformConfig.config);
     await redisStore.platform.config.setItemWithTtl(60, config, scope);
     return config;
 }

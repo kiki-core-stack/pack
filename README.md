@@ -32,10 +32,10 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - permission.ts：權限樹、catalog、`PermissionRequirement`。
 - schemas/：zod schema。
   - api.ts：`validationFailed`、`duplicateKey` 的 errorData schema（對應型別由此推導）。
-  - admin.ts：`adminPasswordSchema`（密碼政策）、管理員日誌 metadata。
-  - email.ts、sms.ts：各服務商的 config schema 與 `create*ProviderInputSchema`（以 `code` 區分，config 錯誤會標在 `config.*`）。
+  - admin.ts：`adminPasswordSchema`（密碼政策）、`adminLogMetadataVariants`。
+  - email.ts、sms.ts、platform.ts、job.ts：`*ProviderConfigVariants`、`platformConfigVariants`、`jobOutboxEventPayloadVariants`（見下方「依判別值變化的欄位」）。
 - libs/：
-  - zod/：`z` 加上專案擴充（`objectId`、`strictIsoDateString`、`enumWithMeta`、`blankToUndefined`、`i18nIssue` 等）；`backend/` 另含檔案上傳的擴充。
+  - zod/：`z` 加上專案擴充（`objectId`、`strictIsoDateString`、`enumWithMeta`、`blankToUndefined`、`i18nIssue`、`discriminatedMap` 等）；`backend/` 另含檔案上傳的擴充。
   - i18n.ts：`resolveLocale(acceptLanguage)`。
   - permission.ts：`definePermissions`、`hasPermission`、`expandPermissionRequirements`。
   - codegen/：前端產生檔的產生函式（見下方「codegen」）。
@@ -74,6 +74,14 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - 後端把 `locale()` 掛成第一個 app middleware，之後以 `ctx.var.locale` 取得語系；錯誤處理與 `apiValidator` 會自動使用。
 - 驗證訊息依序取：自訂規則的 `i18nIssue`、常見情況的專案措辭、zod 內建語系。schema 上不要寫死 `error` 訊息（會蓋過依請求的翻譯），自訂規則改用 `z.i18nIssue({...})`。
 - 文字跟著定義走：pack 的 enum 名稱放 pack，各後端的權限名稱放各後端的權限定義；前端 i18n 只放介面文字。
+
+### 依判別值變化的欄位
+
+服務商的 `config`（依 `code`）、平台設定的 `config`（依 `scope`）、日誌的 `metadata` 與 job 的 `payload`（依 `type`）以 `z.discriminatedMap(判別欄位, 值欄位, { 判別值: schema })` 定義為 `*Variants`；型別（`*ByCode`、`*Variant` 等）由其 `schemas` 推導。
+
+- 輸入本身帶判別值（例如服務商表單的 `code`）：`variants.inputSchema(shape)` 產生 discriminated union，交給 `apiValidator`。
+- 判別值已知（存在資料上、路由參數、job 類型）：`variants.parse(key, value)` 或 `safeParse` 只驗證值。
+- 兩者的錯誤都標在 `<值欄位>.*`（例如 `config.apiUrl`），前端可直接對應表單欄位。
 
 ### 權限
 

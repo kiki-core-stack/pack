@@ -2,12 +2,18 @@ import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
 import { AdminLogType } from '../constants/admin';
 import * as z from '../libs/zod';
-import type { AdminLogMetadataByType } from '../types/admin';
 
-export const adminLogMetadataSchemas = {
-    [AdminLogType.LoginFailure]: z.undefined(),
-    [AdminLogType.LoginSuccess]: z.undefined(),
-} satisfies ReadonlyRecord<AdminLogType, z.ZodType>;
+/**
+ * Admin log metadata by `type`; validate with `adminLogMetadataVariants.parse(type, metadata)`.
+ */
+export const adminLogMetadataVariants = z.discriminatedMap(
+    'type',
+    'metadata',
+    {
+        [AdminLogType.LoginFailure]: z.undefined(),
+        [AdminLogType.LoginSuccess]: z.undefined(),
+    } satisfies ReadonlyRecord<AdminLogType, z.ZodType>,
+);
 
 /**
  * Admin password policy. Not trimmed: surrounding whitespace is rejected instead of silently removed.
@@ -56,8 +62,3 @@ export const adminPasswordSchema = z
             'zh-TW': '密碼至少包含一個特殊字元（可為符號、表情符號、中文等）',
         }),
     );
-
-// Functions
-export async function parseAdminLogMetadata<T extends AdminLogType>(type: T, input: unknown) {
-    return await adminLogMetadataSchemas[type].parseAsync(input) as AdminLogMetadataByType[T];
-}

@@ -1,7 +1,7 @@
 import type { ClientSession } from 'mongoose';
 
 import { AdminLogModel } from '../models/admin/log';
-import { parseAdminLogMetadata } from '../schemas/admin';
+import { adminLogMetadataVariants } from '../schemas/admin';
 import type { CreateAdminLogInput } from '../types/admin';
 
 // Functions
@@ -10,7 +10,7 @@ export async function createAdminLog(input: CreateAdminLogInput, session?: Clien
         [
             {
                 ...input,
-                metadata: await parseAdminLogMetadata(input.type, input.metadata),
+                metadata: await adminLogMetadataVariants.parse(input.type, input.metadata),
             },
         ],
         { session },
