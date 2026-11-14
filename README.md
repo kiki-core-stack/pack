@@ -51,7 +51,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
   - libs/api/：`defineApiErrors`、`throwApiError`、`listApiErrorCodes`、`apiValidator`、`apiErrorResponses`（route docs）、`createApiSuccessResponseData`。
   - middlewares/：`locale()`、`cookieSession()`。
-  - setups/：`setupHonoAppErrorHandling`、mongoose model statics。
+  - setups/：`setupHonoAppErrorHandling`；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods（`index` 加上要用的檔案各自 import 啟用，例如 `findByRouteIdOrThrowNotFoundError`、`assertUpdateIfNotModified`）。
   - types/：錯誤定義、cookie session 的型別（下游以 `declare module` 擴充 `CookieSessionData`）。
 
 ## 約定

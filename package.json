@@ -5,14 +5,14 @@
   "author": "kiki-kanri",
   "license": "MIT",
   "sideEffects": [
-    "./src/hono-backend/setups/mongoose-model-statics/**/*",
+    "./src/hono-backend/setups/mongoose-model-extensions/**/*",
     "./src/models/**/*"
   ],
   "exports": {
     "./constants": "./src/constants/index.ts",
     "./hono-backend/api-errors": "./src/hono-backend/api-errors/index.ts",
     "./hono-backend/libs/api": "./src/hono-backend/libs/api/index.ts",
-    "./hono-backend/setups/mongoose-model-statics": "./src/hono-backend/setups/mongoose-model-statics/index.ts",
+    "./hono-backend/setups/mongoose-model-extensions": "./src/hono-backend/setups/mongoose-model-extensions/index.ts",
     "./init": "./src/init/index.ts",
     "./libs/authentication-session/redis-store": "./src/libs/authentication-session/redis-store/index.ts",
     "./libs/storages/files/types": {
@@ -51,8 +51,8 @@
     "./constants/index": null,
     "./hono-backend/api-errors/index": null,
     "./hono-backend/libs/api/index": null,
-    "./hono-backend/setups/mongoose-model-statics/_internals": null,
-    "./hono-backend/setups/mongoose-model-statics/index": null,
+    "./hono-backend/setups/mongoose-model-extensions/_internals": null,
+    "./hono-backend/setups/mongoose-model-extensions/index": null,
     "./init/index": null,
     "./libs/_internals/logger": null,
     "./libs/authentication-session/_internals/token": null,

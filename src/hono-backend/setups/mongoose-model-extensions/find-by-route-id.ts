@@ -10,7 +10,7 @@ import type {
     Schema,
 } from 'mongoose';
 
-import { registerStaticFunctions } from './_internals';
+import { registerModelExtensions } from './_internals';
 
 declare module '@kikiutils/mongoose/types' {
     interface BaseMongooseModelStatics<RawDocType, InstanceMethodsAndOverrides = object, QueryHelpers = object> {
@@ -27,7 +27,7 @@ declare module '@kikiutils/mongoose/types' {
     }
 }
 
-registerStaticFunctions.push(
+registerModelExtensions.push(
     <
         DocType,
         Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>,

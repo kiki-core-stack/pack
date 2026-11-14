@@ -11,7 +11,7 @@ import type {
 import * as apiErrors from '../../api-errors';
 import { throwApiError } from '../../libs/api/error';
 
-import { registerStaticFunctions } from './_internals';
+import { registerModelExtensions } from './_internals';
 
 declare module '@kikiutils/mongoose/types' {
     // eslint-disable-next-line unused-imports/no-unused-vars
@@ -26,7 +26,7 @@ declare module '@kikiutils/mongoose/types' {
     }
 }
 
-registerStaticFunctions.push(
+registerModelExtensions.push(
     <
         DocType,
         Model extends BaseMongoosePaginateModel<DocType, InstanceMethodsAndOverrides, QueryHelpers>,
