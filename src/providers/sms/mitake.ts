@@ -93,7 +93,7 @@ export class SmsMitakeProvider extends BaseSmsProvider<SmsProviderCode.Mitake> {
                     username: this.config.username,
                 },
                 {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    headers: { 'content-type': 'application/x-www-form-urlencoded' },
                     params: { CharsetURL: 'UTF-8' },
                     responseType: 'text',
                     signal,
