@@ -1,17 +1,49 @@
 import type { Context } from 'hono';
 import { validator } from 'hono-openapi';
 
+import { defaultLocale } from '../../../constants/i18n';
 import type {
     ApiValidationIssue,
     ValidationFailedErrorData,
 } from '../../../types/api';
-import type { Locale } from '../../../types/i18n';
+import type {
+    Locale,
+    LocalizedMessages,
+} from '../../../types/i18n';
 import * as apiErrors from '../../api-errors';
 import { getRequestLocale } from '../../middlewares/locale';
 
 import { ApiError } from './error';
 import { translateValidationIssue } from './validation-issue-message';
 import type { StandardSchemaIssue } from './validation-issue-message';
+
+// Classes
+
+/**
+ * `validationFailed` for one field whose message is translated when the response is built, so it can be thrown
+ * without the request context.
+ */
+class FieldValidationApiError extends ApiError<typeof apiErrors.common.validationFailed> {
+    readonly #localizedMessage: LocalizedMessages;
+    readonly #path: Array<number | string>;
+
+    constructor(path: Array<number | string>, localizedMessage: LocalizedMessages) {
+        super(
+            apiErrors.common.validationFailed,
+            { errorData: createFieldValidationErrorData(path, localizedMessage[defaultLocale]) },
+        );
+
+        this.#localizedMessage = localizedMessage;
+        this.#path = path;
+    }
+
+    override toResponseData(locale: Locale, requestId?: string) {
+        return {
+            ...super.toResponseData(locale, requestId),
+            errorData: createFieldValidationErrorData(this.#path, this.#localizedMessage[locale]),
+        };
+    }
+}
 
 // Functions
 
@@ -27,6 +59,26 @@ export const apiValidator = ((target: any, schema: any, hook?: any, options?: an
     }),
     options,
 )) as typeof validator;
+
+function createFieldValidationErrorData(path: Array<number | string>, message: string): ValidationFailedErrorData {
+    return {
+        issues: [
+            {
+                code: 'custom',
+                message,
+                path,
+            },
+        ],
+    };
+}
+
+/**
+ * Throws `validationFailed` for one field, like a schema issue at `path`, for checks that need data beyond the input
+ * (e.g. the stored password).
+ */
+export function throwFieldValidationError(path: Array<number | string>, message: LocalizedMessages): never {
+    throw new FieldValidationApiError(path, message);
+}
 
 export function toApiValidationError(issues: readonly StandardSchemaIssue[], locale: Locale) {
     const errorData: ValidationFailedErrorData = { issues: issues.map((issue) => toApiValidationIssue(issue, locale)) };

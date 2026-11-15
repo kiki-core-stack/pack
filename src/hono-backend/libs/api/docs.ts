@@ -5,7 +5,7 @@ import type { ApiErrorDefinition } from '../../types/api';
 
 // Functions
 /**
- * Builds route docs responses for API errors, grouped by status.
+ * Builds route docs responses for API errors, grouped by status; use as `apiDocs.errors` (`export * as apiDocs`).
  *
  * Errors sharing a status become a union discriminated by `errorCode`; each branch keeps its code and (default locale)
  * message.
@@ -13,10 +13,10 @@ import type { ApiErrorDefinition } from '../../types/api';
  *
  * @example
  * ```ts
- * defineRoute({ docs: { responses: { ...apiErrorResponses(apiErrors.common.notFound) } } })
+ * defineRoute({ docs: { responses: { ...apiDocs.errors(apiErrors.common.notFound) } } })
  * ```
  */
-export function apiErrorResponses(...definitions: ApiErrorDefinition[]) {
+export function errors(...definitions: ApiErrorDefinition[]) {
     const statusToSchemasMap = new Map<number, z.ZodObject[]>();
     for (const definition of new Set(definitions)) {
         const schemas = statusToSchemasMap.get(definition.status) ?? [];
@@ -32,6 +32,22 @@ export function apiErrorResponses(...definitions: ApiErrorDefinition[]) {
     }
 
     return responses;
+}
+
+/**
+ * Builds the route docs schema of a success response, matching `ctx.createApiSuccessResponse(data)`; without
+ * `dataSchema` it documents a response without data. Use as `apiDocs.success`.
+ *
+ * @example
+ * ```ts
+ * defineRoute({ docs: { responses: { 200: apiDocs.success(responseDataSchema) } } })
+ * ```
+ */
+export function success<D extends z.ZodType>(dataSchema?: D) {
+    return z.object({
+        ...dataSchema ? { data: dataSchema } : {},
+        success: z.literal(true),
+    });
 }
 
 function toApiErrorResponseSchema(definition: ApiErrorDefinition) {
