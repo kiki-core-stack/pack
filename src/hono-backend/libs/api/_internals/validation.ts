@@ -4,9 +4,15 @@ import {
 } from 'zod/locales';
 
 import type {
+    ApiValidationIssue,
+    ValidationFailedErrorData,
+} from '../../../../types/api';
+import type {
     Locale,
     LocalizedMessages,
-} from '../../../types/i18n';
+} from '../../../../types/i18n';
+import * as apiErrors from '../../../api-errors';
+import { ApiError } from '../error';
 
 type ZodLocaleError = ReturnType<typeof zhTW>['localeError'];
 
@@ -29,6 +35,7 @@ interface ZodIssueFields {
 }
 
 // Constants/Variables
+
 /**
  * Per locale: the app's own wording for common issues (`undefined` falls back to the Zod locale).
  */
@@ -108,12 +115,28 @@ const localeToZodLocaleErrorMap: Readonly<Record<Locale, ZodLocaleError>> = {
 };
 
 // Functions
+export function toApiValidationError(issues: readonly StandardSchemaIssue[], locale: Locale) {
+    const errorData: ValidationFailedErrorData = { issues: issues.map((issue) => toApiValidationIssue(issue, locale)) };
+    return new ApiError(apiErrors.common.validationFailed, { errorData });
+}
+
+function toApiValidationIssue(issue: StandardSchemaIssue, locale: Locale): ApiValidationIssue {
+    const { code } = issue as { code?: string };
+    return {
+        code,
+        message: translateValidationIssue(issue, locale),
+        path: (issue.path ?? []).map((segment) => {
+            const key = typeof segment === 'object' ? segment.key : segment;
+            return typeof key === 'number' ? key : String(key);
+        }),
+    };
+}
 
 /**
  * Message of an issue in the locale: a custom check's `i18nIssue` message, the app's wording for common issues, then
  * the Zod locale; non-Zod issues keep their own message.
  */
-export function translateValidationIssue(issue: StandardSchemaIssue, locale: Locale) {
+function translateValidationIssue(issue: StandardSchemaIssue, locale: Locale) {
     const fields = issue as ZodIssueFields;
     if (fields.params?.i18n) return fields.params.i18n[locale];
     if (!fields.code) return issue.message;

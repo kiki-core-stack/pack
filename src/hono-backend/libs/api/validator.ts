@@ -2,10 +2,7 @@ import type { Context } from 'hono';
 import { validator } from 'hono-openapi';
 
 import { defaultLocale } from '../../../constants/i18n';
-import type {
-    ApiValidationIssue,
-    ValidationFailedErrorData,
-} from '../../../types/api';
+import type { ValidationFailedErrorData } from '../../../types/api';
 import type {
     Locale,
     LocalizedMessages,
@@ -13,9 +10,9 @@ import type {
 import * as apiErrors from '../../api-errors';
 import { getRequestLocale } from '../../middlewares/locale';
 
+import { toApiValidationError } from './_internals/validation';
+import type { StandardSchemaIssue } from './_internals/validation';
 import { ApiError } from './error';
-import { translateValidationIssue } from './validation-issue-message';
-import type { StandardSchemaIssue } from './validation-issue-message';
 
 // Classes
 
@@ -78,21 +75,4 @@ function createFieldValidationErrorData(path: Array<number | string>, message: s
  */
 export function throwFieldValidationError(path: Array<number | string>, message: LocalizedMessages): never {
     throw new FieldValidationApiError(path, message);
-}
-
-export function toApiValidationError(issues: readonly StandardSchemaIssue[], locale: Locale) {
-    const errorData: ValidationFailedErrorData = { issues: issues.map((issue) => toApiValidationIssue(issue, locale)) };
-    return new ApiError(apiErrors.common.validationFailed, { errorData });
-}
-
-function toApiValidationIssue(issue: StandardSchemaIssue, locale: Locale): ApiValidationIssue {
-    const { code } = issue as { code?: string };
-    return {
-        code,
-        message: translateValidationIssue(issue, locale),
-        path: (issue.path ?? []).map((segment) => {
-            const key = typeof segment === 'object' ? segment.key : segment;
-            return typeof key === 'number' ? key : String(key);
-        }),
-    };
 }
