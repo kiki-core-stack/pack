@@ -32,7 +32,8 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - permission.ts：權限樹、catalog、`PermissionRequirement`。
 - schemas/：zod schema。
   - api.ts：`validationFailed`、`duplicateKey` 的 errorData schema（對應型別由此推導）。
-  - admin.ts：`adminPasswordSchema`（密碼政策）、`adminLogMetadataVariants`。
+  - admin.ts：`adminLogMetadataVariants`。
+  - password.ts：`strongPasswordSchema`（管理員等特權帳號的密碼政策）。
   - email.ts、sms.ts、platform.ts、job.ts：`*ProviderConfigVariants`、`platformConfigVariants`、`jobOutboxEventPayloadVariants`（見下方「依判別值變化的欄位」）。
 - libs/：
   - zod/：`z` 加上專案擴充（`objectId`、`strictIsoDateString`、`enumWithMeta`、`blankToUndefined`、`i18nIssue`、`discriminatedMap` 等）；`backend/` 另含檔案上傳的擴充。
