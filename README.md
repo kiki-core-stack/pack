@@ -49,7 +49,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - init/：後端啟動時的初始化（`initializeSystemStartup`），含建立預設管理員、平台設定等任務；下游任務接在標註處。
 - hono-backend/：Hono 後端共用元件。
   - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
-  - libs/api/：`defineApiErrors`、`throwApiError`、`listApiErrorCodes`、`apiValidator`、`throwFieldValidationError`、`apiDocs`（`* as` 匯入：`errors`、`success`，route docs）、`createApiSuccessResponseData`。
+  - libs/api/：`defineApiErrors`、`throwApiError`、`listApiErrorCodes`、`apiValidator`、`throwFieldValidationError`、`apiDocs`（`* as` 匯入：`responses`，或分開的 `success`、`errors`，route docs）、`createApiSuccessResponseData`。
   - middlewares/：`locale()`、`cookieSession()`。
   - setups/：`setupHonoAppErrorHandling`；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods（`index` 加上要用的檔案各自 import 啟用，例如 `findByRouteIdOrThrowNotFoundError`、`assertUpdateIfNotModified`）。
   - types/：錯誤定義、cookie session 的型別（下游以 `declare module` 擴充 `CookieSessionData`）。
