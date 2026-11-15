@@ -16,8 +16,9 @@ export interface CookieSessionData {}
 
 export interface CookieSessionOptions {
     /**
-     * Base64-encoded 32-byte AES-256 keys: one key, an array, or a comma-separated string. The first encrypts; all are
-     * tried to decrypt, so keys can be rotated by adding a new first key and removing the old ones later.
+     * Secrets of at least 32 bytes (any string without commas, e.g. `openssl rand -base64 32`), each turned into an
+     * AES-256 key with HKDF-SHA256: one key, an array, or a comma-separated string. The first encrypts; all are tried
+     * to decrypt, so keys can be rotated by adding a new first key and removing the old ones later.
      */
     keys: Arrayable<string>;
 

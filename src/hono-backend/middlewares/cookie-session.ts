@@ -1,4 +1,5 @@
 import { Buffer } from 'node:buffer';
+import { hkdfSync } from 'node:crypto';
 
 import type {
     Context,
@@ -38,6 +39,8 @@ type StoredData = [number, PartialCookieSessionData];
 // Constants/Variables
 const authTagLength = 24;
 const ivLength = 16;
+const keyDerivationInfo = 'kcs:cookie-session';
+const minKeyByteLength = 32;
 
 // Functions
 
@@ -48,13 +51,16 @@ const ivLength = 16;
  * single-use values or revocation; use a server-side store for those.
  */
 export function cookieSession(options: CookieSessionOptions): MiddlewareHandler {
-    // Base64 never contains commas, so a comma-separated string (e.g. from an env variable) is a list of keys.
+    // A comma-separated string (e.g. from an env variable) is a list of keys, so keys cannot contain commas.
     const keys = [options.keys].flat().flatMap((value) => value.split(',')).map((key) => key.trim()).filter(Boolean);
     const ciphers = keys.map((key) => {
-        const keyBuffer = Buffer.from(key, 'base64');
-        if (keyBuffer.length !== 32) throw new Error('Cookie session keys must be base64-encoded 32-byte keys');
+        const secret = Buffer.from(key);
+        if (secret.length < minKeyByteLength) {
+            throw new Error(`Cookie session keys must be at least ${minKeyByteLength} bytes`);
+        }
+
         return new Gcm(
-            keyBuffer,
+            Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), keyDerivationInfo, 32)),
             {
                 authTag: 'base64',
                 decryptInput: 'base64',

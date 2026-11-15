@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { randomBytes } from 'node:crypto';
 
 import { delay } from 'es-toolkit';
@@ -174,9 +173,9 @@ describe.concurrent('cookie session', () => {
 
         expect(response.status).toBe(500);
         expect(() => cookieSession({
-            keys: Buffer.from('short').toString('base64'),
+            keys: 'x'.repeat(31),
             tokenHandler: createCookieTokenHandler(),
-        })).toThrow('32-byte');
+        })).toThrow('at least 32 bytes');
 
         expect(() => cookieSession({
             keys: [],
