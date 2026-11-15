@@ -80,7 +80,7 @@ export const platformIpAccessPolicyCheckReasonToLabelMap: ReadonlyRecord<
 > = {
     [PlatformIpAccessPolicyCheckReason.Allowed]: {
         'en': 'Passed the IP access check',
-        'zh-TW': '通過IP存取檢查',
+        'zh-TW': '通過 IP 存取檢查',
     },
     [PlatformIpAccessPolicyCheckReason.AllowlistMiss]: {
         'en': 'Not in the allowlist',
@@ -92,14 +92,14 @@ export const platformIpAccessPolicyCheckReasonToLabelMap: ReadonlyRecord<
     },
     [PlatformIpAccessPolicyCheckReason.Disabled]: {
         'en': 'IP access policies are disabled',
-        'zh-TW': 'IP存取規則已停用',
+        'zh-TW': 'IP 存取規則已停用',
     },
     [PlatformIpAccessPolicyCheckReason.InvalidIp]: {
         'en': 'Invalid source IP',
-        'zh-TW': '來源IP無效',
+        'zh-TW': '來源 IP 無效',
     },
     [PlatformIpAccessPolicyCheckReason.NoApplicablePolicy]: {
         'en': 'No applicable IP access policy',
-        'zh-TW': '沒有適用的IP存取規則',
+        'zh-TW': '沒有適用的 IP 存取規則',
     },
 };
