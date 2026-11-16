@@ -6,7 +6,6 @@ import type {
 } from '../constants/platform';
 import type { platformConfigVariants } from '../schemas/platform';
 
-import type { PlatformIpAccessPolicyData } from './data/platform';
 import type { IpAddressRange } from './ip';
 
 import type {
@@ -64,11 +63,6 @@ export type PlatformIpAccessPolicyTarget =
       principalType: null;
       scope: PlatformIpAccessPolicyScope;
   };
-
-export interface CachedPlatformIpAccessPolicySnapshot {
-    enabled: boolean;
-    policies: Array<Pick<PlatformIpAccessPolicyData, 'id' | 'ipEntries' | 'mode' | 'targets'>>;
-}
 
 export interface CompiledPlatformIpAccessPolicy {
     id: string;

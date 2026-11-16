@@ -1,3 +1,5 @@
+import { isIP } from 'node:net';
+
 import ipaddr from 'ipaddr.js';
 
 import {
@@ -7,38 +9,47 @@ import {
 } from '../../constants/platform';
 import type { PlatformIpAccessPolicyScope } from '../../constants/platform';
 import { PlatformIpAccessPolicyModel } from '../../models/platform/ip-access-policy';
-import * as lruStore from '../../stores/lru';
-import * as redisStore from '../../stores/redis';
 import type { AuthenticationSessionPrincipalType } from '../../types/authentication-session';
 import type { IpAddressRange } from '../../types/ip';
 import type {
-    CachedPlatformIpAccessPolicySnapshot,
     CompiledPlatformIpAccessPolicy,
     CompiledPlatformIpAccessPolicySnapshot,
     PlatformIpAccessPolicyCheckResult,
-    PlatformIpAccessPolicyTarget,
 } from '../../types/platform';
-import * as z from '../zod';
+import { VersionedCache } from '../redis/versioned-cache';
 
-import { getPlatformConfig } from './config';
+import {
+    getUncachedPlatformConfig,
+    platformConfigCache,
+} from './_internals/config';
 
-const ipAddressSchema = z.string().trim().pipe(z.union([
-    z.ipv4(),
-    z.ipv6(),
-]));
-
+// Constants/Variables
+const globalPlatformIpAccessPolicyTargetKey = 'global';
 const ipv4MappedIpv6AddressRange: IpAddressRange = {
     end: 0xFFFFFFFFFFFFn,
     start: 0xFFFF00000000n,
 };
 
-let pendingCompiledPlatformIpAccessPolicySnapshotLoad: Promise<CompiledPlatformIpAccessPolicySnapshot> | undefined;
+/**
+ * 規則開關存在 System 設定中，因此依賴該設定的版本號。
+ */
+const platformIpAccessPolicySnapshotCache = new VersionedCache({
+    dependsOn: [platformConfigCache.asDependency(PlatformConfigScope.System)],
+    failureTtlSeconds: 3,
+    load: loadCompiledPlatformIpAccessPolicySnapshot,
+    local: {
+        maxAgeSeconds: 60,
+        revalidateIntervalSeconds: 1,
+    },
+    name: 'platform:ipAccessPolicy:snapshot',
+});
 
+// Functions
 /**
  * 檢查所有適用且啟用的IP存取規則；任一黑名單命中或白名單未命中即拒絕。
  * scope／principalType 由呼叫端的路由提供，principalId 必須來自已驗證的身分。
  * 未提供 principalId 時不匹配指定帳號規則；身分識別後須再檢查。
- * 規則載入／快取操作失敗會拋錯，HTTP 回應由呼叫端決定。
+ * 規則載入／快取操作失敗會拋錯（失敗結果會短暫快取），HTTP 回應由呼叫端決定。
  */
 export async function checkPlatformIpAccessPolicy(
     ip: null | string | undefined,
@@ -54,68 +65,64 @@ export async function checkPlatformIpAccessPolicy(
         throw new Error('A principal ID requires a principal type');
     }
 
-    const platformIpAccessPolicySnapshot = await getCompiledPlatformIpAccessPolicySnapshot();
-    if (!platformIpAccessPolicySnapshot.enabled) {
+    const snapshot = await platformIpAccessPolicySnapshotCache.get();
+    if (!snapshot.enabled) {
         return {
             allowed: true,
             reason: PlatformIpAccessPolicyCheckReason.Disabled,
         };
     }
 
-    const targetKeys = [getPlatformIpAccessPolicyTargetKey(null)];
+    const targetKeys = [globalPlatformIpAccessPolicyTargetKey];
     if (scope !== undefined) {
         targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope));
         if (principalType !== undefined) {
             targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalType));
             if (principalId !== undefined) {
-                targetKeys.push(getPlatformIpAccessPolicyTargetKey(
-                    scope,
-                    principalType,
-                    principalId,
-                ));
+                targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalType, principalId));
             }
         }
     }
 
-    const applicablePlatformIpAccessPolicies = new Set<CompiledPlatformIpAccessPolicy>();
+    const applicablePolicies = new Set<CompiledPlatformIpAccessPolicy>();
     for (const key of targetKeys) {
-        const targetPlatformIpAccessPolicies = platformIpAccessPolicySnapshot
-            .targetKeyToPlatformIpAccessPoliciesMap
-            .get(key);
-
-        for (const platformIpAccessPolicy of targetPlatformIpAccessPolicies ?? []) {
-            applicablePlatformIpAccessPolicies.add(platformIpAccessPolicy);
+        for (const policy of snapshot.targetKeyToPlatformIpAccessPoliciesMap.get(key) ?? []) {
+            applicablePolicies.add(policy);
         }
     }
 
-    if (!applicablePlatformIpAccessPolicies.size) {
+    if (!applicablePolicies.size) {
         return {
             allowed: true,
             reason: PlatformIpAccessPolicyCheckReason.NoApplicablePolicy,
         };
     }
 
-    const parsedIp = await ipAddressSchema.safeParseAsync(ip);
-    if (!parsedIp.success) {
+    const address = parseIpAddress(ip);
+    if (!address) {
         return {
             allowed: false,
             reason: PlatformIpAccessPolicyCheckReason.InvalidIp,
         };
     }
 
-    const address = ipaddr.process(parsedIp.data);
     const value = getIpAddressValue(address);
     const version = address.kind();
-    for (const platformIpAccessPolicy of applicablePlatformIpAccessPolicies) {
-        const matches = matchesIpAddressRanges(value, platformIpAccessPolicy.ranges[version]);
-        const isBlacklist = platformIpAccessPolicy.mode === PlatformIpAccessPolicyMode.Blacklist;
-        if (isBlacklist ? matches : !matches) {
+    for (const policy of applicablePolicies) {
+        const matches = matchesIpAddressRanges(value, policy.ranges[version]);
+        if (policy.mode === PlatformIpAccessPolicyMode.Blacklist) {
+            if (matches) {
+                return {
+                    allowed: false,
+                    policyId: policy.id,
+                    reason: PlatformIpAccessPolicyCheckReason.BlacklistMatch,
+                };
+            }
+        } else if (!matches) {
             return {
                 allowed: false,
-                policyId: platformIpAccessPolicy.id,
-                reason: isBlacklist
-                    ? PlatformIpAccessPolicyCheckReason.BlacklistMatch
-                    : PlatformIpAccessPolicyCheckReason.AllowlistMiss,
+                policyId: policy.id,
+                reason: PlatformIpAccessPolicyCheckReason.AllowlistMiss,
             };
         }
     }
@@ -126,127 +133,11 @@ export async function checkPlatformIpAccessPolicy(
     };
 }
 
+/**
+ * 其他實例最多約 1 秒後套用。
+ */
 export async function clearPlatformIpAccessPolicyCache() {
-    lruStore.platform.compiledIpAccessPolicySnapshot.removeItem();
-    await redisStore.platform.ipAccessPolicySnapshot.removeItem();
-}
-
-function compilePlatformIpAccessPolicySnapshot(
-    platformIpAccessPolicySnapshot: CachedPlatformIpAccessPolicySnapshot,
-): CompiledPlatformIpAccessPolicySnapshot {
-    const targetKeyToPlatformIpAccessPoliciesMap = new Map<string, CompiledPlatformIpAccessPolicy[]>();
-    if (!platformIpAccessPolicySnapshot.enabled) {
-        return {
-            enabled: false,
-            targetKeyToPlatformIpAccessPoliciesMap,
-        };
-    }
-
-    for (const platformIpAccessPolicy of platformIpAccessPolicySnapshot.policies) {
-        if (
-            platformIpAccessPolicy.mode !== PlatformIpAccessPolicyMode.Allowlist
-            && platformIpAccessPolicy.mode !== PlatformIpAccessPolicyMode.Blacklist
-        ) throw new Error(`Invalid IP access policy mode: ${platformIpAccessPolicy.mode}`);
-
-        if (!platformIpAccessPolicy.ipEntries.length || !platformIpAccessPolicy.targets.length) {
-            throw new Error(`IP access policy ${platformIpAccessPolicy.id} requires IP entries and targets`);
-        }
-
-        const compiledPlatformIpAccessPolicy: CompiledPlatformIpAccessPolicy = {
-            id: platformIpAccessPolicy.id,
-            mode: platformIpAccessPolicy.mode,
-            ranges: {
-                ipv4: [],
-                ipv6: [],
-            },
-        };
-
-        for (const entry of platformIpAccessPolicy.ipEntries) {
-            const normalizedEntry = entry.trim();
-            const [address, prefix] = normalizedEntry.includes('/')
-                ? ipaddr.parseCIDR(normalizedEntry)
-                : [
-                    ipaddr.parse(normalizedEntry),
-                    normalizedEntry.includes(':') ? 128 : 32,
-                ] as const;
-
-            const version = address.kind();
-            const hostBits = BigInt((version === 'ipv4' ? 32 : 128) - prefix);
-            const start = getIpAddressValue(address) >> hostBits << hostBits;
-            const end = start + (1n << hostBits) - 1n;
-            compiledPlatformIpAccessPolicy.ranges[version].push({
-                end,
-                start,
-            });
-
-            // 保留原 IPv6 區間，並將與 IPv4-mapped 區段的交集映射為 IPv4 區間。
-            if (
-                version === 'ipv6'
-                && start <= ipv4MappedIpv6AddressRange.end
-                && end >= ipv4MappedIpv6AddressRange.start
-            ) {
-                compiledPlatformIpAccessPolicy.ranges.ipv4.push({
-                    end: (end < ipv4MappedIpv6AddressRange.end ? end : ipv4MappedIpv6AddressRange.end)
-                      - ipv4MappedIpv6AddressRange.start,
-                    start: (start > ipv4MappedIpv6AddressRange.start ? start : ipv4MappedIpv6AddressRange.start)
-                      - ipv4MappedIpv6AddressRange.start,
-                });
-            }
-        }
-
-        compiledPlatformIpAccessPolicy.ranges.ipv4 = mergeIpAddressRanges(compiledPlatformIpAccessPolicy.ranges.ipv4);
-        compiledPlatformIpAccessPolicy.ranges.ipv6 = mergeIpAddressRanges(compiledPlatformIpAccessPolicy.ranges.ipv6);
-        const targetKeys = new Set<string>();
-        for (const {
-            principalIds,
-            principalType,
-            scope,
-        } of platformIpAccessPolicy.targets) {
-            if (scope === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(null));
-            else if (principalType === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
-            else if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType));
-            else {
-                if (!principalIds.length) {
-                    throw new Error(`Empty principal IDs in IP access policy ${platformIpAccessPolicy.id}`);
-                }
-
-                for (const principalId of principalIds) {
-                    targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType, principalId));
-                }
-            }
-        }
-
-        for (const key of targetKeys) {
-            let targetPlatformIpAccessPolicies = targetKeyToPlatformIpAccessPoliciesMap.get(key);
-            if (!targetPlatformIpAccessPolicies) {
-                targetKeyToPlatformIpAccessPoliciesMap.set(key, targetPlatformIpAccessPolicies = []);
-            }
-
-            targetPlatformIpAccessPolicies.push(compiledPlatformIpAccessPolicy);
-        }
-    }
-
-    return {
-        enabled: true,
-        targetKeyToPlatformIpAccessPoliciesMap,
-    };
-}
-
-async function getCompiledPlatformIpAccessPolicySnapshot() {
-    const cachedCompiledPlatformIpAccessPolicySnapshot = lruStore.platform.compiledIpAccessPolicySnapshot.getItem();
-
-    if (cachedCompiledPlatformIpAccessPolicySnapshot) return cachedCompiledPlatformIpAccessPolicySnapshot;
-    if (!pendingCompiledPlatformIpAccessPolicySnapshotLoad) {
-        pendingCompiledPlatformIpAccessPolicySnapshotLoad = loadCompiledPlatformIpAccessPolicySnapshot()
-            .then((platformIpAccessPolicySnapshot) => {
-                lruStore.platform.compiledIpAccessPolicySnapshot.setItemWithTtl(15000, platformIpAccessPolicySnapshot);
-
-                return platformIpAccessPolicySnapshot;
-            })
-            .finally(() => pendingCompiledPlatformIpAccessPolicySnapshotLoad = undefined);
-    }
-
-    return await pendingCompiledPlatformIpAccessPolicySnapshotLoad;
+    await platformIpAccessPolicySnapshotCache.invalidate();
 }
 
 function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {
@@ -256,64 +147,116 @@ function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {
 }
 
 function getPlatformIpAccessPolicyTargetKey(
-    scope: PlatformIpAccessPolicyTarget['scope'],
-    principalType?: AuthenticationSessionPrincipalType | null,
+    scope: PlatformIpAccessPolicyScope,
+    principalType?: AuthenticationSessionPrincipalType,
     principalId?: string,
 ) {
-    if (scope === null) return 'global';
-    const target = [
-        scope,
-        principalType,
-        principalId,
-    ];
-
-    return JSON.stringify(target.slice(0, principalType === undefined ? 1 : principalId === undefined ? 2 : 3));
+    if (principalType === undefined) return `${scope}`;
+    if (principalId === undefined) return `${scope}:${principalType}`;
+    return `${scope}:${principalType}:${principalId}`;
 }
 
-async function loadCompiledPlatformIpAccessPolicySnapshot() {
-    let platformIpAccessPolicySnapshot = await redisStore.platform.ipAccessPolicySnapshot.getItem();
-    if (platformIpAccessPolicySnapshot !== null && platformIpAccessPolicySnapshot !== undefined) {
-        return compilePlatformIpAccessPolicySnapshot(platformIpAccessPolicySnapshot);
+/**
+ * 直接讀取資料庫中的 System 設定，避免拿到本機尚未重新確認的設定快取。
+ */
+async function loadCompiledPlatformIpAccessPolicySnapshot(): Promise<CompiledPlatformIpAccessPolicySnapshot> {
+    const targetKeyToPlatformIpAccessPoliciesMap = new Map<string, CompiledPlatformIpAccessPolicy[]>();
+    const platformConfig = await getUncachedPlatformConfig(PlatformConfigScope.System);
+    if (!platformConfig.ipAccessPolicy.enabled) {
+        return {
+            enabled: false,
+            targetKeyToPlatformIpAccessPoliciesMap,
+        };
     }
 
-    const platformConfig = await getPlatformConfig(PlatformConfigScope.System);
-    platformIpAccessPolicySnapshot = {
-        enabled: platformConfig.ipAccessPolicy.enabled,
-        policies: [],
+    const policies = await PlatformIpAccessPolicyModel
+        .find({ enabled: true })
+        .select('_id ipEntries mode targets')
+        .lean();
+
+    for (const policy of policies) {
+        const id = policy._id.toHexString();
+        if (!policy.ipEntries.length || !policy.targets.length) {
+            throw new Error(`IP access policy ${id} requires IP entries and targets`);
+        }
+
+        const ranges: CompiledPlatformIpAccessPolicy['ranges'] = {
+            ipv4: [],
+            ipv6: [],
+        };
+
+        for (const entry of policy.ipEntries) {
+            const [address, prefix] = entry.includes('/')
+                ? ipaddr.parseCIDR(entry)
+                : [
+                    ipaddr.parse(entry),
+                    entry.includes(':') ? 128 : 32,
+                ] as const;
+
+            const version = address.kind();
+            const hostBits = BigInt((version === 'ipv4' ? 32 : 128) - prefix);
+            const start = getIpAddressValue(address) >> hostBits << hostBits;
+            const end = start + (1n << hostBits) - 1n;
+            ranges[version].push({
+                end,
+                start,
+            });
+
+            // 檢查時 IPv4-mapped IPv6 位址會轉為 IPv4，因此將 IPv6 區間與 IPv4-mapped 區段的交集另存為 IPv4 區間。
+            if (version === 'ipv6' && start <= ipv4MappedIpv6AddressRange.end && end >= ipv4MappedIpv6AddressRange.start) {
+                const mappedStart = start > ipv4MappedIpv6AddressRange.start ? start : ipv4MappedIpv6AddressRange.start;
+                const mappedEnd = end < ipv4MappedIpv6AddressRange.end ? end : ipv4MappedIpv6AddressRange.end;
+                ranges.ipv4.push({
+                    end: mappedEnd - ipv4MappedIpv6AddressRange.start,
+                    start: mappedStart - ipv4MappedIpv6AddressRange.start,
+                });
+            }
+        }
+
+        const compiledPolicy: CompiledPlatformIpAccessPolicy = {
+            id,
+            mode: policy.mode,
+            ranges: {
+                ipv4: mergeIpAddressRanges(ranges.ipv4),
+                ipv6: mergeIpAddressRanges(ranges.ipv6),
+            },
+        };
+
+        const targetKeys = new Set<string>();
+        for (const {
+            principalIds,
+            principalType,
+            scope,
+        } of policy.targets) {
+            if (scope === null) targetKeys.add(globalPlatformIpAccessPolicyTargetKey);
+            else if (principalType === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
+            else if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType));
+            else {
+                if (!principalIds.length) throw new Error(`Empty principal IDs in IP access policy ${id}`);
+                for (const principalId of principalIds) {
+                    targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType, principalId.toHexString()));
+                }
+            }
+        }
+
+        for (const key of targetKeys) {
+            const targetPolicies = targetKeyToPlatformIpAccessPoliciesMap.get(key);
+            if (targetPolicies) targetPolicies.push(compiledPolicy);
+            else targetKeyToPlatformIpAccessPoliciesMap.set(key, [compiledPolicy]);
+        }
+    }
+
+    return {
+        enabled: true,
+        targetKeyToPlatformIpAccessPoliciesMap,
     };
-
-    if (platformIpAccessPolicySnapshot.enabled) {
-        const platformIpAccessPolicies = await PlatformIpAccessPolicyModel
-            .find({ enabled: true })
-            .select('_id ipEntries mode targets')
-            .lean();
-
-        platformIpAccessPolicySnapshot.policies = platformIpAccessPolicies.map((platformIpAccessPolicy) => ({
-            id: platformIpAccessPolicy._id.toHexString(),
-            ipEntries: platformIpAccessPolicy.ipEntries,
-            mode: platformIpAccessPolicy.mode,
-            targets: platformIpAccessPolicy.targets.map((target) => ({
-                principalIds: target.principalIds?.map((id) => id.toHexString()) ?? null,
-                principalType: target.principalType,
-                scope: target.scope,
-            })) as PlatformIpAccessPolicyTarget[],
-        }));
-    }
-
-    const compiledPlatformIpAccessPolicySnapshot = compilePlatformIpAccessPolicySnapshot(
-        platformIpAccessPolicySnapshot,
-    );
-
-    await redisStore.platform.ipAccessPolicySnapshot.setItemWithTtl(60, platformIpAccessPolicySnapshot);
-
-    return compiledPlatformIpAccessPolicySnapshot;
 }
 
 function matchesIpAddressRanges(value: bigint, ranges: readonly IpAddressRange[]) {
     let low = 0;
     let high = ranges.length - 1;
     while (low <= high) {
-        const middle = Math.floor((low + high) / 2);
+        const middle = (low + high) >>> 1;
         const range = ranges[middle]!;
         if (value < range.start) high = middle - 1;
         else if (value > range.end) low = middle + 1;
@@ -334,4 +277,15 @@ function mergeIpAddressRanges(ranges: IpAddressRange[]) {
     }
 
     return merged;
+}
+
+/**
+ * 僅接受標準寫法（node:net 的嚴格檢查），拒絕帶 zone ID 的 IPv6；IPv4-mapped IPv6 會轉為 IPv4。
+ */
+function parseIpAddress(ip: null | string | undefined) {
+    if (!ip) return;
+    switch (isIP(ip)) {
+        case 4: return ipaddr.IPv4.parse(ip);
+        case 6: return ip.includes('%') ? undefined : ipaddr.process(ip);
+    }
 }
