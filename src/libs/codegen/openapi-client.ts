@@ -11,9 +11,9 @@ interface GenerateOpenApiClientOptions {
     additionalArgs?: string[];
 
     /**
-     * URL or file path of the OpenAPI document, e.g. the backend's development route `/docs/openapi.json`.
+     * Base URL of the running development backend.
      */
-    inputSpec: string;
+    apiBaseUrl: string;
 
     /**
      * Directory of the generated client; it is removed and regenerated.
@@ -31,8 +31,8 @@ const templateDirPath = new Path(import.meta.dirname, 'templates/openapi-client'
  * extend `OpenApiClientBase` (`ProfileApi.use()`) and type each call as an `ApiClientPromise` of the route's success
  * and documented error responses, since request failures resolve instead of rejecting.
  *
- * Needs `@openapitools/openapi-generator-cli` installed in the current project and Java; the generator version is
- * pinned by the templates' `openapitools.json`.
+ * Needs the development-only backend route `GET /docs/openapi.json`, `@openapitools/openapi-generator-cli` installed in
+ * the current project and Java; the generator version is pinned by the templates' `openapitools.json`.
  */
 export async function generateOpenApiClient(options: GenerateOpenApiClientOptions) {
     const outputDirPath = new Path(options.outputDir);
@@ -52,7 +52,7 @@ export async function generateOpenApiClient(options: GenerateOpenApiClientOption
         '-g',
         'typescript-axios',
         '-i',
-        options.inputSpec,
+        `${options.apiBaseUrl}/docs/openapi.json`,
         '-o',
         outputDirPath.toString(),
         '-t',
