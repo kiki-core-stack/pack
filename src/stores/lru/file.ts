@@ -1,13 +1,11 @@
 import { createLruKeyedStore } from '@kikiutils/shared/storages/lru/keyed-store';
-import type { Types } from 'mongoose';
 
+import type { File } from '../../models/file';
 import { lruCache } from '../../storages/lru';
-import type { FileDocumentData } from '../../types/data/file';
 
-export const documentData = /* @__PURE__ */ createLruKeyedStore<FileDocumentData>(lruCache)(
-    (id: string | Types.ObjectId, additionalKey?: string) => {
-        let key = `file:documentData:${id.toString()}`;
-        if (additionalKey) key += `:${additionalKey}`;
-        return key;
-    },
+/**
+ * 依 _id 與序列化後的 projection 存放 File 文件的 toObject() 結果。
+ */
+export const document = /* @__PURE__ */ createLruKeyedStore<Partial<File>>(lruCache)(
+    (id: string, projectionKey: string) => `file:document:${id}:${projectionKey}`,
 );

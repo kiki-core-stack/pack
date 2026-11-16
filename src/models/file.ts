@@ -5,8 +5,8 @@ import type {
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
+import { isPlainObject } from 'es-toolkit';
 import {
-    Document,
     Schema,
     Types,
 } from 'mongoose';
@@ -21,13 +21,13 @@ import {
 
 import { FileStorageProvider } from '../constants/file';
 import * as lruStore from '../stores/lru';
-import * as redisStore from '../stores/redis';
 import type { SmartDataToBaseMongooseDocType } from '../types/data';
 import type { FileData } from '../types/data/file';
 
 export type File = SmartDataToBaseMongooseDocType<FileData>;
 export type FileDocument = MongooseHydratedDocument<File>;
 type FileModel = BaseMongoosePaginateModel<File>;
+type FileQuery = Query<FileDocument | FileDocument[] | null, File>;
 
 const schema = new Schema<File, FileModel>(
     {
@@ -43,118 +43,68 @@ const schema = new Schema<File, FileModel>(
     },
 );
 
-function isEligibleIdQuery(
-    query: Query<FileDocument[], File> | Query<FileDocument | null, File>,
-    mode: 'in' | 'single',
-) {
+const cacheHitQueries = new WeakSet<FileQuery>();
+
+// Functions
+
+/**
+ * 只快取單純以 _id（findOne）或 _id.$in（find）查詢的非 lean 查詢；projection 排除 _id 時不快取。
+ */
+function getCacheableFileIds(query: FileQuery, op: 'find' | 'findOne') {
+    if (query.mongooseOptions().lean) return;
+    const projection = query.projection();
+    if (projection?._id === 0 || projection?._id === false) return;
     const filter = query.getFilter();
-    if (objectKeys(filter).length !== 1 || !filter._id) return false;
-    if (mode === 'single') return typeof filter._id === 'string' || filter._id instanceof Types.ObjectId;
-    return (
-        typeof filter._id === 'object'
-        && objectKeys(filter._id).length === 1
-        && Array.isArray(filter._id.$in)
-    );
+    if (objectKeys(filter).length !== 1) return;
+    let ids: unknown[];
+    if (op === 'findOne') ids = [filter._id];
+    else if (isPlainObject(filter._id) && objectKeys(filter._id).length === 1 && Array.isArray(filter._id.$in)) {
+        ids = filter._id.$in;
+    } else return;
+
+    if (!ids.length || !ids.every((id) => typeof id === 'string' || id instanceof Types.ObjectId)) return;
+    return [...new Set(ids.map(String))];
 }
 
-function serializeProjection(projection?: ProjectionFields<any>) {
-    if (!projection || !objectKeys(projection).length) return;
+function serializeProjection(projection: null | ProjectionFields<File> | undefined) {
+    if (!projection) return '';
     return objectEntries(projection).map(([key, value]) => `${key}:${value}`).sort().join(',');
 }
 
-// find
-schema.post<Query<FileDocument[], File>>(
+/**
+ * File 文件不可變，因此以本機 LRU 快取，不需要失效機制。
+ * Mongoose 沒有讓 query pre hook 回傳結果的公開 API（skipMiddlewareFunction 不適用於 query hook），
+ * 命中時改寫內部的 _find／_findOne 略過查詢；已於 Mongoose 9.12.1 驗證，升級時需重新確認。
+ */
+for (const op of [
     'find',
-    async function (result) {
-        if (this._mongooseOptions.isFromCache) return;
-        if (!isEligibleIdQuery(this, 'in')) return;
-        const projectionKey = serializeProjection(this.projection());
-        await Promise.all(
-            result.map(async (item) => {
-                const fileDocumentData = {
-                    ...item.toObject(),
-                    _id: item._id.toHexString(),
-                    createdAt: item.createdAt?.toISOString(),
-                };
-
-                lruStore.file.documentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
-                return await redisStore.file.documentData.setItemWithTtl(
-                    3600,
-                    fileDocumentData,
-                    fileDocumentData._id,
-                    projectionKey,
-                );
-            }),
-        );
-    },
-);
-
-schema.pre<Query<FileDocument[], File>>(
-    'find',
-    async function () {
-        const filter = this.getFilter();
-        if (!isEligibleIdQuery(this, 'in')) return;
-        const projectionKey = serializeProjection(this.projection());
-        const ids = (filter._id.$in as Array<string | Types.ObjectId>).map((id) => {
-            if (id instanceof Types.ObjectId) return id.toHexString();
-            return id;
-        });
-
-        const allFileDocumentData = await Promise.all(
-            ids.map(
-                async (id) =>
-                    await (
-                        lruStore.file.documentData.getItem(id, projectionKey)
-                        || redisStore.file.documentData.getItem(id, projectionKey)
-                    ),
-            ),
-        );
-
-        if (!allFileDocumentData.includes(null)) {
-            this._mongooseOptions.isFromCache = true;
-            const Model = this.model;
-            (this as any)._find = function () {
-                return allFileDocumentData.map((fileDocumentData) => new Model(fileDocumentData));
-            };
-        }
-    },
-);
-
-// fineOne
-schema.post<Query<FileDocument | null, File>>(
     'findOne',
-    async function (result) {
-        if (this._mongooseOptions.isFromCache) return;
-        if (!result || !(result instanceof Document)) return;
-        if (!isEligibleIdQuery(this, 'single')) return;
-        const projectionKey = serializeProjection(this.projection());
-        const fileDocumentData = {
-            ...result.toObject(),
-            _id: result._id.toHexString(),
-            createdAt: result.createdAt?.toISOString(),
-        };
+] as const) {
+    schema.pre<FileQuery>(
+        op,
+        function () {
+            const ids = getCacheableFileIds(this, op);
+            if (!ids) return;
+            const projection = this.projection();
+            const projectionKey = serializeProjection(projection);
+            const allFileData = ids.map((id) => lruStore.file.document.getItem(id, projectionKey));
+            if (allFileData.some((fileData) => !fileData)) return;
+            const files = allFileData.map((fileData) => this.model.hydrate(fileData, projection));
+            cacheHitQueries.add(this);
+            (this as any)[`_${op}`] = async () => op === 'find' ? files : files[0];
+        },
+    );
 
-        lruStore.file.documentData.setItem(fileDocumentData, fileDocumentData._id, projectionKey);
-        await redisStore.file.documentData.setItemWithTtl(3600, fileDocumentData, fileDocumentData._id, projectionKey);
-    },
-);
-
-schema.pre<Query<FileDocument | null, File>>(
-    'findOne',
-    async function () {
-        const filter = this.getFilter();
-        if (!isEligibleIdQuery(this, 'single')) return;
-        const projectionKey = serializeProjection(this.projection());
-        let fileDocumentData = lruStore.file.documentData.getItem(filter._id, projectionKey);
-        if (!fileDocumentData) fileDocumentData = await redisStore.file.documentData.getItem(filter._id, projectionKey);
-        if (fileDocumentData) {
-            this._mongooseOptions.isFromCache = true;
-            const Model = this.model;
-            (this as any)._findOne = function () {
-                return new Model(fileDocumentData);
-            };
-        }
-    },
-);
+    schema.post<FileQuery>(
+        op,
+        function (result: FileDocument | FileDocument[] | null) {
+            if (!result || cacheHitQueries.has(this) || !getCacheableFileIds(this, op)) return;
+            const projectionKey = serializeProjection(this.projection());
+            for (const file of Array.isArray(result) ? result : [result]) {
+                lruStore.file.document.setItem(file.toObject(), file._id.toHexString(), projectionKey);
+            }
+        },
+    );
+}
 
 export const FileModel = buildMongooseModel<File, FileModel>('file.files', 'File', schema);
