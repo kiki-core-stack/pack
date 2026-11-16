@@ -1,0 +1,8 @@
+/* tslint:disable */
+/* eslint-disable */
+{{>licenseInfo}}
+
+// The API classes only, e.g. for auto-imports; models and the other generated exports stay in `./api`.
+export {
+{{#apiInfo}}{{#apis}}{{#operations}}    {{classname}},
+{{/operations}}{{/apis}}{{/apiInfo}}} from './api{{importFileExtension}}';

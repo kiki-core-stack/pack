@@ -1,0 +1,5 @@
+# openapi-generator config (`-c`): extra supporting files rendered from this template directory.
+files:
+  apiClasses.mustache:
+    destinationFilename: api-classes.ts
+    templateType: SupportingFiles

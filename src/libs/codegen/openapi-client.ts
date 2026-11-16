@@ -29,7 +29,8 @@ const templateDirPath = new Path(import.meta.dirname, 'templates/openapi-client'
 /**
  * Generates a `typescript-axios` client from an OpenAPI document with the pack's templates, which make every API class
  * extend `OpenApiClientBase` (`ProfileApi.use()`) and type each call as an `ApiClientPromise` of the route's success
- * and documented error responses, since request failures resolve instead of rejecting.
+ * and documented error responses, since request failures resolve instead of rejecting. `api-classes.ts` re-exports only
+ * the API classes, e.g. for auto-imports.
  *
  * Needs the development-only backend route `GET /docs/openapi.json`, `@openapitools/openapi-generator-cli` installed in
  * the current project and Java; the generator version is pinned by the templates' `openapitools.json`.
@@ -49,6 +50,8 @@ export async function generateOpenApiClient(options: GenerateOpenApiClientOption
         '--openapitools',
         templateDirPath.join('openapitools.json').toString(),
         'generate',
+        '-c',
+        templateDirPath.join('config.yaml').toString(),
         '-g',
         'typescript-axios',
         '-i',

@@ -41,7 +41,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - zod/：`z` 加上專案擴充（`objectId`、`strictIsoDateString`、`enumWithMeta`、`blankToUndefined`、`i18nIssue`、`discriminatedMap` 等）；`backend/` 另含檔案上傳的擴充。
   - i18n.ts：`resolveLocale(acceptLanguage)`。
   - permission.ts：`definePermissions`、`hasPermission`、`expandPermissionRequirements`。
-  - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板與固定的 generator 版本。
+  - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板、generator 設定（`config.yaml`，額外產生 `api-classes.ts`）與固定的 generator 版本。
   - api-client/：前端 API 呼叫：`toApiClientFailureResponse`（攔截器把失敗轉為 envelope 回應）、`OpenApiClientBase`／`configureOpenApiClient`（產生的 API 類別以 `XxxApi.use()` 取得實例）。
   - authentication-session/：登入 session 與 QR Code 登入（Redis）。
   - 其餘：email／sms 發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
@@ -103,7 +103,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 | --- | --- | --- |
 | `generateApiErrorCodeFile` | `GET /api/public/api-error-code/list` | 錯誤碼清單與 `ApiErrorCode` 型別 |
 | `generateManagementPermissionFile` | `GET /api/<type>/<type>/permission/list` | 群組、key、型別、各語系名稱、依賴表 |
-| `generateOpenApiClient` | `GET /docs/openapi.json` | typescript-axios 的 API client：類別繼承 `OpenApiClientBase`，每個呼叫的型別為成功與文件列出錯誤的 `ApiClientPromise`；需在專案安裝 `@openapitools/openapi-generator-cli` 與 Java |
+| `generateOpenApiClient` | `GET /docs/openapi.json` | typescript-axios 的 API client：類別繼承 `OpenApiClientBase`，每個呼叫的型別為成功與文件列出錯誤的 `ApiClientPromise`；另產生只匯出 API 類別的 `api-classes.ts`（供 auto-import 等使用）；需在專案安裝 `@openapitools/openapi-generator-cli` 與 Java |
 
 ### enum 數值
 
