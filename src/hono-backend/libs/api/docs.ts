@@ -1,7 +1,15 @@
+import { upperFirst } from 'es-toolkit';
 import * as z from 'zod';
 
 import { defaultLocale } from '../../../constants/i18n';
 import type { ApiErrorDefinition } from '../../types/api';
+
+// Constants
+
+// Schemas with a meta `id` become shared OpenAPI components, so each error and the data-less success response are
+// documented (and generated into client types) once instead of inline in every route.
+const apiErrorResponseSchemas = new WeakMap<ApiErrorDefinition, z.ZodObject>();
+const dataLessSuccessResponseSchema = z.object({ success: z.literal(true) }).meta({ id: 'ApiSuccessResponse' });
 
 // Functions
 /**
@@ -72,23 +80,35 @@ export function responses(...args: Array<ApiErrorDefinition | z.ZodType>) {
  * ```
  */
 export function success<D extends z.ZodType>(dataSchema?: D) {
+    if (!dataSchema) return dataLessSuccessResponseSchema;
     return z.object({
-        ...dataSchema ? { data: dataSchema } : {},
+        data: dataSchema,
         success: z.literal(true),
     });
 }
 
+/**
+ * The response schema of an API error, created once per definition as the component `<Code>ApiError` (the suffix keeps
+ * it apart from other component ids such as enums); codes are unique across a backend's errors.
+ */
 function toApiErrorResponseSchema(definition: ApiErrorDefinition) {
-    return z
-        .object({
-            errorCode: z.literal(definition.code),
-            ...definition.errorDataSchema ? { errorData: definition.errorDataSchema } : {},
-            message: z.string(),
-            requestId: z.string().optional(),
-            success: z.literal(false),
-        })
-        .meta({
-            description: definition.message[defaultLocale],
-            title: definition.code,
-        });
+    let schema = apiErrorResponseSchemas.get(definition);
+    if (!schema) {
+        schema = z
+            .object({
+                errorCode: z.literal(definition.code),
+                ...definition.errorDataSchema ? { errorData: definition.errorDataSchema } : {},
+                message: z.string(),
+                requestId: z.string().optional(),
+                success: z.literal(false),
+            })
+            .meta({
+                description: definition.message[defaultLocale],
+                id: `${upperFirst(definition.code)}ApiError`,
+            });
+
+        apiErrorResponseSchemas.set(definition, schema);
+    }
+
+    return schema;
 }
