@@ -42,25 +42,16 @@ export type PlatformIpAccessPolicyCheckResult =
   };
 
 /**
- * 同一目標內的條件為 AND，不同目標之間為 OR；null 表示不限制。
+ * scope 為 null 表示全域；principalIds 為 null 表示該入口的所有請求，指定帳號時必須為非空陣列。
+ * 帳號所屬的 model 由 scope 決定（見 model 的 scope 對應表）。
  */
 export type PlatformIpAccessPolicyTarget =
   | {
-      /**
-       * null 表示該身分類型的所有帳號；指定帳號時必須為非空陣列。
-       */
-      principalIds: null | string[];
-      principalType: 'admin';
-      scope: PlatformIpAccessPolicyScope.AdminManagement;
-  }
-  | {
       principalIds: null;
-      principalType: null;
       scope: null;
   }
   | {
-      principalIds: null;
-      principalType: null;
+      principalIds: null | string[];
       scope: PlatformIpAccessPolicyScope;
   };
 

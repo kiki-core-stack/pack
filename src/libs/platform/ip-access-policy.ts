@@ -9,7 +9,6 @@ import {
 } from '../../constants/platform';
 import type { PlatformIpAccessPolicyScope } from '../../constants/platform';
 import { PlatformIpAccessPolicyModel } from '../../models/platform/ip-access-policy';
-import type { AuthenticationSessionPrincipalType } from '../../types/authentication-session';
 import type { IpAddressRange } from '../../types/ip';
 import type {
     CompiledPlatformIpAccessPolicy,
@@ -47,22 +46,17 @@ const platformIpAccessPolicySnapshotCache = new VersionedCache({
 // Functions
 /**
  * 檢查所有適用且啟用的IP存取規則；任一黑名單命中或白名單未命中即拒絕。
- * scope／principalType 由呼叫端的路由提供，principalId 必須來自已驗證的身分。
+ * scope 由呼叫端的路由提供，principalId 必須來自該入口已驗證的身分。
  * 未提供 principalId 時不匹配指定帳號規則；身分識別後須再檢查。
  * 規則載入／快取操作失敗會拋錯（失敗結果會短暫快取），HTTP 回應由呼叫端決定。
  */
 export async function checkPlatformIpAccessPolicy(
     ip: null | string | undefined,
     scope?: PlatformIpAccessPolicyScope,
-    principalType?: AuthenticationSessionPrincipalType,
     principalId?: string,
 ): Promise<PlatformIpAccessPolicyCheckResult> {
-    if (principalType !== undefined && scope === undefined) {
-        throw new Error('A principal type requires an IP access policy scope');
-    }
-
-    if (principalId !== undefined && principalType === undefined) {
-        throw new Error('A principal ID requires a principal type');
+    if (principalId !== undefined && scope === undefined) {
+        throw new Error('A principal ID requires an IP access policy scope');
     }
 
     const snapshot = await platformIpAccessPolicySnapshotCache.get();
@@ -76,12 +70,7 @@ export async function checkPlatformIpAccessPolicy(
     const targetKeys = [globalPlatformIpAccessPolicyTargetKey];
     if (scope !== undefined) {
         targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope));
-        if (principalType !== undefined) {
-            targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalType));
-            if (principalId !== undefined) {
-                targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalType, principalId));
-            }
-        }
+        if (principalId !== undefined) targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalId));
     }
 
     const applicablePolicies = new Set<CompiledPlatformIpAccessPolicy>();
@@ -146,14 +135,8 @@ function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {
     return value;
 }
 
-function getPlatformIpAccessPolicyTargetKey(
-    scope: PlatformIpAccessPolicyScope,
-    principalType?: AuthenticationSessionPrincipalType,
-    principalId?: string,
-) {
-    if (principalType === undefined) return `${scope}`;
-    if (principalId === undefined) return `${scope}:${principalType}`;
-    return `${scope}:${principalType}:${principalId}`;
+function getPlatformIpAccessPolicyTargetKey(scope: PlatformIpAccessPolicyScope, principalId?: string) {
+    return principalId === undefined ? `${scope}` : `${scope}:${principalId}`;
 }
 
 /**
@@ -223,18 +206,15 @@ async function loadCompiledPlatformIpAccessPolicySnapshot(): Promise<CompiledPla
         };
 
         const targetKeys = new Set<string>();
-        for (const {
-            principalIds,
-            principalType,
-            scope,
-        } of policy.targets) {
-            if (scope === null) targetKeys.add(globalPlatformIpAccessPolicyTargetKey);
-            else if (principalType === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
-            else if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType));
+        for (const { principalIds, scope } of policy.targets) {
+            if (scope === null) {
+                if (principalIds !== null) throw new Error(`Principal IDs without scope in IP access policy ${id}`);
+                targetKeys.add(globalPlatformIpAccessPolicyTargetKey);
+            } else if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
             else {
                 if (!principalIds.length) throw new Error(`Empty principal IDs in IP access policy ${id}`);
                 for (const principalId of principalIds) {
-                    targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalType, principalId.toHexString()));
+                    targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalId.toHexString()));
                 }
             }
         }
