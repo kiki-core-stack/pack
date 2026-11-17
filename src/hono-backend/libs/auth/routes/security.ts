@@ -269,12 +269,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
         revokeOtherSessions: defineAuthRoute(
             {},
             async (ctx: Context) => {
-                setAuthSessionCookie(
-                    ctx,
-                    realm,
-                    await revokeOtherAuthSessions(realm, getSession(ctx), getRequest(ctx)),
-                );
-
+                await revokeOtherAuthSessions(realm, getSession(ctx), getRequest(ctx));
                 return createApiSuccessResponse(ctx);
             },
         ),

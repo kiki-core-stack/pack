@@ -114,7 +114,7 @@ export function createAuthManagementRoutes(
             {},
             async (ctx: Context) => {
                 const principalId = await getTargetPrincipalId(ctx);
-                const { sessionIds } = await revokeAllAuthSessions(realm, principalId);
+                const sessionIds = await revokeAllAuthSessions(realm, principalId);
                 await recordAuthEvent(
                     realm,
                     {

@@ -279,7 +279,7 @@ export async function readAuthSessionGeneration(realm: AuthRealm<any>, principal
 
 /**
  * 踢除帳號的全部工作階段：世代計數加一（單一原子指令）後，世代不符的工作階段一律無效，
- * 不會漏掉同時建立中的工作階段；接著清除上一個世代的工作階段與索引。回傳新的世代與被踢除的工作階段 ID。
+ * 不會漏掉同時建立中的工作階段；接著清除上一個世代的工作階段與索引。回傳被踢除的工作階段 ID。
  */
 export async function revokeAllAuthSessions(realm: AuthRealm<any>, principalId: string) {
     const generation = await redisClient.incr(toSessionGenerationKey(realm, principalId));
@@ -291,62 +291,57 @@ export async function revokeAllAuthSessions(realm: AuthRealm<any>, principalId: 
     );
 
     await notifySessionsRevoked(realm, principalId, sessionIds);
-    return {
-        generation,
-        sessionIds,
-    };
+    return sessionIds;
 }
 
 /**
  * 踢除單一工作階段；回傳是否確實刪除了一筆。
+ *
+ * 依序刪除、通知、清理索引：索引殘留的 ID 會在列出時清掉，不應擋住通知。
  */
 export async function revokeAuthSession(realm: AuthRealm<any>, principalId: string, sessionId: string) {
     if (!principalIdPattern.test(principalId) || !tokenPartPattern.test(sessionId)) return false;
     const generation = await readAuthSessionGeneration(realm, principalId);
-    const [deletedCount] = await Promise.all([
-        redisClient.del(toSessionKey(realm, principalId, sessionId)),
-        redisClient.srem(toPrincipalSessionsKey(realm, principalId, generation), sessionId),
-    ]);
-
-    if (deletedCount !== 1) return false;
-    await notifySessionsRevoked(realm, principalId, [sessionId]);
-    return true;
+    const deletedCount = await redisClient.del(toSessionKey(realm, principalId, sessionId));
+    if (deletedCount === 1) await notifySessionsRevoked(realm, principalId, [sessionId]);
+    await redisClient.srem(toPrincipalSessionsKey(realm, principalId, generation), sessionId);
+    return deletedCount === 1;
 }
 
 /**
- * 踢除其他全部工作階段（踢除其他裝置）：全部踢除後為目前裝置換發新的工作階段。
+ * 踢除其他全部工作階段（踢除其他裝置）：目前的工作階段原封不動，不升世代也不換發，
+ * 綁在它上面的長連線因此不受影響。
  *
- * 換發以「成功刪除來源工作階段」作為唯一的放行條件：來源若已被踢除（單獨踢除或另一次全部踢除），
- * 拋出 `sessionInvalid`，不會替已被踢除的裝置換發。新工作階段固定建立在「這次踢除產生的世代」，
- * 且該世代必須正好是來源的下一個；換發期間又發生全部踢除時，新工作階段的世代即過期而無效。
+ * 對象取自「目前工作階段所屬世代」的索引，不採用當下最新的世代：該世代已被全部踢除時索引已不存在，
+ * 目前的工作階段不在其中，拋出 `sessionInvalid`，也不會動到之後世代的工作階段。
+ * 讀取索引之後才建立的工作階段不在對象內。通知的是踢除的對象，其中可能包含已過期或已被別的請求刪除者；
+ * 事件的 `count` 則是實際刪除的筆數。
  */
 export async function revokeOtherAuthSessions(realm: AuthRealm<any>, session: AuthSession, request: AuthRequestInfo) {
-    if (!await revokeAuthSession(realm, session.principalId, session.id)) throw new AuthError('sessionInvalid');
-    const { generation, sessionIds } = await revokeAllAuthSessions(realm, session.principalId);
-    if (generation !== session.generation + 1) throw new AuthError('sessionInvalid');
-    const created = await createAuthSession(
-        realm,
-        {
-            approvedBySessionId: session.approvedBySessionId,
-            factors: session.factors,
-            generation,
-            principalId: session.principalId,
-            request,
-        },
-    );
+    const principalSessionsKey = toPrincipalSessionsKey(realm, session.principalId, session.generation);
+    const sessionIds = await redisClient.smembers(principalSessionsKey);
+    if (!sessionIds.includes(session.id)) throw new AuthError('sessionInvalid');
+    const otherSessionIds = sessionIds.filter((sessionId) => sessionId !== session.id);
+    let count = 0;
+    if (otherSessionIds.length) {
+        count = await redisClient.del(
+            ...otherSessionIds.map((sessionId) => toSessionKey(realm, session.principalId, sessionId)),
+        );
+
+        await notifySessionsRevoked(realm, session.principalId, otherSessionIds);
+        await redisClient.srem(principalSessionsKey, ...otherSessionIds);
+    }
 
     await recordAuthEvent(
         realm,
         {
-            metadata: { count: sessionIds.length },
+            metadata: { count },
             principalId: session.principalId,
             request,
             sessionId: session.id,
             type: AuthEventType.OtherSessionsRevoked,
         },
     );
-
-    return created;
 }
 
 function toPrincipalActiveKey(realm: AuthRealm<any>, principalId: string) {
