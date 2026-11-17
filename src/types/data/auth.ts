@@ -43,7 +43,6 @@ export interface AuthEventData extends BaseMongooseModelData<true, false> {
 }
 
 export interface AuthPasskeyData {
-    backedUp: boolean;
     createdAt: string;
     deviceType: 'multiDevice' | 'singleDevice';
     id: string;

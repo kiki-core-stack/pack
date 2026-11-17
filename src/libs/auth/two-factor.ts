@@ -125,7 +125,6 @@ export async function getAuthSecurityOverview(
 
     return {
         passkeys: (setting?.passkeys ?? []).map((passkey) => ({
-            backedUp: passkey.backedUp,
             createdAt: passkey.createdAt.toISOString(),
             deviceType: passkey.deviceType,
             id: passkey.credentialId,

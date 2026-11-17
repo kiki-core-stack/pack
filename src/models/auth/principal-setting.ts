@@ -43,7 +43,6 @@ export interface AuthPrincipalSetting {
 
 export interface AuthPrincipalSettingPasskey {
     aaguid: string;
-    backedUp: boolean;
 
     /**
      * 新舊值皆為 0 時不檢查（同步型 passkey 的計數器恆為 0）。
@@ -96,7 +95,6 @@ const schema = new Schema<AuthPrincipalSetting, AuthPrincipalSettingModel>({
             {
                 _id: false,
                 aaguid: s.string().required,
-                backedUp: s.boolean().required,
                 counter: s.number().min(0).required,
                 createdAt: s.date().required,
                 credentialId: s.string().required,

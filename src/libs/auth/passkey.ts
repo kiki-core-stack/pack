@@ -248,13 +248,11 @@ export async function verifyAuthPasskeyRegistration(
         const {
             aaguid,
             credential,
-            credentialBackedUp,
             credentialDeviceType,
         } = verification.registrationInfo;
 
         passkey = {
             aaguid,
-            backedUp: credentialBackedUp,
             counter: credential.counter,
             createdAt: new Date(),
             credentialId: credential.id,

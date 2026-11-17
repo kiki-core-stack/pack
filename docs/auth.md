@@ -159,7 +159,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 | collection | 內容 |
 | --- | --- |
-| `auth.principal_settings` | 每個 `(realm, principalId)` 一筆：`twoFactorEnabled`、`twoFactorEnforced`、`revision`（變更因子與開關時的版本號）、TOTP（加密的密鑰、確認時間、上次使用的時間步）、救援碼（雜湊、使用時間）、WebAuthn user handle、passkey 陣列（`credentialId`、公鑰、計數器、transports、AAGUID、裝置類型、備份狀態、名稱、建立與最後使用時間） |
+| `auth.principal_settings` | 每個 `(realm, principalId)` 一筆：`twoFactorEnabled`、`twoFactorEnforced`、`revision`（變更因子與開關時的版本號）、TOTP（加密的密鑰、確認時間、上次使用的時間步）、救援碼（雜湊、使用時間）、WebAuthn user handle、passkey 陣列（`credentialId`、公鑰、計數器、transports、AAGUID、裝置類型、名稱、建立與最後使用時間） |
 | `auth.events` | 驗證事件紀錄：`realm`、`principalId`、類型（`AuthEventType`）、使用的因子、IP、User-Agent、`sessionId`、操作者（`actorRealm`、`actorPrincipalId`，本人操作時與帳號相同）、附加資料、建立時間 |
 
 - 帳號設定在第一次需要時才建立（開始綁定 passkey、確認 TOTP、設定強制），建立時一律產生 WebAuthn user handle；不存在視為全部預設值。
