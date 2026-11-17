@@ -89,7 +89,14 @@ for (const op of [
             const projectionKey = serializeProjection(projection);
             const allFileData = ids.map((id) => lruStore.file.document.getItem(id, projectionKey));
             if (allFileData.some((fileData) => !fileData)) return;
-            const files = allFileData.map((fileData) => this.model.hydrate(fileData, projection));
+            // Mongo returns _id unless excluded (such queries are not cached); hydrate drops fields outside an
+            // inclusive projection, so keep _id explicitly for populate to match the documents.
+            const hydrateProjection = projection && {
+                ...projection,
+                _id: 1,
+            };
+
+            const files = allFileData.map((fileData) => this.model.hydrate(fileData, hydrateProjection));
             cacheHitQueries.add(this);
             (this as any)[`_${op}`] = async () => op === 'find' ? files : files[0];
         },
