@@ -10,7 +10,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - `_internals`、`internal(s)` 路徑與 `.d.ts` 不對外。
   - `types` 底下的模組只匯出型別，且不得含執行期程式碼。
 - 第一次 clone 後執行 `scripts/install-git-hooks.sh` 啟用 hook。
-- `peerDependencies` 只在用到對應模組時才需要安裝（例如 `models` 需要 mongoose、`providers/email` 需要 nodemailer）。
+- `peerDependencies` 只在用到對應模組時才需要安裝（例如 `models` 需要 mongoose、`providers/email` 需要 nodemailer、`libs/auth` 需要 `@simplewebauthn/server`）。
 
 ### 前端可用與僅限後端
 
@@ -23,39 +23,44 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 - constants/：enum、對照表與固定值。
   - `*ToLabelMap`：enum 值的顯示名稱（`LocalizedMessages`），前後端共用。
+  - auth.ts：`AuthEventType`、因子清單、內建高危操作名稱（`authVerificationOperations`）、`authVerificationHeaderName`。
+  - platform.ts：`PlatformScope`（平台設定與 IP 存取政策共用）、各 scope 的預設平台設定與 auth 政策預設值。
   - i18n.ts：`supportedLocales`（第一個為預設語系）。
   - index.ts：`CommonStatus`、`projectRedisKeyPrefix`（下游需換成自己的前綴）。
   - ws.io-event-names.ts：WS.IO 事件名稱（`scripts/generate-rust-ws.io-event-names.ts` 產生 Rust 版本）。
 - types/：共用型別。
-  - api.ts：API 回應格式（envelope）、`ClientApiErrorCode`、驗證 issue、`CommonApiErrorDataMap`。
+  - api.ts：API 回應格式（envelope）、`ClientApiErrorCode`、驗證 issue、`CommonApiErrorDataMap`、`AuthApiErrorDataMap`。
   - api-client.ts：前端 API 呼叫的回應型別（`ApiClientPromise`、`ApiClientResponse`、前端合成的 `ApiClientFailureResponseData`），並為 axios response 加上 `error`。
   - data/：前端看到的資料型別（`TableRowData`、各資源的 `*Data`）。
   - i18n.ts：`Locale`、`LocalizedMessages`。
   - permission.ts：權限樹、catalog、`PermissionRequirement`。
 - schemas/：zod schema。
-  - api.ts：`validationFailed`、`duplicateKey` 的 errorData schema（對應型別由此推導）。
+  - api.ts：`validationFailed`、`duplicateKey`、`verificationRequired` 的 errorData schema（對應型別由此推導）。
   - admin.ts：`adminLogMetadataVariants`。
   - password.ts：`strongPasswordSchema`（管理員等特權帳號的密碼政策）。
   - email.ts、sms.ts、platform.ts、job.ts：`*ProviderConfigVariants`、`platformConfigVariants`、`jobOutboxEventPayloadVariants`（見下方「依判別值變化的欄位」）。
+  - platform.ts 另有 `platformAuthConfigSchema`：含登入身分的 scope 在平台設定中的 `auth` 區塊。
 - libs/：
   - zod/：`z` 加上專案擴充（`objectId`、`strictIsoDateString`、`enumWithMeta`、`blankToUndefined`、`i18nIssue`、`discriminatedMap` 等）；`backend/` 另含檔案上傳的擴充。
   - i18n.ts：`resolveLocale(acceptLanguage)`。
   - permission.ts：`definePermissions`、`hasPermission`、`expandPermissionRequirements`。
   - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板、generator 設定（`config.yaml`，額外產生 `api-classes.ts`）與固定的 generator 版本。
+  - auth/：登入、工作階段、雙重驗證、passkey、QR Code 登入、高危操作驗證（見下方「auth」）。
   - api-client/：前端 API 呼叫：`toApiClientFailureResponse`（攔截器把失敗轉為 envelope 回應）、`OpenApiClientBase`／`configureOpenApiClient`（產生的 API 類別以 `XxxApi.use()` 取得實例）。
   - 其餘：email／sms 發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
-- models/：mongoose model。
+- models/：mongoose model（`auth/` 為 auth 的帳號設定與事件紀錄）。
 - stores/、storages/：快取。`storages` 是底層實例（LRU、Redis），`stores` 是建立在其上的各領域 keyed store。
 - connections/：Redis 連線。
 - providers/：email、sms 服務商的實作。
 - redis-scripts/：Lua 腳本與其載入。
-- init/：後端啟動時的初始化（`initializeSystemStartup`），含建立預設管理員、平台設定等任務；下游任務接在標註處。
+- init/：後端啟動時的初始化（`initializeSystemStartup`），含建立預設管理員與平台設定等任務；下游任務接在標註處。
 - hono-backend/：Hono 後端共用元件。
   - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
+  - libs/auth/：`createHonoAuth`（請求驗證、本人與管理的 auth 路由處理函式）。
   - libs/api/：`defineApiErrors`、`throwApiError`、`listApiErrorCodes`、`apiValidator`、`throwFieldValidationError`、`apiDocs`（`* as` 匯入：`responses`，或分開的 `success`、`errors`，route docs）、`createApiSuccessResponseData`。
   - middlewares/：`locale()`、`cookieSession()`。
-  - setups/：`setupHonoAppErrorHandling`；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods（`index` 加上要用的檔案各自 import 啟用，例如 `findByRouteIdOrThrowNotFoundError`、`assertUpdateIfNotModified`）。
-  - types/：錯誤定義、cookie session 的型別（下游以 `declare module` 擴充 `CookieSessionData`）。
+  - setups/：`setupHonoAppErrorHandling`（含 `AuthError` 對應到 API 錯誤）；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods（`index` 加上要用的檔案各自 import 啟用，例如 `findByRouteIdOrThrowNotFoundError`、`assertUpdateIfNotModified`）。
+  - types/：錯誤定義、cookie session 的型別（下游以 `declare module` 擴充 `CookieSessionData`）、auth 的路由 meta 與 `ctx.authSession`。
 
 ## 約定
 
@@ -78,6 +83,16 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - 後端把 `locale()` 掛成第一個 app middleware，之後以 `ctx.var.locale` 取得語系；錯誤處理與 `apiValidator` 會自動使用。
 - 驗證訊息依序取：自訂規則的 `i18nIssue`、常見情況的專案措辭、zod 內建語系。schema 上不要寫死 `error` 訊息（會蓋過依請求的翻譯），自訂規則改用 `z.i18nIssue({...})`。
 - 文字跟著定義走：pack 的 enum 名稱放 pack，各後端的權限名稱放各後端的權限定義；前端 i18n 只放介面文字。
+
+### auth
+
+設計與流程見 [auth.md](./auth.md)。
+
+- 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origins、passkey 支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
+- 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與驗證事件存在 `auth.principal_settings`、`auth.events`。
+- 後端以 `createHonoAuth(realm, { getClientIp })` 取得 `authenticate`（掛在 route middleware）與路由處理函式，各路由檔只轉接；流程中的失敗拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 `auth` 錯誤碼。
+- 自行變更密碼或停用帳號時呼叫 `revokeAllAuthSessions(realm, principalId)`，刪除帳號時呼叫 `deleteAuthPrincipalData(realm, principalId)`。
+- 環境變數 `AUTH_SECRET_ENCRYPTION_KEYS`：加密 TOTP 密鑰的金鑰。
 
 ### 依判別值變化的欄位
 

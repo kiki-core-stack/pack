@@ -1,9 +1,14 @@
+import type * as z from 'zod';
+
 import type {
     PlatformIpAccessPolicyCheckReason,
     PlatformIpAccessPolicyMode,
     PlatformScope,
 } from '../constants/platform';
-import type { platformConfigVariants } from '../schemas/platform';
+import type {
+    platformAuthConfigSchema,
+    platformConfigVariants,
+} from '../schemas/platform';
 
 import type { IpAddressRange } from './ip';
 
@@ -13,6 +18,7 @@ import type {
     ZodSchemaMapOutput,
 } from './';
 
+export type PlatformAuthConfig = z.output<typeof platformAuthConfigSchema>;
 export type PlatformConfigByScope = ZodSchemaMapOutput<typeof platformConfigVariants['schemas']>;
 export type PlatformConfigInputByScope = ZodSchemaMapInput<typeof platformConfigVariants['schemas']>;
 export type PlatformConfigVariant<S extends PlatformScope = PlatformScope> = DiscriminatedFieldVariant<

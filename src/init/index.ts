@@ -35,8 +35,6 @@ export async function initializeSystemStartup() {
             // Others downstream projects tasks with session
         });
 
-        await (await import('./tasks/kcs/sync-provider-indexes')).run();
-
         // Others downstream projects tasks
     }
 

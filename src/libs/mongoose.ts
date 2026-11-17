@@ -5,6 +5,7 @@ import {
 import type {
     AnyBulkWriteOperation,
     Document,
+    Model,
     Query,
     Schema,
 } from 'mongoose';
@@ -156,7 +157,15 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
                 if (typeof hashed !== 'string') throw new TypeError(`Argon2 hash field ${field} is not selected`);
                 if (!await verifyPasswordWithArgon2(hashed, input)) return false;
                 if (isArgon2PasswordHashOutdated(hashed)) {
-                    await this.updateOne({ $set: { [field]: input } }).catch((error) => {
+                    // Only while the stored hash is still the verified one: a rehash finishing after a concurrent
+                    // change of the field must not write the old value back.
+                    await (this.constructor as Model<unknown>).updateOne(
+                        {
+                            _id: this._id,
+                            [field]: hashed,
+                        },
+                        { $set: { [field]: input } },
+                    ).catch((error) => {
                         logger.error(
                             'Failed to rehash outdated Argon2 hash field',
                             {

@@ -1,0 +1,92 @@
+import type { Types } from 'mongoose';
+import type {
+    ArrayValues,
+    UnknownRecord,
+} from 'type-fest';
+
+import type {
+    AuthEventType,
+    authFactors,
+    authSecondFactors,
+} from '../constants/auth';
+
+export type AuthFactor = ArrayValues<typeof authFactors>;
+/**
+ * 事件紀錄所需的操作情境：操作者（未提供時為帳號本人）、請求資訊與目前的工作階段。
+ */
+export type AuthOperationContext = Pick<RecordAuthEventInput, 'actor' | 'request' | 'sessionId'>;
+
+export type AuthSecondFactor = ArrayValues<typeof authSecondFactors>;
+
+/**
+ * realm 的帳號文件至少需要的欄位。
+ */
+export interface AuthPrincipal {
+    _id: Types.ObjectId;
+}
+
+/**
+ * 傳給 realm `onEvent` 的驗證事件。
+ */
+export interface AuthRealmEvent extends RecordAuthEventInput {
+    realm: string;
+}
+
+/**
+ * 發出請求的用戶端資訊；IP 取自後端的可信代理設定。
+ */
+export interface AuthRequestInfo {
+    ip?: string;
+    userAgent?: string;
+}
+
+/**
+ * 已通過驗證的工作階段。
+ */
+export interface AuthSession extends StoredAuthSession {
+    id: string;
+    principalId: string;
+}
+
+export interface RecordAuthEventInput {
+    /**
+     * 操作者；未提供時為帳號本人。
+     */
+    actor?: {
+        principalId: string;
+        realm: string;
+    };
+    factor?: AuthFactor;
+    metadata?: UnknownRecord;
+    principalId: string;
+    request?: AuthRequestInfo;
+    sessionId?: string;
+    type: AuthEventType;
+}
+
+/**
+ * 存在 Redis 的工作階段內容；除 lastActiveAt 與 idleTimeoutSeconds 外建立後不再變動。時間皆為毫秒時間戳。
+ */
+export interface StoredAuthSession {
+    /**
+     * QR Code 登入時，核准者的工作階段 ID。
+     */
+    approvedBySessionId?: string;
+    createdAt: number;
+    factors: AuthFactor[];
+    generation: number;
+
+    /**
+     * 最後一次寫入時採用的閒置逾時；key 的存活時間以它計算，設定調高後仍須在這段時間內順延。
+     */
+    idleTimeoutSeconds: number;
+    ip?: string;
+    lastActiveAt: number;
+
+    /**
+     * 受限工作階段只能呼叫綁定因子的 API。
+     */
+    restricted: boolean;
+    secretHash: string;
+    userAgent?: string;
+}

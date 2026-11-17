@@ -1,6 +1,7 @@
 import type * as z from '../libs/zod';
 import type {
     apiValidationIssueSchema,
+    authVerificationRequiredErrorDataSchema,
     duplicateKeyErrorDataSchema,
     validationFailedErrorDataSchema,
 } from '../schemas/api';
@@ -10,6 +11,7 @@ export type ApiResponseData<D extends object | undefined = undefined, E extends 
   | ApiSuccessResponseData<D>;
 
 export type ApiValidationIssue = z.output<typeof apiValidationIssueSchema>;
+export type AuthVerificationRequiredErrorData = z.output<typeof authVerificationRequiredErrorDataSchema>;
 
 /**
  * Error codes a client synthesizes when no API error response exists.
@@ -40,6 +42,13 @@ export interface ApiErrorResponseData<E extends string = string, D = unknown> {
 export interface ApiSuccessResponseData<D extends object | undefined = undefined> {
     data?: D;
     success: true;
+}
+
+/**
+ * `errorData` of the auth API errors that carry it, keyed by error code.
+ */
+export interface AuthApiErrorDataMap {
+    verificationRequired: AuthVerificationRequiredErrorData;
 }
 
 /**

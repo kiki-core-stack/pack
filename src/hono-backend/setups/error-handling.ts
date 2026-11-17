@@ -15,6 +15,8 @@ import {
     objectValues,
 } from 'ts-extras';
 
+import { AuthError } from '../../libs/auth/error';
+import type { AuthErrorCode } from '../../libs/auth/error';
 import * as z from '../../libs/zod';
 import type { Locale } from '../../types/i18n';
 import * as apiErrors from '../api-errors';
@@ -24,6 +26,12 @@ import { getRequestLocale } from '../middlewares/locale';
 import type { ApiErrorDefinition } from '../types/api';
 
 // Constants/Variables
+const authErrorCodeToApiErrorMap: Readonly<Record<AuthErrorCode, ApiErrorDefinition>> = {
+    ...apiErrors.auth,
+    forbidden: apiErrors.common.forbidden,
+    unauthorized: apiErrors.common.unauthorized,
+};
+
 const mongoServerErrorCodeToApiErrorMap: Readonly<Partial<Record<number, ApiErrorDefinition>>> = {
     6: apiErrors.common.serviceUnavailable, // HostUnreachable
     7: apiErrors.common.serviceUnavailable, // HostNotFound
@@ -80,6 +88,16 @@ export function setupHonoAppErrorHandling(
 
 function toApiError(error: unknown, locale: Locale): ApiError {
     if (error instanceof ApiError) return error;
+    if (error instanceof AuthError) {
+        return new ApiError(
+            authErrorCodeToApiErrorMap[error.code],
+            {
+                cause: error,
+                errorData: error.data,
+            },
+        );
+    }
+
     if (error instanceof z.ZodError) return toApiValidationError(error.issues, locale);
 
     if (error instanceof HTTPException) {

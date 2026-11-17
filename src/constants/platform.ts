@@ -1,7 +1,10 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
 import type { LocalizedMessages } from '../types/i18n';
-import type { PlatformConfigByScope } from '../types/platform';
+import type {
+    PlatformAuthConfig,
+    PlatformConfigByScope,
+} from '../types/platform';
 
 export enum PlatformIpAccessPolicyCheckReason {
     Allowed = 0,
@@ -29,8 +32,36 @@ export enum PlatformScope {
     // /* eslint-enable perfectionist/sort-enums */
 }
 
+/**
+ * 後台類入口的預設 auth 政策；下游新增後台類 scope 時沿用。
+ */
+export const defaultManagementPlatformAuthConfig: Readonly<PlatformAuthConfig> = {
+    maxSessions: null,
+    qrCodeLoginApprovalRequiresVerification: true,
+    qrCodeLoginEnabled: false,
+    session: {
+        absoluteTimeoutSeconds: 3 * 86400,
+        idleTimeoutSeconds: 4 * 3600,
+    },
+    twoFactorRequired: false,
+};
+
+/**
+ * 前台使用者入口的預設 auth 政策；供下游的前台 scope 使用。
+ */
+export const defaultUserPlatformAuthConfig: Readonly<PlatformAuthConfig> = {
+    maxSessions: null,
+    qrCodeLoginApprovalRequiresVerification: false,
+    qrCodeLoginEnabled: false,
+    session: {
+        absoluteTimeoutSeconds: 60 * 86400,
+        idleTimeoutSeconds: 30 * 86400,
+    },
+    twoFactorRequired: false,
+};
+
 export const defaultPlatformConfigs: Readonly<PlatformConfigByScope> = {
-    [PlatformScope.AdminManagement]: {},
+    [PlatformScope.AdminManagement]: { auth: defaultManagementPlatformAuthConfig },
     [PlatformScope.System]: { ipAccessPolicy: { enabled: false } },
 };
 

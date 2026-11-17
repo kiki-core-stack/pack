@@ -1,0 +1,185 @@
+import type {
+    Arrayable,
+    Promisable,
+} from 'type-fest';
+import type * as z from 'zod';
+
+import type { PlatformScope } from '../../constants/platform';
+import type {
+    AuthPrincipal,
+    AuthRealmEvent,
+} from '../../types/auth';
+import type {
+    PlatformAuthConfig,
+    PlatformConfigByScope,
+} from '../../types/platform';
+import { getPlatformConfig } from '../platform/config';
+
+import { getAuthSecretEncryptionKeys } from './secret-encryption';
+
+/**
+ * 平台設定含有 `auth` 區塊的 scope。
+ */
+export type AuthPlatformScope = {
+    [S in PlatformScope]: PlatformConfigByScope[S] extends { auth: PlatformAuthConfig } ? S : never;
+}[PlatformScope];
+
+/**
+ * realm 的帳號 model 需要的操作；mongoose model 皆符合。
+ */
+export interface AuthPrincipalModel<P extends AuthPrincipal> {
+    exists: (filter: { _id: string }) => PromiseLike<unknown>;
+    findById: (id: string) => PromiseLike<null | P>;
+    updateOne: (
+        filter: { _id: P['_id']; password: string },
+        update: { $set: { password: string } },
+    ) => PromiseLike<{ matchedCount: number }>;
+}
+
+export interface AuthRealm<P extends AuthPrincipal = AuthPrincipal> extends Readonly<Omit<
+    AuthRealmOptions<P>,
+    'cookieSameSite' | 'origins' | 'webauthn'
+>> {
+    readonly cookieSameSite: 'lax' | 'strict';
+
+    findPrincipalById: (principalId: string) => Promise<null | P>;
+
+    /**
+     * 目前的 auth 政策（平台設定，本機快取）。
+     */
+    getConfig: () => Promise<PlatformAuthConfig>;
+    readonly origins: readonly string[];
+    readonly webauthn?: Readonly<{ rpId: string }>;
+}
+
+export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
+    /**
+     * 必須使用 `__Host-` 前綴。
+     */
+    cookieName: string;
+
+    /**
+     * 前端以 SSR 判斷登入狀態的 realm 設為 `lax`；此時 GET 路由不得有寫入行為。
+     *
+     * @defaultValue 'strict'
+     */
+    cookieSameSite?: 'lax' | 'strict';
+
+    /**
+     * 顯示給使用者的名稱：驗證器 App 中的發行者，以及 passkey 提示中的網站名稱。
+     */
+    displayName: string;
+
+    /**
+     * 以登入用的帳號字串（已去除前後空白）找出帳號；不需檢查是否啟用。
+     */
+    findPrincipalByIdentifier: (identifier: string) => Promise<null | P>;
+
+    /**
+     * 顯示在驗證器 App 與 passkey 提示中的帳號名稱。
+     */
+    getPrincipalDisplayName: (principal: P) => string;
+    isPrincipalActive: (principal: P) => boolean;
+    model: AuthPrincipalModel<P>;
+
+    /**
+     * Redis key 的命名空間，各 realm 不可重複。
+     */
+    name: string;
+
+    /**
+     * 新密碼的規則。
+     *
+     * @defaultValue `strongPasswordSchema`
+     */
+    newPasswordSchema?: z.ZodType<string>;
+
+    /**
+     * 每筆驗證事件寫入後呼叫，例如寄送通知；失敗只記錄錯誤。
+     */
+    onEvent?: (event: AuthRealmEvent) => Promisable<void>;
+
+    /**
+     * 工作階段被踢除後呼叫，例如通知 ws.io-server 斷線；失敗只記錄錯誤。
+     */
+    onSessionsRevoked?: (principalId: string, sessionIds: string[]) => Promisable<void>;
+
+    /**
+     * 允許的來源，用於寫入類請求的 Origin 檢查與 WebAuthn 驗證；可為陣列或以逗號分隔的字串。
+     */
+    origins: Arrayable<string>;
+    scope: AuthPlatformScope;
+
+    /**
+     * 寫入新密碼，回傳是否寫入。只能在儲存的密碼仍是 `principal` 載入時的那一個時寫入，否則回傳 false，
+     * 不可覆寫期間被其他請求變更的密碼。
+     *
+     * @defaultValue 以 `updateOne({ _id, password: <載入時的雜湊> }, { $set: { password } })` 寫入，
+     * 由 model 的雜湊欄位處理雜湊。
+     */
+    setPassword?: (principal: P, password: string) => Promise<boolean>;
+
+    /**
+     * @defaultValue 呼叫帳號文件的 `verifyPassword`。
+     */
+    verifyPassword?: (principal: P, password: string) => Promise<boolean>;
+
+    /**
+     * 有填才支援 passkey（可為空物件）。只有一個 origin 時 `rpId` 預設為該 origin 的網域；`rpId` 定下後不可更改。
+     */
+    webauthn?: { rpId?: string };
+}
+
+// Constants/Variables
+const authRealms = new Map<string, AuthRealm<any>>();
+
+// Functions
+
+/**
+ * 定義一種可登入的身分；設定內容見 `docs/auth.md`。
+ */
+export function defineAuthRealm<P extends AuthPrincipal>(options: AuthRealmOptions<P>): AuthRealm<P> {
+    if (!/^[a-z][\da-z-]*$/.test(options.name)) throw new Error(`Invalid auth realm name: ${options.name}`);
+    if (authRealms.has(options.name)) throw new Error(`Duplicate auth realm: ${options.name}`);
+    if (!options.cookieName.startsWith('__Host-')) {
+        throw new Error(`Auth realm ${options.name} cookie name must start with __Host-`);
+    }
+
+    // 加密金鑰設定有誤時在啟動時就失敗，而不是等到第一次綁定驗證器。
+    getAuthSecretEncryptionKeys();
+    const origins = [options.origins].flat().flatMap((value) => value.split(',')).map((origin) => origin.trim()).filter(Boolean);
+    if (!origins.length) throw new Error(`Auth realm ${options.name} requires at least one origin`);
+    for (const origin of origins) {
+        if (!URL.canParse(origin) || new URL(origin).origin !== origin) {
+            throw new Error(`Invalid origin of auth realm ${options.name}: ${origin}`);
+        }
+    }
+
+    let webauthn: AuthRealm['webauthn'];
+    if (options.webauthn) {
+        if (!options.webauthn.rpId && origins.length !== 1) {
+            throw new Error(`Auth realm ${options.name} has multiple origins and requires an explicit WebAuthn rpId`);
+        }
+
+        webauthn = { rpId: options.webauthn.rpId ?? new URL(origins[0]!).hostname };
+    }
+
+    const realm: AuthRealm<P> = {
+        ...options,
+        cookieSameSite: options.cookieSameSite ?? 'strict',
+        findPrincipalById: async (principalId) => await options.model.findById(principalId),
+        getConfig: async () => (await getPlatformConfig(options.scope)).auth,
+        origins,
+        webauthn,
+    };
+
+    authRealms.set(realm.name, realm);
+    return realm;
+}
+
+/**
+ * 以名稱取得已定義的 realm，例如 ws.io 的連線驗證。
+ */
+export function getAuthRealm(name: string) {
+    return authRealms.get(name);
+}
