@@ -2,7 +2,6 @@ import { AuthEventType } from '../../constants/auth';
 import type {
     AuthPrincipal,
     AuthRequestInfo,
-    AuthSession,
 } from '../../types/auth';
 
 import { AuthError } from './error';
@@ -13,12 +12,12 @@ import {
     consumeAuthPrincipalAttempt,
 } from './rate-limit';
 import type { AuthRealm } from './realm';
-import { revokeOtherAuthSessions } from './session';
+import { revokeAllAuthSessions } from './session';
 
 // Functions
 
 /**
- * 變更密碼：一律要輸入目前密碼，且只在密碼仍是剛驗證的那一個時寫入。成功後踢除全部工作階段，並為目前裝置換發新的工作階段。
+ * 變更密碼：一律要輸入目前密碼，且只在密碼仍是剛驗證的那一個時寫入。成功後踢除全部工作階段（含 `sessionId` 所屬的目前裝置）。
  *
  * `assertAuthorized` 在確認目前密碼之後、寫入新密碼之前呼叫，用來檢查其餘前置條件（例如消耗高危操作驗證的憑據）；
  * 拋出錯誤即中止。
@@ -26,7 +25,7 @@ import { revokeOtherAuthSessions } from './session';
 export async function changeAuthPassword<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     principal: P,
-    session: AuthSession,
+    sessionId: string,
     currentPassword: string,
     newPassword: string,
     request: AuthRequestInfo,
@@ -53,12 +52,12 @@ export async function changeAuthPassword<P extends AuthPrincipal>(
         {
             principalId,
             request,
-            sessionId: session.id,
+            sessionId,
             type: AuthEventType.PasswordChanged,
         },
     );
 
-    return await revokeOtherAuthSessions(realm, session, request);
+    await revokeAllAuthSessions(realm, principalId);
 }
 
 async function setAuthPassword<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P, password: string) {

@@ -132,7 +132,8 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 - 順延：以 `SET … XX EX <ttl>`（存在才寫入）更新最後活動時間與 TTL，已被踢除的工作階段不會被寫回。受限工作階段不順延。
 - 踢除單一工作階段：刪除該 key 並從集合移除。登出即踢除目前的工作階段並清除 cookie。
 - 全部踢除（`revokeAllAuthSessions`）：世代計數加一（單一原子指令）。世代與目前計數不符的工作階段一律無效，不會漏掉同時建立中的工作階段。接著讀出上一個世代的集合、刪除其中所有工作階段與集合本身，並呼叫 `onSessionsRevoked`。
-- 踢除其他全部（`revokeOtherAuthSessions`，本人變更密碼也使用）：全部踢除後為目前裝置換發新工作階段，事件類型為 `OtherSessionsRevoked`；`AllSessionsRevoked` 只用於管理端的全部踢除。
+- 踢除其他全部（`revokeOtherAuthSessions`）：全部踢除後為目前裝置換發新工作階段，事件類型為 `OtherSessionsRevoked`。
+- 本人變更密碼（`changeAuthPassword`）：全部踢除，目前裝置也要重新登入，只記錄 `PasswordChanged`；`AllSessionsRevoked` 只用於管理端的全部踢除。
 - 換發（踢除其他全部、受限工作階段換發正常工作階段）有兩個條件，都不成立就回 `sessionInvalid`：
   - 以「成功刪除來源工作階段」作為放行條件：來源已被單獨踢除時不會被換發。
   - 綁定來源工作階段的世代，不採用「當下最新的世代」：踢除其他全部時，新工作階段建立在這次踢除產生的世代，且必須正好是來源的下一個；受限工作階段換發時沿用其世代。換發期間又發生全部踢除時，新工作階段的世代已過期，自然無效。
@@ -142,7 +143,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 - 以登入路由（密碼、第二因子、passkey、QR 領取）登入時若已持有有效工作階段：新工作階段建立後踢除原本的那一個。
 - 超過 `maxSessions` 時於建立後踢除排在上限之後的工作階段（最久未活動者）。並行的登入都依同一個固定排序決定踢除對象且不排除自己，只會留下排序在前的；自己被排到上限之後的那次登入回 `sessionInvalid`，不會互相踢除而全部失效。
 - 不綁定 IP；IP 與裝置只供顯示與紀錄。
-- 不定期輪替 token，只在登入時發新 token；受限工作階段換發正常工作階段、變更密碼、踢除其他全部時也換新。
+- 不定期輪替 token，只在登入時發新 token；受限工作階段換發正常工作階段、踢除其他全部時也換新。
 
 一次性挑戰：一筆帶 TTL 的紀錄，只能成功使用一次，且都綁定帳號（未登入的 passkey 登入除外）。
 
@@ -201,7 +202,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 不依賴 mongoose hook（`updateOne`、批次更新等路徑不會觸發）。
 
-- pack 提供的操作（變更密碼、重設雙重驗證、管理端踢除、帳號停用的兜底）在函式內直接踢除。本人變更密碼時，全部踢除後為目前裝置換發新工作階段；新密碼只在儲存的密碼仍是剛驗證的那一個時寫入（realm 自訂 `setPassword` 時由它保證並回傳是否寫入），不會覆寫期間被管理端重設的密碼。
+- pack 提供的操作（變更密碼、重設雙重驗證、管理端踢除、帳號停用的兜底）在函式內直接踢除。本人變更密碼時全部踢除，目前裝置也要重新登入；新密碼只在儲存的密碼仍是剛驗證的那一個時寫入（realm 自訂 `setPassword` 時由它保證並回傳是否寫入），不會覆寫期間被管理端重設的密碼。
 - 各專案自行變更密碼或停用帳號的地方（例如忘記密碼、管理端編輯帳號），必須呼叫 `revokeAllAuthSessions(realm, principalId)`；刪除帳號呼叫 `deleteAuthPrincipalData(realm, principalId)`。
 - 帳號停用另有第 2 步兜底，最長延遲約 60 秒。
 
@@ -351,7 +352,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | `security.removeTotp` | 移除 TOTP | `verification: auth.removeFactor` |
 | `security.regenerateRecoveryCodes` | 重新產生救援碼 | `verification: auth.regenerateRecoveryCodes` |
 | `security.setTwoFactorEnabled` | 本人開啟或關閉雙重驗證（關閉需 `auth.disableTwoFactor`） | |
-| `security.changePassword` | 變更密碼並換發工作階段（有第二因子時需 `auth.changePassword`） | |
+| `security.changePassword` | 變更密碼並踢除全部工作階段，含目前裝置（有第二因子時需 `auth.changePassword`） | |
 | `security.listSessions` | 列出自己的工作階段 | |
 | `security.revokeSession` | 踢除指定工作階段（路由參數 `id`） | |
 | `security.revokeOtherSessions` | 踢除其他全部並換發工作階段 | |
@@ -370,5 +371,5 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | `resetTwoFactor` | 重設雙重驗證（需操作者的 `auth.manageTwoFactor`） |
 
 - ws.io 的連線驗證：ws.io-server 把 cookie 的 token 與來源 IP 交給後端的內部路由，後端以 `getAuthRealm(name)` 取得 realm 後呼叫 `authenticateAuthConnection(realm, token, { ip })`（`libs/auth/access.ts`）。它與 HTTP 的 `authenticate` 共用 `authenticateAuthSession`（secret、世代、期限、帳號啟用、受限工作階段是否仍需要），另外拒絕受限工作階段並檢查 IP 存取政策，但不順延工作階段。ws.io-server 在握手時驗證一次，連線期間定期重新驗證，收到 4xx 即斷線；握手時的 `Origin` 檢查由 ws.io-server 自行處理。
-- 踢除時的即時斷線：realm 的 `onSessionsRevoked` 發出 `WsIoEventNames.ToServer.AuthSessionsRevoked`（realm 名稱、帳號、工作階段 ID），ws.io-server 中斷綁在這些工作階段上的連線；用戶端重連後驗證不過才視為被登出（變更密碼與踢除其他裝置會為目前裝置換發工作階段，重連即可）。通知失敗只記錄錯誤，正確性由定期重新驗證保證。
+- 踢除時的即時斷線：realm 的 `onSessionsRevoked` 發出 `WsIoEventNames.ToServer.AuthSessionsRevoked`（realm 名稱、帳號、工作階段 ID），ws.io-server 中斷綁在這些工作階段上的連線；斷線前是否通知前端、前端如何提示由下游實作。踢除其他裝置時，目前裝置換發前的工作階段也在清單內，它的連線同樣會被中斷，但裝置仍是登入狀態。通知失敗只記錄錯誤，正確性由定期重新驗證保證。
 - 前端頁面（登入、安全性設定、裝置管理、QR 核准頁 `/auth/qr-code-login/`）在 admin-frontend 實作，其他前端自行複製調整。

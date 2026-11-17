@@ -99,26 +99,24 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                 async (ctx) => {
                     const session = getSession(ctx);
                     const data = ctx.req.valid('json');
-                    setAuthSessionCookie(
-                        ctx,
+                    await changeAuthPassword(
                         realm,
-                        await changeAuthPassword(
-                            realm,
-                            await getPrincipal(ctx),
-                            session,
-                            data.currentPassword,
-                            data.newPassword,
-                            getRequest(ctx),
-                            // The current password is always required; accounts with a second factor need a
-                            // verification too, consumed only once the current password is confirmed.
-                            async () => {
-                                const setting = await findAuthPrincipalSetting(realm, session.principalId);
-                                if (!hasAuthSecondFactor(realm, setting)) return;
-                                await assertVerification(ctx, authVerificationOperations.changePassword);
-                            },
-                        ),
+                        await getPrincipal(ctx),
+                        session.id,
+                        data.currentPassword,
+                        data.newPassword,
+                        getRequest(ctx),
+                        // The current password is always required; accounts with a second factor need a
+                        // verification too, consumed only once the current password is confirmed.
+                        async () => {
+                            const setting = await findAuthPrincipalSetting(realm, session.principalId);
+                            if (!hasAuthSecondFactor(realm, setting)) return;
+                            await assertVerification(ctx, authVerificationOperations.changePassword);
+                        },
                     );
 
+                    // Every session is revoked, this one included.
+                    deleteAuthSessionCookie(ctx, realm);
                     return createApiSuccessResponse(ctx);
                 },
             ),
