@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import type {
     Model,
     mongo,
@@ -40,7 +41,7 @@ registerModelExtensions.push((schema: Schema) => {
             const updateResult = await (this.constructor as Model<unknown>).updateOne(
                 {
                     _id: this._id,
-                    updatedAt: new Date(updatedAt),
+                    updatedAt: new EnhancedDate(updatedAt),
                 },
                 updateQuery,
                 options,

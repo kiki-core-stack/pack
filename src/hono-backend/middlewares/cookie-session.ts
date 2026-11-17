@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { hkdfSync } from 'node:crypto';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import type {
     Context,
     MiddlewareHandler,
@@ -84,13 +85,13 @@ export function cookieSession(options: CookieSessionOptions): MiddlewareHandler 
             const result = cipher.decryptToJson(data, iv, authTag);
             if (!result.ok) continue;
             const [issuedAt, sessionData] = result.value as StoredData;
-            return issuedAt + maxAgeSeconds * 1000 > Date.now() ? sessionData : undefined;
+            return new EnhancedDate(issuedAt).addSeconds(maxAgeSeconds).isFuture() ? sessionData : undefined;
         }
     }
 
     function encrypt(sessionData: PartialCookieSessionData) {
         const result = ciphers[0]!.encryptJson([
-            Date.now(),
+            EnhancedDate.now(),
             sessionData,
         ] satisfies StoredData);
 

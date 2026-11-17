@@ -1,3 +1,5 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+
 import { redisClient } from '../../connections/redis';
 import { AuthEventType } from '../../constants/auth';
 import type {
@@ -133,7 +135,7 @@ export async function createAuthSession(
     input: CreateAuthSessionInput,
 ): Promise<CreatedAuthSession> {
     const config = await realm.getConfig();
-    const now = Date.now();
+    const now = EnhancedDate.now();
     const secret = generateRandomToken();
     const sessionId = generateRandomToken(16);
     const storedSession: StoredAuthSession = {
@@ -199,11 +201,16 @@ async function ensureAuthPrincipalActive<P extends AuthPrincipal>(realm: AuthRea
  * 工作階段依目前設定還能存活的秒數；小於等於 0 表示已過期。
  * 受限工作階段固定 15 分鐘到期，不套用平台設定的期限。
  */
-function getSessionRemainingSeconds(session: StoredAuthSession, config: PlatformAuthConfig, now = Date.now()) {
-    if (session.restricted) return Math.ceil((session.createdAt + restrictedSessionTtlSeconds * 1000 - now) / 1000);
-    const absoluteRemaining = session.createdAt + config.session.absoluteTimeoutSeconds * 1000 - now;
-    const idleRemaining = session.lastActiveAt + config.session.idleTimeoutSeconds * 1000 - now;
-    return Math.ceil(Math.min(absoluteRemaining, idleRemaining) / 1000);
+function getSessionRemainingSeconds(session: StoredAuthSession, config: PlatformAuthConfig, now = EnhancedDate.now()) {
+    const createdAt = new EnhancedDate(session.createdAt);
+    const expiresAt = session.restricted
+        ? createdAt.addSeconds(restrictedSessionTtlSeconds)
+        : EnhancedDate.min([
+            createdAt.addSeconds(config.session.absoluteTimeoutSeconds),
+            new EnhancedDate(session.lastActiveAt).addSeconds(config.session.idleTimeoutSeconds),
+        ]);
+
+    return Math.ceil((expiresAt.getTime() - now) / 1000);
 }
 
 /**
@@ -366,13 +373,13 @@ function toSessionKey(realm: AuthRealm<any>, principalId: string, sessionId: str
 export async function touchAuthSession(realm: AuthRealm<any>, session: AuthSession) {
     if (session.restricted) return;
     const config = await realm.getConfig();
-    const now = Date.now();
+    const now = EnhancedDate.now();
     const thresholdSeconds = Math.min(
         300,
         Math.min(config.session.idleTimeoutSeconds, session.idleTimeoutSeconds) / 4,
     );
 
-    if (now - session.lastActiveAt < thresholdSeconds * 1000) return;
+    if (new EnhancedDate(session.lastActiveAt).addSeconds(thresholdSeconds).isAfter(now)) return;
     const {
         id,
         principalId,

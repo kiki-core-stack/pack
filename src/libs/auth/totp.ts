@@ -4,6 +4,8 @@ import {
     randomBytes,
 } from 'node:crypto';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+
 import {
     decodeBase32,
     encodeBase32,
@@ -54,10 +56,10 @@ export function toAuthTotpUri(secret: string, issuer: string, accountName: strin
  * 驗證 TOTP（RFC 6238）：只接受目前與前一個時間步。回傳比對成功的時間步，供呼叫端擋下重放
  * （同一步或更早的驗證碼一律拒絕，並以帶條件的單次更新寫入）；驗證失敗回傳 undefined。
  */
-export function verifyAuthTotpCode(secret: string, code: string, now = Date.now()) {
+export function verifyAuthTotpCode(secret: string, code: string, now = new EnhancedDate()) {
     if (!/^\d{6}$/.test(code)) return;
     const secretBuffer = decodeBase32(secret);
-    const currentStep = Math.floor(now / 1000 / totpPeriodSeconds);
+    const currentStep = Math.floor(now.getUnixTime() / totpPeriodSeconds);
     let matchedStep: number | undefined;
     // 兩個時間步都比對，避免以回應時間洩漏命中的是哪一步。
     for (const step of [

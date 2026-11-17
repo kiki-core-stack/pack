@@ -1,3 +1,5 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
+
 import { redisClient } from '../../connections/redis';
 import { AuthEventType } from '../../constants/auth';
 import type {
@@ -69,7 +71,7 @@ export async function createAuthQrCodeLogin(realm: AuthRealm<any>, request: Auth
     await redisClient.set(
         toRequestKey(realm, qrToken),
         JSON.stringify({
-            createdAt: Date.now(),
+            createdAt: EnhancedDate.now(),
             ip: request.ip,
             pollSecretHash: sha256Hex(pollSecret),
             userAgent: truncateAuthUserAgent(request.userAgent),
@@ -130,7 +132,7 @@ export async function getAuthQrCodeLoginInfo(realm: AuthRealm<any>, qrToken: str
     await assertQrCodeLoginEnabled(realm);
     const request = await getQrCodeLoginRequest(realm, qrToken);
     return {
-        createdAt: new Date(request.createdAt).toISOString(),
+        createdAt: new EnhancedDate(request.createdAt).toISOString(),
         ip: request.ip,
         userAgent: request.userAgent,
     };

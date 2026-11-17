@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 
 import { AuthEventType } from '../../constants/auth';
@@ -159,7 +160,7 @@ async function verifyRecoveryCode(setting: AuthPrincipalSetting, code: string) {
                 },
             },
         },
-        { $set: { 'recoveryCodes.$.usedAt': new Date() } },
+        { $set: { 'recoveryCodes.$.usedAt': new EnhancedDate() } },
     );
 
     if (updateResult.modifiedCount !== 1) throw new AuthError('invalidVerificationCode');

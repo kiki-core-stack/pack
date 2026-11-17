@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import {
     generateAuthenticationOptions,
     generateRegistrationOptions,
@@ -208,7 +209,7 @@ export async function verifyAuthPasskeyAuthentication(
         {
             $set: {
                 'passkeys.$.counter': newCounter,
-                'passkeys.$.lastUsedAt': new Date(),
+                'passkeys.$.lastUsedAt': new EnhancedDate(),
             },
         },
     );
@@ -254,7 +255,7 @@ export async function verifyAuthPasskeyRegistration(
         passkey = {
             aaguid,
             counter: credential.counter,
-            createdAt: new Date(),
+            createdAt: new EnhancedDate(),
             credentialId: credential.id,
             deviceType: credentialDeviceType,
             name,

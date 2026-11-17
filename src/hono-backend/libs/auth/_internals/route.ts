@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import type {
     Context,
     MiddlewareHandler,
@@ -108,12 +109,12 @@ export function defineAuthRoute(meta: AuthRouteMeta, ...handlers: unknown[]): Au
 export function toAuthSessionData(session: AuthSession, currentSessionId?: string): AuthSessionData {
     return {
         approvedBySessionId: session.approvedBySessionId,
-        createdAt: new Date(session.createdAt).toISOString(),
+        createdAt: new EnhancedDate(session.createdAt).toISOString(),
         current: session.id === currentSessionId,
         factors: session.factors,
         id: session.id,
         ip: session.ip,
-        lastActiveAt: new Date(session.lastActiveAt).toISOString(),
+        lastActiveAt: new EnhancedDate(session.lastActiveAt).toISOString(),
         userAgent: session.userAgent,
     };
 }

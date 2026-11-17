@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import type { RegistrationResponseJSON } from '@simplewebauthn/server';
 import type { UpdateQuery } from 'mongoose';
 
@@ -90,7 +91,7 @@ export async function confirmAuthTotpSetup(
                 {
                     $set: {
                         totp: {
-                            confirmedAt: new Date(),
+                            confirmedAt: new EnhancedDate(),
                             lastUsedStep: step,
                             secret: encryptAuthSecret(secret.value, secretContext),
                         },

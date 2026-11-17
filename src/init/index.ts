@@ -12,10 +12,7 @@ export async function initializeSystemStartup() {
     const mongooseConnection = getDefaultMongooseConnection();
     const deadline = new EnhancedDate().addSeconds(10);
     while (mongooseConnection.readyState !== 1) {
-        if (deadline.isBefore(EnhancedDate.now())) {
-            throw new Error('Database connection timed out after 10 seconds');
-        }
-
+        if (!deadline.isFuture()) throw new Error('Database connection timed out after 10 seconds');
         if (mongooseConnection.readyState === 2) await Bun.sleep(50);
         else await Bun.sleep(1000);
     }

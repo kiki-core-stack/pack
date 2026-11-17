@@ -1,3 +1,4 @@
+import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 import { createRedisScriptRunner } from '@kikiutils/shared/redis/script-runner';
 import { createRedisKeyedStore } from '@kikiutils/shared/storages/redis/keyed-store';
 import { LRUCache } from 'lru-cache';
@@ -162,7 +163,7 @@ export class VersionedCache<P extends unknown[], T> {
                 this.#sharedValues?.getItem(entryKey),
             ]);
 
-            const now = Date.now();
+            const now = EnhancedDate.now();
             const localEntry = this.#localEntries?.get(entryKey);
             if (localEntry?.version === version && now - localEntry.loadedAt < this.#localMaxAgeMilliseconds) {
                 localEntry.checkedAt = now;
@@ -226,7 +227,7 @@ export class VersionedCache<P extends unknown[], T> {
         const entryKey = this.#getEntryKey(args);
         const localEntry = this.#localEntries?.get(entryKey);
         if (localEntry) {
-            const now = Date.now();
+            const now = EnhancedDate.now();
             if (
                 now - localEntry.checkedAt < this.#localRevalidateIntervalMilliseconds
                 && now - localEntry.loadedAt < this.#localMaxAgeMilliseconds
