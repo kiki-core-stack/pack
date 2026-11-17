@@ -11,7 +11,7 @@ import type { SetFieldType } from 'type-fest';
 
 import {
     PlatformIpAccessPolicyMode,
-    PlatformIpAccessPolicyScope,
+    PlatformScope,
 } from '../../constants/platform';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
@@ -30,8 +30,8 @@ export type PlatformIpAccessPolicyDocument = MongooseHydratedDocument<PlatformIp
 type PlatformIpAccessPolicyModel = BaseMongoosePaginateModel<PlatformIpAccessPolicy>;
 
 // 可指定帳號的入口與其帳號 model；未列出的入口只能設定整個入口的規則。
-const platformIpAccessPolicyScopeToPrincipalModelNameMap: Partial<Record<PlatformIpAccessPolicyScope, string>> = {
-    [PlatformIpAccessPolicyScope.AdminManagement]: AdminModel.modelName,
+const platformIpAccessPolicyScopeToPrincipalModelNameMap: Partial<Record<PlatformScope, string>> = {
+    [PlatformScope.AdminManagement]: AdminModel.modelName,
 
     // Downstream projects scopes
 };
@@ -55,23 +55,13 @@ const schema = new Schema<PlatformIpAccessPolicy, PlatformIpAccessPolicyModel>({
                     default: null,
                     ref(this: PlatformIpAccessPolicy['targets'][number]) {
                         if (!this.principalIds?.length) return;
-                        const modelName = this.scope === null
-                            ? undefined
-                            : platformIpAccessPolicyScopeToPrincipalModelNameMap[this.scope];
-
+                        const modelName = platformIpAccessPolicyScopeToPrincipalModelNameMap[this.scope];
                         if (!modelName) throw new Error(`IP access policy scope ${this.scope} has no principal model`);
                         return modelName;
                     },
                     type: [s.objectId().required],
                 },
-                scope: s
-                    .number()
-                    .enum([
-                        ...getEnumNumberValues(PlatformIpAccessPolicyScope),
-                        null,
-                    ])
-                    .default(null)
-                    .nonRequired,
+                scope: s.number().enum(getEnumNumberValues(PlatformScope)).required,
             },
         ],
     },

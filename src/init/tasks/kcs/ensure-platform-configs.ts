@@ -13,7 +13,7 @@ import type { UnknownRecord } from 'type-fest';
 
 import {
     defaultPlatformConfigs,
-    PlatformConfigScope,
+    PlatformScope,
 } from '../../../constants/platform';
 import { PlatformConfigModel } from '../../../models/platform/config';
 import { platformConfigVariants } from '../../../schemas/platform';
@@ -35,9 +35,9 @@ function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: Unk
 
 export async function run(session: ClientSession, adminId: Types.ObjectId) {
     // Create platform configs and backfill missing defaults without overwriting existing values.
-    for (const platformConfigScope of getEnumNumberValues(PlatformConfigScope)) {
+    for (const platformScope of getEnumNumberValues(PlatformScope)) {
         const platformConfig = await PlatformConfigModel
-            .findOne({ scope: platformConfigScope }, undefined, { session })
+            .findOne({ scope: platformScope }, undefined, { session })
             .select(['config'])
             .lean();
 
@@ -45,10 +45,10 @@ export async function run(session: ClientSession, adminId: Types.ObjectId) {
             const config = cloneDeep(platformConfig.config);
             const changed = applyMissingPlatformConfigDefaults(
                 config,
-                defaultPlatformConfigs[platformConfigScope],
+                defaultPlatformConfigs[platformScope],
             );
 
-            await platformConfigVariants.parse(platformConfigScope, config);
+            await platformConfigVariants.parse(platformScope, config);
             if (!changed) continue;
 
             await PlatformConfigModel.updateOne(
@@ -70,10 +70,10 @@ export async function run(session: ClientSession, adminId: Types.ObjectId) {
 
         const now = new EnhancedDate();
         await PlatformConfigModel.updateOne(
-            { scope: platformConfigScope },
+            { scope: platformScope },
             {
                 $setOnInsert: {
-                    config: defaultPlatformConfigs[platformConfigScope],
+                    config: defaultPlatformConfigs[platformScope],
                     createdAt: now,
                     createdByAdmin: adminId,
                     updatedAt: now,

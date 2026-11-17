@@ -7,7 +7,7 @@ import type {
 import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { Schema } from 'mongoose';
 
-import { PlatformConfigScope } from '../../constants/platform';
+import { PlatformScope } from '../../constants/platform';
 import * as mongooseRefSchemas from '../../schemas/mongoose/refs';
 import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { PlatformConfigBaseData } from '../../types/data/platform';
@@ -21,7 +21,7 @@ const schema = new Schema<PlatformConfig, PlatformConfigModel>({
     config: s.mixed().required,
     createdByAdmin: mongooseRefSchemas.admin().required,
     editedByAdmin: mongooseRefSchemas.admin().nonRequired,
-    scope: s.number().enum(getEnumNumberValues(PlatformConfigScope)).immutable.unique.required,
+    scope: s.number().enum(getEnumNumberValues(PlatformScope)).immutable.unique.required,
 });
 
 export const PlatformConfigModel = buildMongooseModel<PlatformConfig, PlatformConfigModel>(

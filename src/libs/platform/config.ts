@@ -1,15 +1,15 @@
 import { cloneDeep } from 'es-toolkit';
 
-import type { PlatformConfigScope } from '../../constants/platform';
+import type { PlatformScope } from '../../constants/platform';
 import type { PlatformConfigByScope } from '../../types/platform';
 
 import { platformConfigCache } from './_internals/config';
 
 // Functions
-export async function clearPlatformConfigCache(scope: PlatformConfigScope) {
+export async function clearPlatformConfigCache(scope: PlatformScope) {
     await platformConfigCache.invalidate(scope);
 }
 
-export async function getPlatformConfig<S extends PlatformConfigScope>(scope: S) {
+export async function getPlatformConfig<S extends PlatformScope>(scope: S) {
     return cloneDeep(await platformConfigCache.get(scope)) as PlatformConfigByScope[S];
 }

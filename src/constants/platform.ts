@@ -3,18 +3,6 @@ import type { ReadonlyRecord } from '@kikiutils/shared/types';
 import type { LocalizedMessages } from '../types/i18n';
 import type { PlatformConfigByScope } from '../types/platform';
 
-export enum PlatformConfigScope {
-    AdminManagement = 1,
-    System = 0,
-
-    // Values below 1000 are reserved for upstream shared base types.
-    // Downstream projects must assign project-specific values starting at 1000.
-    // Uncomment the eslint-disable/enable lines below if `eslint --fix` would reorder these values.
-    // /* eslint-disable perfectionist/sort-enums */
-
-    // /* eslint-enable perfectionist/sort-enums */
-}
-
 export enum PlatformIpAccessPolicyCheckReason {
     Allowed = 0,
     AllowlistMiss = 5,
@@ -29,8 +17,9 @@ export enum PlatformIpAccessPolicyMode {
     Blacklist = 1,
 }
 
-export enum PlatformIpAccessPolicyScope {
+export enum PlatformScope {
     AdminManagement = 1,
+    System = 0,
 
     // Values below 1000 are reserved for upstream shared base types.
     // Downstream projects must assign project-specific values starting at 1000.
@@ -41,19 +30,8 @@ export enum PlatformIpAccessPolicyScope {
 }
 
 export const defaultPlatformConfigs: Readonly<PlatformConfigByScope> = {
-    [PlatformConfigScope.AdminManagement]: {},
-    [PlatformConfigScope.System]: { ipAccessPolicy: { enabled: false } },
-};
-
-export const platformConfigScopeToLabelMap: ReadonlyRecord<PlatformConfigScope, LocalizedMessages> = {
-    [PlatformConfigScope.AdminManagement]: {
-        'en': 'Admin management',
-        'zh-TW': '總後台',
-    },
-    [PlatformConfigScope.System]: {
-        'en': 'System',
-        'zh-TW': '全系統',
-    },
+    [PlatformScope.AdminManagement]: {},
+    [PlatformScope.System]: { ipAccessPolicy: { enabled: false } },
 };
 
 export const platformIpAccessPolicyModeToLabelMap: ReadonlyRecord<PlatformIpAccessPolicyMode, LocalizedMessages> = {
@@ -64,13 +42,6 @@ export const platformIpAccessPolicyModeToLabelMap: ReadonlyRecord<PlatformIpAcce
     [PlatformIpAccessPolicyMode.Blacklist]: {
         'en': 'Blacklist',
         'zh-TW': '黑名單',
-    },
-};
-
-export const platformIpAccessPolicyScopeToLabelMap: ReadonlyRecord<PlatformIpAccessPolicyScope, LocalizedMessages> = {
-    [PlatformIpAccessPolicyScope.AdminManagement]: {
-        'en': 'Admin management',
-        'zh-TW': '總後台',
     },
 };
 
@@ -101,5 +72,16 @@ export const platformIpAccessPolicyCheckReasonToLabelMap: ReadonlyRecord<
     [PlatformIpAccessPolicyCheckReason.NoApplicablePolicy]: {
         'en': 'No applicable IP access policy',
         'zh-TW': '沒有適用的 IP 存取規則',
+    },
+};
+
+export const platformScopeToLabelMap: ReadonlyRecord<PlatformScope, LocalizedMessages> = {
+    [PlatformScope.AdminManagement]: {
+        'en': 'Admin management',
+        'zh-TW': '總後台',
+    },
+    [PlatformScope.System]: {
+        'en': 'System',
+        'zh-TW': '全系統',
     },
 };

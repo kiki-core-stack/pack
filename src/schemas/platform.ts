@@ -1,6 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
-import { PlatformConfigScope } from '../constants/platform';
+import { PlatformScope } from '../constants/platform';
 import * as z from '../libs/zod';
 
 /**
@@ -11,7 +11,7 @@ export const platformConfigVariants = z.discriminatedMap(
     'scope',
     'config',
     {
-        [PlatformConfigScope.AdminManagement]: z.object({}),
-        [PlatformConfigScope.System]: z.object({ ipAccessPolicy: z.object({ enabled: z.boolean() }) }),
-    } satisfies ReadonlyRecord<PlatformConfigScope, z.ZodType>,
+        [PlatformScope.AdminManagement]: z.object({}),
+        [PlatformScope.System]: z.object({ ipAccessPolicy: z.object({ enabled: z.boolean() }) }),
+    } satisfies ReadonlyRecord<PlatformScope, z.ZodType>,
 );

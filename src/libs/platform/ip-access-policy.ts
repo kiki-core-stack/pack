@@ -3,11 +3,10 @@ import { isIP } from 'node:net';
 import ipaddr from 'ipaddr.js';
 
 import {
-    PlatformConfigScope,
     PlatformIpAccessPolicyCheckReason,
     PlatformIpAccessPolicyMode,
+    PlatformScope,
 } from '../../constants/platform';
-import type { PlatformIpAccessPolicyScope } from '../../constants/platform';
 import { PlatformIpAccessPolicyModel } from '../../models/platform/ip-access-policy';
 import type { IpAddressRange } from '../../types/ip';
 import type {
@@ -23,7 +22,6 @@ import {
 } from './_internals/config';
 
 // Constants/Variables
-const globalPlatformIpAccessPolicyTargetKey = 'global';
 const ipv4MappedIpv6AddressRange: IpAddressRange = {
     end: 0xFFFFFFFFFFFFn,
     start: 0xFFFF00000000n,
@@ -33,7 +31,7 @@ const ipv4MappedIpv6AddressRange: IpAddressRange = {
  * 規則開關存在 System 設定中，因此依賴該設定的版本號。
  */
 const platformIpAccessPolicySnapshotCache = new VersionedCache({
-    dependsOn: [platformConfigCache.asDependency(PlatformConfigScope.System)],
+    dependsOn: [platformConfigCache.asDependency(PlatformScope.System)],
     failureTtlSeconds: 3,
     load: loadCompiledPlatformIpAccessPolicySnapshot,
     local: {
@@ -46,17 +44,18 @@ const platformIpAccessPolicySnapshotCache = new VersionedCache({
 // Functions
 /**
  * 檢查所有適用且啟用的IP存取規則；任一黑名單命中或白名單未命中即拒絕。
- * scope 由呼叫端的路由提供，principalId 必須來自該入口已驗證的身分。
+ * scope 由呼叫端的路由提供，未提供時只檢查 `PlatformScope.System` 的規則（一律會檢查）；
+ * principalId 必須來自該入口已驗證的身分。
  * 未提供 principalId 時不匹配指定帳號規則；身分識別後須再檢查。
  * 規則載入／快取操作失敗會拋錯（失敗結果會短暫快取），HTTP 回應由呼叫端決定。
  */
 export async function checkPlatformIpAccessPolicy(
     ip: null | string | undefined,
-    scope?: PlatformIpAccessPolicyScope,
+    scope = PlatformScope.System,
     principalId?: string,
 ): Promise<PlatformIpAccessPolicyCheckResult> {
-    if (principalId !== undefined && scope === undefined) {
-        throw new Error('A principal ID requires an IP access policy scope');
+    if (principalId !== undefined && scope === PlatformScope.System) {
+        throw new Error('A principal ID requires a non-system IP access policy scope');
     }
 
     const snapshot = await platformIpAccessPolicySnapshotCache.get();
@@ -67,8 +66,8 @@ export async function checkPlatformIpAccessPolicy(
         };
     }
 
-    const targetKeys = [globalPlatformIpAccessPolicyTargetKey];
-    if (scope !== undefined) {
+    const targetKeys = [getPlatformIpAccessPolicyTargetKey(PlatformScope.System)];
+    if (scope !== PlatformScope.System) {
         targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope));
         if (principalId !== undefined) targetKeys.push(getPlatformIpAccessPolicyTargetKey(scope, principalId));
     }
@@ -135,7 +134,7 @@ function getIpAddressValue(address: ipaddr.IPv4 | ipaddr.IPv6) {
     return value;
 }
 
-function getPlatformIpAccessPolicyTargetKey(scope: PlatformIpAccessPolicyScope, principalId?: string) {
+function getPlatformIpAccessPolicyTargetKey(scope: PlatformScope, principalId?: string) {
     return principalId === undefined ? `${scope}` : `${scope}:${principalId}`;
 }
 
@@ -144,7 +143,7 @@ function getPlatformIpAccessPolicyTargetKey(scope: PlatformIpAccessPolicyScope, 
  */
 async function loadCompiledPlatformIpAccessPolicySnapshot(): Promise<CompiledPlatformIpAccessPolicySnapshot> {
     const targetKeyToPlatformIpAccessPoliciesMap = new Map<string, CompiledPlatformIpAccessPolicy[]>();
-    const platformConfig = await getUncachedPlatformConfig(PlatformConfigScope.System);
+    const platformConfig = await getUncachedPlatformConfig(PlatformScope.System);
     if (!platformConfig.ipAccessPolicy.enabled) {
         return {
             enabled: false,
@@ -207,11 +206,12 @@ async function loadCompiledPlatformIpAccessPolicySnapshot(): Promise<CompiledPla
 
         const targetKeys = new Set<string>();
         for (const { principalIds, scope } of policy.targets) {
-            if (scope === null) {
-                if (principalIds !== null) throw new Error(`Principal IDs without scope in IP access policy ${id}`);
-                targetKeys.add(globalPlatformIpAccessPolicyTargetKey);
-            } else if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
+            if (principalIds === null) targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope));
             else {
+                if (scope === PlatformScope.System) {
+                    throw new Error(`Principal IDs with system scope in IP access policy ${id}`);
+                }
+
                 if (!principalIds.length) throw new Error(`Empty principal IDs in IP access policy ${id}`);
                 for (const principalId of principalIds) {
                     targetKeys.add(getPlatformIpAccessPolicyTargetKey(scope, principalId.toHexString()));

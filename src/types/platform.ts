@@ -1,8 +1,7 @@
 import type {
-    PlatformConfigScope,
     PlatformIpAccessPolicyCheckReason,
     PlatformIpAccessPolicyMode,
-    PlatformIpAccessPolicyScope,
+    PlatformScope,
 } from '../constants/platform';
 import type { platformConfigVariants } from '../schemas/platform';
 
@@ -16,7 +15,7 @@ import type {
 
 export type PlatformConfigByScope = ZodSchemaMapOutput<typeof platformConfigVariants['schemas']>;
 export type PlatformConfigInputByScope = ZodSchemaMapInput<typeof platformConfigVariants['schemas']>;
-export type PlatformConfigVariant<S extends PlatformConfigScope = PlatformConfigScope> = DiscriminatedFieldVariant<
+export type PlatformConfigVariant<S extends PlatformScope = PlatformScope> = DiscriminatedFieldVariant<
     'scope',
     'config',
     PlatformConfigByScope,
@@ -42,17 +41,18 @@ export type PlatformIpAccessPolicyCheckResult =
   };
 
 /**
- * scope 為 null 表示全域；principalIds 為 null 表示該入口的所有請求，指定帳號時必須為非空陣列。
+ * `PlatformScope.System` 表示所有請求，不可指定帳號。
+ * 其他 scope 的 principalIds 為 null 表示該入口的所有請求，指定帳號時必須為非空陣列；
  * 帳號所屬的 model 由 scope 決定（見 model 的 scope 對應表）。
  */
 export type PlatformIpAccessPolicyTarget =
   | {
       principalIds: null;
-      scope: null;
+      scope: PlatformScope.System;
   }
   | {
       principalIds: null | string[];
-      scope: PlatformIpAccessPolicyScope;
+      scope: Exclude<PlatformScope, PlatformScope.System>;
   };
 
 export interface CompiledPlatformIpAccessPolicy {
