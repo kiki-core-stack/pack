@@ -43,7 +43,6 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - permission.ts：`definePermissions`、`hasPermission`、`expandPermissionRequirements`。
   - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板、generator 設定（`config.yaml`，額外產生 `api-classes.ts`）與固定的 generator 版本。
   - api-client/：前端 API 呼叫：`toApiClientFailureResponse`（攔截器把失敗轉為 envelope 回應）、`OpenApiClientBase`／`configureOpenApiClient`（產生的 API 類別以 `XxxApi.use()` 取得實例）。
-  - authentication-session/：登入 session 與 QR Code 登入（Redis）。
   - 其餘：email／sms 發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
 - models/：mongoose model。
 - stores/、storages/：快取。`storages` 是底層實例（LRU、Redis），`stores` 是建立在其上的各領域 keyed store。

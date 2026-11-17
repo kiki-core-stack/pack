@@ -13,7 +13,6 @@ export interface AdminChangePasswordData {
 
 export interface AdminData extends BaseMongooseModelData {
     account: string;
-    authenticationRevision?: number;
     email?: string;
     enabled: boolean;
     isSuperAdmin: boolean;
