@@ -3,15 +3,9 @@ import type { Context } from 'hono';
 import { authVerificationHeaderName } from '../../../constants/auth';
 import { assertAuthIpAccess } from '../../../libs/auth/access';
 import { AuthError } from '../../../libs/auth/error';
-import {
-    findAuthPrincipalSetting,
-    hasAuthSecondFactor,
-} from '../../../libs/auth/principal-setting';
 import type { AuthRealm } from '../../../libs/auth/realm';
 import {
-    authenticateAuthToken,
-    ensureAuthPrincipalActive,
-    revokeAuthSession,
+    authenticateAuthSession,
     touchAuthSession,
 } from '../../../libs/auth/session';
 import { consumeAuthVerificationGrant } from '../../../libs/auth/verification';
@@ -63,18 +57,6 @@ export function createHonoAuth<P extends AuthPrincipal>(realm: AuthRealm<P>, opt
     }
 
     /**
-     * A restricted session only exists to set up the account's first second factor. Once the account has one (set up
-     * through another session), the restricted session is revoked: its holder has to log in again and pass the second
-     * step.
-     */
-    async function isStaleRestrictedSession(session: AuthSession) {
-        if (!session.restricted) return false;
-        if (!hasAuthSecondFactor(realm, await findAuthPrincipalSetting(realm, session.principalId))) return false;
-        await revokeAuthSession(realm, session.principalId, session.id);
-        return true;
-    }
-
-    /**
      * Authenticates the request and enforces the route's auth requirements; sets `ctx.authSession`.
      *
      * In order: session (secret, generation, timeouts), principal still active (re-checked about every 60 seconds),
@@ -87,15 +69,8 @@ export function createHonoAuth<P extends AuthPrincipal>(realm: AuthRealm<P>, opt
         const token = getAuthSessionToken(ctx, realm);
         let session: AuthSession | undefined;
         if (token) {
-            const authenticated = await authenticateAuthToken(realm, token);
-            const principalActive = authenticated && (
-                authenticated.principalActiveMarked
-                || await ensureAuthPrincipalActive(realm, authenticated.session.principalId)
-            );
-
-            const valid = principalActive && !await isStaleRestrictedSession(authenticated.session);
-            if (valid) session = authenticated.session;
-            else deleteAuthSessionCookie(ctx, realm);
+            session = await authenticateAuthSession(realm, token);
+            if (!session) deleteAuthSessionCookie(ctx, realm);
         }
 
         // Sibling entrances under the same registrable domain are same-site, so SameSite cookies do not stop them.

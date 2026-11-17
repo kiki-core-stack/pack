@@ -369,5 +369,6 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | `setTwoFactorEnforced` | 設定或取消強制雙重驗證（`{ enforced }`；取消需操作者的 `auth.manageTwoFactor`） |
 | `resetTwoFactor` | 重設雙重驗證（需操作者的 `auth.manageTwoFactor`） |
 
-- ws.io 的連線驗證以 `getAuthRealm(name)` 取得 realm 後呼叫同一個工作階段驗證（`authenticateAuthToken`）；握手時的 `Origin` 檢查與斷線通知（`onSessionsRevoked`）由下游實作。
+- ws.io 的連線驗證：ws.io-server 把 cookie 的 token 與來源 IP 交給後端的內部路由，後端以 `getAuthRealm(name)` 取得 realm 後呼叫 `authenticateAuthConnection(realm, token, { ip })`（`libs/auth/access.ts`）。它與 HTTP 的 `authenticate` 共用 `authenticateAuthSession`（secret、世代、期限、帳號啟用、受限工作階段是否仍需要），另外拒絕受限工作階段並檢查 IP 存取政策，但不順延工作階段。ws.io-server 在握手時驗證一次，連線期間定期重新驗證，收到 4xx 即斷線；握手時的 `Origin` 檢查由 ws.io-server 自行處理。
+- 踢除時的即時斷線：realm 的 `onSessionsRevoked` 發出 `WsIoEventNames.ToServer.AuthSessionsRevoked`（realm 名稱、帳號、工作階段 ID），ws.io-server 中斷綁在這些工作階段上的連線；用戶端重連後驗證不過才視為被登出（變更密碼與踢除其他裝置會為目前裝置換發工作階段，重連即可）。通知失敗只記錄錯誤，正確性由定期重新驗證保證。
 - 前端頁面（登入、安全性設定、裝置管理、QR 核准頁 `/auth/qr-code-login/`）在 admin-frontend 實作，其他前端自行複製調整。

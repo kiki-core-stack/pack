@@ -116,6 +116,9 @@
     "@kikiutils/mongoose": {
       "optional": true
     },
+    "@simplewebauthn/server": {
+      "optional": true
+    },
     "axios": {
       "optional": true
     },

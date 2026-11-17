@@ -7,6 +7,13 @@ export namespace WsIoEvents {
     export interface ToManagementBackend {}
 
     export interface ToServer {
-        [WsIoEventNames.ToServer.Test]: () => void;
+        /**
+         * 工作階段被踢除（realm 的 `onSessionsRevoked`）；ws.io-server 中斷綁在這些工作階段上的連線。
+         */
+        [WsIoEventNames.ToServer.AuthSessionsRevoked]: (
+            realm: string,
+            principalId: string,
+            sessionIds: string[],
+        ) => void;
     }
 }

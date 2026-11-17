@@ -25,5 +25,5 @@ export const ToManagementBackend = /* @__PURE__ */ createEnumObject(
 
 export const ToServer = /* @__PURE__ */ createEnumObject(
     'ToServer',
-    ['Test'] as const,
+    ['AuthSessionsRevoked'] as const,
 );

@@ -21,15 +21,11 @@ import {
     recordAuthEvent,
     truncateAuthUserAgent,
 } from './event';
+import {
+    findAuthPrincipalSetting,
+    hasAuthSecondFactor,
+} from './principal-setting';
 import type { AuthRealm } from './realm';
-
-export interface AuthenticatedAuthSession {
-    /**
-     * 「已確認帳號啟用」的標記是否仍存在；不存在時呼叫端須以 `ensureAuthPrincipalActive` 重新確認。
-     */
-    principalActiveMarked: boolean;
-    session: AuthSession;
-}
 
 export interface CreateAuthSessionInput {
     approvedBySessionId?: string;
@@ -62,12 +58,30 @@ const tokenPartPattern = /^[\w-]{16,64}$/;
 // Functions
 
 /**
- * 以 token 驗證工作階段：比對 secret、世代與期限。一次 Redis 往返讀取工作階段、世代計數與帳號啟用標記。
+ * 以 token 驗證工作階段，HTTP 請求與長連線（例如 ws.io）共用。依序確認：
+ * - secret、世代與期限。
+ * - 帳號仍存在且啟用（約每 60 秒重新查詢一次；不通過時踢除該帳號的全部工作階段）。
+ * - 受限工作階段仍有存在的必要：帳號已有第二因子（由另一個工作階段完成設定）時踢除，持有者必須重新登入並通過第二步。
+ *
+ * 不檢查 IP 存取政策、不順延工作階段，也不區分受限與否，由呼叫端依用途處理。
  */
-export async function authenticateAuthToken(
-    realm: AuthRealm<any>,
-    token: string,
-): Promise<AuthenticatedAuthSession | undefined> {
+export async function authenticateAuthSession(realm: AuthRealm<any>, token: string): Promise<AuthSession | undefined> {
+    const authenticated = await authenticateAuthToken(realm, token);
+    if (!authenticated) return;
+    const { session } = authenticated;
+    if (!authenticated.principalActiveMarked && !await ensureAuthPrincipalActive(realm, session.principalId)) return;
+    if (session.restricted && hasAuthSecondFactor(realm, await findAuthPrincipalSetting(realm, session.principalId))) {
+        await revokeAuthSession(realm, session.principalId, session.id);
+        return;
+    }
+
+    return session;
+}
+
+/**
+ * 比對 token 的 secret、世代與期限。一次 Redis 往返讀取工作階段、世代計數與帳號啟用標記（是否仍在 60 秒內確認過）。
+ */
+async function authenticateAuthToken(realm: AuthRealm<any>, token: string) {
     const [
         principalId,
         sessionId,
@@ -170,7 +184,7 @@ export async function createAuthSession(
 /**
  * 查詢資料庫確認帳號存在且啟用：通過則寫入 60 秒的標記（所有 worker 與機器共用），不通過則全部踢除並回傳 false。
  */
-export async function ensureAuthPrincipalActive<P extends AuthPrincipal>(realm: AuthRealm<P>, principalId: string) {
+async function ensureAuthPrincipalActive<P extends AuthPrincipal>(realm: AuthRealm<P>, principalId: string) {
     const principal = await realm.findPrincipalById(principalId);
     if (!principal || !realm.isPrincipalActive(principal)) {
         await revokeAllAuthSessions(realm, principalId);
