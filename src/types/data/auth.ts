@@ -25,7 +25,10 @@ export type AuthLoginResultData =
   };
 
 export interface AuthChangePasswordData {
-    currentPassword: string;
+    /**
+     * 需要目前密碼時才填（見安全性總覽的 `passwordChangeRequiresCurrentPassword`）。
+     */
+    currentPassword?: string;
     newPassword: string;
 }
 
@@ -94,12 +97,21 @@ export interface AuthRecoveryCodesData {
  * 帳號的安全性設定總覽。
  */
 export interface AuthSecurityOverviewData {
+    /**
+     * 帳號是否已設定密碼；以外部身分註冊的帳號可能沒有。
+     */
+    hasPassword: boolean;
     passkeys: AuthPasskeyData[];
 
     /**
      * 此 realm 是否支援 passkey。
      */
     passkeySupported: boolean;
+
+    /**
+     * 變更密碼是否要輸入目前密碼；否則只需高危操作驗證。
+     */
+    passwordChangeRequiresCurrentPassword: boolean;
     qrCodeLoginEnabled: boolean;
     recoveryCodesRemaining: number;
     totpConfirmedAt?: string;
@@ -119,6 +131,16 @@ export interface AuthSecurityOverviewData {
          */
         required: boolean;
     };
+}
+
+/**
+ * 寄出驗證碼的結果。
+ */
+export interface AuthSentCodeData {
+    /**
+     * 遮罩後的收件位址，realm 有提供時才有。
+     */
+    destinationHint?: string;
 }
 
 export interface AuthSessionData {

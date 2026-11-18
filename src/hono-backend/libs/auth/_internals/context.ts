@@ -5,14 +5,41 @@ import {
     setCookie,
 } from 'hono/cookie';
 
+import type { AuthLoginOutcome } from '../../../../libs/auth/login';
 import type { AuthRealm } from '../../../../libs/auth/realm';
 import { revokeAuthSession } from '../../../../libs/auth/session';
 import type { CreatedAuthSession } from '../../../../libs/auth/session';
 import type { AuthRequestInfo } from '../../../../types/auth';
+import type { AuthLoginResultData } from '../../../../types/data/auth';
 import type { HonoAuthOptions } from '../../../types/auth';
 import { createApiSuccessResponseData } from '../../api';
 
 // Functions
+
+/**
+ * Applies the outcome of a login to the response and returns what the client is told: a completed login sets the
+ * session cookie, and one waiting for its second factor only hands out the challenge.
+ */
+export async function applyAuthLoginOutcome(
+    ctx: Context,
+    realm: AuthRealm<any>,
+    outcome: AuthLoginOutcome,
+): Promise<AuthLoginResultData> {
+    if (outcome.state === 'secondFactorRequired') {
+        return {
+            challengeId: outcome.challengeId,
+            factors: outcome.factors,
+            state: outcome.state,
+        };
+    }
+
+    await replaceAuthSessionCookie(ctx, realm, outcome.created);
+    return {
+        restricted: outcome.created.session.restricted,
+        state: outcome.state,
+    };
+}
+
 export function createApiSuccessResponse<D extends object | undefined = undefined>(ctx: Context, data?: D) {
     return ctx.json(createApiSuccessResponseData(data));
 }

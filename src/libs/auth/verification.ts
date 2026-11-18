@@ -1,21 +1,22 @@
 import type {
-    AuthFactor,
     AuthPrincipal,
     AuthRequestInfo,
     AuthSession,
 } from '../../types/auth';
+import type { AuthSentCodeData } from '../../types/data/auth';
 
 import {
     consumeAuthChallenge,
     createAuthChallenge,
 } from './challenge';
+import { createAuthCode } from './code';
 import { AuthError } from './error';
-import { verifyAuthFactor } from './factor';
-import type { AuthFactorProof } from './factor';
 import {
-    findAuthPrincipalSetting,
-    listAuthSecondFactors,
-} from './principal-setting';
+    listAuthVerificationFactors,
+    verifyAuthFactor,
+} from './factor';
+import type { AuthFactorProof } from './factor';
+import { findAuthPrincipalSetting } from './principal-setting';
 import type { AuthRealm } from './realm';
 
 interface VerificationGrant {
@@ -47,17 +48,17 @@ export async function consumeAuthVerificationGrant(
         && grant.sessionId === session.id
     ) return;
 
-    // 帳號沒有任何第二因子時改用密碼驗證。
-    const factors: AuthFactor[] = listAuthSecondFactors(
-        realm,
-        await findAuthPrincipalSetting(realm, session.principalId),
-    );
-
+    const principal = await realm.findPrincipalById(session.principalId);
+    if (!principal) throw new AuthError('sessionInvalid');
     throw new AuthError(
         'verificationRequired',
         {
             data: {
-                factors: factors.length ? factors : ['password'],
+                factors: listAuthVerificationFactors(
+                    realm,
+                    principal,
+                    await findAuthPrincipalSetting(realm, session.principalId),
+                ),
                 operation,
             },
         },
@@ -87,4 +88,34 @@ export async function createAuthVerificationGrant<P extends AuthPrincipal>(
             sessionId: session.id,
         } satisfies VerificationGrant,
     );
+}
+
+/**
+ * 寄出高危操作驗證用的驗證碼。驗證碼不是這個帳號可用的因子、或帳號沒有可用的收件位址時拋出
+ * `verificationCodeUnavailable`。
+ */
+export async function sendAuthVerificationCode<P extends AuthPrincipal>(
+    realm: AuthRealm<P>,
+    session: AuthSession,
+): Promise<AuthSentCodeData> {
+    const principal = await realm.findPrincipalById(session.principalId);
+    if (!principal) throw new AuthError('sessionInvalid');
+    const setting = await findAuthPrincipalSetting(realm, session.principalId);
+    if (!realm.messenger || !listAuthVerificationFactors(realm, principal, setting).includes('code')) {
+        throw new AuthError('verificationCodeUnavailable');
+    }
+
+    // 沒寄出的驗證碼沒有人知道，留到過期即可。
+    const code = await createAuthCode(realm.name, 'verification', session.principalId);
+    if (
+        !await realm.messenger.send(
+            principal,
+            {
+                code,
+                purpose: 'verification',
+            },
+        )
+    ) throw new AuthError('verificationCodeUnavailable');
+
+    return { destinationHint: realm.messenger.getDestinationHint?.(principal) };
 }

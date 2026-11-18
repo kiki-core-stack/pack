@@ -12,6 +12,7 @@ export enum AuthEventType {
     PasskeyAdded = 4,
     PasskeyRemoved = 5,
     PasswordChanged = 6,
+    PasswordReset = 20,
     QrCodeLoginApproved = 7,
     QrCodeLoginRejected = 8,
     RateLimited = 9,
@@ -32,9 +33,11 @@ export enum AuthEventType {
 export const authVerificationHeaderName = 'x-auth-verification';
 
 /**
- * 登入或高危操作驗證所使用的因子。
+ * 登入或高危操作驗證所使用的因子。`code` 是 realm 寄出的一次性驗證碼，`external` 是由外部驗證的身分（例如 OAuth）。
  */
 export const authFactors = [
+    'code',
+    'external',
     'passkey',
     'password',
     'recoveryCode',
@@ -96,6 +99,10 @@ export const authEventTypeToLabelMap: ReadonlyRecord<AuthEventType, LocalizedMes
         'en': 'Password changed',
         'zh-TW': '變更密碼',
     },
+    [AuthEventType.PasswordReset]: {
+        'en': 'Password reset',
+        'zh-TW': '重設密碼',
+    },
     [AuthEventType.QrCodeLoginApproved]: {
         'en': 'QR code login approved',
         'zh-TW': '核准 QR Code 登入',
@@ -147,6 +154,14 @@ export const authEventTypeToLabelMap: ReadonlyRecord<AuthEventType, LocalizedMes
 };
 
 export const authFactorToLabelMap: ReadonlyRecord<ArrayValues<typeof authFactors>, LocalizedMessages> = {
+    code: {
+        'en': 'Verification code',
+        'zh-TW': '驗證碼',
+    },
+    external: {
+        'en': 'External account',
+        'zh-TW': '外部帳號',
+    },
     passkey: {
         'en': 'Passkey',
         'zh-TW': '密碼金鑰',

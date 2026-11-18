@@ -18,6 +18,7 @@ export const {
     tooManyAttempts,
     totpAlreadyConfigured,
     twoFactorEnforced,
+    verificationCodeUnavailable,
     verificationRequired,
 } = defineApiErrors({
     challengeExpired: {
@@ -139,6 +140,18 @@ export const {
             'zh-TW': '此帳號必須使用雙重驗證',
         },
         status: 409,
+    },
+
+    /**
+     * The realm has no messenger, or the account cannot use a verification code: it has a second factor or no
+     * destination.
+     */
+    verificationCodeUnavailable: {
+        message: {
+            'en': 'Verification codes are not available',
+            'zh-TW': '無法使用驗證碼',
+        },
+        status: 400,
     },
 
     /**

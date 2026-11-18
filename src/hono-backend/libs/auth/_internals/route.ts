@@ -46,6 +46,11 @@ export interface AuthRoutesContext<P extends AuthPrincipal> {
 }
 
 // Constants
+
+// The account string typed in to log in or to reset a password.
+export const accountSchema = z.string().trim().min(1).max(256);
+// A code typed in by the user: TOTP, recovery code or a verification code sent by the realm.
+export const codeSchema = z.string().trim().min(1).max(64);
 export const idSchema = z.string().min(1).max(1024);
 
 // The WebAuthn responses are verified by the WebAuthn library; only their outline is validated here, plus the user
@@ -61,7 +66,7 @@ export const secondFactorProofSchema = z.discriminatedUnion(
     'factor',
     [
         z.object({
-            code: z.string().trim().min(1).max(64),
+            code: codeSchema,
             factor: z.enum([
                 'recoveryCode',
                 'totp',

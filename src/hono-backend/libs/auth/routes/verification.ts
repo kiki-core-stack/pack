@@ -3,12 +3,16 @@ import { createFactory } from 'hono/factory';
 
 import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey';
 import { findAuthPrincipalSetting } from '../../../../libs/auth/principal-setting';
-import { createAuthVerificationGrant } from '../../../../libs/auth/verification';
+import {
+    createAuthVerificationGrant,
+    sendAuthVerificationCode,
+} from '../../../../libs/auth/verification';
 import * as z from '../../../../libs/zod/backend';
 import type { AuthPrincipal } from '../../../../types/auth';
 import { apiValidator } from '../../api/validator';
 import { createApiSuccessResponse } from '../_internals/context';
 import {
+    codeSchema,
     defineAuthRoute,
     secondFactorProofSchema,
 } from '../_internals/route';
@@ -20,6 +24,10 @@ const verificationProofSchema = z.discriminatedUnion(
     'factor',
     [
         ...secondFactorProofSchema.options,
+        z.object({
+            code: codeSchema,
+            factor: z.literal('code'),
+        }),
         z.object({
             factor: z.literal('password'),
             password: z.string().min(1),
@@ -74,6 +82,16 @@ export function createAuthVerificationRoutes<P extends AuthPrincipal>({
                     'verification',
                     await findAuthPrincipalSetting(realm, getSession(ctx).principalId),
                 ),
+            ),
+        ),
+        /**
+         * Sends the account a verification code to verify with; only for accounts without a second factor.
+         */
+        sendCode: defineAuthRoute(
+            {},
+            async (ctx: Context) => createApiSuccessResponse(
+                ctx,
+                await sendAuthVerificationCode(realm, getSession(ctx)),
             ),
         ),
     };

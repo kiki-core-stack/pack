@@ -19,6 +19,14 @@ type AuthAttemptKind = keyof typeof authRateLimits;
  * 預設門檻，說明見 `docs/auth.md` 的「防暴力破解」。
  */
 const authRateLimits = {
+    codeBySubject: {
+        limit: 5,
+        windowSeconds: 900,
+    },
+    codeSendBySubject: {
+        limit: 5,
+        windowSeconds: 900,
+    },
     currentPasswordByPrincipal: {
         limit: 5,
         windowSeconds: 900,
@@ -28,6 +36,10 @@ const authRateLimits = {
         windowSeconds: 900,
     },
     passwordByIdentifierAndIp: {
+        limit: 5,
+        windowSeconds: 900,
+    },
+    passwordResetSendByPrincipal: {
         limit: 5,
         windowSeconds: 900,
     },
@@ -101,8 +113,27 @@ export async function consumeAuthPrincipalAttempt(
     factor: AuthFactor,
     request?: AuthRequestInfo,
 ) {
+    await recordAuthRateLimitAround(
+        realm,
+        principalId,
+        factor,
+        request,
+        async () => await consumeAuthAttempt(realm.name, kind, principalId),
+    );
+}
+
+/**
+ * 執行會計數的驗證 `verify`；它第一次超過門檻時寫入一筆 `RateLimited` 事件。
+ */
+export async function recordAuthRateLimitAround<T>(
+    realm: AuthRealm<any>,
+    principalId: string,
+    factor: AuthFactor,
+    request: AuthRequestInfo | undefined,
+    verify: () => Promise<T>,
+) {
     try {
-        await consumeAuthAttempt(realm.name, kind, principalId);
+        return await verify();
     } catch (error) {
         if (error instanceof AuthRateLimitError && error.first) {
             await recordAuthEvent(

@@ -3,6 +3,7 @@ import type { Context } from 'hono';
 import { authVerificationHeaderName } from '../../../constants/auth';
 import { assertAuthIpAccess } from '../../../libs/auth/access';
 import { AuthError } from '../../../libs/auth/error';
+import { loginWithAuthExternalIdentity } from '../../../libs/auth/login';
 import type { AuthRealm } from '../../../libs/auth/realm';
 import {
     authenticateAuthSession,
@@ -19,6 +20,7 @@ import type {
 } from '../../types/auth';
 
 import {
+    applyAuthLoginOutcome,
     deleteAuthSessionCookie,
     getAuthRequestInfo,
     getAuthSessionToken,
@@ -99,6 +101,18 @@ export function createHonoAuth<P extends AuthPrincipal>(realm: AuthRealm<P>, opt
         await touchAuthSession(realm, session);
     }
 
+    /**
+     * Logs in an account whose identity the backend has verified by other means (e.g. OAuth), in place of the
+     * password step: sets the session cookie, or returns the second factor challenge when one is needed.
+     */
+    async function loginWithExternalIdentity(ctx: Context, principalId: string) {
+        return await applyAuthLoginOutcome(
+            ctx,
+            realm,
+            await loginWithAuthExternalIdentity(realm, principalId, getAuthRequestInfo(ctx, options)),
+        );
+    }
+
     return {
         assertVerification,
         authenticate,
@@ -111,6 +125,7 @@ export function createHonoAuth<P extends AuthPrincipal>(realm: AuthRealm<P>, opt
             options,
             managementOptions,
         ),
+        loginWithExternalIdentity,
         realm,
         routes: createAuthRoutes(realm, options, assertVerification),
     };

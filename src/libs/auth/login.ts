@@ -45,6 +45,11 @@ import {
 } from './session';
 import type { CreatedAuthSession } from './session';
 
+/**
+ * 登入的第一步所使用的因子。
+ */
+type AuthFirstFactor = Extract<AuthFactor, 'external' | 'password'>;
+
 export type AuthLoginOutcome =
   | {
       challengeId: string;
@@ -57,8 +62,10 @@ export type AuthLoginOutcome =
   };
 
 interface SecondFactorChallenge {
+    firstFactor: AuthFirstFactor;
+
     /**
-     * 驗證密碼之前讀到的世代；第二步以此建立工作階段。
+     * 驗證第一步之前讀到的世代；第二步以此建立工作階段。
      */
     generation: number;
     principalId: string;
@@ -76,7 +83,7 @@ const maxIdentifierLength = 256;
 export async function completeAuthSecondFactorLogin<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     challengeId: string,
-    proof: Exclude<AuthFactorProof, { factor: 'password' }>,
+    proof: Exclude<AuthFactorProof, { factor: 'code' | 'password' }>,
     request: AuthRequestInfo,
 ): Promise<AuthLoginOutcome> {
     const challenge = await getAuthChallenge<SecondFactorChallenge>(realm.name, 'secondFactor', challengeId);
@@ -92,11 +99,47 @@ export async function completeAuthSecondFactorLogin<P extends AuthPrincipal>(
         challenge.principalId,
         challenge.generation,
         [
-            'password',
+            challenge.firstFactor,
             factor,
         ],
         request,
     );
+}
+
+/**
+ * 登入的第一步通過之後：不需要雙重驗證時直接發出工作階段；需要時，已綁定第二因子則回傳 `secondFactor` 挑戰，
+ * 尚未綁定則只發受限工作階段，綁定完成後才換發正常工作階段。
+ */
+async function continueAuthLogin(
+    realm: AuthRealm<any>,
+    principalId: string,
+    generation: number,
+    firstFactor: AuthFirstFactor,
+    request: AuthRequestInfo,
+): Promise<AuthLoginOutcome> {
+    const setting = await findAuthPrincipalSetting(realm, principalId);
+    if (!await isAuthTwoFactorRequired(realm, setting)) {
+        return await issueAuthSession(realm, principalId, generation, [firstFactor], request);
+    }
+
+    if (!hasAuthSecondFactor(realm, setting)) {
+        return await issueAuthSession(realm, principalId, generation, [firstFactor], request, true);
+    }
+
+    await assertAuthIpAccess(realm, request, principalId);
+    return {
+        challengeId: await createAuthChallenge(
+            realm.name,
+            'secondFactor',
+            {
+                firstFactor,
+                generation,
+                principalId,
+            } satisfies SecondFactorChallenge,
+        ),
+        factors: listAuthSecondFactors(realm, setting),
+        state: 'secondFactorRequired',
+    };
 }
 
 /**
@@ -148,6 +191,21 @@ async function issueAuthSession(
         created,
         state: 'completed',
     };
+}
+
+/**
+ * 以外部驗證的身分登入（例如 OAuth）：呼叫端已確認對方就是這個帳號，這裡取代「驗證密碼」這一步，
+ * 之後與密碼登入相同（需要第二因子時回傳 `secondFactor` 挑戰）。帳號不存在或停用時拋出 `invalidCredentials`。
+ */
+export async function loginWithAuthExternalIdentity<P extends AuthPrincipal>(
+    realm: AuthRealm<P>,
+    principalId: string,
+    request: AuthRequestInfo,
+): Promise<AuthLoginOutcome> {
+    const generation = await readAuthSessionGeneration(realm, principalId);
+    const principal = await realm.findPrincipalById(principalId);
+    if (!principal || !realm.isPrincipalActive(principal)) throw new AuthError('invalidCredentials');
+    return await continueAuthLogin(realm, principalId, generation, 'external', request);
 }
 
 /**
@@ -243,27 +301,5 @@ export async function loginWithAuthPassword<P extends AuthPrincipal>(
 
     const principalId = principal._id.toString();
     await clearAuthAttempts(realm.name, 'passwordByIdentifierAndIp', identifierAndIp);
-    const setting = await findAuthPrincipalSetting(realm, principalId);
-    if (!await isAuthTwoFactorRequired(realm, setting)) {
-        return await issueAuthSession(realm, principalId, generation, ['password'], request);
-    }
-
-    // 被強制但尚未綁定任何第二因子：只發受限工作階段，綁定完成後才換發正常工作階段。
-    if (!hasAuthSecondFactor(realm, setting)) {
-        return await issueAuthSession(realm, principalId, generation, ['password'], request, true);
-    }
-
-    await assertAuthIpAccess(realm, request, principalId);
-    return {
-        challengeId: await createAuthChallenge(
-            realm.name,
-            'secondFactor',
-            {
-                generation,
-                principalId,
-            } satisfies SecondFactorChallenge,
-        ),
-        factors: listAuthSecondFactors(realm, setting),
-        state: 'secondFactorRequired',
-    };
+    return await continueAuthLogin(realm, principalId, generation, 'password', request);
 }

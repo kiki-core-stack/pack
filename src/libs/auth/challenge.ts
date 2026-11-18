@@ -6,10 +6,11 @@ import {
 } from './_internals/crypto';
 import { authRedisKey } from './_internals/redis';
 
-export type AuthChallengeType = 'secondFactor' | 'totpSetup' | 'verificationGrant' | 'webauthn';
+export type AuthChallengeType = 'passwordReset' | 'secondFactor' | 'totpSetup' | 'verificationGrant' | 'webauthn';
 
 // Constants
 const authChallengeTtlSeconds: Readonly<Record<AuthChallengeType, number>> = {
+    passwordReset: 900,
     secondFactor: 300,
     totpSetup: 600,
     verificationGrant: 120,

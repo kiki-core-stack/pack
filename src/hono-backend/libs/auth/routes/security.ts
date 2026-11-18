@@ -10,10 +10,6 @@ import { recordAuthEvent } from '../../../../libs/auth/event';
 import { createAuthPasskeyRegistrationOptions } from '../../../../libs/auth/passkey';
 import { changeAuthPassword } from '../../../../libs/auth/password';
 import {
-    findAuthPrincipalSetting,
-    hasAuthSecondFactor,
-} from '../../../../libs/auth/principal-setting';
-import {
     listAuthSessions,
     revokeAuthSession,
     revokeOtherAuthSessions,
@@ -92,7 +88,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                 apiValidator(
                     'json',
                     z.object({
-                        currentPassword: z.string().min(1).max(1024),
+                        currentPassword: z.string().min(1).max(1024).optional(),
                         newPassword: realm.newPasswordSchema ?? strongPasswordSchema,
                     }),
                 ),
@@ -106,13 +102,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                         data.currentPassword,
                         data.newPassword,
                         getRequest(ctx),
-                        // The current password is always required; accounts with a second factor need a
-                        // verification too, consumed only once the current password is confirmed.
-                        async () => {
-                            const setting = await findAuthPrincipalSetting(realm, session.principalId);
-                            if (!hasAuthSecondFactor(realm, setting)) return;
-                            await assertVerification(ctx, authVerificationOperations.changePassword);
-                        },
+                        async () => await assertVerification(ctx, authVerificationOperations.changePassword),
                     );
 
                     // Every session is revoked, this one included.

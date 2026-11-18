@@ -6,6 +6,7 @@ import type * as z from 'zod';
 
 import type { PlatformScope } from '../../constants/platform';
 import type {
+    AuthMessage,
     AuthPrincipal,
     AuthRealmEvent,
 } from '../../types/auth';
@@ -31,7 +32,7 @@ export interface AuthPrincipalModel<P extends AuthPrincipal> {
     exists: (filter: { _id: string }) => PromiseLike<unknown>;
     findById: (id: string) => PromiseLike<null | P>;
     updateOne: (
-        filter: { _id: P['_id']; password: string },
+        filter: { _id: P['_id']; password: null | string },
         update: { $set: { password: string } },
     ) => PromiseLike<{ matchedCount: number }>;
 }
@@ -50,6 +51,21 @@ export interface AuthRealm<P extends AuthPrincipal = AuthPrincipal> extends Read
     getConfig: () => Promise<PlatformAuthConfig>;
     readonly origins: readonly string[];
     readonly webauthn?: Readonly<{ rpId: string }>;
+}
+
+/**
+ * 把驗證碼與重設密碼的 token 寄給帳號的通道；管道（email、簡訊、通訊軟體…）與訊息內容由 realm 決定。
+ */
+export interface AuthRealmMessengerOptions<P extends AuthPrincipal = AuthPrincipal> {
+    /**
+     * 顯示給使用者的遮罩後收件位址，例如 `a***@example.com`。
+     */
+    getDestinationHint?: (principal: P) => string | undefined;
+
+    /**
+     * 寄出訊息，回傳是否寄出；帳號沒有可用的收件位址時回傳 false。
+     */
+    send: (principal: P, message: AuthMessage) => Promisable<boolean>;
 }
 
 export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
@@ -79,7 +95,19 @@ export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
      * 顯示在驗證器 App 與 passkey 提示中的帳號名稱。
      */
     getPrincipalDisplayName: (principal: P) => string;
+
+    /**
+     * 帳號是否已設定密碼；以外部身分註冊的帳號可能沒有。
+     *
+     * @defaultValue 帳號文件的 `password` 為非空字串；有自訂 `verifyPassword` 時一律視為有。
+     */
+    hasPassword?: (principal: P) => boolean;
     isPrincipalActive: (principal: P) => boolean;
+
+    /**
+     * 有填才支援：未登入的重設密碼，以及沒有第二因子的帳號以驗證碼通過高危操作驗證。
+     */
+    messenger?: AuthRealmMessengerOptions<P>;
     model: AuthPrincipalModel<P>;
 
     /**
@@ -108,14 +136,22 @@ export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
      * 允許的來源，用於寫入類請求的 Origin 檢查與 WebAuthn 驗證；可為陣列或以逗號分隔的字串。
      */
     origins: Arrayable<string>;
+
+    /**
+     * 本人變更密碼的方式。`currentPassword`：輸入目前密碼，有第二因子時另需高危操作驗證。
+     * `verification`：只需高危操作驗證。帳號還沒有密碼時一律為後者。
+     *
+     * @defaultValue 'currentPassword'
+     */
+    passwordChange?: 'currentPassword' | 'verification';
     scope: AuthPlatformScope;
 
     /**
      * 寫入新密碼，回傳是否寫入。只能在儲存的密碼仍是 `principal` 載入時的那一個時寫入，否則回傳 false，
      * 不可覆寫期間被其他請求變更的密碼。
      *
-     * @defaultValue 以 `updateOne({ _id, password: <載入時的雜湊> }, { $set: { password } })` 寫入，
-     * 由 model 的雜湊欄位處理雜湊。
+     * @defaultValue 以 `updateOne({ _id, password: <載入時的雜湊，沒有密碼時為 null> }, { $set: { password } })`
+     * 寫入，由 model 的雜湊欄位處理雜湊。
      */
     setPassword?: (principal: P, password: string) => Promise<boolean>;
 

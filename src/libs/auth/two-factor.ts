@@ -19,11 +19,15 @@ import {
 } from './challenge';
 import { AuthError } from './error';
 import { recordAuthEvent } from './event';
-import { toAuthTotpSecretContext } from './factor';
+import {
+    hasAuthPassword,
+    toAuthTotpSecretContext,
+} from './factor';
 import {
     maxAuthPasskeysPerPrincipal,
     verifyAuthPasskeyRegistration,
 } from './passkey';
+import { isAuthCurrentPasswordRequired } from './password';
 import {
     findAuthPrincipalSetting,
     hasAuthSecondFactor,
@@ -128,12 +132,18 @@ export async function getAuthSecurityOverview(
     realm: AuthRealm<any>,
     principalId: string,
 ): Promise<AuthSecurityOverviewData> {
-    const [config, setting] = await Promise.all([
+    const [
+        config,
+        principal,
+        setting,
+    ] = await Promise.all([
         realm.getConfig(),
+        realm.findPrincipalById(principalId),
         findAuthPrincipalSetting(realm, principalId),
     ]);
 
     return {
+        hasPassword: !!principal && hasAuthPassword(realm, principal),
         passkeys: (setting?.passkeys ?? []).map((passkey) => ({
             createdAt: passkey.createdAt.toISOString(),
             deviceType: passkey.deviceType,
@@ -142,6 +152,7 @@ export async function getAuthSecurityOverview(
             name: passkey.name,
         })),
         passkeySupported: !!realm.webauthn,
+        passwordChangeRequiresCurrentPassword: !!principal && isAuthCurrentPasswordRequired(realm, principal),
         qrCodeLoginEnabled: config.qrCodeLoginEnabled,
         recoveryCodesRemaining: setting?.recoveryCodes.filter((recoveryCode) => !recoveryCode.usedAt).length ?? 0,
         totpConfirmedAt: setting?.totp?.confirmedAt.toISOString(),

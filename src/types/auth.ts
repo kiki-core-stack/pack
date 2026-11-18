@@ -11,6 +11,25 @@ import type {
 } from '../constants/auth';
 
 export type AuthFactor = ArrayValues<typeof authFactors>;
+
+/**
+ * 交給 realm 寄給帳號的訊息：
+ *
+ * - `verification`：高危操作驗證用的六位數驗證碼，由使用者輸入。
+ * - `passwordReset`：未登入的重設密碼用的 token，放進前端重設密碼頁的連結（建議放在 fragment）。
+ *   `origin` 是發起請求的前端來源（屬於 realm 的 `origins`），用來組出連結。
+ */
+export type AuthMessage =
+  | {
+      code: string;
+      purpose: 'verification';
+  }
+  | {
+      origin: string;
+      purpose: 'passwordReset';
+      token: string;
+  };
+
 /**
  * 事件紀錄所需的操作情境：操作者（未提供時為帳號本人）、請求資訊與目前的工作階段。
  */

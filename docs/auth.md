@@ -4,9 +4,9 @@
 
 ## 範圍
 
-- 包含：密碼登入、passkey 登入、TOTP、救援碼、QR Code 登入、高危操作驗證、工作階段列表與踢除、防暴力破解、驗證事件紀錄。
+- 包含：密碼登入、passkey 登入、外部身分登入的入口、TOTP、救援碼、QR Code 登入、高危操作驗證、一次性驗證碼、未登入的重設密碼、工作階段列表與踢除、防暴力破解、驗證事件紀錄。
 - 不包含：
-  - 忘記密碼、註冊、第三方登入、新裝置通知信（各專案自行實作，通知可接 `onEvent`）。
+  - 註冊、第三方登入的串接（OAuth 流程、帳號綁定）、驗證碼與重設密碼連結的寄送管道、新裝置通知信（各專案自行實作，通知可接 `onEvent`）。
   - 機器憑證（endpoint token、晶片 token）與 Open API key。它們不是登入身分，只以 scope 接上 IP 存取政策。
 
 ## 名詞
@@ -14,7 +14,7 @@
 - scope：一個入口（`PlatformScope`：`System`、`AdminManagement`，下游從 1000 起新增）。平台設定與 IP 存取政策共用同一個 enum；`System` 代表全系統。
 - realm：一種可登入的身分（`admin`、`agent`、`user`…）。一個 realm 對應一個帳號 model、一個 scope、一組入口網域、一組設定。pack 不定義 realm 的清單，名稱只是字串。
 - principal：realm 內的一個帳號，以 `(realm, principalId)` 識別。
-- 因子：密碼、passkey、TOTP、救援碼（`authFactors`）。
+- 因子：密碼、passkey、TOTP、救援碼、驗證碼（`code`，realm 寄出的一次性驗證碼）、外部身分（`external`，由後端以其他方式驗證的身分，例如 OAuth）（`authFactors`）。
 - 第二因子：passkey、TOTP、救援碼（`authSecondFactors`）。救援碼只是備援：「已綁定第二因子」只看 passkey 與 TOTP。
 
 ## 設定分三處
@@ -59,9 +59,12 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `findPrincipalByIdentifier` | 以登入用的帳號字串（已去除前後空白）找出帳號；不需檢查是否啟用 |
 | `getPrincipalDisplayName` | 顯示在驗證器 App 與 passkey 提示中的帳號名稱 |
 | `isPrincipalActive` | 帳號是否可登入（例如 `enabled`） |
-| `newPasswordSchema` | 選填，變更密碼時新密碼的規則；預設 `strongPasswordSchema` |
+| `newPasswordSchema` | 選填，變更與重設密碼時新密碼的規則；預設 `strongPasswordSchema` |
 | `verifyPassword` | 選填，驗證密碼；預設呼叫帳號文件的 `verifyPassword` |
-| `setPassword` | 選填，寫入新密碼；預設 `model.updateOne({ $set: { password } })`，由 model 的雜湊欄位處理雜湊 |
+| `setPassword` | 選填，寫入新密碼並回傳是否寫入；只在儲存的密碼仍是帳號載入時的那一個時寫入。預設以 `model.updateOne` 帶此條件寫入，由 model 的雜湊欄位處理雜湊 |
+| `hasPassword` | 選填，帳號是否已設定密碼；預設看帳號文件的 `password`，有自訂 `verifyPassword` 時一律視為有 |
+| `passwordChange` | 選填，本人變更密碼的方式：`currentPassword`（預設）或 `verification`，見「密碼」 |
+| `messenger` | 選填，`{ send, getDestinationHint? }`；把驗證碼與重設密碼的 token 寄給帳號的通道，有填才支援這兩項，見「寄送通道與一次性驗證碼」 |
 | `onSessionsRevoked` | 選填，工作階段被踢除後呼叫；失敗只記錄錯誤 |
 | `onEvent` | 選填，每筆驗證事件寫入後呼叫；失敗只記錄錯誤，不影響原本的操作 |
 
@@ -100,7 +103,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 - 取消帳號強制時，若已綁定第二因子則把 `twoFactorEnabled` 設為開啟：已綁定的因子保留並維持啟用，退回第 3 層由本人決定。
 - 有管理權限者可重設帳號的雙重驗證（清除 TOTP、passkey、救援碼、關閉 `twoFactorEnabled` 並踢除全部工作階段），用於裝置遺失；一律留下事件紀錄。帳號仍屬強制範圍時，下次登入會進入受限工作階段重新綁定。
 - TOTP 密鑰不定期輪替；更換密鑰的方式只有本人移除後重新綁定，或由有管理權限者重設。每個帳號最多一組 TOTP。
-- 不允許只有 passkey、沒有密碼的帳號。
+- 帳號可以沒有密碼（例如以外部身分註冊）。有這種帳號的 realm 必須提供寄送通道（`messenger`）：沒有密碼、沒有第二因子、realm 又沒有寄送通道的帳號，無法通過任何高危操作驗證，也就無法設定密碼或綁定因子。
 - 已接受的取捨：雙重驗證被重設後、本人重新登入前，知道密碼的人可以搶先在受限工作階段綁定因子（沒有 email 等其他管道可確認本人）。重設應只在確認本人身分後執行。
 
 ## 儲存
@@ -117,18 +120,19 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `session-generation:<principalId>` | 世代計數；全部踢除時加一 | 無 |
 | `principal-sessions:<principalId>:<generation>` | 該世代的 `sessionId` 集合，供列表與清除使用 | 絕對上限；每次加入成員時重設 |
 | `principal-active:<principalId>` | 「已確認帳號啟用」的標記 | 60 秒 |
-| `challenge:<type>:<sha256(id)>` | 一次性挑戰 | 5 分鐘（`verificationGrant` 為 2 分鐘、`totpSetup` 為 10 分鐘） |
+| `challenge:<type>:<sha256(id)>` | 一次性挑戰 | 5 分鐘（`verificationGrant` 為 2 分鐘、`totpSetup` 為 10 分鐘、`passwordReset` 為 15 分鐘） |
+| `code:<purpose>:<sha256(subject)>` | 一次性驗證碼的雜湊 | 10 分鐘 |
 | `qr-code-login:<sha256(qrToken)>`、`qr-code-login-decision:<sha256(qrToken)>` | QR 登入的請求與決定 | 2 分鐘 |
 | `attempts:<kind>:<sha256(key)>` | 嘗試次數 | 依限流規則 |
 
-挑戰 ID 與 `qrToken` 本身是秘密，Redis 只以其雜湊作為 key；限流的 key 可能含用戶端輸入的字串，同樣雜湊後使用。
+挑戰 ID 與 `qrToken` 本身是秘密，Redis 只以其雜湊作為 key；限流的 key 與驗證碼的對象可能含用戶端輸入的字串，同樣雜湊後使用。
 
 工作階段：
 
 - token 格式為 `<principalId>.<sessionId>.<secret>`；`secret` 為 256 位元亂數，Redis 只存其 SHA-256，以固定時間比對。`sessionId` 可出現在列表與紀錄中，不具登入能力。token 中的 `principalId` 來自用戶端，組成 key 前必須驗證格式。
 - 內容：`secret` 雜湊、建立時的世代計數、建立時間、最後活動時間、IP、User-Agent、登入用的因子、是否受限、核准來源（QR 登入時為核准者的 `sessionId`）、上次寫入時採用的閒置逾時。除最後活動時間與採用的閒置逾時外，建立後不再變動。
 - User-Agent 存原始字串，超過 512 個字元即截斷（事件紀錄與 QR 登入請求亦同）；裝置與瀏覽器名稱在顯示時由前端解析。
-- 建立：世代計數必須在驗證任何因子之前讀取，最後以該世代寫入工作階段並加入該世代的集合。兩步登入時，世代在驗證密碼前讀取並存進 `secondFactor` 挑戰，第二步使用挑戰裡的世代。驗證期間若發生全部踢除（例如同時變更密碼），新工作階段的世代已過期而無效。
+- 建立：世代計數必須在驗證任何因子之前讀取，最後以該世代寫入工作階段並加入該世代的集合。兩步登入時，世代在驗證第一步之前讀取並存進 `secondFactor` 挑戰，第二步使用挑戰裡的世代。驗證期間若發生全部踢除（例如同時變更密碼），新工作階段的世代已過期而無效。
 - 順延：以 `SET … XX EX <ttl>`（存在才寫入）更新最後活動時間與 TTL，已被踢除的工作階段不會被寫回。受限工作階段不順延。
 - 踢除單一工作階段：刪除該 key、呼叫 `onSessionsRevoked`，再從集合移除。登出即踢除目前的工作階段並清除 cookie。
 - 全部踢除（`revokeAllAuthSessions`）：世代計數加一（單一原子指令）。世代與目前計數不符的工作階段一律無效，不會漏掉同時建立中的工作階段。接著讀出上一個世代的集合、刪除其中所有工作階段與集合本身，並呼叫 `onSessionsRevoked`。
@@ -137,7 +141,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
   - 讀出集合之後才建立的工作階段不在對象內。帳號疑似遭盜用時應變更密碼（全部踢除），而不是踢除其他全部。
   - `onSessionsRevoked` 收到的是踢除的對象，可能包含已過期或已被別的請求刪除的 ID。
 - 變更與踢除分屬資料庫與 Redis，無法一起提交。變更密碼與重設雙重驗證以 `revokeAllAuthSessionsAround` 在變更前後各全部踢除一次：先踢除，踢除失敗時變更不會發生；變更後再踢除，清掉兩次踢除之間以舊憑證登入的工作階段。變更後的那次踢除失敗時，只有這段期間以舊憑證登入的工作階段會留下。
-- 本人變更密碼（`changeAuthPassword`）：全部踢除，目前裝置也要重新登入，只記錄 `PasswordChanged`；`AllSessionsRevoked` 只用於管理端的全部踢除。
+- 本人變更密碼（`changeAuthPassword`）：全部踢除，目前裝置也要重新登入，只記錄 `PasswordChanged`；重設密碼（`resetAuthPassword`）同樣全部踢除，記錄 `PasswordReset`。`AllSessionsRevoked` 只用於管理端的全部踢除。
 - 換發（受限工作階段換發正常工作階段）有兩個條件，都不成立就回 `sessionInvalid`：
   - 以「成功刪除來源工作階段」作為放行條件：來源已被單獨踢除時不會被換發。
   - 綁定來源工作階段的世代，不採用「當下最新的世代」：新工作階段沿用來源的世代。換發期間發生全部踢除時，新工作階段的世代已過期，自然無效。
@@ -149,14 +153,15 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 - 不綁定 IP；IP 與裝置只供顯示與紀錄。
 - 不定期輪替 token，只在登入時發新 token；受限工作階段換發正常工作階段時也換新。
 
-一次性挑戰：一筆帶 TTL 的紀錄，只能成功使用一次，且都綁定帳號（未登入的 passkey 登入除外）。
+一次性挑戰：一筆帶 TTL 的紀錄，ID 為 256 位元亂數，只能成功使用一次，且都綁定帳號（未登入的 passkey 登入除外）。
 
 | 類型 | 用途 | 消耗方式 |
 | --- | --- | --- |
-| `secondFactor` | 密碼通過後、等待第二因子的登入中途狀態；記錄帳號與世代 | 先讀取，驗證通過後才刪除，以「刪除成功」（`DEL` 回傳 1）作為唯一的放行條件 |
+| `secondFactor` | 第一步（密碼或外部身分）通過後、等待第二因子的登入中途狀態；記錄帳號、世代與第一步的因子 | 先讀取，驗證通過後才刪除，以「刪除成功」（`DEL` 回傳 1）作為唯一的放行條件 |
 | `webauthn` | WebAuthn challenge；記錄用途（`registration`、`login`、`secondFactor`、`verification`）與綁定的帳號，`registration` 另綁定開始綁定的工作階段 | 讀取即刪除（`GETDEL`），驗證失敗也不可重用 |
 | `totpSetup` | 待確認的 TOTP 密鑰（已加密）；綁定帳號與開始綁定的工作階段 | 確認成功後刪除（同樣以刪除成功放行） |
 | `verificationGrant` | 高危操作驗證通過後的一次性憑據 | 讀取即刪除 |
+| `passwordReset` | 未登入的重設密碼：ID 就是寄給帳號的 token；記錄帳號 | 讀取即刪除 |
 
 `secondFactor` 與 `totpSetup` 驗證失敗不消耗挑戰，可在有效期與限流範圍內重試，不必重新輸入密碼或重新掃描。
 
@@ -206,23 +211,24 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 不依賴 mongoose hook（`updateOne`、批次更新等路徑不會觸發）。
 
-- pack 提供的操作（變更密碼、重設雙重驗證、管理端踢除、帳號停用的兜底）在函式內直接踢除。本人變更密碼時全部踢除，目前裝置也要重新登入；新密碼只在儲存的密碼仍是剛驗證的那一個時寫入（realm 自訂 `setPassword` 時由它保證並回傳是否寫入），不會覆寫期間被管理端重設的密碼。
-- 各專案自行變更密碼或停用帳號的地方（例如忘記密碼、管理端編輯帳號），變更密碼以 `revokeAllAuthSessionsAround(realm, principalId, change)` 包住寫入，停用帳號呼叫 `revokeAllAuthSessions(realm, principalId)`；刪除帳號呼叫 `deleteAuthPrincipalData(realm, principalId)`。
+- pack 提供的操作（變更密碼、重設密碼、重設雙重驗證、管理端踢除、帳號停用的兜底）在函式內直接踢除。本人變更密碼時全部踢除，目前裝置也要重新登入。
+- 各專案自行變更密碼或停用帳號的地方（例如管理端編輯帳號），只寫入密碼時直接呼叫 `resetAuthPassword(realm, principalId, newPassword, context)`；密碼與其他欄位一起寫入時以 `revokeAllAuthSessionsAround(realm, principalId, change)` 包住寫入，停用帳號呼叫 `revokeAllAuthSessions(realm, principalId)`；刪除帳號呼叫 `deleteAuthPrincipalData(realm, principalId)`。
 - 帳號停用另有第 2 步兜底，最長延遲約 60 秒。
 
 ## 錯誤
 
 流程中可預期的失敗一律拋出 `AuthError`（`code` 為 `AuthErrorCode`），`setupHonoAppErrorHandling` 依 `code` 對應到 API 錯誤：`forbidden`、`unauthorized` 對應 `common` 命名空間，其餘對應 `auth` 命名空間的同名錯誤（`hono-backend/api-errors/auth.ts`）。
 
-- `verificationRequired` 的 `errorData` 為 `{ operation, factors }`：要驗證的操作名稱，與帳號可用來驗證的因子（沒有任何第二因子時為 `['password']`）。用戶端據此顯示驗證畫面，取得一次性憑據後以 `X-Auth-Verification` 標頭（常數 `authVerificationHeaderName`）重送原請求。
+- `verificationRequired` 的 `errorData` 為 `{ operation, factors }`：要驗證的操作名稱，與帳號可用來驗證的因子（沒有任何第二因子時為驗證碼與密碼中可用者）。用戶端據此顯示驗證畫面，取得一次性憑據後以 `X-Auth-Verification` 標頭（常數 `authVerificationHeaderName`）重送原請求。
 - 需要憑據的路由先確認其他前置條件（目前密碼、QR 請求仍有效、管理對象存在且可管理）再消耗憑據，這些條件不成立時不會白白用掉憑據。
+- `verificationCodeUnavailable`：realm 沒有寄送通道，或這個帳號不能使用驗證碼（已有第二因子、沒有可用的收件位址）。
 - 帳號不存在、密碼錯誤、帳號停用一律為 `invalidCredentials`，回應不透露帳號是否存在。
 
 ## 流程
 
 登入的第二步與高危操作驗證共用同一個「驗證因子」函式（`verifyAuthFactor`），差別只在通過後發工作階段或發一次性憑據。
 
-- 可用的因子：passkey、TOTP、救援碼；帳號沒有任何第二因子時，高危操作驗證改用密碼（登入第二步不接受密碼）。
+- 可用的因子：passkey、TOTP、救援碼；帳號沒有任何第二因子時，高危操作驗證改用密碼（帳號有密碼時）或驗證碼（realm 有寄送通道時），登入第二步不接受這兩者。
 - 一律先確認限流、再驗證因子（見「防暴力破解」）。
 - 所有登入路徑（密碼、第二因子、passkey、QR 領取）在發出工作階段前都要確認 `isPrincipalActive` 與 IP 存取政策。
 - 以 passkey 驗證時必須確認三件事：憑證屬於挑戰所綁定的帳號、有回傳 user handle 時與該帳號一致、挑戰記錄的用途與目前的操作相符。
@@ -230,9 +236,47 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 ### 登入
 
 - 密碼：限流計數 → 找出帳號 → 讀取世代 → 驗證密碼 → 需要雙重驗證時：已綁定第二因子則回傳 `secondFactor` 挑戰與可用因子（`state: 'secondFactorRequired'`），尚未綁定則發受限工作階段；否則直接發工作階段。帳號不存在時以 dummy hash 維持相同耗時。
-- 第二因子：以挑戰加上 TOTP、passkey 或救援碼完成登入；passkey 的選項以挑戰 ID 取得。新工作階段記錄的因子為 `['password', <第二因子>]`。
+- 外部身分（`loginWithAuthExternalIdentity`，Hono 為 `HonoAuth.loginWithExternalIdentity(ctx, principalId)`）：後端已用其他方式確認對方就是該帳號（例如 OAuth）時呼叫，取代「驗證密碼」這一步；之後與密碼登入相同，需要雙重驗證時照樣回傳 `secondFactor` 挑戰或發受限工作階段。帳號不存在或停用回 `invalidCredentials`。OAuth 流程、帳號的綁定與建立由各專案實作。
+- 第二因子：以挑戰加上 TOTP、passkey 或救援碼完成登入；passkey 的選項以挑戰 ID 取得。新工作階段記錄的因子為 `[<第一步的因子>, <第二因子>]`，第一步的因子為 `password` 或 `external`。
 - passkey：使用 discoverable credential，不需先輸入帳號；以回傳的 user handle 找到帳號；要求使用者驗證（UV），通過即視同已滿足雙重驗證。
 - 登入成功後處理 `maxSessions`、寫入事件紀錄；回應 `{ state: 'completed', restricted }` 並設定 cookie。
+
+### 寄送通道與一次性驗證碼
+
+realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證碼通過高危操作驗證」。pack 負責產生、儲存、限流與驗證，寄送管道（email、簡訊、通訊軟體…）與訊息內容由 realm 的 `messenger.send(principal, message)` 決定；它回傳是否寄出，帳號沒有可用的收件位址時回傳 false。`messenger.getDestinationHint` 選填，回傳顯示給使用者的遮罩後收件位址。
+
+`message`（`AuthMessage`）有兩種：
+
+| `purpose` | 內容 | 用法 |
+| --- | --- | --- |
+| `verification` | `code`：六位數驗證碼 | 使用者在驗證畫面輸入 |
+| `passwordReset` | `token`：256 位元的一次性 token；`origin`：發起請求的前端來源 | realm 以 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄 |
+
+驗證碼只用在已登入的高危操作驗證：六位數靠限流才安全，未登入的重設密碼沒有工作階段可以綁定，對大量帳號同時嘗試時擋不住，因此改用猜不到的 token。
+
+一次性驗證碼（`libs/auth/code.ts` 的 `createAuthCode`／`verifyAuthCode`）：
+
+- 六位數字、有效 10 分鐘，Redis 只存雜湊。同一個 `(用途, 對象)` 只有最新的一組有效。
+- 驗證先計數再比對，通過後以「刪除成功」放行，同一組只能成功一次。猜測次數以 `(用途, 對象)` 計數，通過後歸零，超過門檻即作廢目前的驗證碼；寄出新的一組不會歸零，否則任何人都能靠重新寄送換取更多次猜測。
+- 寄送以 `(用途, 對象)` 限流（見「防暴力破解」）。
+- 以任意字串為對象：高危操作驗證的對象是帳號；各專案可直接用在還沒有帳號的情境（例如註冊時驗證收件位址，對象為收件位址本身、用途自訂），寄送由呼叫端自己處理。
+
+驗證碼證明的是「能收到這個帳號的訊息」，強度不等同第二因子：帳號一旦綁定 passkey 或 TOTP，高危操作驗證就不再接受驗證碼。
+
+### 密碼
+
+- 本人變更密碼（`changeAuthPassword`）依 realm 的 `passwordChange` 分兩種：
+  - `currentPassword`（預設）：必須輸入目前密碼，帳號有第二因子時另需高危操作驗證（`auth.changePassword`）。新密碼只在儲存的密碼仍是剛驗證的那一個時寫入，不會覆寫期間被重設的密碼。
+  - `verification`：只需高危操作驗證，不輸入目前密碼。
+  - 帳號還沒有密碼時不論設定一律只需高危操作驗證，也就是「設定密碼」。安全性總覽的 `hasPassword` 與 `passwordChangeRequiresCurrentPassword` 讓前端決定表單。
+- 未登入的重設密碼（realm 有寄送通道時，否則回 `forbidden`）：
+  1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。`origin` 取自請求的 `Origin` 標頭（已通過 realm 的來源檢查）。
+  2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（匿名路由原本只查全域與 realm 兩層），被限制 IP 的帳號只能從允許的 IP 重設。通過後重設密碼並踢除全部工作階段。
+  - 重設後不發出工作階段：之後照常登入，有第二因子的帳號仍要通過第二步，只拿到收件管道的人無法藉此直接登入。
+  - 同一個帳號可以同時有多個尚未使用的 token，各自在 15 分鐘後過期。token 綁定建立時的工作階段世代：密碼一經變更或重設（或其他全部踢除），之前寄出的 token 全部失效。
+- `resetAuthPassword(realm, principalId, newPassword, context)`：不比對目前密碼直接寫入並踢除全部工作階段，記錄 `PasswordReset`；未登入的重設密碼與各專案只寫入密碼的重設（例如管理端）共用。
+- 所有寫入都以 `revokeAllAuthSessionsAround` 在前後各踢除一次（見「Redis」）。
+- 已接受的取捨：他人可對某個帳號反覆請求重設，用完該帳號的寄送額度（15 分鐘 5 次），使本人在這段時間內收不到新的連結，並收到數封信。
 
 ### TOTP 與救援碼
 
@@ -267,12 +311,12 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 ### 高危操作驗證
 
 - 路由以 meta 的 `verification` 標記所需的操作名稱；handler 內依條件決定時呼叫 `HonoAuth.assertVerification(ctx, operation)`。
-- 用戶端先收到 `verificationRequired`，以「驗證因子」函式驗證（passkey、TOTP、救援碼；沒有任何第二因子時用密碼），passkey 的選項另有路由取得。
+- 用戶端先收到 `verificationRequired`，以「驗證因子」函式驗證（passkey、TOTP、救援碼；沒有任何第二因子時用密碼或驗證碼），passkey 的選項與驗證碼的寄送另有路由。
 - 通過後取得 `verificationGrant`：綁定帳號、`sessionId` 與操作名稱、一次性、有效 2 分鐘，沒有放行期。操作名稱可帶目標 ID（例如 `deleteProject:<id>`），讓憑據只對該目標有效。用戶端以 `X-Auth-Verification` 標頭帶上，讀取即刪除並比對，不符即回 `verificationRequired`。
 - 內建需要驗證的操作（`authVerificationOperations`）：
   - `auth.addFactor`：新增 passkey 或 TOTP（受限工作階段的首次綁定除外）。
   - `auth.removeFactor`、`auth.disableTwoFactor`、`auth.regenerateRecoveryCodes`：移除因子、關閉雙重驗證、重新產生救援碼。
-  - `auth.changePassword`：變更密碼一律要輸入目前密碼；帳號有 passkey 或 TOTP 時另需高危驗證。
+  - `auth.changePassword`：變更密碼（何時需要見「密碼」）。
   - `auth.approveQrCodeLogin`：核准 QR 登入（依平台設定）。
   - `auth.manageTwoFactor`：管理端的重設雙重驗證與取消 `twoFactorEnforced`；操作者需先在自己的 realm 通過高危驗證（設定強制不需要）。
 
@@ -294,8 +338,11 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | 密碼登入 | 「輸入的帳號」（`passwordByIdentifier`） | 20 次／15 分鐘 |
 | 第二因子（登入第二步、高危驗證） | 帳號（`secondFactorByPrincipal`） | 5 次／15 分鐘 |
 | 目前密碼（變更密碼、沒有第二因子時以密碼做高危驗證） | 帳號（`currentPasswordByPrincipal`） | 5 次／15 分鐘 |
+| 驗證碼的猜測（含沒有第二因子時以驗證碼做高危驗證） | 「用途加對象」（`codeBySubject`） | 5 次／15 分鐘 |
+| 寄送驗證碼 | 「用途加對象」（`codeSendBySubject`） | 5 次／15 分鐘 |
+| 寄送重設密碼的 token | 帳號（`passwordResetSendByPrincipal`） | 5 次／15 分鐘 |
 | 確認 TOTP 綁定 | 帳號（`totpSetupByPrincipal`） | 5 次／15 分鐘 |
-| 未登入即可建立的紀錄（QR 登入請求、passkey 登入的挑戰） | IP（`unauthenticatedChallengeByIp`） | 30 次／分鐘 |
+| 未登入即可建立的紀錄（QR 登入請求、passkey 登入的挑戰、重設密碼的請求） | IP（`unauthenticatedChallengeByIp`） | 30 次／分鐘 |
 
 - 輸入的帳號字串先正規化（去除前後空白、限制長度、轉小寫）再作為計數的 key，不論帳號是否存在都計數，回應不因帳號存在與否而不同。
 - 密碼分兩個維度，讓單一來源的錯誤嘗試先被自己的門檻擋下。密碼登入成功只清除「帳號加 IP」的計數。
@@ -310,9 +357,9 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | 位置 | 內容 |
 | --- | --- |
 | `constants/auth.ts` | `AuthEventType`、`authFactors`、`authSecondFactors`、`authVerificationOperations`、`authVerificationHeaderName` 與顯示名稱對照 |
-| `libs/auth/` | `defineAuthRealm`（`realm.ts`）、工作階段（`session.ts`）、挑戰、登入、因子驗證、TOTP、救援碼、passkey、QR 登入、高危驗證（`verification.ts`）、帳號設定與其唯一的變更入口（`principal-setting.ts`）、雙重驗證與因子的操作（`two-factor.ts`）、變更密碼（`password.ts`）、刪除帳號時的清除（`principal.ts`）、限流、IP 存取、事件紀錄、`AuthError`、秘密加密 |
+| `libs/auth/` | `defineAuthRealm`（`realm.ts`）、工作階段（`session.ts`）、挑戰、登入、因子驗證、TOTP、救援碼、passkey、QR 登入、高危驗證（`verification.ts`）、一次性驗證碼（`code.ts`）、帳號設定與其唯一的變更入口（`principal-setting.ts`）、雙重驗證與因子的操作（`two-factor.ts`）、變更與重設密碼（`password.ts`）、刪除帳號時的清除（`principal.ts`）、限流、IP 存取、事件紀錄、`AuthError`、秘密加密 |
 | `models/auth/` | `AuthPrincipalSetting`、`AuthEvent` |
-| `hono-backend/libs/auth/` | `createHonoAuth(realm, { getClientIp })`（`index.ts`）；路由處理函式依群組放在 `routes/`（`login.ts`、`qr-code-login.ts`、`security.ts`、`verification.ts`、`management.ts`） |
+| `hono-backend/libs/auth/` | `createHonoAuth(realm, { getClientIp })`（`index.ts`）；路由處理函式依群組放在 `routes/`（`login.ts`、`password-reset.ts`、`qr-code-login.ts`、`security.ts`、`verification.ts`、`management.ts`） |
 | `hono-backend/types/auth.ts` | `AuthRouteMeta`、`AuthRouteDefinition`、`ctx.authSession` |
 | `hono-backend/api-errors/auth.ts` | 驗證相關錯誤碼 |
 | `types/auth.ts`、`types/data/auth.ts`、`schemas/api.ts` | 工作階段與事件型別、前端看到的資料型別、`verificationRequired` 的 errorData schema |
@@ -323,7 +370,8 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | --- | --- |
 | `authenticate(ctx, meta)` | 每次請求的驗證（見上方），由後端的 route middleware 呼叫 |
 | `assertVerification(ctx, operation)` | 消耗 `X-Auth-Verification` 標頭的一次性憑據 |
-| `routes` | 本人使用的路由處理函式，分為 `login`、`qrCodeLogin`、`security`、`verification` 四組，另有 `logout`（見下表） |
+| `loginWithExternalIdentity(ctx, principalId)` | 以外部驗證的身分登入：設定 cookie 並回傳登入結果（`AuthLoginResultData`），由各專案自己的路由呼叫 |
+| `routes` | 本人使用的路由處理函式，分為 `login`、`passwordReset`、`qrCodeLogin`、`security`、`verification` 五組，另有 `logout`（見下表） |
 | `createManagementRoutes({ getActor, assertActorVerification, getTargetPrincipalId? })` | 管理他人帳號的路由處理函式；`getTargetPrincipalId` 預設取路由參數 `id` 並確認存在，可改為以權限與資料範圍篩選 |
 | `realm` | 傳入的 realm |
 
@@ -339,14 +387,17 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | `login.getPasskeyOptions` | passkey 登入的選項（按 IP 限流） | `noLoginRequired` |
 | `login.passkey` | passkey 登入 | `noLoginRequired` |
 | `logout` | 登出並清除 cookie | `noLoginRequired` |
+| `passwordReset.request` | 請求重設密碼（`account`）；一律回成功 | `noLoginRequired` |
+| `passwordReset.complete` | 以收到的 token 重設密碼（`token`、`newPassword`） | `noLoginRequired` |
 | `qrCodeLogin.create` | 建立 QR 登入請求 | `noLoginRequired` |
 | `qrCodeLogin.poll` | 輪詢並領取 | `noLoginRequired` |
 | `qrCodeLogin.getInfo` | 已登入裝置查詢請求方資訊 | |
 | `qrCodeLogin.approve` | 核准（依平台設定要求高危驗證） | |
 | `qrCodeLogin.reject` | 拒絕 | |
 | `verification.getPasskeyOptions` | 高危驗證的 passkey 選項 | |
+| `verification.sendCode` | 寄出高危驗證用的驗證碼，回傳遮罩後的收件位址（只有沒有第二因子的帳號可用） | |
 | `verification.create` | 高危驗證，回傳一次性憑據（`operation`、`proof`） | |
-| `security.getOverview` | 安全性總覽（因子、雙重驗證狀態、剩餘救援碼、是否支援 passkey 與 QR 登入） | `allowRestrictedSession` |
+| `security.getOverview` | 安全性總覽（因子、雙重驗證狀態、剩餘救援碼、是否已有密碼、變更密碼是否需要目前密碼、是否支援 passkey 與 QR 登入） | `allowRestrictedSession` |
 | `security.getPasskeyRegistrationOptions` | 綁定 passkey 的選項（需 `auth.addFactor`，受限工作階段除外） | `allowRestrictedSession` |
 | `security.registerPasskey` | 綁定 passkey；受限工作階段換發正常工作階段 | `allowRestrictedSession` |
 | `security.renamePasskey` | passkey 改名（路由參數 `id`：credential ID） | |
@@ -356,7 +407,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 | `security.removeTotp` | 移除 TOTP | `verification: auth.removeFactor` |
 | `security.regenerateRecoveryCodes` | 重新產生救援碼 | `verification: auth.regenerateRecoveryCodes` |
 | `security.setTwoFactorEnabled` | 本人開啟或關閉雙重驗證（關閉需 `auth.disableTwoFactor`） | |
-| `security.changePassword` | 變更密碼並踢除全部工作階段，含目前裝置（有第二因子時需 `auth.changePassword`） | |
+| `security.changePassword` | 變更或設定密碼並踢除全部工作階段，含目前裝置（`currentPassword?`、`newPassword`；見「密碼」） | |
 | `security.listSessions` | 列出自己的工作階段 | |
 | `security.revokeSession` | 踢除指定工作階段（路由參數 `id`） | |
 | `security.revokeOtherSessions` | 踢除其他全部，目前的工作階段不變 | |

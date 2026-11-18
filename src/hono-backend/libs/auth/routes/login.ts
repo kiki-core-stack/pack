@@ -17,14 +17,14 @@ import { consumeAuthAttempt } from '../../../../libs/auth/rate-limit';
 import { revokeAuthSession } from '../../../../libs/auth/session';
 import * as z from '../../../../libs/zod/backend';
 import type { AuthPrincipal } from '../../../../types/auth';
-import type { AuthLoginResultData } from '../../../../types/data/auth';
 import { apiValidator } from '../../api/validator';
 import {
+    applyAuthLoginOutcome,
     createApiSuccessResponse,
     deleteAuthSessionCookie,
-    replaceAuthSessionCookie,
 } from '../_internals/context';
 import {
+    accountSchema,
     defineAuthRoute,
     idSchema,
     secondFactorProofSchema,
@@ -38,25 +38,7 @@ const { createHandlers } = createFactory();
 // Functions
 export function createAuthLoginRoutes<P extends AuthPrincipal>({ getRequest, realm }: AuthRoutesContext<P>) {
     async function respondLoginOutcome(ctx: Context, outcome: AuthLoginOutcome) {
-        if (outcome.state === 'secondFactorRequired') {
-            return createApiSuccessResponse(
-                ctx,
-                {
-                    challengeId: outcome.challengeId,
-                    factors: outcome.factors,
-                    state: outcome.state,
-                } satisfies AuthLoginResultData,
-            );
-        }
-
-        await replaceAuthSessionCookie(ctx, realm, outcome.created);
-        return createApiSuccessResponse(
-            ctx,
-            {
-                restricted: outcome.created.session.restricted,
-                state: outcome.state,
-            } satisfies AuthLoginResultData,
-        );
+        return createApiSuccessResponse(ctx, await applyAuthLoginOutcome(ctx, realm, outcome));
     }
 
     return {
@@ -118,7 +100,7 @@ export function createAuthLoginRoutes<P extends AuthPrincipal>({ getRequest, rea
                 apiValidator(
                     'json',
                     z.object({
-                        account: z.string().trim().min(1).max(256),
+                        account: accountSchema,
                         password: z.string().min(1).max(1024),
                     }),
                 ),

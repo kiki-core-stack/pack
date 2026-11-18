@@ -19,6 +19,7 @@ export type AuthErrorCode =
   | 'totpAlreadyConfigured'
   | 'twoFactorEnforced'
   | 'unauthorized'
+  | 'verificationCodeUnavailable'
   | 'verificationRequired';
 
 interface AuthErrorOptions extends ErrorOptions {
