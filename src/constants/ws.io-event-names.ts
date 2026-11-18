@@ -15,7 +15,7 @@ function createEnumObject<N extends string, T extends string[]>(name: N, keys: T
 
 export const ToAdminFrontend = /* @__PURE__ */ createEnumObject(
     'ToAdminFrontend',
-    [] as const,
+    ['ForceLogout'] as const,
 );
 
 export const ToManagementBackend = /* @__PURE__ */ createEnumObject(
