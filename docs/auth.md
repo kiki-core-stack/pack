@@ -161,7 +161,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `webauthn` | WebAuthn challenge；記錄用途（`registration`、`login`、`secondFactor`、`verification`）與綁定的帳號，`registration` 另綁定開始綁定的工作階段 | 讀取即刪除（`GETDEL`），驗證失敗也不可重用 |
 | `totpSetup` | 待確認的 TOTP 密鑰（已加密）；綁定帳號與開始綁定的工作階段 | 確認成功後刪除（同樣以刪除成功放行） |
 | `verificationGrant` | 高危操作驗證通過後的一次性憑據 | 讀取即刪除 |
-| `passwordReset` | 未登入的重設密碼：ID 就是寄給帳號的 token；記錄帳號與建立時的世代 | 讀取即刪除 |
+| `passwordReset` | 未登入的重設密碼：ID 就是寄給帳號的 token；記錄帳號與建立時的世代 | 完成時讀取即刪除；查詢對象時只讀取 |
 
 `secondFactor` 與 `totpSetup` 驗證失敗不消耗挑戰，可在有效期與限流範圍內重試，不必重新輸入密碼或重新掃描。
 
@@ -272,6 +272,7 @@ pack 內建的流程中，驗證碼只用在已登入的高危操作驗證：六
 - 未登入的重設密碼（realm 有寄送通道時，否則回 `forbidden`）：
   1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。`origin` 取自請求的 `Origin` 標頭（已通過 realm 的來源檢查）。
   2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（未登入的請求原本只以 scope 檢查），被限制 IP 的帳號只能從允許的 IP 重設，否則回 `forbidden`，該 token 也已用掉。通過後重設密碼並踢除全部工作階段。
+  - 重設密碼頁要顯示對象（例如暱稱、頭像）或提前得知連結是否有效時，各專案自己的路由呼叫 `getAuthPasswordResetPrincipal(realm, token)`：token 有效時回傳帳號、否則回傳 undefined，不消耗 token。pack 不提供這條路由，回傳哪些欄位由各專案決定。
   - 重設後不發出工作階段：之後照常登入，有第二因子的帳號仍要通過第二步，只拿到收件管道的人無法藉此直接登入。
   - 同一個帳號可以同時有多個尚未使用的 token，各自在 5 分鐘後過期。token 綁定建立時的工作階段世代：密碼一經變更或重設（或其他全部踢除），之前寄出的 token 全部失效。
 - `resetAuthPassword(realm, principalId, newPassword, context)`：不比對目前密碼直接寫入並踢除全部工作階段，記錄 `PasswordReset`；未登入的重設密碼與各專案只寫入密碼的重設（例如管理端）共用。

@@ -10,6 +10,7 @@ import { assertAuthIpAccess } from './access';
 import {
     consumeAuthChallenge,
     createAuthChallenge,
+    getAuthChallenge,
 } from './challenge';
 import { AuthError } from './error';
 import { recordAuthEvent } from './event';
@@ -115,17 +116,35 @@ export async function completeAuthPasswordReset<P extends AuthPrincipal>(
     request: AuthRequestInfo,
 ) {
     const challenge = await consumeAuthChallenge<PasswordResetChallenge>(realm.name, 'passwordReset', token);
-    const principal = challenge && await realm.findPrincipalById(challenge.principalId);
-    if (
-        !challenge
-        || !principal
-        || !realm.isPrincipalActive(principal)
-        || challenge.generation !== await readAuthSessionGeneration(realm, challenge.principalId)
-    ) throw new AuthError('challengeExpired');
+    if (!challenge || !await findPasswordResetPrincipal(realm, challenge)) throw new AuthError('challengeExpired');
 
     // 未登入的請求只以 scope 檢查過 IP 存取政策；知道是哪個帳號之後，帳號自己的政策也要通過。
     await assertAuthIpAccess(realm, request, challenge.principalId);
     await resetAuthPassword(realm, challenge.principalId, newPassword, { request });
+}
+
+/**
+ * 重設密碼的挑戰所綁定的帳號；帳號不存在或停用、建立後帳號的工作階段曾被全部踢除時回傳 undefined。
+ */
+async function findPasswordResetPrincipal<P extends AuthPrincipal>(
+    realm: AuthRealm<P>,
+    challenge: PasswordResetChallenge,
+) {
+    const principal = await realm.findPrincipalById(challenge.principalId);
+    if (
+        principal
+        && realm.isPrincipalActive(principal)
+        && challenge.generation === await readAuthSessionGeneration(realm, challenge.principalId)
+    ) return principal;
+}
+
+/**
+ * 讀取重設密碼的 token 所綁定的帳號，不消耗 token，例如重設密碼頁顯示要重設的對象；
+ * token 無效時回傳 undefined，條件與 `completeAuthPasswordReset` 相同（IP 存取政策除外）。
+ */
+export async function getAuthPasswordResetPrincipal<P extends AuthPrincipal>(realm: AuthRealm<P>, token: string) {
+    const challenge = await getAuthChallenge<PasswordResetChallenge>(realm.name, 'passwordReset', token);
+    return challenge && await findPasswordResetPrincipal(realm, challenge);
 }
 
 /**
