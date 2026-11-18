@@ -123,7 +123,7 @@ export async function completeAuthPasswordReset<P extends AuthPrincipal>(
         || challenge.generation !== await readAuthSessionGeneration(realm, challenge.principalId)
     ) throw new AuthError('challengeExpired');
 
-    // 匿名路由只檢查過全域與 realm 的 IP 政策；知道是哪個帳號之後，帳號自己的政策也要通過。
+    // 未登入的請求只以 scope 檢查過 IP 存取政策；知道是哪個帳號之後，帳號自己的政策也要通過。
     await assertAuthIpAccess(realm, request, challenge.principalId);
     await resetAuthPassword(realm, challenge.principalId, newPassword, { request });
 }

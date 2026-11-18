@@ -235,7 +235,7 @@ export async function loginWithAuthPasskey<P extends AuthPrincipal>(
 }
 
 /**
- * 以密碼登入。帳號不存在、密碼錯誤、帳號停用回同一個錯誤，並以 dummy hash 維持相同耗時。
+ * 以密碼登入。帳號不存在、沒有密碼、密碼錯誤、帳號停用回同一個錯誤，並以 dummy hash 維持相同耗時。
  * 需要第二因子時回傳 `secondFactor` 挑戰，否則直接發出工作階段。
  */
 export async function loginWithAuthPassword<P extends AuthPrincipal>(

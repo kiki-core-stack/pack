@@ -14,7 +14,7 @@
 - scope：一個入口（`PlatformScope`：`System`、`AdminManagement`，下游從 1000 起新增）。平台設定與 IP 存取政策共用同一個 enum；`System` 代表全系統。
 - realm：一種可登入的身分（`admin`、`agent`、`user`…）。一個 realm 對應一個帳號 model、一個 scope、一組入口網域、一組設定。pack 不定義 realm 的清單，名稱只是字串。
 - principal：realm 內的一個帳號，以 `(realm, principalId)` 識別。
-- 因子：密碼、passkey、TOTP、救援碼、驗證碼（`code`，realm 寄出的一次性驗證碼）、外部身分（`external`，由後端以其他方式驗證的身分，例如 OAuth）（`authFactors`）。
+- 因子（`authFactors`）：密碼、passkey、TOTP、救援碼、驗證碼（`code`，realm 寄出的一次性驗證碼）、外部身分（`external`，由後端以其他方式驗證的身分，例如 OAuth）。外部身分只會是登入的第一步，不能作為使用者提出的證明。
 - 第二因子：passkey、TOTP、救援碼（`authSecondFactors`）。救援碼只是備援：「已綁定第二因子」只看 passkey 與 TOTP。
 
 ## 設定分三處
@@ -148,7 +148,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 - 密碼登入先以帳號找出 ID、讀取世代，再重新載入帳號取得用來驗證的密碼雜湊；世代早於雜湊讀取，變更密碼並全部踢除後，舊密碼就無法取得新世代的工作階段。
 - 設定期限一律使用以秒為單位的指令（`EX`、`EXPIRE`）；Dragonfly 的 `PEXPIRE` 搭配 `NX` 曾有不支援的紀錄。
 - 列出：讀取目前世代的集合與其工作階段（最近活動者在前），順便移除已過期的成員；建立工作階段時也做同樣的清理。
-- 以登入路由（密碼、第二因子、passkey、QR 領取）登入時若已持有有效工作階段：新工作階段建立後踢除原本的那一個。
+- 以登入路由（密碼、外部身分、第二因子、passkey、QR 領取）登入時若已持有有效工作階段：新工作階段建立後踢除原本的那一個。
 - 超過 `maxSessions` 時於建立後踢除排在上限之後的工作階段（最久未活動者）。並行的登入都依同一個固定排序決定踢除對象且不排除自己，只會留下排序在前的；自己被排到上限之後的那次登入回 `sessionInvalid`，不會互相踢除而全部失效。
 - 不綁定 IP；IP 與裝置只供顯示與紀錄。
 - 不定期輪替 token，只在登入時發新 token；受限工作階段換發正常工作階段時也換新。
@@ -161,7 +161,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `webauthn` | WebAuthn challenge；記錄用途（`registration`、`login`、`secondFactor`、`verification`）與綁定的帳號，`registration` 另綁定開始綁定的工作階段 | 讀取即刪除（`GETDEL`），驗證失敗也不可重用 |
 | `totpSetup` | 待確認的 TOTP 密鑰（已加密）；綁定帳號與開始綁定的工作階段 | 確認成功後刪除（同樣以刪除成功放行） |
 | `verificationGrant` | 高危操作驗證通過後的一次性憑據 | 讀取即刪除 |
-| `passwordReset` | 未登入的重設密碼：ID 就是寄給帳號的 token；記錄帳號 | 讀取即刪除 |
+| `passwordReset` | 未登入的重設密碼：ID 就是寄給帳號的 token；記錄帳號與建立時的世代 | 讀取即刪除 |
 
 `secondFactor` 與 `totpSetup` 驗證失敗不消耗挑戰，可在有效期與限流範圍內重試，不必重新輸入密碼或重新掃描。
 
@@ -230,12 +230,12 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 - 可用的因子：passkey、TOTP、救援碼；帳號沒有任何第二因子時，高危操作驗證改用密碼（帳號有密碼時）或驗證碼（realm 有寄送通道時），登入第二步不接受這兩者。
 - 一律先確認限流、再驗證因子（見「防暴力破解」）。
-- 所有登入路徑（密碼、第二因子、passkey、QR 領取）在發出工作階段前都要確認 `isPrincipalActive` 與 IP 存取政策。
+- 所有登入路徑（密碼、外部身分、第二因子、passkey、QR 領取）在發出工作階段前都要確認 `isPrincipalActive` 與 IP 存取政策。
 - 以 passkey 驗證時必須確認三件事：憑證屬於挑戰所綁定的帳號、有回傳 user handle 時與該帳號一致、挑戰記錄的用途與目前的操作相符。
 
 ### 登入
 
-- 密碼：限流計數 → 找出帳號 → 讀取世代 → 驗證密碼 → 需要雙重驗證時：已綁定第二因子則回傳 `secondFactor` 挑戰與可用因子（`state: 'secondFactorRequired'`），尚未綁定則發受限工作階段；否則直接發工作階段。帳號不存在時以 dummy hash 維持相同耗時。
+- 密碼：限流計數 → 找出帳號 → 讀取世代 → 驗證密碼 → 需要雙重驗證時：已綁定第二因子則回傳 `secondFactor` 挑戰與可用因子（`state: 'secondFactorRequired'`），尚未綁定則發受限工作階段；否則直接發工作階段。帳號不存在或沒有密碼時以 dummy hash 維持相同耗時。
 - 外部身分（`loginWithAuthExternalIdentity`，Hono 為 `HonoAuth.loginWithExternalIdentity(ctx, principalId)`）：後端已用其他方式確認對方就是該帳號（例如 OAuth）時呼叫，取代「驗證密碼」這一步；之後與密碼登入相同，需要雙重驗證時照樣回傳 `secondFactor` 挑戰或發受限工作階段。帳號不存在或停用回 `invalidCredentials`。OAuth 流程、帳號的綁定與建立由各專案實作。
 - 第二因子：以挑戰加上 TOTP、passkey 或救援碼完成登入；passkey 的選項以挑戰 ID 取得。新工作階段記錄的因子為 `[<第一步的因子>, <第二因子>]`，第一步的因子為 `password` 或 `external`。
 - passkey：使用 discoverable credential，不需先輸入帳號；以回傳的 user handle 找到帳號；要求使用者驗證（UV），通過即視同已滿足雙重驗證。
@@ -252,7 +252,7 @@ realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證�
 | `verification` | `code`：六位數驗證碼 | 使用者在驗證畫面輸入 |
 | `passwordReset` | `token`：256 位元的一次性 token；`origin`：發起請求的前端來源 | realm 以 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄 |
 
-驗證碼只用在已登入的高危操作驗證：六位數靠限流才安全，未登入的重設密碼沒有工作階段可以綁定，對大量帳號同時嘗試時擋不住，因此改用猜不到的 token。
+pack 內建的流程中，驗證碼只用在已登入的高危操作驗證：六位數靠限流才安全，未登入的重設密碼沒有工作階段可以綁定，對大量帳號同時嘗試時擋不住，因此改用猜不到的 token。
 
 一次性驗證碼（`libs/auth/code.ts` 的 `createAuthCode`／`verifyAuthCode`）：
 
@@ -271,7 +271,7 @@ realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證�
   - 帳號還沒有密碼時不論設定一律只需高危操作驗證，也就是「設定密碼」。安全性總覽的 `hasPassword` 與 `passwordChangeRequiresCurrentPassword` 讓前端決定表單。
 - 未登入的重設密碼（realm 有寄送通道時，否則回 `forbidden`）：
   1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。`origin` 取自請求的 `Origin` 標頭（已通過 realm 的來源檢查）。
-  2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（匿名路由原本只查全域與 realm 兩層），被限制 IP 的帳號只能從允許的 IP 重設。通過後重設密碼並踢除全部工作階段。
+  2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（未登入的請求原本只以 scope 檢查），被限制 IP 的帳號只能從允許的 IP 重設，否則回 `forbidden`，該 token 也已用掉。通過後重設密碼並踢除全部工作階段。
   - 重設後不發出工作階段：之後照常登入，有第二因子的帳號仍要通過第二步，只拿到收件管道的人無法藉此直接登入。
   - 同一個帳號可以同時有多個尚未使用的 token，各自在 15 分鐘後過期。token 綁定建立時的工作階段世代：密碼一經變更或重設（或其他全部踢除），之前寄出的 token 全部失效。
 - `resetAuthPassword(realm, principalId, newPassword, context)`：不比對目前密碼直接寫入並踢除全部工作階段，記錄 `PasswordReset`；未登入的重設密碼與各專案只寫入密碼的重設（例如管理端）共用。
@@ -362,7 +362,7 @@ realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證�
 | `hono-backend/libs/auth/` | `createHonoAuth(realm, { getClientIp })`（`index.ts`）；路由處理函式依群組放在 `routes/`（`login.ts`、`password-reset.ts`、`qr-code-login.ts`、`security.ts`、`verification.ts`、`management.ts`） |
 | `hono-backend/types/auth.ts` | `AuthRouteMeta`、`AuthRouteDefinition`、`ctx.authSession` |
 | `hono-backend/api-errors/auth.ts` | 驗證相關錯誤碼 |
-| `types/auth.ts`、`types/data/auth.ts`、`schemas/api.ts` | 工作階段與事件型別、前端看到的資料型別、`verificationRequired` 的 errorData schema |
+| `types/auth.ts`、`types/data/auth.ts`、`schemas/api.ts` | 工作階段、事件與寄送訊息（`AuthMessage`）的型別、前端看到的資料型別、`verificationRequired` 的 errorData schema |
 
 `createHonoAuth` 回傳：
 
