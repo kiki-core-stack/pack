@@ -136,6 +136,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
   - 目前的工作階段不在該集合內（所屬世代已被全部踢除）即回 `sessionInvalid`；對象限定在所屬世代，不會動到之後世代的工作階段。
   - 讀出集合之後才建立的工作階段不在對象內。帳號疑似遭盜用時應變更密碼（全部踢除），而不是踢除其他全部。
   - `onSessionsRevoked` 收到的是踢除的對象，可能包含已過期或已被別的請求刪除的 ID。
+- 變更與踢除分屬資料庫與 Redis，無法一起提交。變更密碼與重設雙重驗證以 `revokeAllAuthSessionsAround` 在變更前後各全部踢除一次：先踢除，踢除失敗時變更不會發生；變更後再踢除，清掉兩次踢除之間以舊憑證登入的工作階段。變更後的那次踢除失敗時，只有這段期間以舊憑證登入的工作階段會留下。
 - 本人變更密碼（`changeAuthPassword`）：全部踢除，目前裝置也要重新登入，只記錄 `PasswordChanged`；`AllSessionsRevoked` 只用於管理端的全部踢除。
 - 換發（受限工作階段換發正常工作階段）有兩個條件，都不成立就回 `sessionInvalid`：
   - 以「成功刪除來源工作階段」作為放行條件：來源已被單獨踢除時不會被換發。
@@ -153,8 +154,8 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | 類型 | 用途 | 消耗方式 |
 | --- | --- | --- |
 | `secondFactor` | 密碼通過後、等待第二因子的登入中途狀態；記錄帳號與世代 | 先讀取，驗證通過後才刪除，以「刪除成功」（`DEL` 回傳 1）作為唯一的放行條件 |
-| `webauthn` | WebAuthn challenge；記錄用途（`registration`、`login`、`secondFactor`、`verification`）與綁定的帳號 | 讀取即刪除（`GETDEL`），驗證失敗也不可重用 |
-| `totpSetup` | 待確認的 TOTP 密鑰（已加密） | 確認成功後刪除（同樣以刪除成功放行） |
+| `webauthn` | WebAuthn challenge；記錄用途（`registration`、`login`、`secondFactor`、`verification`）與綁定的帳號，`registration` 另綁定開始綁定的工作階段 | 讀取即刪除（`GETDEL`），驗證失敗也不可重用 |
+| `totpSetup` | 待確認的 TOTP 密鑰（已加密）；綁定帳號與開始綁定的工作階段 | 確認成功後刪除（同樣以刪除成功放行） |
 | `verificationGrant` | 高危操作驗證通過後的一次性憑據 | 讀取即刪除 |
 
 `secondFactor` 與 `totpSetup` 驗證失敗不消耗挑戰，可在有效期與限流範圍內重試，不必重新輸入密碼或重新掃描。
@@ -206,7 +207,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 不依賴 mongoose hook（`updateOne`、批次更新等路徑不會觸發）。
 
 - pack 提供的操作（變更密碼、重設雙重驗證、管理端踢除、帳號停用的兜底）在函式內直接踢除。本人變更密碼時全部踢除，目前裝置也要重新登入；新密碼只在儲存的密碼仍是剛驗證的那一個時寫入（realm 自訂 `setPassword` 時由它保證並回傳是否寫入），不會覆寫期間被管理端重設的密碼。
-- 各專案自行變更密碼或停用帳號的地方（例如忘記密碼、管理端編輯帳號），必須呼叫 `revokeAllAuthSessions(realm, principalId)`；刪除帳號呼叫 `deleteAuthPrincipalData(realm, principalId)`。
+- 各專案自行變更密碼或停用帳號的地方（例如忘記密碼、管理端編輯帳號），變更密碼以 `revokeAllAuthSessionsAround(realm, principalId, change)` 包住寫入，停用帳號呼叫 `revokeAllAuthSessions(realm, principalId)`；刪除帳號呼叫 `deleteAuthPrincipalData(realm, principalId)`。
 - 帳號停用另有第 2 步兜底，最長延遲約 60 秒。
 
 ## 錯誤

@@ -295,6 +295,26 @@ export async function revokeAllAuthSessions(realm: AuthRealm<any>, principalId: 
 }
 
 /**
+ * 在會使既有工作階段失效的變更（變更密碼、重設雙重驗證）前後各全部踢除一次，回傳變更的結果。
+ *
+ * 變更與踢除分屬資料庫與 Redis，無法一起提交：
+ * - 先踢除：踢除失敗時變更不會發生，不會出現「已變更但既有工作階段仍有效」。
+ * - 變更後再踢除：清掉兩次踢除之間以舊憑證登入的工作階段；變更失敗時也照樣執行。
+ */
+export async function revokeAllAuthSessionsAround<T>(
+    realm: AuthRealm<any>,
+    principalId: string,
+    change: () => Promise<T>,
+) {
+    await revokeAllAuthSessions(realm, principalId);
+    try {
+        return await change();
+    } finally {
+        await revokeAllAuthSessions(realm, principalId);
+    }
+}
+
+/**
  * 踢除單一工作階段；回傳是否確實刪除了一筆。
  *
  * 依序刪除、通知、清理索引：索引殘留的 ID 會在列出時清掉，不應擋住通知。

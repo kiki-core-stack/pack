@@ -135,11 +135,10 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                     const data = ctx.req.valid('json');
                     const result = await confirmAuthTotpSetup(
                         realm,
-                        getSession(ctx).principalId,
+                        getSession(ctx),
                         data.challengeId,
                         data.code,
                         getOperationContext(ctx),
-                        getSession(ctx).restricted,
                     );
 
                     await upgradeRestrictedSession(ctx, 'totp');
@@ -160,7 +159,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                 await assertAddFactorVerification(ctx);
                 return createApiSuccessResponse(
                     ctx,
-                    await createAuthPasskeyRegistrationOptions(realm, await getPrincipal(ctx)),
+                    await createAuthPasskeyRegistrationOptions(realm, await getPrincipal(ctx), getSession(ctx).id),
                 );
             },
         ),
@@ -206,12 +205,11 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                     const data = ctx.req.valid('json');
                     const result = await registerAuthPasskey(
                         realm,
-                        getSession(ctx).principalId,
+                        getSession(ctx),
                         data.challengeId,
                         data.response as unknown as RegistrationResponseJSON,
                         data.name,
                         getOperationContext(ctx),
-                        getSession(ctx).restricted,
                     );
 
                     await upgradeRestrictedSession(ctx, 'passkey');
@@ -321,7 +319,10 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
             { allowRestrictedSession: true },
             async (ctx: Context) => {
                 await assertAddFactorVerification(ctx);
-                return createApiSuccessResponse(ctx, await startAuthTotpSetup(realm, await getPrincipal(ctx)));
+                return createApiSuccessResponse(
+                    ctx,
+                    await startAuthTotpSetup(realm, await getPrincipal(ctx), getSession(ctx).id),
+                );
             },
         ),
     };

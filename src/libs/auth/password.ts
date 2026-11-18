@@ -12,7 +12,7 @@ import {
     consumeAuthPrincipalAttempt,
 } from './rate-limit';
 import type { AuthRealm } from './realm';
-import { revokeAllAuthSessions } from './session';
+import { revokeAllAuthSessionsAround } from './session';
 
 // Functions
 
@@ -38,14 +38,19 @@ export async function changeAuthPassword<P extends AuthPrincipal>(
     await assertAuthorized?.();
     // 只在密碼仍是剛驗證的那一個時寫入：期間密碼已被其他請求變更（例如管理端重設）時，不可覆寫較新的密碼。
     // 沒寫入時以最新的帳號重新驗證一次：驗證時的自動 rehash 會換掉雜湊但密碼不變，此時以新的雜湊再寫一次。
-    if (!await setAuthPassword(realm, principal, newPassword)) {
-        const reloadedPrincipal = await realm.findPrincipalById(principalId);
-        if (
-            !reloadedPrincipal
-            || !await verifyAuthPrincipalPassword(realm, reloadedPrincipal, currentPassword)
-            || !await setAuthPassword(realm, reloadedPrincipal, newPassword)
-        ) throw new AuthError('incorrectPassword');
-    }
+    await revokeAllAuthSessionsAround(
+        realm,
+        principalId,
+        async () => {
+            if (await setAuthPassword(realm, principal, newPassword)) return;
+            const reloadedPrincipal = await realm.findPrincipalById(principalId);
+            if (
+                !reloadedPrincipal
+                || !await verifyAuthPrincipalPassword(realm, reloadedPrincipal, currentPassword)
+                || !await setAuthPassword(realm, reloadedPrincipal, newPassword)
+            ) throw new AuthError('incorrectPassword');
+        },
+    );
 
     await recordAuthEvent(
         realm,
@@ -56,8 +61,6 @@ export async function changeAuthPassword<P extends AuthPrincipal>(
             type: AuthEventType.PasswordChanged,
         },
     );
-
-    await revokeAllAuthSessions(realm, principalId);
 }
 
 async function setAuthPassword<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P, password: string) {

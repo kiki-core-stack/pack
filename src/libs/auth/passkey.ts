@@ -41,6 +41,11 @@ interface AuthPasskeyChallenge {
      */
     principalId?: string;
     purpose: AuthPasskeyChallengePurpose;
+
+    /**
+     * 開始綁定的工作階段，只有它能完成綁定；只用於 `registration`。
+     */
+    sessionId?: string;
 }
 
 // Constants
@@ -89,9 +94,13 @@ export async function createAuthPasskeyAuthenticationOptions(
 }
 
 /**
- * 產生綁定 passkey 的選項：discoverable credential、要求使用者驗證、不要求裝置憑證。
+ * 產生綁定 passkey 的選項：discoverable credential、要求使用者驗證、不要求裝置憑證。挑戰綁定開始綁定的工作階段。
  */
-export async function createAuthPasskeyRegistrationOptions<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P) {
+export async function createAuthPasskeyRegistrationOptions<P extends AuthPrincipal>(
+    realm: AuthRealm<P>,
+    principal: P,
+    sessionId: string,
+) {
     const webauthn = getRealmWebauthn(realm);
     const setting = await getOrCreateAuthPrincipalSetting(realm, principal._id);
     if (setting.passkeys.length >= maxAuthPasskeysPerPrincipal) throw new AuthError('passkeyLimitReached');
@@ -121,6 +130,7 @@ export async function createAuthPasskeyRegistrationOptions<P extends AuthPrincip
                 challenge: options.challenge,
                 principalId: principal._id.toString(),
                 purpose: 'registration',
+                sessionId,
             } satisfies AuthPasskeyChallenge,
         ),
         options,
@@ -224,6 +234,7 @@ export async function verifyAuthPasskeyAuthentication(
 export async function verifyAuthPasskeyRegistration(
     realm: AuthRealm<any>,
     principalId: string,
+    sessionId: string,
     challengeId: string,
     response: RegistrationResponseJSON,
     name: string,
@@ -231,9 +242,11 @@ export async function verifyAuthPasskeyRegistration(
     const webauthn = getRealmWebauthn(realm);
     const challenge = await consumeAuthChallenge<AuthPasskeyChallenge>(realm.name, 'webauthn', challengeId);
     if (!challenge) throw new AuthError('challengeExpired');
-    if (challenge.purpose !== 'registration' || challenge.principalId !== principalId) {
-        throw new AuthError('passkeyVerificationFailed');
-    }
+    if (
+        challenge.purpose !== 'registration'
+        || challenge.principalId !== principalId
+        || challenge.sessionId !== sessionId
+    ) throw new AuthError('passkeyVerificationFailed');
 
     let passkey: AuthPrincipalSettingPasskey;
     try {

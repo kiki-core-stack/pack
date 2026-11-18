@@ -8,6 +8,7 @@ import type { AuthPrincipalSetting } from '../../models/auth/principal-setting';
 import type {
     AuthOperationContext,
     AuthPrincipal,
+    AuthSession,
 } from '../../types/auth';
 import type { AuthSecurityOverviewData } from '../../types/data/auth';
 
@@ -41,7 +42,7 @@ import {
     decryptAuthSecret,
     encryptAuthSecret,
 } from './secret-encryption';
-import { revokeAllAuthSessions } from './session';
+import { revokeAllAuthSessionsAround } from './session';
 import {
     generateAuthTotpSecret,
     toAuthTotpUri,
@@ -55,6 +56,11 @@ interface TotpSetupChallenge {
      * 已加密的待確認密鑰。
      */
     secret: string;
+
+    /**
+     * 開始綁定的工作階段；只有它能完成綁定。
+     */
+    sessionId: string;
 }
 
 // Functions
@@ -64,14 +70,17 @@ interface TotpSetupChallenge {
  */
 export async function confirmAuthTotpSetup(
     realm: AuthRealm<any>,
-    principalId: string,
+    session: AuthSession,
     challengeId: string,
     code: string,
     context: AuthOperationContext,
-    restrictedSession: boolean,
 ) {
+    const { principalId } = session;
     const challenge = await getAuthChallenge<TotpSetupChallenge>(realm.name, 'totpSetup', challengeId);
-    if (!challenge || challenge.principalId !== principalId) throw new AuthError('challengeExpired');
+    if (!challenge || challenge.principalId !== principalId || challenge.sessionId !== session.id) {
+        throw new AuthError('challengeExpired');
+    }
+
     await consumeAuthPrincipalAttempt(realm, 'totpSetupByPrincipal', principalId, 'totp', context.request);
     const secretContext = toAuthTotpSecretContext(realm, principalId);
     const secret = decryptAuthSecret(challenge.secret, secretContext);
@@ -98,7 +107,7 @@ export async function confirmAuthTotpSetup(
                     },
                 },
                 twoFactorRequired,
-                restrictedSession,
+                session.restricted,
             );
         },
     );
@@ -182,14 +191,14 @@ export async function regenerateAuthRecoveryCodes(
  */
 export async function registerAuthPasskey(
     realm: AuthRealm<any>,
-    principalId: string,
+    session: AuthSession,
     challengeId: string,
     response: RegistrationResponseJSON,
     name: string,
     context: AuthOperationContext,
-    restrictedSession: boolean,
 ) {
-    const passkey = await verifyAuthPasskeyRegistration(realm, principalId, challengeId, response, name);
+    const { principalId } = session;
+    const passkey = await verifyAuthPasskeyRegistration(realm, principalId, session.id, challengeId, response, name);
     const { twoFactorRequired } = await realm.getConfig();
     const recoveryCodes = await mutateAuthPrincipalSetting(
         realm,
@@ -205,7 +214,7 @@ export async function registerAuthPasskey(
                 setting,
                 { $push: { passkeys: passkey } },
                 twoFactorRequired,
-                restrictedSession,
+                session.restricted,
             );
         },
     );
@@ -344,23 +353,26 @@ export async function renameAuthPasskey(
  * 帳號仍屬強制範圍時，下次登入會進入受限工作階段重新綁定。
  */
 export async function resetAuthTwoFactor(realm: AuthRealm<any>, principalId: string, context: AuthOperationContext) {
-    await mutateAuthPrincipalSetting(
+    await revokeAllAuthSessionsAround(
         realm,
         principalId,
-        () => ({
-            result: undefined,
-            update: {
-                $set: {
-                    passkeys: [],
-                    recoveryCodes: [],
-                    twoFactorEnabled: false,
+        async () => await mutateAuthPrincipalSetting(
+            realm,
+            principalId,
+            () => ({
+                result: undefined,
+                update: {
+                    $set: {
+                        passkeys: [],
+                        recoveryCodes: [],
+                        twoFactorEnabled: false,
+                    },
+                    $unset: { totp: 1 },
                 },
-                $unset: { totp: 1 },
-            },
-        }),
+            }),
+        ),
     );
 
-    await revokeAllAuthSessions(realm, principalId);
     await recordAuthEvent(
         realm,
         {
@@ -446,9 +458,13 @@ export async function setAuthTwoFactorEnforced(
 }
 
 /**
- * 開始綁定 TOTP：產生密鑰與 `otpauth://` URI，密鑰暫存在挑戰中，確認後才寫入帳號設定。
+ * 開始綁定 TOTP：產生密鑰與 `otpauth://` URI，密鑰暫存在挑戰中，確認後才寫入帳號設定。挑戰綁定開始綁定的工作階段。
  */
-export async function startAuthTotpSetup<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P) {
+export async function startAuthTotpSetup<P extends AuthPrincipal>(
+    realm: AuthRealm<P>,
+    principal: P,
+    sessionId: string,
+) {
     const principalId = principal._id.toString();
     if ((await findAuthPrincipalSetting(realm, principalId))?.totp) throw new AuthError('totpAlreadyConfigured');
     const secret = generateAuthTotpSecret();
@@ -459,6 +475,7 @@ export async function startAuthTotpSetup<P extends AuthPrincipal>(realm: AuthRea
             {
                 principalId,
                 secret: encryptAuthSecret(secret, toAuthTotpSecretContext(realm, principalId)),
+                sessionId,
             } satisfies TotpSetupChallenge,
         ),
         secret,

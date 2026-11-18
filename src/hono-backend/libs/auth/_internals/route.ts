@@ -48,11 +48,12 @@ export interface AuthRoutesContext<P extends AuthPrincipal> {
 // Constants
 export const idSchema = z.string().min(1).max(1024);
 
-// The WebAuthn responses are verified by the WebAuthn library; only their outline is validated here.
+// The WebAuthn responses are verified by the WebAuthn library; only their outline is validated here, plus the user
+// handle, which a passkey login looks the account up with before anything is verified.
 export const webauthnResponseSchema = z.looseObject({
     id: idSchema,
     rawId: z.string(),
-    response: z.looseObject({}),
+    response: z.looseObject({ userHandle: z.string().max(128).optional() }),
     type: z.literal('public-key'),
 });
 
