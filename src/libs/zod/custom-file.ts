@@ -43,7 +43,7 @@ export interface ZodCustomFile extends CustomFileSchema {
     webp: () => ZodCustomFile;
 }
 
-export const commonImageMimeTypes: readonly string[] = [
+const commonImageMimeTypes: readonly string[] = [
     'image/bmp',
     'image/heic',
     'image/heif',

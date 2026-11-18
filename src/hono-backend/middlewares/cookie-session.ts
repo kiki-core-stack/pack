@@ -14,7 +14,6 @@ import {
 import { Gcm } from 'node-ciphers/aes';
 import onChange from 'on-change';
 
-import { baseSetCookieOptions } from '../constants/cookie';
 import type {
     CookieSessionData,
     CookieSessionOptions,
@@ -179,9 +178,12 @@ export function createCookieTokenHandler(name = 'session'): CookieSessionTokenHa
                 name,
                 token,
                 {
-                    ...baseSetCookieOptions,
+                    httpOnly: true,
                     maxAge: maxAgeSeconds,
+                    path: '/',
                     prefix: 'host',
+                    sameSite: 'strict',
+                    secure: true,
                 },
             );
         },

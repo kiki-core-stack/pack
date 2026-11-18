@@ -14,7 +14,7 @@ export type ApiClientFailureMessageKey = 'aborted' | 'invalidResponse' | 'networ
 /**
  * Whether `data` is an API error envelope.
  */
-export function isApiErrorResponseData(data: unknown): data is ApiErrorResponseData {
+function isApiErrorResponseData(data: unknown): data is ApiErrorResponseData {
     return typeof data === 'object'
       && data !== null
       && (data as ApiErrorResponseData).success === false
