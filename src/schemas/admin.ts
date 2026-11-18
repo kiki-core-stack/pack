@@ -1,6 +1,6 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
-import type { AdminLogType } from '../constants/admin';
+import { AdminLogType } from '../constants/admin';
 import * as z from '../libs/zod';
 
 /**
@@ -9,5 +9,5 @@ import * as z from '../libs/zod';
 export const adminLogMetadataVariants = z.discriminatedMap(
     'type',
     'metadata',
-    {} satisfies ReadonlyRecord<AdminLogType, z.ZodType>,
+    { [AdminLogType.Other]: z.undefined() } satisfies ReadonlyRecord<AdminLogType, z.ZodType>,
 );
