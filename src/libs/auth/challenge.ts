@@ -10,7 +10,7 @@ export type AuthChallengeType = 'passwordReset' | 'secondFactor' | 'totpSetup' |
 
 // Constants
 const authChallengeTtlSeconds: Readonly<Record<AuthChallengeType, number>> = {
-    passwordReset: 900,
+    passwordReset: 300,
     secondFactor: 300,
     totpSetup: 600,
     verificationGrant: 120,

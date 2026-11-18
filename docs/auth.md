@@ -120,8 +120,8 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `session-generation:<principalId>` | 世代計數；全部踢除時加一 | 無 |
 | `principal-sessions:<principalId>:<generation>` | 該世代的 `sessionId` 集合，供列表與清除使用 | 絕對上限；每次加入成員時重設 |
 | `principal-active:<principalId>` | 「已確認帳號啟用」的標記 | 60 秒 |
-| `challenge:<type>:<sha256(id)>` | 一次性挑戰 | 5 分鐘（`verificationGrant` 為 2 分鐘、`totpSetup` 為 10 分鐘、`passwordReset` 為 15 分鐘） |
-| `code:<purpose>:<sha256(subject)>` | 一次性驗證碼的雜湊 | 10 分鐘 |
+| `challenge:<type>:<sha256(id)>` | 一次性挑戰 | 5 分鐘（`verificationGrant` 為 2 分鐘、`totpSetup` 為 10 分鐘） |
+| `code:<purpose>:<sha256(subject)>` | 一次性驗證碼的雜湊 | 5 分鐘 |
 | `qr-code-login:<sha256(qrToken)>`、`qr-code-login-decision:<sha256(qrToken)>` | QR 登入的請求與決定 | 2 分鐘 |
 | `attempts:<kind>:<sha256(key)>` | 嘗試次數 | 依限流規則 |
 
@@ -256,7 +256,7 @@ pack 內建的流程中，驗證碼只用在已登入的高危操作驗證：六
 
 一次性驗證碼（`libs/auth/code.ts` 的 `createAuthCode`／`verifyAuthCode`）：
 
-- 六位數字、有效 10 分鐘，Redis 只存雜湊。同一個 `(用途, 對象)` 只有最新的一組有效。
+- 六位數字、有效 5 分鐘，Redis 只存雜湊。同一個 `(用途, 對象)` 只有最新的一組有效。
 - 驗證先計數再比對，通過後以「刪除成功」放行，同一組只能成功一次。猜測次數以 `(用途, 對象)` 計數，通過後歸零，超過門檻即作廢目前的驗證碼；寄出新的一組不會歸零，否則任何人都能靠重新寄送換取更多次猜測。
 - 寄送以 `(用途, 對象)` 限流（見「防暴力破解」）。
 - 以任意字串為對象：高危操作驗證的對象是帳號；各專案可直接用在還沒有帳號的情境（例如註冊時驗證收件位址，對象為收件位址本身、用途自訂），寄送由呼叫端自己處理。
@@ -273,7 +273,7 @@ pack 內建的流程中，驗證碼只用在已登入的高危操作驗證：六
   1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。`origin` 取自請求的 `Origin` 標頭（已通過 realm 的來源檢查）。
   2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（未登入的請求原本只以 scope 檢查），被限制 IP 的帳號只能從允許的 IP 重設，否則回 `forbidden`，該 token 也已用掉。通過後重設密碼並踢除全部工作階段。
   - 重設後不發出工作階段：之後照常登入，有第二因子的帳號仍要通過第二步，只拿到收件管道的人無法藉此直接登入。
-  - 同一個帳號可以同時有多個尚未使用的 token，各自在 15 分鐘後過期。token 綁定建立時的工作階段世代：密碼一經變更或重設（或其他全部踢除），之前寄出的 token 全部失效。
+  - 同一個帳號可以同時有多個尚未使用的 token，各自在 5 分鐘後過期。token 綁定建立時的工作階段世代：密碼一經變更或重設（或其他全部踢除），之前寄出的 token 全部失效。
 - `resetAuthPassword(realm, principalId, newPassword, context)`：不比對目前密碼直接寫入並踢除全部工作階段，記錄 `PasswordReset`；未登入的重設密碼與各專案只寫入密碼的重設（例如管理端）共用。
 - 所有寫入都以 `revokeAllAuthSessionsAround` 在前後各踢除一次（見「Redis」）。
 - 已接受的取捨：他人可對某個帳號反覆請求重設，用完該帳號的寄送額度（15 分鐘 5 次），使本人在這段時間內收不到新的連結，並收到數封信。
