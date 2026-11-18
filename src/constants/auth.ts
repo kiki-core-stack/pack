@@ -155,8 +155,8 @@ export const authEventTypeToLabelMap: ReadonlyRecord<AuthEventType, LocalizedMes
 
 export const authFactorToLabelMap: ReadonlyRecord<ArrayValues<typeof authFactors>, LocalizedMessages> = {
     code: {
-        'en': 'Verification code',
-        'zh-TW': '驗證碼',
+        'en': 'Code sent by message',
+        'zh-TW': '訊息驗證碼',
     },
     external: {
         'en': 'External account',
