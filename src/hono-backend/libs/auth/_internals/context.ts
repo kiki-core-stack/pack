@@ -40,7 +40,8 @@ export async function applyAuthLoginOutcome(
     };
 }
 
-export function createApiSuccessResponse<D extends object | undefined = undefined>(ctx: Context, data?: D) {
+// The return type is annotated: the inferred typed response of a generic `data` is too long to be serialized.
+export function createApiSuccessResponse<D extends object | undefined = undefined>(ctx: Context, data?: D): Response {
     return ctx.json(createApiSuccessResponseData(data));
 }
 
