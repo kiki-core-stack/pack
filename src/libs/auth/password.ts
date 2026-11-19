@@ -176,14 +176,12 @@ async function overwriteAuthPassword(realm: AuthRealm<any>, principalId: string,
 
 /**
  * 未登入的重設密碼第一步：把重設密碼的 token 寄給帳號。不論帳號是否存在、是否寄出都正常返回，
- * 也不等待寄送完成，回應不透露帳號是否存在。`origin` 是發起請求的前端來源（realm 的 `origins` 之一），
- * 交給 realm 組出重設密碼頁的連結。
+ * 也不等待寄送完成，回應不透露帳號是否存在。
  */
 export async function requestAuthPasswordReset<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     rawIdentifier: string,
     request: AuthRequestInfo,
-    origin: string,
 ) {
     const messenger = realm.messenger;
     if (!messenger) throw new AuthError('forbidden');
@@ -196,7 +194,6 @@ export async function requestAuthPasswordReset<P extends AuthPrincipal>(
         await messenger.send(
             principal,
             {
-                origin,
                 purpose: 'passwordReset',
                 token: await createAuthChallenge(
                     realm.name,

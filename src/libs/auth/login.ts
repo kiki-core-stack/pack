@@ -216,7 +216,7 @@ export async function loginWithAuthPasskey<P extends AuthPrincipal>(
 ): Promise<AuthLoginOutcome> {
     // user handle 尚未經過驗證，只用來在驗證前找出帳號並讀取世代。
     const setting = await findAuthPrincipalSettingByPasskeyResponse(realm, response);
-    if (!setting) throw new AuthError('passkeyVerificationFailed');
+    if (!setting) throw new AuthError('passkeyUnknown');
     const principalId = setting.principalId.toString();
     const generation = await readAuthSessionGeneration(realm, principalId);
     try {

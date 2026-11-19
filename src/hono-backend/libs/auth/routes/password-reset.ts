@@ -52,14 +52,7 @@ export function createAuthPasswordResetRoutes<P extends AuthPrincipal>({ getRequ
             ...createHandlers(
                 apiValidator('json', z.object({ account: accountSchema })),
                 async (ctx) => {
-                    await requestAuthPasswordReset(
-                        realm,
-                        ctx.req.valid('json').account,
-                        getRequest(ctx),
-                        // `authenticate` has already checked it against the realm's origins.
-                        ctx.req.header('origin')!,
-                    );
-
+                    await requestAuthPasswordReset(realm, ctx.req.valid('json').account, getRequest(ctx));
                     return createApiSuccessResponse(ctx);
                 },
             ),

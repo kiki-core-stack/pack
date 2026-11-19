@@ -76,7 +76,7 @@ export function createHonoAuth<P extends AuthPrincipal>(realm: AuthRealm<P>, opt
         }
 
         // Sibling entrances under the same registrable domain are same-site, so SameSite cookies do not stop them.
-        if (!safeHttpMethods.has(ctx.req.method) && !realm.origins.includes(ctx.req.header('origin') ?? '')) {
+        if (!safeHttpMethods.has(ctx.req.method) && ctx.req.header('origin') !== realm.origin) {
             throw new AuthError('originNotAllowed');
         }
 

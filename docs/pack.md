@@ -70,7 +70,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 設計與流程見 [auth.md](./auth.md)。
 
-- 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origins、密碼金鑰支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
+- 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origin、密碼金鑰支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
 - 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與安全性紀錄存在 `auth.principal_settings`、`auth.events`。
 - 後端以 `createHonoAuth(realm, { getClientIp })` 取得 `authenticate`（掛在 route middleware）與路由處理函式，各路由檔只轉接；流程中的失敗拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 `auth` 錯誤碼。
 - 各專案自行重設密碼時呼叫 `resetAuthPassword`（或以 `revokeAllAuthSessionsAround` 包住寫入），停用帳號時呼叫 `revokeAllAuthSessions`，刪除帳號時呼叫 `deleteAuthPrincipalData`（見 auth.md「踢除的時機」）。

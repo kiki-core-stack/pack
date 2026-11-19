@@ -1,7 +1,4 @@
-import type {
-    Arrayable,
-    Promisable,
-} from 'type-fest';
+import type { Promisable } from 'type-fest';
 import type * as z from 'zod';
 
 import type { PlatformScope } from '../../constants/platform';
@@ -36,7 +33,7 @@ export interface AuthPrincipalModel<P extends AuthPrincipal> {
 
 export interface AuthRealm<P extends AuthPrincipal = AuthPrincipal> extends Readonly<Omit<
     AuthRealmOptions<P>,
-    'cookieSameSite' | 'origins' | 'webauthn'
+    'cookieSameSite' | 'webauthn'
 >> {
     readonly cookieSameSite: 'lax' | 'strict';
 
@@ -46,7 +43,6 @@ export interface AuthRealm<P extends AuthPrincipal = AuthPrincipal> extends Read
      * 目前的 auth 政策（平台設定，本機快取）。
      */
     getConfig: () => Promise<PlatformAuthConfig>;
-    readonly origins: readonly string[];
     readonly webauthn?: Readonly<{ rpId: string }>;
 }
 
@@ -128,9 +124,10 @@ export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
     onSessionsRevoked?: (principalId: string, sessionIds: string[]) => Promisable<void>;
 
     /**
-     * 允許的來源，用於寫入類請求的 Origin 檢查與 WebAuthn 驗證；可為陣列或以逗號分隔的字串。
+     * 前端的來源（例如 `https://admin.example.com`），用於寫入類請求的 Origin 檢查與 WebAuthn 驗證；
+     * 其網域即 passkey 的 `rpId`，有帳號綁定 passkey 後不可更改。
      */
-    origins: Arrayable<string>;
+    origin: string;
 
     /**
      * 本人變更密碼的方式。`currentPassword`：輸入目前密碼，有第二因子時另需高危操作驗證。
@@ -156,9 +153,9 @@ export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
     verifyPassword?: (principal: P, password: string) => Promise<boolean>;
 
     /**
-     * 有填才支援 passkey（可為空物件）。只有一個 origin 時 `rpId` 預設為該 origin 的網域；`rpId` 定下後不可更改。
+     * 是否支援 passkey。
      */
-    webauthn?: { rpId?: string };
+    webauthn?: true;
 }
 
 // Constants/Variables
@@ -178,21 +175,8 @@ export function defineAuthRealm<P extends AuthPrincipal>(options: AuthRealmOptio
 
     // 加密金鑰設定有誤時在啟動時就失敗，而不是等到第一次綁定驗證器。
     getAuthSecretEncryptionKeys();
-    const origins = [options.origins].flat().flatMap((value) => value.split(',')).map((origin) => origin.trim()).filter(Boolean);
-    if (!origins.length) throw new Error(`Auth realm ${options.name} requires at least one origin`);
-    for (const origin of origins) {
-        if (!URL.canParse(origin) || new URL(origin).origin !== origin) {
-            throw new Error(`Invalid origin of auth realm ${options.name}: ${origin}`);
-        }
-    }
-
-    let webauthn: AuthRealm['webauthn'];
-    if (options.webauthn) {
-        if (!options.webauthn.rpId && origins.length !== 1) {
-            throw new Error(`Auth realm ${options.name} has multiple origins and requires an explicit WebAuthn rpId`);
-        }
-
-        webauthn = { rpId: options.webauthn.rpId ?? new URL(origins[0]!).hostname };
+    if (!URL.canParse(options.origin) || new URL(options.origin).origin !== options.origin) {
+        throw new Error(`Invalid origin of auth realm ${options.name}: ${options.origin}`);
     }
 
     const realm: AuthRealm<P> = {
@@ -200,8 +184,7 @@ export function defineAuthRealm<P extends AuthPrincipal>(options: AuthRealmOptio
         cookieSameSite: options.cookieSameSite ?? 'strict',
         findPrincipalById: async (principalId) => await options.model.findById(principalId),
         getConfig: async () => (await getPlatformConfig(options.scope)).auth,
-        origins,
-        webauthn,
+        webauthn: options.webauthn && { rpId: new URL(options.origin).hostname },
     };
 
     authRealms.set(realm.name, realm);

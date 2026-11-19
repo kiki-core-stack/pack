@@ -170,13 +170,15 @@ export async function verifyAuthPasskeyAuthentication(
     const webauthn = getRealmWebauthn(realm);
     const challenge = await consumeAuthChallenge<AuthPasskeyChallenge>(realm.name, 'webauthn', challengeId);
     if (!challenge) throw new AuthError('challengeExpired');
-    const passkey = setting.passkeys.find((passkey) => passkey.credentialId === response.id);
     if (
         challenge.purpose !== purpose
         || (purpose === 'login' ? challenge.principalId !== undefined : challenge.principalId !== setting.principalId.toString())
-        || !passkey
         || (response.response.userHandle !== undefined && response.response.userHandle !== setting.webauthnUserHandle)
     ) throw new AuthError('passkeyVerificationFailed');
+
+    const passkey = setting.passkeys.find((passkey) => passkey.credentialId === response.id);
+    // 與其他失敗分開回報：前端據此通知密碼管理工具移除這把已不存在的密碼金鑰。
+    if (!passkey) throw new AuthError('passkeyUnknown');
 
     let newCounter: number;
     try {
@@ -188,7 +190,7 @@ export async function verifyAuthPasskeyAuthentication(
                 transports: passkey.transports,
             },
             expectedChallenge: challenge.challenge,
-            expectedOrigin: [...realm.origins],
+            expectedOrigin: realm.origin,
             expectedRPID: webauthn.rpId,
             requireUserVerification: true,
             response,
@@ -248,7 +250,7 @@ export async function verifyAuthPasskeyRegistration(
     try {
         const verification = await verifyRegistrationResponse({
             expectedChallenge: challenge.challenge,
-            expectedOrigin: [...realm.origins],
+            expectedOrigin: realm.origin,
             expectedRPID: webauthn.rpId,
             requireUserVerification: true,
             response,

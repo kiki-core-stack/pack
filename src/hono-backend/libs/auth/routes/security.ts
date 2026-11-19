@@ -140,7 +140,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
             { allowRestrictedSession: true },
             async (ctx: Context) => createApiSuccessResponse(
                 ctx,
-                await getAuthSecurityOverview(realm, getSession(ctx).principalId),
+                await getAuthSecurityOverview(realm, getSession(ctx).principalId, { forSelf: true }),
             ),
         ),
         getPasskeyRegistrationOptions: defineAuthRoute(

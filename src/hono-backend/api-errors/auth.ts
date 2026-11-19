@@ -8,6 +8,7 @@ export const {
     invalidVerificationCode,
     originNotAllowed,
     passkeyLimitReached,
+    passkeyUnknown,
     passkeyUnsupported,
     passkeyVerificationFailed,
     qrCodeLoginDisabled,
@@ -66,6 +67,13 @@ export const {
             'zh-TW': '密碼金鑰數量已達上限',
         },
         status: 409,
+    },
+    passkeyUnknown: {
+        message: {
+            'en': 'This passkey is no longer valid',
+            'zh-TW': '此密碼金鑰已失效',
+        },
+        status: 400,
     },
     passkeyUnsupported: {
         message: {

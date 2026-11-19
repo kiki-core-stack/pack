@@ -8,6 +8,7 @@ export type AuthErrorCode =
   | 'invalidVerificationCode'
   | 'originNotAllowed'
   | 'passkeyLimitReached'
+  | 'passkeyUnknown'
   | 'passkeyUnsupported'
   | 'passkeyVerificationFailed'
   | 'qrCodeLoginDisabled'

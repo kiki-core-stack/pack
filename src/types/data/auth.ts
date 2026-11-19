@@ -99,7 +99,6 @@ export interface AuthSecurityOverviewData {
      */
     hasPassword: boolean;
     passkeys: AuthPasskeyData[];
-    passkeySupported: boolean;
 
     /**
      * 變更密碼是否要輸入目前密碼；否則只需高危操作驗證。
@@ -126,11 +125,15 @@ export interface AuthSecurityOverviewData {
     };
 
     /**
-     * 供前端以 WebAuthn Signal API 通知密碼管理工具哪些密碼金鑰仍有效；realm 支援密碼金鑰且帳號設定已建立時才有。
+     * realm 支援密碼金鑰時才有。
      */
     webauthn?: {
         rpId: string;
-        userHandle: string;
+
+        /**
+         * 只在本人的總覽且帳號設定已建立時回傳，供前端以 WebAuthn Signal API 通知密碼管理工具哪些密碼金鑰仍有效。
+         */
+        userHandle?: string;
     };
 }
 

@@ -38,8 +38,8 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
     model: AdminModel,
     displayName: 'Example Admin',
     cookieName: '__Host-admin-session',
-    origins: checkAndGetEnvValue('ADMIN_AUTH_ORIGINS'), // 例如 https://admin.example.com
-    webauthn: {},
+    origin: checkAndGetEnvValue('ADMIN_AUTH_ORIGIN'), // 例如 https://admin.example.com
+    webauthn: true,
     findPrincipalByIdentifier: (account) => AdminModel.findOne({ account }),
     getPrincipalDisplayName: (admin) => admin.account,
     isPrincipalActive: (admin) => admin.enabled,
@@ -55,7 +55,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `model` | 帳號 model，需有 `findById`、`exists`、`updateOne`（mongoose model 皆符合） |
 | `displayName` | 顯示給使用者的名稱：驗證器中的發行者（TOTP issuer）與密碼金鑰提示中的網站名稱（WebAuthn RP name） |
 | `cookieName` | 必須以 `__Host-` 開頭，否則啟動時報錯 |
-| `webauthn` | 有填（可為空物件）才支援密碼金鑰 |
+| `webauthn` | 設為 `true` 才支援密碼金鑰 |
 | `findPrincipalByIdentifier` | 以登入用的帳號字串（已去除前後空白）找出帳號；不需檢查是否啟用 |
 | `getPrincipalDisplayName` | 顯示在驗證器與密碼金鑰提示中的帳號名稱 |
 | `setPassword` | 回傳是否寫入；只在儲存的密碼仍是帳號載入時的那一個時寫入。預設以 `model.updateOne` 帶此條件寫入，由 model 的雜湊欄位處理雜湊 |
@@ -64,8 +64,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `onSessionsRevoked` | 工作階段被踢除後呼叫；失敗只記錄錯誤 |
 | `onEvent` | 每筆安全性紀錄寫入後呼叫；失敗只記錄錯誤，不影響原本的操作 |
 
-- `origins`：用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證。各環境不同，由環境變數提供。
-- `webauthn.rpId`：只有一個 origin 時預設為該 origin 的網域（各入口網域固定且身分互不相通）；有多個 origin 時必須明確指定，否則啟動時報錯，避免調整 origin 順序時意外改變。`rpId` 定下後不可更改，否則已綁定的密碼金鑰全部作廢。
+- `origin`：該身分前端的來源，每個 realm 只有一個（各入口網域固定且身分互不相通）。用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證，其網域即密碼金鑰的 `rpId`；更換網域會讓已綁定的密碼金鑰全部作廢。各環境不同，由環境變數提供。
 - TOTP 與救援碼一律支援；QR Code 登入由平台設定開關。
 - cookie 一律 `__Host-` 前綴、`HttpOnly`、`Secure`、`Path=/`、不設 `Domain`；有效期為絕對上限（受限工作階段為 15 分鐘）。設定 cookie 的回應帶 `Cache-Control: no-store`。
 - `cookieSameSite`：前端以 SSR 判斷登入狀態的 realm（例如一般前台）設為 `lax`，否則從外部連結進入時第一個頁面請求不帶 cookie；使用 `lax` 的 realm，GET 路由不得有寫入行為。
@@ -188,7 +187,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 1. 從 cookie 取 token，一次 Redis 往返讀取工作階段、世代計數與「已確認啟用」標記；比對 `secret` 與世代，並以平台設定（本機快取）檢查閒置逾時與絕對上限。
 2. 標記不存在時查一次 MongoDB，確認帳號存在且 `isPrincipalActive`：通過則寫回標記，不通過則全部踢除。所有 worker 與機器共用標記，同一帳號大約每 60 秒查一次（標記過期的瞬間可能有多個請求同時查詢）。受限工作階段另查帳號設定：帳號已有第二因子時踢除該工作階段（見「雙重驗證的判斷」）。token 無效時清除 cookie。
-3. 所有寫入類請求（GET、HEAD、OPTIONS 以外，包含登入等不需登入的路由）檢查 `Origin` 標頭屬於 realm 的 `origins`，缺少或不符即拒絕（`originNotAllowed`）。同主網域的其他入口屬於 same-site，`SameSite` 擋不住；`hono/csrf` 只檢查表單類的 content type、不檢查 JSON，因此不使用。
+3. 所有寫入類請求（GET、HEAD、OPTIONS 以外，包含登入等不需登入的路由）檢查 `Origin` 標頭等於 realm 的 `origin`，缺少或不符即拒絕（`originNotAllowed`）。同主網域的其他入口屬於 same-site，`SameSite` 擋不住；`hono/csrf` 只檢查表單類的 content type、不檢查 JSON，因此不使用。
 4. 以 `(scope, principalId)` 檢查 IP 存取政策（未登入時只以 scope）。
 5. 沒有有效工作階段時：`noLoginRequired` 的路由放行，否則回 `unauthorized`（沒帶 token）或 `sessionInvalid`。
 6. 設定 `ctx.authSession`。受限工作階段只放行 `allowRestrictedSession` 的路由（`noLoginRequired` 的路由也放行），否則回 `secondFactorSetupRequired`。
@@ -242,7 +241,7 @@ realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證�
 | `purpose` | 內容 | 用法 |
 | --- | --- | --- |
 | `verification` | `code`：六位數驗證碼 | 使用者在驗證畫面輸入 |
-| `passwordReset` | `token`：256 位元的一次性 token；`origin`：發起請求的前端來源 | realm 以 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄 |
+| `passwordReset` | `token`：256 位元的一次性 token | realm 以自己的 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄 |
 
 pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位數靠限流才安全，未登入的重設密碼沒有工作階段可以綁定，對大量帳號同時嘗試時擋不住，因此使用猜不到的 token。
 
@@ -262,7 +261,7 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
   - `verification`：只需驗證身分，不輸入目前密碼。
   - 帳號還沒有密碼時不論設定一律只需驗證身分，也就是「設定密碼」。安全性總覽的 `hasPassword` 與 `passwordChangeRequiresCurrentPassword` 讓前端決定表單。
 - 未登入的重設密碼（realm 有寄送通道時，否則回 `forbidden`）：
-  1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。`origin` 取自請求的 `Origin` 標頭（已通過 realm 的來源檢查）。
+  1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。
   2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（未登入的請求在 `authenticate` 只以 scope 檢查），被限制 IP 的帳號只能從允許的 IP 重設，否則回 `forbidden`，該 token 也已用掉。通過後重設密碼並踢除全部工作階段。
   - 重設密碼頁要顯示對象（例如暱稱、頭像）或提前得知連結是否有效時，各專案自己的路由呼叫 `getAuthPasswordResetPrincipal(realm, token)`：token 有效時回傳帳號、否則回傳 undefined，不消耗 token。pack 不提供這條路由，回傳哪些欄位由各專案決定。
   - 重設後不發出工作階段：之後照常登入，有第二因子的帳號仍要通過第二步，只拿到收件管道的人無法藉此直接登入。
@@ -281,8 +280,10 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 - 使用 `@simplewebauthn/server`（前端 `@simplewebauthn/browser`）。
 - 註冊：`residentKey: required`、`userVerification: required`、`attestation: none`，排除已綁定的憑證；每個帳號上限 10 把，可命名（最長 64 字）與改名。
 - user handle 為每個 `(realm, principalId)` 一組的隨機值，不直接使用 `principalId`。
-- 移除密碼金鑰後，裝置上的密碼管理工具仍留著它，之後選到會登入失敗。安全性總覽因此回傳 `webauthn`（`rpId` 與 user handle），前端載入總覽後以 WebAuthn Signal API（`signalAllAcceptedCredentials`）告知仍有效的清單；不支援的瀏覽器略過。別人的裝置（例如管理端重設雙重驗證）通知不到。
-- 驗證時設定 `requireUserVerification: true`，並比對 `rpId`、`origins`、計數器（規則見「MongoDB」）。
+- 移除密碼金鑰後，裝置上的密碼管理工具仍留著它，之後選到會登入失敗。前端以 WebAuthn Signal API 讓密碼管理工具移除，不支援的瀏覽器略過：
+  - 本人的安全性總覽回傳 `webauthn.userHandle`，前端載入總覽後以 `signalAllAcceptedCredentials` 告知仍有效的清單。管理端查看他人的總覽不回傳 user handle，因為那不是對方的裝置。
+  - 驗證時查無該密碼金鑰回 `passkeyUnknown`，與其他失敗（`passkeyVerificationFailed`）分開，前端才能安全地以 `signalUnknownCredential` 移除那一把；其他失敗原因不可移除，否則會刪掉仍有效的密碼金鑰。
+- 驗證時設定 `requireUserVerification: true`，並比對 `rpId`、`origin`、計數器（規則見「MongoDB」）。
 
 ### QR Code 登入
 

@@ -131,6 +131,7 @@ export async function confirmAuthTotpSetup(
 export async function getAuthSecurityOverview(
     realm: AuthRealm<any>,
     principalId: string,
+    options: { forSelf?: boolean } = {},
 ): Promise<AuthSecurityOverviewData> {
     const [
         config,
@@ -151,7 +152,6 @@ export async function getAuthSecurityOverview(
             lastUsedAt: passkey.lastUsedAt?.toISOString(),
             name: passkey.name,
         })),
-        passkeySupported: !!realm.webauthn,
         passwordChangeRequiresCurrentPassword: !!principal && isAuthCurrentPasswordRequired(realm, principal),
         qrCodeLoginEnabled: config.qrCodeLoginEnabled,
         recoveryCodesRemaining: setting?.recoveryCodes.filter((recoveryCode) => !recoveryCode.usedAt).length ?? 0,
@@ -161,12 +161,10 @@ export async function getAuthSecurityOverview(
             enforced: !!setting?.twoFactorEnforced,
             required: config.twoFactorRequired,
         },
-        webauthn: realm.webauthn && setting
-            ? {
-                rpId: realm.webauthn.rpId,
-                userHandle: setting.webauthnUserHandle,
-            }
-            : undefined,
+        webauthn: realm.webauthn && {
+            rpId: realm.webauthn.rpId,
+            userHandle: options.forSelf ? setting?.webauthnUserHandle : undefined,
+        },
     };
 }
 
