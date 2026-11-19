@@ -161,6 +161,12 @@ export async function getAuthSecurityOverview(
             enforced: !!setting?.twoFactorEnforced,
             required: config.twoFactorRequired,
         },
+        webauthn: realm.webauthn && setting
+            ? {
+                rpId: realm.webauthn.rpId,
+                userHandle: setting.webauthnUserHandle,
+            }
+            : undefined,
     };
 }
 

@@ -124,6 +124,14 @@ export interface AuthSecurityOverviewData {
          */
         required: boolean;
     };
+
+    /**
+     * 供前端以 WebAuthn Signal API 通知密碼管理工具哪些密碼金鑰仍有效；realm 支援密碼金鑰且帳號設定已建立時才有。
+     */
+    webauthn?: {
+        rpId: string;
+        userHandle: string;
+    };
 }
 
 export interface AuthSentCodeData {

@@ -281,6 +281,7 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 - 使用 `@simplewebauthn/server`（前端 `@simplewebauthn/browser`）。
 - 註冊：`residentKey: required`、`userVerification: required`、`attestation: none`，排除已綁定的憑證；每個帳號上限 10 把，可命名（最長 64 字）與改名。
 - user handle 為每個 `(realm, principalId)` 一組的隨機值，不直接使用 `principalId`。
+- 移除密碼金鑰後，裝置上的密碼管理工具仍留著它，之後選到會登入失敗。安全性總覽因此回傳 `webauthn`（`rpId` 與 user handle），前端載入總覽後以 WebAuthn Signal API（`signalAllAcceptedCredentials`）告知仍有效的清單；不支援的瀏覽器略過。別人的裝置（例如管理端重設雙重驗證）通知不到。
 - 驗證時設定 `requireUserVerification: true`，並比對 `rpId`、`origins`、計數器（規則見「MongoDB」）。
 
 ### QR Code 登入
