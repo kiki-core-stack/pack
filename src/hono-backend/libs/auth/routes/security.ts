@@ -7,7 +7,7 @@ import {
     authVerificationOperations,
 } from '../../../../constants/auth';
 import { recordAuthEvent } from '../../../../libs/auth/event';
-import { createAuthPasskeyRegistrationOptions } from '../../../../libs/auth/passkey';
+import { createAuthPasskeyRegistrationOptions } from '../../../../libs/auth/passkey/server';
 import { changeAuthPassword } from '../../../../libs/auth/password';
 import {
     listAuthSessions,

@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
 import { createFactory } from 'hono/factory';
 
-import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey';
+import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey/server';
 import { findAuthPrincipalSetting } from '../../../../libs/auth/principal-setting';
 import {
     createAuthVerificationGrant,

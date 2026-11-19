@@ -14,7 +14,7 @@ import { verifyPasswordWithArgon2 } from '../password-argon2';
 import { verifyAuthCode } from './code';
 import { AuthError } from './error';
 import { recordAuthEvent } from './event';
-import { verifyAuthPasskeyAuthentication } from './passkey';
+import { verifyAuthPasskeyAuthentication } from './passkey/server';
 import {
     findAuthPrincipalSetting,
     listAuthSecondFactors,

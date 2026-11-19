@@ -13,20 +13,19 @@ import type {
     RegistrationResponseJSON,
 } from '@simplewebauthn/server';
 
-import { AuthPrincipalSettingModel } from '../../models/auth/principal-setting';
+import { AuthPrincipalSettingModel } from '../../../models/auth/principal-setting';
 import type {
     AuthPrincipalSetting,
     AuthPrincipalSettingPasskey,
-} from '../../models/auth/principal-setting';
-import type { AuthPrincipal } from '../../types/auth';
-
+} from '../../../models/auth/principal-setting';
+import type { AuthPrincipal } from '../../../types/auth';
 import {
     consumeAuthChallenge,
     createAuthChallenge,
-} from './challenge';
-import { AuthError } from './error';
-import { getOrCreateAuthPrincipalSetting } from './principal-setting';
-import type { AuthRealm } from './realm';
+} from '../challenge';
+import { AuthError } from '../error';
+import { getOrCreateAuthPrincipalSetting } from '../principal-setting';
+import type { AuthRealm } from '../realm';
 
 /**
  * WebAuthn 挑戰的用途；驗證時必須與目前的操作相符。

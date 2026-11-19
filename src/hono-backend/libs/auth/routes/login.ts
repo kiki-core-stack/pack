@@ -11,7 +11,7 @@ import {
     loginWithAuthPassword,
 } from '../../../../libs/auth/login';
 import type { AuthLoginOutcome } from '../../../../libs/auth/login';
-import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey';
+import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey/server';
 import { findAuthPrincipalSetting } from '../../../../libs/auth/principal-setting';
 import { consumeAuthAttempt } from '../../../../libs/auth/rate-limit';
 import { revokeAuthSession } from '../../../../libs/auth/session';

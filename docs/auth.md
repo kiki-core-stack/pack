@@ -281,8 +281,8 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 - 註冊：`residentKey: required`、`userVerification: required`、`attestation: none`，排除已綁定的憑證；每個帳號上限 10 把，可命名（最長 64 字）與改名。
 - user handle 為每個 `(realm, principalId)` 一組的隨機值，不直接使用 `principalId`。
 - 移除密碼金鑰後，裝置上的密碼管理工具仍留著它，之後選到會登入失敗。前端以 WebAuthn Signal API 讓密碼管理工具移除，不支援的瀏覽器略過：
-  - 本人的安全性總覽回傳 `webauthn.userHandle`，前端載入總覽後以 `signalAllAcceptedCredentials` 告知仍有效的清單。管理端查看他人的總覽不回傳 user handle，因為那不是對方的裝置。
-  - 驗證時查無該密碼金鑰回 `passkeyUnknown`，與其他失敗（`passkeyVerificationFailed`）分開，前端才能安全地以 `signalUnknownCredential` 移除那一把；其他失敗原因不可移除，否則會刪掉仍有效的密碼金鑰。
+  - 本人的安全性總覽回傳 `webauthn.userHandle`，前端載入總覽後以 `signalAcceptedPasskeys`（`libs/auth/passkey/browser`）告知仍有效的清單。管理端查看他人的總覽不回傳 user handle，因為那不是對方的裝置。
+  - 驗證時查無該密碼金鑰回 `passkeyUnknown`，與其他失敗（`passkeyVerificationFailed`）分開，前端才能安全地以 `signalUnknownPasskey` 移除那一把；其他失敗原因不可移除，否則會刪掉仍有效的密碼金鑰。
 - 驗證時設定 `requireUserVerification: true`，並比對 `rpId`、`origin`、計數器（規則見「MongoDB」）。
 
 ### QR Code 登入

@@ -26,7 +26,7 @@ import {
 import {
     maxAuthPasskeysPerPrincipal,
     verifyAuthPasskeyRegistration,
-} from './passkey';
+} from './passkey/server';
 import { isAuthCurrentPasswordRequired } from './password';
 import {
     findAuthPrincipalSetting,
