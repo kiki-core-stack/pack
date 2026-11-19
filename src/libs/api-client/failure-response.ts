@@ -10,10 +10,6 @@ import type { ApiClientFailureResponseData } from '../../types/api-client';
 export type ApiClientFailureMessageKey = 'aborted' | 'invalidResponse' | 'networkError';
 
 // Functions
-
-/**
- * Whether `data` is an API error envelope.
- */
 function isApiErrorResponseData(data: unknown): data is ApiErrorResponseData {
     return typeof data === 'object'
       && data !== null

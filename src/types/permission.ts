@@ -49,10 +49,6 @@ export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
      * Every permission key (`admin.role.create`), in definition order.
      */
     readonly keys: ReadonlyArray<PermissionKeys<T>>;
-
-    /**
-     * Label of every group and key.
-     */
     readonly labels: Readonly<Record<PermissionGroups<T> | PermissionKeys<T>, LocalizedMessages>>;
 
     /**

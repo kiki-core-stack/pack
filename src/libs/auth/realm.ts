@@ -18,9 +18,6 @@ import { getPlatformConfig } from '../platform/config';
 
 import { getAuthSecretEncryptionKeys } from './secret-encryption';
 
-/**
- * 平台設定含有 `auth` 區塊的 scope。
- */
 export type AuthPlatformScope = {
     [S in PlatformScope]: PlatformConfigByScope[S] extends { auth: PlatformAuthConfig } ? S : never;
 }[PlatformScope];
@@ -116,8 +113,6 @@ export interface AuthRealmOptions<P extends AuthPrincipal = AuthPrincipal> {
     name: string;
 
     /**
-     * 新密碼的規則。
-     *
      * @defaultValue `strongPasswordSchema`
      */
     newPasswordSchema?: z.ZodType<string>;
@@ -213,9 +208,6 @@ export function defineAuthRealm<P extends AuthPrincipal>(options: AuthRealmOptio
     return realm;
 }
 
-/**
- * 以名稱取得已定義的 realm，例如 ws.io 的連線驗證。
- */
 export function getAuthRealm(name: string) {
     return authRealms.get(name);
 }

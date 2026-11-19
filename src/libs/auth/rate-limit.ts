@@ -58,9 +58,6 @@ const authRateLimits = {
 } as const satisfies Record<string, { limit: number; windowSeconds: number }>;
 
 // Classes
-/**
- * 嘗試次數超過門檻。
- */
 export class AuthRateLimitError extends AuthError {
     /**
      * 是否為這段計數期間內第一次超過門檻；事件只在這一次記錄，之後被擋下的請求不再寫入。

@@ -33,9 +33,6 @@ import {
 } from './secret-encryption';
 import { verifyAuthTotpCode } from './totp';
 
-/**
- * 用戶端提出的因子證明。
- */
 export type AuthFactorProof =
   | {
       challengeId: string;
@@ -116,9 +113,6 @@ export async function recordAuthFailure(
     );
 }
 
-/**
- * 加密 TOTP 密鑰時綁定的用途與擁有者。
- */
 export function toAuthTotpSecretContext(realm: AuthRealm<any>, principalId: string) {
     return `totp:${realm.name}:${principalId}`;
 }

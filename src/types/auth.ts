@@ -59,9 +59,6 @@ export interface AuthRequestInfo {
     userAgent?: string;
 }
 
-/**
- * 已通過驗證的工作階段。
- */
 export interface AuthSession extends StoredAuthSession {
     id: string;
     principalId: string;

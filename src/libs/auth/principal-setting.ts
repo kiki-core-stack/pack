@@ -80,9 +80,6 @@ export async function isAuthTwoFactorRequired(realm: AuthRealm<any>, setting?: A
     return (await realm.getConfig()).twoFactorRequired || !!setting?.twoFactorEnforced || !!setting?.twoFactorEnabled;
 }
 
-/**
- * 帳號目前可用的第二因子。
- */
 export function listAuthSecondFactors(realm: AuthRealm<any>, setting?: AuthPrincipalSetting) {
     const factors: AuthSecondFactor[] = [];
     if (!setting || !hasAuthSecondFactor(realm, setting)) return factors;

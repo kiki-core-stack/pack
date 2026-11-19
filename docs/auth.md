@@ -55,22 +55,16 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `model` | 帳號 model，需有 `findById`、`exists`、`updateOne`（mongoose model 皆符合） |
 | `displayName` | 顯示給使用者的名稱：驗證器中的發行者（TOTP issuer）與密碼金鑰提示中的網站名稱（WebAuthn RP name） |
 | `cookieName` | 必須以 `__Host-` 開頭，否則啟動時報錯 |
-| `cookieSameSite` | 選填，預設 `strict` |
-| `origins` | 允許的來源；陣列或以逗號分隔的字串 |
-| `webauthn` | 選填，`{ rpId? }`；有填（可為空物件）才支援密碼金鑰 |
+| `webauthn` | 有填（可為空物件）才支援密碼金鑰 |
 | `findPrincipalByIdentifier` | 以登入用的帳號字串（已去除前後空白）找出帳號；不需檢查是否啟用 |
 | `getPrincipalDisplayName` | 顯示在驗證器與密碼金鑰提示中的帳號名稱 |
-| `isPrincipalActive` | 帳號是否可登入（例如 `enabled`） |
-| `newPasswordSchema` | 選填，變更與重設密碼時新密碼的規則；預設 `strongPasswordSchema` |
-| `verifyPassword` | 選填，驗證密碼；預設呼叫帳號文件的 `verifyPassword` |
-| `setPassword` | 選填，寫入新密碼並回傳是否寫入；只在儲存的密碼仍是帳號載入時的那一個時寫入。預設以 `model.updateOne` 帶此條件寫入，由 model 的雜湊欄位處理雜湊 |
-| `hasPassword` | 選填，帳號是否已設定密碼；預設看帳號文件的 `password`，有自訂 `verifyPassword` 時一律視為有 |
-| `passwordChange` | 選填，本人變更密碼的方式：`currentPassword`（預設）或 `verification`，見「密碼」 |
-| `messenger` | 選填，`{ send, getDestinationHint? }`；把驗證碼與重設密碼的 token 寄給帳號的通道，有填才支援這兩項，見「寄送通道與一次性驗證碼」 |
-| `onSessionsRevoked` | 選填，工作階段被踢除後呼叫；失敗只記錄錯誤 |
-| `onEvent` | 選填，每筆安全性紀錄寫入後呼叫；失敗只記錄錯誤，不影響原本的操作 |
+| `setPassword` | 回傳是否寫入；只在儲存的密碼仍是帳號載入時的那一個時寫入。預設以 `model.updateOne` 帶此條件寫入，由 model 的雜湊欄位處理雜湊 |
+| `hasPassword` | 預設看帳號文件的 `password`，有自訂 `verifyPassword` 時一律視為有 |
+| `messenger` | 有填才支援驗證碼與未登入的重設密碼，見「寄送通道與一次性驗證碼」 |
+| `onSessionsRevoked` | 工作階段被踢除後呼叫；失敗只記錄錯誤 |
+| `onEvent` | 每筆安全性紀錄寫入後呼叫；失敗只記錄錯誤，不影響原本的操作 |
 
-- `origins`：用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證。各環境不同，由環境變數提供；每項去除前後空白，啟動時驗證每項都是合法的 origin 且至少有一項。
+- `origins`：用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證。各環境不同，由環境變數提供。
 - `webauthn.rpId`：只有一個 origin 時預設為該 origin 的網域（各入口網域固定且身分互不相通）；有多個 origin 時必須明確指定，否則啟動時報錯，避免調整 origin 順序時意外改變。`rpId` 定下後不可更改，否則已綁定的密碼金鑰全部作廢。
 - TOTP 與救援碼一律支援；QR Code 登入由平台設定開關。
 - cookie 一律 `__Host-` 前綴、`HttpOnly`、`Secure`、`Path=/`、不設 `Domain`；有效期為絕對上限（受限工作階段為 15 分鐘）。設定 cookie 的回應帶 `Cache-Control: no-store`。
@@ -79,16 +73,14 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 ### 平台設定
 
-每個 realm 的 scope 在平台設定中有 `auth` 區塊（`platformAuthConfigSchema`）。預設值為 `defaultManagementPlatformAuthConfig`（後台類）與 `defaultUserPlatformAuthConfig`（前台使用者），下游新增 scope 時沿用：
+每個 realm 的 scope 在平台設定中有 `auth` 區塊（`platformAuthConfigSchema`）。下游新增 scope 時沿用 `defaultManagementPlatformAuthConfig`（後台類）或 `defaultUserPlatformAuthConfig`（前台使用者）。
 
-| 欄位 | 說明 | 範圍 | 後台類預設 | 前台使用者預設 |
-| --- | --- | --- | --- | --- |
-| `session.idleTimeoutSeconds` | 閒置逾時；有活動即順延 | 60 秒～1 年，不可超過絕對上限 | 4 小時 | 30 天 |
-| `session.absoluteTimeoutSeconds` | 絕對上限；不順延 | 300 秒～1 年 | 3 天 | 60 天 |
-| `maxSessions` | 同時登入上限；`null` 為不限制，超過時踢掉最久未活動者 | 1～100 或 `null` | `null` | `null` |
-| `twoFactorRequired` | 是否強制所有帳號使用雙重驗證 | | `false` | `false` |
-| `qrCodeLoginEnabled` | 是否開放 QR Code 登入；發現濫用時可即時關閉 | | `false` | `false` |
-| `qrCodeLoginApprovalRequiresVerification` | 核准 QR 登入前是否先驗證身分 | | `true` | `false` |
+| 欄位 | 說明 |
+| --- | --- |
+| `session.idleTimeoutSeconds` | 閒置逾時；有活動即順延，不可超過絕對上限 |
+| `session.absoluteTimeoutSeconds` | 絕對上限；不順延 |
+| `maxSessions` | 同時登入上限；`null` 為不限制，超過時踢掉最久未活動者 |
+| `qrCodeLoginEnabled` | 發現濫用時可即時關閉 |
 
 期限以「目前的設定」對工作階段的建立時間與最後活動時間計算：調低立即生效；調高時，既有工作階段要到下次順延才套用新的閒置逾時（順延門檻見「每次請求的驗證」第 8 步）。
 
@@ -169,11 +161,8 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 ### MongoDB
 
-| collection | 內容 |
-| --- | --- |
-| `auth.principal_settings` | 每個 `(realm, principalId)` 一筆：`twoFactorEnabled`、`twoFactorEnforced`、`revision`（變更因子與開關時的版本號）、TOTP（加密的密鑰、確認時間、上次使用的時間步）、救援碼（雜湊、使用時間）、WebAuthn user handle、密碼金鑰陣列（`credentialId`、公鑰、計數器、transports、AAGUID、裝置類型、名稱、建立與最後使用時間） |
-| `auth.events` | 安全性紀錄：`realm`、`principalId`、類型（`AuthEventType`）、使用的因子、IP、User-Agent、`sessionId`、操作者（`actorRealm`、`actorPrincipalId`，本人操作時與帳號相同）、附加資料、建立時間 |
-
+- `auth.principal_settings`：每個 `(realm, principalId)` 一筆，存雙重驗證開關、因子與 `revision`（變更因子與開關時的版本號）。
+- `auth.events`：安全性紀錄；操作者（`actorRealm`、`actorPrincipalId`）在本人操作時與帳號相同。
 - 帳號設定在第一次寫入（開始綁定密碼金鑰或經過 `mutateAuthPrincipalSetting`）時才建立，建立時一律產生 WebAuthn user handle；不存在視為全部預設值。
 - `auth.events` 保存 180 天，由 `createdAt` 的 TTL index 自動刪除（事件含 IP 與 User-Agent）。
 - unique index：`(realm, principalId)`、WebAuthn user handle、`passkeys.credentialId`。後者是 partial index（`passkeys.credentialId` 存在才涵蓋），否則沒有密碼金鑰的文件會以 null 互相衝突。
@@ -357,76 +346,11 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 
 ## 模組配置
 
-| 位置 | 內容 |
-| --- | --- |
-| `constants/auth.ts` | `AuthEventType`、`authFactors`、`authSecondFactors`、`authVerificationOperations`、`authVerificationHeaderName` 與顯示名稱對照 |
-| `libs/auth/` | `defineAuthRealm`（`realm.ts`）、工作階段（`session.ts`）、挑戰、登入、因子驗證、TOTP、救援碼、密碼金鑰、QR 登入、驗證身分（`verification.ts`）、一次性驗證碼（`code.ts`）、帳號設定與其唯一的變更入口（`principal-setting.ts`）、雙重驗證與因子的操作（`two-factor.ts`）、變更與重設密碼（`password.ts`）、刪除帳號時的清除（`principal.ts`）、限流、IP 存取、安全性紀錄、`AuthError`、秘密加密 |
-| `models/auth/` | `AuthPrincipalSetting`、`AuthEvent` |
-| `hono-backend/libs/auth/` | `createHonoAuth(realm, { getClientIp })`（`index.ts`）；路由處理函式依群組放在 `routes/`（`login.ts`、`password-reset.ts`、`qr-code-login.ts`、`security.ts`、`verification.ts`、`management.ts`） |
-| `hono-backend/types/auth.ts` | `AuthRouteMeta`、`AuthRouteDefinition`、`ctx.authSession` |
-| `hono-backend/api-errors/auth.ts` | 驗證相關錯誤碼 |
-| `types/auth.ts`、`types/data/auth.ts`、`schemas/api.ts` | 工作階段、事件與寄送訊息（`AuthMessage`）的型別、前端看到的資料型別、`verificationRequired` 的 errorData schema |
-
-`createHonoAuth` 回傳：
-
-| 成員 | 說明 |
-| --- | --- |
-| `authenticate(ctx, meta)` | 每次請求的驗證（見上方），由後端的 route middleware 呼叫 |
-| `assertVerification(ctx, operation)` | 消耗 `X-Auth-Verification` 標頭的一次性憑據 |
-| `loginWithExternalIdentity(ctx, principalId)` | 以外部驗證的身分登入：設定 cookie 並回傳登入結果（`AuthLoginResultData`），由各專案自己的路由呼叫 |
-| `routes` | 本人使用的路由處理函式，分為 `login`、`passwordReset`、`qrCodeLogin`、`security`、`verification` 五組，另有 `logout`（見下表） |
-| `createManagementRoutes({ getActor, assertActorVerification, getTargetPrincipalId? })` | 管理他人帳號的路由處理函式；`getTargetPrincipalId` 預設取路由參數 `id` 並確認存在，可改為以權限與資料範圍篩選 |
-| `realm` | 傳入的 realm |
-
-每個處理函式都是 `AuthRouteDefinition`（`{ handlers, meta }`）；各後端的路由檔只轉接 handlers 並把 meta 併入自己的 route meta，不自行實作流程。
-
-`routes`：
-
-| 名稱 | 用途 | meta |
-| --- | --- | --- |
-| `login.password` | 密碼登入（`account`、`password`） | `noLoginRequired` |
-| `login.secondFactor` | 登入第二步（`challengeId`、`proof`） | `noLoginRequired` |
-| `login.getSecondFactorPasskeyOptions` | 登入第二步的密碼金鑰選項 | `noLoginRequired` |
-| `login.getPasskeyOptions` | 密碼金鑰登入的選項（按 IP 限流） | `noLoginRequired` |
-| `login.passkey` | 密碼金鑰登入 | `noLoginRequired` |
-| `logout` | 登出並清除 cookie | `noLoginRequired` |
-| `passwordReset.request` | 請求重設密碼（`account`）；一律回成功 | `noLoginRequired` |
-| `passwordReset.complete` | 以收到的 token 重設密碼（`token`、`newPassword`） | `noLoginRequired` |
-| `qrCodeLogin.create` | 建立 QR 登入請求 | `noLoginRequired` |
-| `qrCodeLogin.poll` | 輪詢並領取 | `noLoginRequired` |
-| `qrCodeLogin.getInfo` | 已登入裝置查詢請求方資訊 | |
-| `qrCodeLogin.approve` | 核准（依平台設定要求驗證身分） | |
-| `qrCodeLogin.reject` | 拒絕 | |
-| `verification.getPasskeyOptions` | 驗證身分的密碼金鑰選項 | |
-| `verification.sendCode` | 寄出驗證身分用的驗證碼，回傳遮罩後的收件位址（只有沒有第二因子的帳號可用） | |
-| `verification.create` | 驗證身分，回傳一次性憑據（`operation`、`proof`） | |
-| `security.getOverview` | 安全性總覽（因子、雙重驗證狀態、剩餘救援碼、是否已有密碼、變更密碼是否需要目前密碼、是否支援密碼金鑰與 QR 登入） | `allowRestrictedSession` |
-| `security.getPasskeyRegistrationOptions` | 綁定密碼金鑰的選項（需 `auth.addFactor`，受限工作階段除外） | `allowRestrictedSession` |
-| `security.registerPasskey` | 綁定密碼金鑰；受限工作階段換發正常工作階段 | `allowRestrictedSession` |
-| `security.renamePasskey` | 密碼金鑰改名（路由參數 `id`：credential ID） | |
-| `security.removePasskey` | 移除密碼金鑰（路由參數 `id`） | `verification: auth.removeFactor` |
-| `security.startTotpSetup` | 開始綁定 TOTP（需 `auth.addFactor`，受限工作階段除外） | `allowRestrictedSession` |
-| `security.confirmTotpSetup` | 確認 TOTP 綁定；受限工作階段換發正常工作階段 | `allowRestrictedSession` |
-| `security.removeTotp` | 移除 TOTP | `verification: auth.removeFactor` |
-| `security.regenerateRecoveryCodes` | 重新產生救援碼 | `verification: auth.regenerateRecoveryCodes` |
-| `security.setTwoFactorEnabled` | 本人開啟或關閉雙重驗證（關閉需 `auth.disableTwoFactor`） | |
-| `security.changePassword` | 變更或設定密碼並踢除全部工作階段，含目前裝置（`currentPassword?`、`newPassword`；見「密碼」） | |
-| `security.listSessions` | 列出自己的工作階段 | |
-| `security.revokeSession` | 踢除指定工作階段（路由參數 `id`） | |
-| `security.revokeOtherSessions` | 踢除其他全部，目前的工作階段不變 | |
+`createHonoAuth(realm, { getClientIp })` 回傳 `authenticate`、`assertVerification`、`loginWithExternalIdentity`、本人使用的 `routes` 與 `createManagementRoutes`。每個處理函式都是 `AuthRouteDefinition`（`{ handlers, meta }`）；各後端的路由檔只轉接 handlers 並把 meta 併入自己的 route meta，不自行實作流程。
 
 安全性紀錄的列表不由 pack 提供路由：各後端以自己的分頁與過濾機制查詢 `AuthEventModel`，並一律強制加上 `realm` 與 `principalId` 的條件。本人查看時 `principalId` 是登入者，管理端查看他人時是被管理的帳號。
 
-`createManagementRoutes` 的處理函式（操作者的登入與權限由後端自己的 middleware 檢查）。對象可以是操作者本人：全部踢除與重設雙重驗證會連同操作者目前的工作階段一起登出：
-
-| 名稱 | 用途 |
-| --- | --- |
-| `getSecurityOverview` | 帳號的安全性總覽 |
-| `listSessions` | 列出帳號的工作階段 |
-| `revokeSession` | 踢除指定工作階段（路由參數 `sessionId`） |
-| `revokeAllSessions` | 踢除全部工作階段 |
-| `setTwoFactorEnforced` | 設定或取消強制雙重驗證（`{ enforced }`；取消需操作者的 `auth.manageTwoFactor`） |
-| `resetTwoFactor` | 重設雙重驗證（需操作者的 `auth.manageTwoFactor`） |
+`createManagementRoutes({ getActor, assertActorVerification, getTargetPrincipalId? })`：操作者的登入與權限由後端自己的 middleware 檢查；`getTargetPrincipalId` 預設取路由參數 `id` 並確認存在，可改為以權限與資料範圍篩選。對象可以是操作者本人：全部踢除與重設雙重驗證會連同操作者目前的工作階段一起登出。
 
 - ws.io 的連線驗證：ws.io-server 把 cookie 的 token 與來源 IP 交給後端的內部路由，後端以 `getAuthRealm(name)` 取得 realm 後呼叫 `authenticateAuthConnection(realm, token, { ip })`（`libs/auth/access.ts`）。它與 HTTP 的 `authenticate` 共用 `authenticateAuthSession`（secret、世代、期限、帳號啟用、受限工作階段是否仍需要），另外拒絕受限工作階段並檢查 IP 存取政策，但不順延工作階段。ws.io-server 在握手時驗證一次，連線期間定期重新驗證，收到 4xx 即斷線；握手時的 `Origin` 檢查由 ws.io-server 自行處理。
 - 踢除時的即時斷線：realm 的 `onSessionsRevoked` 發出 `WsIoEventNames.ToServer.AuthSessionsRevoked`（realm 名稱、帳號、工作階段 ID），ws.io-server 中斷綁在這些工作階段上的連線；斷線前是否通知前端、前端如何提示由下游實作。踢除其他裝置時，目前的工作階段不在清單內，它的連線不受影響。通知失敗只記錄錯誤，正確性由定期重新驗證保證。

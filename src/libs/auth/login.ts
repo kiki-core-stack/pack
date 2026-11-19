@@ -45,9 +45,6 @@ import {
 } from './session';
 import type { CreatedAuthSession } from './session';
 
-/**
- * 登入的第一步所使用的因子。
- */
 type AuthFirstFactor = Extract<AuthFactor, 'external' | 'password'>;
 
 export type AuthLoginOutcome =

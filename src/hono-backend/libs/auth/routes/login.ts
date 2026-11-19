@@ -140,9 +140,6 @@ export function createAuthLoginRoutes<P extends AuthPrincipal>({ getRequest, rea
     };
 }
 
-/**
- * Logs out: revokes the current session, if any, and clears the cookie.
- */
 export function createAuthLogoutRoute<P extends AuthPrincipal>({ getRequest, realm }: AuthRoutesContext<P>) {
     return defineAuthRoute(
         { noLoginRequired: true },

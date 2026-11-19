@@ -93,19 +93,12 @@ export interface AuthRecoveryCodesData {
     recoveryCodes?: string[];
 }
 
-/**
- * 帳號的安全性設定總覽。
- */
 export interface AuthSecurityOverviewData {
     /**
      * 帳號是否已設定密碼；以外部身分註冊的帳號可能沒有。
      */
     hasPassword: boolean;
     passkeys: AuthPasskeyData[];
-
-    /**
-     * 此 realm 是否支援 passkey。
-     */
     passkeySupported: boolean;
 
     /**
@@ -133,9 +126,6 @@ export interface AuthSecurityOverviewData {
     };
 }
 
-/**
- * 寄出驗證碼的結果。
- */
 export interface AuthSentCodeData {
     /**
      * 遮罩後的收件位址，realm 有提供時才有。

@@ -127,9 +127,6 @@ async function authenticateAuthToken(realm: AuthRealm<any>, token: string) {
     };
 }
 
-/**
- * 建立工作階段，並處理同時登入上限。
- */
 export async function createAuthSession(
     realm: AuthRealm<any>,
     input: CreateAuthSessionInput,

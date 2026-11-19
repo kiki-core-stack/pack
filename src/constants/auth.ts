@@ -44,9 +44,6 @@ export const authFactors = [
     'totp',
 ] as const;
 
-/**
- * 可作為第二因子的因子。
- */
 export const authSecondFactors = [
     'passkey',
     'recoveryCode',

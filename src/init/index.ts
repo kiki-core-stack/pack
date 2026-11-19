@@ -19,8 +19,6 @@ export async function initializeSystemStartup() {
 
     logger.success('Database connected');
 
-    // Run default initialization tasks with redis lock
-
     // TODO: 此處應該改方法 避免初始化完成之前其餘服務或thread直接跳過這個lock進入service ready的錯誤狀態
     // 或是正式環境時需要由一個init docker startup container/image開始執行
     const locked = await tryClaimRedisKey(`${projectRedisKeyPrefix}:system:initialize`, 10 * 1000);

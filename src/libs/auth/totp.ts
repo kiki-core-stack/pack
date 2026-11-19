@@ -36,9 +36,6 @@ function generateTotpCode(secret: Buffer, step: number) {
     return (binary % 10 ** totpDigits).toString().padStart(totpDigits, '0');
 }
 
-/**
- * 驗證器 App 掃描用的 `otpauth://` URI。
- */
 export function toAuthTotpUri(secret: string, issuer: string, accountName: string) {
     const label = `${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}`;
     const params = new URLSearchParams({

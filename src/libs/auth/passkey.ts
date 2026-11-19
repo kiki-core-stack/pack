@@ -49,10 +49,6 @@ interface AuthPasskeyChallenge {
 }
 
 // Constants
-
-/**
- * 每個帳號最多可綁定的 passkey 數量。
- */
 export const maxAuthPasskeysPerPrincipal = 10;
 
 // Functions

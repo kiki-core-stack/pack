@@ -22,19 +22,12 @@ import type {
 
 import { getAuthRequestInfo } from './context';
 
-/**
- * What the route groups of a realm share.
- */
 export interface AuthRoutesContext<P extends AuthPrincipal> {
     /**
      * Consumes the one-time verification grant of a high-risk operation.
      */
     assertVerification: (ctx: Context, operation: string) => Promise<void>;
     getOperationContext: (ctx: Context) => AuthOperationContext;
-
-    /**
-     * The account of the authenticated session.
-     */
     getPrincipal: (ctx: Context) => Promise<P>;
     getRequest: (ctx: Context) => AuthRequestInfo;
 
@@ -46,8 +39,6 @@ export interface AuthRoutesContext<P extends AuthPrincipal> {
 }
 
 // Constants
-
-// The account string typed in to log in or to reset a password.
 export const accountSchema = z.string().trim().min(1).max(256);
 // A code typed in by the user: TOTP, recovery code or a verification code sent by the realm.
 export const codeSchema = z.string().trim().min(1).max(64);
