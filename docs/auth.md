@@ -173,6 +173,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 | `auth.events` | 驗證事件紀錄：`realm`、`principalId`、類型（`AuthEventType`）、使用的因子、IP、User-Agent、`sessionId`、操作者（`actorRealm`、`actorPrincipalId`，本人操作時與帳號相同）、附加資料、建立時間 |
 
 - 帳號設定在第一次需要時才建立（開始綁定 passkey、確認 TOTP、設定強制），建立時一律產生 WebAuthn user handle；不存在視為全部預設值。
+- `auth.events` 保存 180 天，由 `createdAt` 的 TTL index 自動刪除（事件含 IP 與 User-Agent）。
 - unique index：`(realm, principalId)`、WebAuthn user handle、`passkeys.credentialId`。後者是 partial index（`passkeys.credentialId` 存在才涵蓋），否則沒有 passkey 的文件會以 null 互相衝突。
 - 變更「有哪些因子、是否開啟或被強制」（綁定與移除 TOTP／passkey、重新產生救援碼、開關、強制、重設）一律經過 `mutateAuthPrincipalSetting`：讀取設定、依讀到的內容檢查前置條件並決定更新，再以文件的 `revision` 作為條件寫入並加一；期間被其他請求改過就以最新的設定重新判斷。「不可移除最後一個第二因子」「最多 10 把 passkey」「尚未有 TOTP 才綁定」等條件因此在並行請求下仍成立。
 - 登入時的寫入不影響上述判斷，各自使用帶條件的單次更新，更新未命中即視為驗證失敗，避免同一個憑證並行通過兩次：
@@ -413,7 +414,7 @@ pack 內建的流程中，驗證碼只用在已登入的高危操作驗證：六
 | `security.revokeSession` | 踢除指定工作階段（路由參數 `id`） | |
 | `security.revokeOtherSessions` | 踢除其他全部，目前的工作階段不變 | |
 
-驗證事件的列表不由 pack 提供路由：各後端以自己的分頁與過濾機制查詢 `AuthEventModel`，並一律強制加上 `realm` 與 `principalId` 的條件。
+驗證事件的列表不由 pack 提供路由：各後端以自己的分頁與過濾機制查詢 `AuthEventModel`，並一律強制加上 `realm` 與 `principalId` 的條件。本人查看時 `principalId` 是登入者，管理端查看他人時是被管理的帳號。
 
 `createManagementRoutes` 的處理函式（操作者的登入與權限由後端自己的 middleware 檢查）。對象可以是操作者本人：全部踢除與重設雙重驗證會連同操作者目前的工作階段一起登出：
 

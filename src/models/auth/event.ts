@@ -39,4 +39,6 @@ const schema = new Schema<AuthEvent, AuthEventModel>(
     },
 );
 
+schema.index({ createdAt: 1 }, { expireAfterSeconds: 180 * 86400 });
+
 export const AuthEventModel = buildMongooseModel<AuthEvent, AuthEventModel>('auth.events', 'AuthEvent', schema);
