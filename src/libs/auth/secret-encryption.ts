@@ -48,7 +48,9 @@ export function decryptAuthSecret(ciphertext: string, context: string) {
                 decipher.final(),
             ]).toString(),
         };
-    } catch {}
+    } catch {
+        // 解密失敗時不回傳秘密，與無法辨識密文或找不到金鑰的情況一致。
+    }
 }
 
 /**
