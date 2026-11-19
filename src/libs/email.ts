@@ -19,7 +19,6 @@ export async function enqueueEmailSendJobs(
     let from;
     if (typeof senderIdentity !== 'number') from = senderIdentity.from;
     else {
-        // TODO: cache
         const emailSenderIdentity = await EmailSenderIdentityModel
             .findOne({
                 enabled: true,
