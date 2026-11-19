@@ -4,10 +4,6 @@ import {
     cloneDeep,
     isPlainObject,
 } from 'es-toolkit';
-import type {
-    ClientSession,
-    Types,
-} from 'mongoose';
 import { objectEntries } from 'ts-extras';
 import type { UnknownRecord } from 'type-fest';
 
@@ -17,6 +13,7 @@ import {
 } from '../../../constants/platform';
 import { PlatformConfigModel } from '../../../models/platform/config';
 import { platformConfigVariants } from '../../../schemas/platform';
+import { defineInitTask } from '../../task';
 
 function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: UnknownRecord) {
     let changed = false;
@@ -33,57 +30,63 @@ function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: Unk
     return changed;
 }
 
-export async function run(session: ClientSession, adminId: Types.ObjectId) {
-    // Create platform configs and backfill missing defaults without overwriting existing values.
-    for (const platformScope of getEnumNumberValues(PlatformScope)) {
-        const platformConfig = await PlatformConfigModel
-            .findOne({ scope: platformScope }, undefined, { session })
-            .select(['config'])
-            .lean();
+/**
+ * Creates the platform config of every scope and backfills missing defaults without overwriting existing values.
+ */
+export default defineInitTask({
+    name: 'kcs:ensure-platform-configs',
+    async run({ adminId, session }) {
+        for (const platformScope of getEnumNumberValues(PlatformScope)) {
+            const platformConfig = await PlatformConfigModel
+                .findOne({ scope: platformScope }, undefined, { session })
+                .select(['config'])
+                .lean();
 
-        if (platformConfig) {
-            const config = cloneDeep(platformConfig.config);
-            const changed = applyMissingPlatformConfigDefaults(
-                config,
-                defaultPlatformConfigs[platformScope],
-            );
+            if (platformConfig) {
+                const config = cloneDeep(platformConfig.config);
+                const changed = applyMissingPlatformConfigDefaults(
+                    config,
+                    defaultPlatformConfigs[platformScope],
+                );
 
-            await platformConfigVariants.parse(platformScope, config);
-            if (!changed) continue;
+                await platformConfigVariants.parse(platformScope, config);
+                if (!changed) continue;
 
+                await PlatformConfigModel.updateOne(
+                    { _id: platformConfig._id },
+                    {
+                        $set: {
+                            config,
+                            updatedAt: new EnhancedDate(),
+                        },
+                    },
+                    {
+                        session,
+                        timestamps: false,
+                    },
+                );
+
+                continue;
+            }
+
+            const now = new EnhancedDate();
             await PlatformConfigModel.updateOne(
-                { _id: platformConfig._id },
+                { scope: platformScope },
                 {
-                    $set: {
-                        config,
-                        updatedAt: new EnhancedDate(),
+                    $setOnInsert: {
+                        config: defaultPlatformConfigs[platformScope],
+                        createdAt: now,
+                        createdByAdmin: adminId,
+                        updatedAt: now,
                     },
                 },
                 {
                     session,
                     timestamps: false,
+                    upsert: true,
                 },
             );
-
-            continue;
         }
-
-        const now = new EnhancedDate();
-        await PlatformConfigModel.updateOne(
-            { scope: platformScope },
-            {
-                $setOnInsert: {
-                    config: defaultPlatformConfigs[platformScope],
-                    createdAt: now,
-                    createdByAdmin: adminId,
-                    updatedAt: now,
-                },
-            },
-            {
-                session,
-                timestamps: false,
-                upsert: true,
-            },
-        );
-    }
-}
+    },
+    transaction: true,
+});

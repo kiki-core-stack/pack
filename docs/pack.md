@@ -36,7 +36,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - connections/：Redis 連線。
 - providers/：電子郵件、簡訊服務商的實作。
 - redis-scripts/：Lua 腳本與其載入。
-- init/：後端啟動時的初始化（`initializeSystemStartup`）；下游任務接在標註處。
+- init/：系統初始化（`initializeSystem`）與每次初始化都會執行的任務（`tasks/index.ts`）；下游任務接在清單的下游區段，檔案放在自己的目錄。
 - hono-backend/：Hono 後端共用元件。
   - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
   - libs/：`auth/`（`createHonoAuth`）與 `api/`（錯誤定義、驗證、route docs）。

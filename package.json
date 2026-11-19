@@ -17,6 +17,7 @@
     "./hono-backend/setups/mongoose-model-extensions": "./src/hono-backend/setups/mongoose-model-extensions/index.ts",
     "./init": "./src/init/index.ts",
     "./init/tasks": "./src/init/tasks/index.ts",
+    "./init/tasks/kcs": "./src/init/tasks/kcs/index.ts",
     "./libs/storages/files/types": {
       "types": "./src/libs/storages/files/types.ts",
       "default": null
@@ -62,6 +63,7 @@
     "./init/_internals/ensure-admin": null,
     "./init/index": null,
     "./init/tasks/index": null,
+    "./init/tasks/kcs/index": null,
     "./libs/_internals/logger": null,
     "./libs/auth/_internals/crypto": null,
     "./libs/auth/_internals/redis": null,
