@@ -7,8 +7,8 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - 直接 import 原始碼，不經 build；只 import 用到的檔案，例如 `@kcs-project/pack/schemas/admin`，沒有總入口。
 - `package.json` 的 `exports` 由 `scripts/sync-package-exports.ts` 產生（pre-commit hook 會自動執行，exports 有變動時需 stage 後再 commit）：
   - `./*` 對應 `./src/*.ts`；目錄的 `index.ts` 以目錄路徑匯出。
-  - `_internals`、`internal(s)` 路徑與 `.d.ts` 不對外。
-  - `types` 底下的模組只匯出型別，且不得含執行期程式碼。
+  - 路徑中有 `_internal(s)`、`internal(s)` 段的模組與 `.d.ts` 不對外。
+  - 路徑中有 `types` 段或檔名為 `types` 的模組只匯出型別，且不得含執行期程式碼。
 - 第一次 clone 後執行 `scripts/install-git-hooks.sh` 啟用 hook。
 - `peerDependencies` 只在用到對應模組時才需要安裝（例如 `models` 需要 mongoose、`providers/email` 需要 nodemailer、`libs/auth` 需要 `@simplewebauthn/server`）。
 
@@ -45,13 +45,14 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - i18n.ts：`resolveLocale(acceptLanguage)`。
   - permission.ts：`definePermissions`、`hasPermission`、`expandPermissionRequirements`。
   - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板、generator 設定（`config.yaml`，額外產生 `api-classes.ts`）與固定的 generator 版本。
-  - auth/：登入、工作階段、雙重驗證、passkey、QR Code 登入、高危操作驗證（見下方「auth」）。
+  - auth/：登入、工作階段、雙重驗證、密碼金鑰、QR Code 登入、驗證身分（見下方「auth」）。
   - api-client/：前端 API 呼叫：`toApiClientFailureResponse`（攔截器把失敗轉為 envelope 回應）、`OpenApiClientBase`／`configureOpenApiClient`（產生的 API 類別以 `XxxApi.use()` 取得實例）。
-  - 其餘：email／sms 發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
-- models/：mongoose model（`auth/` 為 auth 的帳號設定與事件紀錄）。
+  - platform/：平台設定（`getPlatformConfig`，本機快取並以 Redis 版本號同步，寫入後呼叫 `clearPlatformConfigCache`）與 IP 存取政策（`checkPlatformIpAccessPolicy`）。
+  - 其餘：電子郵件／簡訊發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
+- models/：mongoose model（`auth/` 為 auth 的帳號設定與安全性紀錄）。
 - stores/、storages/：快取。`storages` 是底層實例（LRU、Redis），`stores` 是建立在其上的各領域 keyed store。
 - connections/：Redis 連線。
-- providers/：email、sms 服務商的實作。
+- providers/：電子郵件、簡訊服務商的實作。
 - redis-scripts/：Lua 腳本與其載入。
 - init/：後端啟動時的初始化（`initializeSystemStartup`），含建立預設管理員與平台設定等任務；下游任務接在標註處。
 - hono-backend/：Hono 後端共用元件。
@@ -88,10 +89,10 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 設計與流程見 [auth.md](./auth.md)。
 
-- 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origins、passkey 支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
-- 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與驗證事件存在 `auth.principal_settings`、`auth.events`。
+- 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origins、密碼金鑰支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
+- 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與安全性紀錄存在 `auth.principal_settings`、`auth.events`。
 - 後端以 `createHonoAuth(realm, { getClientIp })` 取得 `authenticate`（掛在 route middleware）與路由處理函式，各路由檔只轉接；流程中的失敗拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 `auth` 錯誤碼。
-- 自行變更密碼或停用帳號時呼叫 `revokeAllAuthSessions(realm, principalId)`，刪除帳號時呼叫 `deleteAuthPrincipalData(realm, principalId)`。
+- 各專案自行重設密碼時呼叫 `resetAuthPassword`（或以 `revokeAllAuthSessionsAround` 包住寫入），停用帳號時呼叫 `revokeAllAuthSessions`，刪除帳號時呼叫 `deleteAuthPrincipalData`（見 auth.md「踢除的時機」）。
 - 環境變數 `AUTH_SECRET_ENCRYPTION_KEYS`：加密 TOTP 密鑰的金鑰。
 
 ### 依判別值變化的欄位
