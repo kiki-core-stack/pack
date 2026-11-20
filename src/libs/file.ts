@@ -14,6 +14,7 @@ import { getFileStorage } from './storages/files';
 
 // Functions
 export const getPublicFileKey = (file: BaseFileData) => `files/${file.hash}${file.extension ? `.${file.extension}` : ''}`;
+export const getPublicFilePath = (file: BaseFileData) => `/${getPublicFileKey(file)}`;
 
 async function getImageData(buffer: Buffer) {
     const metadata = await sharp(buffer, { animated: true }).metadata().catch(() => undefined);
