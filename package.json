@@ -18,10 +18,7 @@
     "./init": "./src/init/index.ts",
     "./init/tasks": "./src/init/tasks/index.ts",
     "./init/tasks/kcs": "./src/init/tasks/kcs/index.ts",
-    "./libs/storages/files/types": {
-      "types": "./src/libs/storages/files/types.ts",
-      "default": null
-    },
+    "./libs/storages/files": "./src/libs/storages/files/index.ts",
     "./libs/zod": "./src/libs/zod/index.ts",
     "./libs/zod/backend": "./src/libs/zod/backend/index.ts",
     "./models/admin": "./src/models/admin/index.ts",
@@ -70,6 +67,7 @@
     "./libs/codegen/_internals/fetch-api-data": null,
     "./libs/codegen/_internals/write-generated-file": null,
     "./libs/platform/_internals/config": null,
+    "./libs/storages/files/index": null,
     "./libs/zod/backend/index": null,
     "./libs/zod/index": null,
     "./models/admin/index": null,

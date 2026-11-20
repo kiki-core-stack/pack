@@ -4,7 +4,6 @@ import type {
     BaseMongoosePaginateModel,
     MongooseHydratedDocument,
 } from '@kikiutils/mongoose/types';
-import { getEnumNumberValues } from '@kikiutils/shared/enum';
 import { isPlainObject } from 'es-toolkit';
 import {
     Schema,
@@ -19,7 +18,6 @@ import {
     objectKeys,
 } from 'ts-extras';
 
-import { FileStorageProvider } from '../constants/file';
 import * as lruStore from '../stores/lru';
 import type { SmartDataToBaseMongooseDocType } from '../types/data';
 import type { FileData } from '../types/data/file';
@@ -31,9 +29,18 @@ type FileQuery = Query<FileDocument | FileDocument[] | null, File>;
 
 const schema = new Schema<File, FileModel>(
     {
+        extension: s.string().trim.nonRequired,
         hash: s.string().trim.unique.required,
-        path: s.string().trim.required,
-        provider: s.number().enum(getEnumNumberValues(FileStorageProvider)).required,
+        image: {
+            _id: false,
+            required: false,
+            type: {
+                height: s.int32().min(1).required,
+                width: s.int32().min(1).required,
+            },
+        },
+        mimeType: s.string().trim.required,
+        size: s.number().min(0).required,
     },
     {
         timestamps: {

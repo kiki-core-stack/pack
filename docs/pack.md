@@ -16,7 +16,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 - 前後端都可用：`constants`、`types`、`libs/permission`、`libs/i18n`、`libs/zod`（`backend/` 除外）、`schemas`。
 - 僅限前端：`libs/api-client`（需 axios）、`libs/auth/passkey/browser`（瀏覽器 API）。`libs/zod` 與 `schemas` 會 import mongoose（`z.objectId`），前端使用時需安裝 mongoose（例如透過 `@kikiutils/mongoose`）。
-- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`，以及其餘依賴資料庫、Redis 或檔案系統的 `libs`。
+- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`，以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
 - 開發工具：`libs/codegen` 由前端的產生腳本在 dev 時使用。
 
 ## 目錄
