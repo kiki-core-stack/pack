@@ -7,15 +7,12 @@ import { fileTypeFromBuffer } from 'file-type';
 import { mongo } from 'mongoose';
 import sharp from 'sharp';
 
-import { FileModel } from '../models/file';
-import type { BaseFileData } from '../types/data/file';
+import { FileModel } from '../../models/file';
+import { getFileStorage } from '../storages/files';
 
-import { getFileStorage } from './storages/files';
+import { getPublicFileKey } from './public';
 
 // Functions
-export const getPublicFileKey = (file: BaseFileData) => `files/${file.hash}${file.extension ? `.${file.extension}` : ''}`;
-export const getPublicFilePath = (file: BaseFileData) => `/${getPublicFileKey(file)}`;
-
 async function getImageData(buffer: Buffer) {
     const metadata = await sharp(buffer, { animated: true }).metadata().catch(() => undefined);
     if (!metadata?.width || !metadata.height) return;
