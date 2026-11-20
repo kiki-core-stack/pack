@@ -22,6 +22,10 @@ import * as lruStore from '../stores/lru';
 import type { SmartDataToBaseMongooseDocType } from '../types/data';
 import type { FileData } from '../types/data/file';
 
+/**
+ * Public files only (deduplicated by hash, served from the public bucket); a private file keeps its key and metadata in
+ * the document that owns it.
+ */
 export type File = SmartDataToBaseMongooseDocType<FileData>;
 export type FileDocument = MongooseHydratedDocument<File>;
 type FileModel = BaseMongoosePaginateModel<File>;

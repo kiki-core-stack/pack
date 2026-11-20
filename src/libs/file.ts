@@ -27,7 +27,7 @@ async function getImageData(buffer: Buffer) {
 }
 
 /**
- * Identical content is stored once: an existing document with the same hash is returned as is.
+ * Stores a public file; identical content is stored once: an existing document with the same hash is returned as is.
  */
 export async function uploadFileAndCreateDocument(input: BinaryInput) {
     const buffer = await toBuffer(input);
