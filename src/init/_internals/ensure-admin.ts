@@ -1,4 +1,3 @@
-import { generateWithNestedRandomLength } from '@kikiutils/shared/random';
 import type {
     ClientSession,
     Types,
@@ -13,7 +12,7 @@ export async function ensureAdmin(session: ClientSession): Promise<Types.ObjectI
     if (existingAdmin) return existingAdmin._id;
 
     logger.info('No admin found → creating default super admin');
-    const password = generateWithNestedRandomLength(nanoid, 16, 32, 48, 64);
+    const password = nanoid(32);
     const admin = (await AdminModel.create(
         [
             {

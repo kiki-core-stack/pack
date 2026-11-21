@@ -1,4 +1,4 @@
-import { checkAndGetEnvValue } from '@kikiutils/shared/env';
+import { getRequiredEnv } from '@kikiutils/shared/env';
 import { S3Client } from 'bun';
 
 /**
@@ -21,14 +21,14 @@ const visibilityToClientMap = new Map<FileStorageVisibility, S3Client>();
 export function getFileStorage(visibility: FileStorageVisibility) {
     let client = visibilityToClientMap.get(visibility);
     if (client) return client;
-    const bucket = `${checkAndGetEnvValue('PROJECT_NAME')}-${checkAndGetEnvValue('ENVIRONMENT')}-${visibility}`;
+    const bucket = `${getRequiredEnv('PROJECT_NAME')}-${getRequiredEnv('ENVIRONMENT')}-${visibility}`;
     if (!bucketNamePattern.test(bucket)) throw new Error(`Invalid file storage bucket name: ${bucket}`);
     client = new S3Client({
-        accessKeyId: checkAndGetEnvValue('FILE_STORAGE_S3_ACCESS_KEY_ID'),
+        accessKeyId: getRequiredEnv('FILE_STORAGE_S3_ACCESS_KEY_ID'),
         bucket,
-        endpoint: checkAndGetEnvValue('FILE_STORAGE_S3_ENDPOINT'),
+        endpoint: getRequiredEnv('FILE_STORAGE_S3_ENDPOINT'),
         region: process.env.FILE_STORAGE_S3_REGION || undefined,
-        secretAccessKey: checkAndGetEnvValue('FILE_STORAGE_S3_SECRET_ACCESS_KEY'),
+        secretAccessKey: getRequiredEnv('FILE_STORAGE_S3_SECRET_ACCESS_KEY'),
     });
 
     visibilityToClientMap.set(visibility, client);

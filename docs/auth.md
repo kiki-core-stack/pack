@@ -38,7 +38,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
     model: AdminModel,
     displayName: 'Example Admin',
     cookieName: '__Host-admin-session',
-    origin: checkAndGetEnvValue('ADMIN_AUTH_ORIGIN'), // 例如 https://admin.example.com
+    origin: getRequiredEnv('ADMIN_AUTH_ORIGIN'), // 例如 https://admin.example.com
     webauthn: true,
     findPrincipalByIdentifier: (account) => AdminModel.findOne({ account }),
     getPrincipalDisplayName: (admin) => admin.account,
