@@ -14,9 +14,9 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 ### 前端可用與僅限後端
 
-- 前後端都可用：`constants`、`types`、`libs/permission`、`libs/i18n`、`libs/zod`（`backend/` 除外）、`schemas`。
+- 前後端都可用：`constants`、`types`、`libs/permission`、`libs/i18n`、`libs/zod`（`backend/` 除外）、`libs/file/public`、`schemas`、`utils/error`。
 - 僅限前端：`libs/api-client`（需 axios）、`libs/auth/passkey/browser`（瀏覽器 API）。`libs/zod` 與 `schemas` 會 import mongoose（`z.objectId`），前端使用時需安裝 mongoose（例如透過 `@kikiutils/mongoose`）。
-- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`，以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
+- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`、`utils/file`、`utils/image`（sharp），以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
 - 開發工具：`libs/codegen` 由前端的產生腳本在 dev 時使用。
 
 ## 目錄
@@ -30,10 +30,13 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
   - auth/：見下方「auth」。
   - api-client/：前端 API 呼叫；產生的 API 類別以 `XxxApi.use()` 取得實例。
   - platform/：平台設定（本機快取並以 Redis 版本號同步，寫入後呼叫 `clearPlatformConfigCache`）與 IP 存取政策。
-  - 其餘：電子郵件／簡訊發送排程、job outbox、檔案與圖片、redis lock、mongoose 擴充、密碼雜湊等。
+  - storages/files/：S3 檔案儲存，`getFileStorage('public' | 'private')` 對應 bucket `<PROJECT_NAME>-<ENVIRONMENT>-<visibility>`，連線讀 `FILE_STORAGE_S3_*`；第一次使用時才建立，用不到檔案的服務不需要這些設定。
+  - file/：公開檔案以內容的 SHA-256 去重，存在 public bucket 的 `files/<hash>.<ext>`，由 gateway 以同一個 path 提供；`file/public` 的 key 與 path 規則前後端共用。
+  - 其餘：電子郵件／簡訊發送排程、job outbox、圖片轉換、redis lock、mongoose 擴充、密碼雜湊等。
 - models/：mongoose model。
 - stores/、storages/：快取。`storages` 是底層實例（LRU、Redis），`stores` 是建立在其上的各領域 keyed store。
 - connections/：Redis 連線。
+- utils/：不依賴資料庫與連線的工具（錯誤訊息、依內容偵測檔案類型、圖片轉換）。
 - providers/：電子郵件、簡訊服務商的實作。
 - redis-scripts/：Lua 腳本與其載入。
 - init/：系統初始化（`initializeSystem`）與每次初始化都會執行的任務（`tasks/index.ts`）；下游任務接在清單的下游區段，檔案放在自己的目錄。

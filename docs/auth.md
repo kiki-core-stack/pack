@@ -48,38 +48,14 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 });
 ```
 
-| 選項 | 說明 |
-| --- | --- |
-| `name` | Redis key 與資料的命名空間；小寫英數與 `-`，各 realm 不可重複 |
-| `scope` | 平台設定含 `auth` 區塊的 scope（`AuthPlatformScope`）；同時是 IP 存取政策的 scope |
-| `model` | 帳號 model，需有 `findById`、`exists`、`updateOne`（mongoose model 皆符合） |
-| `displayName` | 顯示給使用者的名稱：驗證器中的發行者（TOTP issuer）與密碼金鑰提示中的網站名稱（WebAuthn RP name） |
-| `cookieName` | 必須以 `__Host-` 開頭，否則啟動時報錯 |
-| `webauthn` | 設為 `true` 才支援密碼金鑰 |
-| `findPrincipalByIdentifier` | 以登入用的帳號字串（已去除前後空白）找出帳號；不需檢查是否啟用 |
-| `getPrincipalDisplayName` | 顯示在驗證器與密碼金鑰提示中的帳號名稱 |
-| `setPassword` | 回傳是否寫入；只在儲存的密碼仍是帳號載入時的那一個時寫入。預設以 `model.updateOne` 帶此條件寫入，由 model 的雜湊欄位處理雜湊 |
-| `hasPassword` | 預設看帳號文件的 `password`，有自訂 `verifyPassword` 時一律視為有 |
-| `messenger` | 有填才支援驗證碼與未登入的重設密碼，見「寄送通道與一次性驗證碼」 |
-| `onSessionsRevoked` | 工作階段被踢除後呼叫；失敗只記錄錯誤 |
-| `onEvent` | 每筆安全性紀錄寫入後呼叫；失敗只記錄錯誤，不影響原本的操作 |
-
-- `origin`：該身分前端的來源，每個 realm 只有一個（各入口網域固定且身分互不相通）。用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證，其網域即密碼金鑰的 `rpId`；更換網域會讓已綁定的密碼金鑰全部作廢。各環境不同，由環境變數提供。
+- `origin`：該身分前端的來源，每個 realm 只有一個（各入口網域固定且身分互不相通）。用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證，其網域即密碼金鑰的 `rpId`；更換網域會讓已綁定的密碼金鑰全部作廢。必須是純 origin（不含路徑與結尾的 `/`），否則啟動時報錯；各環境不同，由環境變數提供。
 - TOTP 與救援碼一律支援；QR Code 登入由平台設定開關。
 - cookie 一律 `__Host-` 前綴、`HttpOnly`、`Secure`、`Path=/`、不設 `Domain`；有效期為絕對上限（受限工作階段為 15 分鐘）。設定 cookie 的回應帶 `Cache-Control: no-store`。
 - `cookieSameSite`：前端以 SSR 判斷登入狀態的 realm（例如一般前台）設為 `lax`，否則從外部連結進入時第一個頁面請求不帶 cookie；使用 `lax` 的 realm，GET 路由不得有寫入行為。
-- `getAuthRealm(name)` 以名稱取得已定義的 realm（例如 ws.io 的連線驗證）；`realm.getConfig()` 回傳目前的 auth 政策（平台設定，本機快取）。
 
 ### 平台設定
 
 每個 realm 的 scope 在平台設定中有 `auth` 區塊（`platformAuthConfigSchema`）。下游新增 scope 時沿用 `defaultManagementPlatformAuthConfig`（後台類）或 `defaultUserPlatformAuthConfig`（前台使用者）。
-
-| 欄位 | 說明 |
-| --- | --- |
-| `session.idleTimeoutSeconds` | 閒置逾時；有活動即順延，不可超過絕對上限 |
-| `session.absoluteTimeoutSeconds` | 絕對上限；不順延 |
-| `maxSessions` | 同時登入上限；`null` 為不限制，超過時踢掉最久未活動者 |
-| `qrCodeLoginEnabled` | 發現濫用時可即時關閉 |
 
 期限以「目前的設定」對工作階段的建立時間與最後活動時間計算：調低立即生效；調高時，既有工作階段要到下次順延才套用新的閒置逾時（順延門檻見「每次請求的驗證」第 8 步）。
 
@@ -123,7 +99,6 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 工作階段：
 
 - token 格式為 `<principalId>.<sessionId>.<secret>`；`secret` 為 256 位元亂數，Redis 只存其 SHA-256，以固定時間比對。`sessionId` 可出現在列表與紀錄中，不具登入能力。token 中的 `principalId` 來自用戶端，組成 key 前必須驗證格式。
-- 內容：`secret` 雜湊、建立時的世代計數、建立時間、最後活動時間、IP、User-Agent、登入用的因子、是否受限、核准來源（QR 登入時為核准者的 `sessionId`）、上次寫入時採用的閒置逾時。除最後活動時間與採用的閒置逾時外，建立後不再變動。
 - User-Agent 存原始字串，超過 512 個字元即截斷（安全性紀錄與 QR 登入請求亦同）；裝置與瀏覽器名稱在顯示時由前端解析。
 - 建立：世代計數必須在驗證任何因子之前讀取，最後以該世代寫入工作階段並加入該世代的集合。兩步登入時，世代在驗證第一步之前讀取並存進 `secondFactor` 挑戰，第二步使用挑戰裡的世代。驗證期間若發生全部踢除（例如同時變更密碼），新工作階段的世代已過期而無效。
 - 順延：以 `SET … XX EX <ttl>`（存在才寫入）更新最後活動時間與 TTL，已被踢除的工作階段不會被寫回。受限工作階段不順延。
@@ -170,7 +145,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
   - TOTP 的「上次使用的時間步」：目前值小於新值、且密鑰仍是剛驗證的那一個才更新。
   - 救援碼：尚未使用才標記為已使用。
   - 密碼金鑰計數器：新舊值皆為 0 時不檢查（同步型密碼金鑰的計數器恆為 0）；任一非 0 時，新值必須大於舊值。以舊值作為更新條件。
-- 帳號 model 不需要新增欄位；需求只有密碼欄位（Argon2，帳號文件提供 `verifyPassword`，或以 realm 的 `verifyPassword`／`setPassword` 取代）與 `isPrincipalActive` 能判斷的狀態。
+- 帳號 model 不需要新增欄位，但 `_id` 必須是 ObjectId（token 中的 `principalId` 以 24 位 hex 驗證，否則一律視為無效）；需求只有密碼欄位（Argon2，帳號文件提供 `verifyPassword`，或以 realm 的 `verifyPassword`／`setPassword` 取代）與 `isPrincipalActive` 能判斷的狀態。
 - 帳號被刪除時呼叫 `deleteAuthPrincipalData(realm, principalId)`：踢除全部工作階段並刪除帳號設定（安全性紀錄保留）。
 - TOTP 密鑰以 AES-256-GCM 加密後儲存（`encryptAuthSecret`），並以 `totp:<realm>:<principalId>` 作為附加資料綁定擁有者。金鑰來自環境變數 `AUTH_SECRET_ENCRYPTION_KEYS`，格式與 `COOKIE_SESSION_KEYS` 相同：
   - 以逗號分隔、每項去除前後空白；每項為至少 32 bytes 的任意字串（不可含逗號，例如 `openssl rand -base64 32`），以 HKDF-SHA256 衍生為 AES-256 金鑰。定義 realm 時讀取，缺少或過短即拋錯，後端無法啟動。
@@ -194,8 +169,6 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 7. 路由 meta 有 `verification` 時消耗驗證身分的憑據（見「驗證身分」）。
 8. 以上都通過後才順延：距離上次順延超過門檻才寫回最後活動時間與 TTL，門檻為「5 分鐘」與「閒置逾時的四分之一」較小者（閒置逾時取目前設定與上次寫入時採用的值較小者）。被拒絕的請求不順延。
 
-路由 meta（`AuthRouteMeta`，各後端併入自己的 route meta）：`noLoginRequired`、`allowRestrictedSession`、`verification`（操作名稱，或由 `ctx` 產生帶目標 ID 的名稱）。
-
 WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在握手時自行檢查 `Origin`。
 
 ### 踢除的時機
@@ -208,7 +181,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 ## 錯誤
 
-流程中可預期的失敗一律拋出 `AuthError`（`code` 為 `AuthErrorCode`），`setupHonoAppErrorHandling` 依 `code` 對應到 API 錯誤：`forbidden`、`unauthorized` 對應 `common` 命名空間，其餘對應 `auth` 命名空間的同名錯誤（`hono-backend/api-errors/auth.ts`）。
+流程中可預期的失敗一律拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 API 錯誤。
 
 - `verificationRequired` 的 `errorData` 為 `{ operation, factors }`：要驗證的操作名稱，與帳號可用來驗證的因子（沒有任何第二因子時為驗證碼與密碼中可用者）。用戶端據此顯示驗證畫面，取得一次性憑據後以 `X-Auth-Verification` 標頭（常數 `authVerificationHeaderName`）重送原請求。
 - 需要憑據的路由先確認其他前置條件（目前密碼、QR 請求仍有效、管理對象存在且可管理）再消耗憑據，這些條件不成立時不會白白用掉憑據。
@@ -236,12 +209,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證碼驗證身分」。pack 負責產生、儲存、限流與驗證，寄送管道（電子郵件、簡訊、通訊軟體…）與訊息內容由 realm 的 `messenger.send(principal, message)` 決定；它回傳是否寄出，帳號沒有可用的收件位址時回傳 false。`messenger.getDestinationHint` 選填，回傳顯示給使用者的遮罩後收件位址。
 
-`message`（`AuthMessage`）有兩種：
-
-| `purpose` | 內容 | 用法 |
-| --- | --- | --- |
-| `verification` | `code`：六位數驗證碼 | 使用者在驗證畫面輸入 |
-| `passwordReset` | `token`：256 位元的一次性 token | realm 以自己的 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄 |
+`passwordReset` 訊息帶的是 token：realm 以自己的 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄。
 
 pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位數靠限流才安全，未登入的重設密碼沒有工作階段可以綁定，對大量帳號同時嘗試時擋不住，因此使用猜不到的 token。
 
@@ -260,7 +228,7 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
   - `currentPassword`（預設）：必須輸入目前密碼，帳號有第二因子時另需驗證身分（`auth.changePassword`）。新密碼只在儲存的密碼仍是剛驗證的那一個時寫入，不會覆寫期間被重設的密碼。
   - `verification`：只需驗證身分，不輸入目前密碼。
   - 帳號還沒有密碼時不論設定一律只需驗證身分，也就是「設定密碼」。安全性總覽的 `hasPassword` 與 `passwordChangeRequiresCurrentPassword` 讓前端決定表單。
-- 未登入的重設密碼（realm 有寄送通道時，否則回 `forbidden`）：
+- 未登入的重設密碼（realm 有寄送通道時；沒有時請求一律回 `forbidden`）：
   1. 請求（`requestAuthPasswordReset`）：以帳號字串找出帳號，存在且啟用就建立 `passwordReset` 挑戰，把它的 ID 作為 token 交給 `messenger.send`。不論帳號是否存在、是否寄出都回成功，也不等待寄送完成，回應與耗時不透露帳號是否存在。
   2. 完成（`completeAuthPasswordReset`）：只帶 token 與新密碼，不帶帳號。token 讀取即刪除；無效、過期、帳號不存在或停用、寄出後帳號的工作階段曾被全部踢除一律回 `challengeExpired`。接著以該帳號檢查 IP 存取政策（未登入的請求在 `authenticate` 只以 scope 檢查），被限制 IP 的帳號只能從允許的 IP 重設，否則回 `forbidden`，該 token 也已用掉。通過後重設密碼並踢除全部工作階段。
   - 重設密碼頁要顯示對象（例如暱稱、頭像）或提前得知連結是否有效時，各專案自己的路由呼叫 `getAuthPasswordResetPrincipal(realm, token)`：token 有效時回傳帳號、否則回傳 undefined，不消耗 token。pack 不提供這條路由，回傳哪些欄位由各專案決定。
@@ -343,12 +311,12 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 - 每種驗證用途各有自己的計數：通過其中一種只清除該種的計數，例如輸入正確的目前密碼不會重設第二因子的猜測次數。
 - 第二因子只按帳號計數：能走到這一步的人已經知道密碼，且六位數驗證碼必須靠限流才安全。
 - IP 一律取自後端既有的可信代理設定（`createHonoAuth` 的 `getClientIp`）。
-- 超過門檻回 `tooManyAttempts`（429）。能對應到帳號時，每個計數期間第一次被擋下寫入一筆 `RateLimited` 事件（之後被擋下的請求不再重複寫）；密碼登入輸入的帳號不存在時不寫。
+- 超過門檻回 `tooManyAttempts`（429）。猜測類的限流（密碼、第二因子、目前密碼、驗證碼、TOTP 綁定）能對應到帳號時，每個計數期間第一次被擋下寫入一筆 `RateLimited` 事件（之後被擋下的請求不再重複寫）；寄送類的限流不寫事件，密碼登入輸入的帳號不存在時也不寫。
 - 已接受的取捨：按帳號的門檻可被他人用來暫時鎖住該帳號的密碼登入（最長 15 分鐘）；密碼金鑰登入不受影響。
 
 ## 模組配置
 
-`createHonoAuth(realm, { getClientIp })` 回傳 `authenticate`、`assertVerification`、`loginWithExternalIdentity`、本人使用的 `routes` 與 `createManagementRoutes`。每個處理函式都是 `AuthRouteDefinition`（`{ handlers, meta }`）；各後端的路由檔只轉接 handlers 並把 meta 併入自己的 route meta，不自行實作流程。
+`createHonoAuth(realm, { getClientIp })` 的每個處理函式都是 `AuthRouteDefinition`（`{ handlers, meta }`）；各後端的路由檔只轉接 handlers 並把 meta 併入自己的 route meta，不自行實作流程。
 
 安全性紀錄的列表不由 pack 提供路由：各後端以自己的分頁與過濾機制查詢 `AuthEventModel`，並一律強制加上 `realm` 與 `principalId` 的條件。本人查看時 `principalId` 是登入者，管理端查看他人時是被管理的帳號。
 
