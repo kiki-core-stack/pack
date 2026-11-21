@@ -1,6 +1,5 @@
+import { getFileMimeType } from '@kikiutils/shared/file';
 import * as z from 'zod';
-
-import { getFileMimeType } from '../../utils/file';
 
 type CustomFileSchema = ReturnType<typeof createSchema>;
 
