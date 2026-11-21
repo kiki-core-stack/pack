@@ -7,7 +7,7 @@ import {
 
 import { objectKeys } from 'ts-extras';
 
-const requiredPeerDependencies: string[] = [];
+const requiredPeerDependencies: string[] = ['@kikiutils/shared'];
 
 const packageJson = JSON.parse(await readFile('./package.json', 'utf-8'));
 const peerDependenciesMeta: Record<string, { optional: boolean }> = {};
