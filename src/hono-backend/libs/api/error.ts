@@ -3,8 +3,12 @@ import {
     objectValues,
 } from 'ts-extras';
 
+import { selectLocaleCatalogs } from '../../../i18n/catalogs';
 import type { ApiErrorResponseData } from '../../../types/api';
-import type { Locale } from '../../../types/i18n';
+import type {
+    Locale,
+    LocaleCatalogs,
+} from '../../../types/i18n';
 import type {
     ApiErrorArgs,
     ApiErrorDataOf,
@@ -49,22 +53,36 @@ export class ApiError<Definition extends ApiErrorDefinition = ApiErrorDefinition
 // Functions
 
 /**
- * Defines API errors keyed by error code; each key becomes the `errorCode` sent to clients.
+ * Defines API errors keyed by error code; each key becomes the `errorCode` sent to clients, and its message comes from
+ * the same key in each locale's catalog section of the layer that defines the errors.
  *
  * @example
  * ```ts
- * export const { otpTooManyAttempts } = defineApiErrors({
- *     otpTooManyAttempts: { message: { 'en': 'Too many attempts', 'zh-TW': '驗證碼嘗試次數過多' }, status: 429 },
- * });
+ * export const { otpTooManyAttempts } = defineApiErrors(
+ *     { otpTooManyAttempts: { status: 429 } },
+ *     appLocaleCatalogs,
+ *     (messages) => messages.apiErrors.otp,
+ * );
  * ```
  */
-export function defineApiErrors<const Inputs extends Record<string, ApiErrorDefinitionInput>>(inputs: Inputs) {
+export function defineApiErrors<
+    const Inputs extends Record<string, ApiErrorDefinitionInput>,
+    T,
+    CodeMessages extends Readonly<Record<keyof Inputs & string, string>>,
+>(
+    inputs: Inputs,
+    catalogs: LocaleCatalogs<T>,
+    // Messages for undefined codes are type errors as well, so removed errors leave no stale messages.
+    select: (messages: T) => CodeMessages & Readonly<Record<Exclude<keyof CodeMessages, keyof Inputs>, never>>,
+) {
+    const codeCatalogs = selectLocaleCatalogs(catalogs, select);
     const definitions: Record<string, ApiErrorDefinition> = {};
     for (const [code, { errorData, ...input }] of objectEntries(inputs)) {
         definitions[code] = Object.freeze({
             ...input,
             code,
             errorDataSchema: errorData,
+            message: selectLocaleCatalogs(codeCatalogs, (messages) => messages[code]),
         });
     }
 

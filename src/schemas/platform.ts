@@ -1,6 +1,7 @@
 import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
 import { PlatformScope } from '../constants/platform';
+import { packLocaleCatalogs } from '../i18n/catalogs';
 import * as z from '../libs/zod';
 
 /**
@@ -17,10 +18,10 @@ export const platformAuthConfigSchema = z.object({
         })
         .refine(
             (session) => session.idleTimeoutSeconds <= session.absoluteTimeoutSeconds,
-            z.i18nIssue({
-                'en': 'The idle timeout cannot exceed the login validity period',
-                'zh-TW': '閒置逾時不可超過登入有效期限',
-            }),
+            z.i18nIssue(
+                packLocaleCatalogs,
+                (messages) => messages.validation.platform.idleTimeoutExceedsAbsoluteTimeout,
+            ),
         ),
     twoFactorRequired: z.boolean(),
 });

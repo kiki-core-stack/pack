@@ -1,7 +1,3 @@
-import type { ReadonlyRecord } from '@kikiutils/shared/types';
-
-import type { LocalizedMessages } from '../types/i18n';
-
 import { CommonStatus } from './';
 
 export enum EmailProviderCode {
@@ -33,17 +29,3 @@ export enum EmailSendRecordStatus {
     Processing = CommonStatus.Processing,
     Succeeded = CommonStatus.Succeeded,
 }
-
-export const emailProviderCodeToLabelMap: ReadonlyRecord<EmailProviderCode, LocalizedMessages> = {
-    [EmailProviderCode.Smtp]: {
-        'en': 'SMTP',
-        'zh-TW': 'SMTP',
-    },
-};
-
-export const emailSenderIdentityKeyToLabelMap: ReadonlyRecord<EmailSenderIdentityKey, LocalizedMessages> = {
-    [EmailSenderIdentityKey.Admin]: {
-        'en': 'Admin management',
-        'zh-TW': '總後台',
-    },
-};

@@ -1,3 +1,4 @@
+import { packLocaleCatalogs } from '../i18n/catalogs';
 import * as z from '../libs/zod';
 
 const ipAddressOrCidrUnionSchema = z.union([
@@ -12,8 +13,5 @@ export const ipAddressOrCidrSchema = z
     .trim()
     .refine(
         (value) => ipAddressOrCidrUnionSchema.safeParse(value).success,
-        z.i18nIssue({
-            'en': 'Enter a valid IP address or CIDR',
-            'zh-TW': '請輸入有效的 IP 或 CIDR',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.ip.invalidAddressOrCidr),
     );

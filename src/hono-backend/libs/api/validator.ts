@@ -1,14 +1,16 @@
 import type { Context } from 'hono';
 import { validator } from 'hono-openapi';
 
-import { defaultLocale } from '../../../constants/i18n';
+import { selectLocaleCatalogs } from '../../../i18n/catalogs';
+import { defaultLocale } from '../../../i18n/locales';
 import type { ValidationFailedErrorData } from '../../../types/api';
 import type {
     Locale,
-    LocalizedMessages,
+    LocaleCatalogs,
+    LocalizedMessage,
 } from '../../../types/i18n';
 import * as apiErrors from '../../api-errors';
-import { getRequestLocale } from '../../middlewares/locale';
+import { getRequestLocale } from '../../middlewares/locale-detector';
 
 import { toApiValidationError } from './_internals/validation';
 import type { StandardSchemaIssue } from './_internals/validation';
@@ -21,10 +23,10 @@ import { ApiError } from './error';
  * without the request context.
  */
 class FieldValidationApiError extends ApiError<typeof apiErrors.common.validationFailed> {
-    readonly #localizedMessage: LocalizedMessages;
+    readonly #localizedMessage: LocalizedMessage;
     readonly #path: Array<number | string>;
 
-    constructor(path: Array<number | string>, localizedMessage: LocalizedMessages) {
+    constructor(path: Array<number | string>, localizedMessage: LocalizedMessage) {
         super(
             apiErrors.common.validationFailed,
             { errorData: createFieldValidationErrorData(path, localizedMessage[defaultLocale]) },
@@ -73,6 +75,10 @@ function createFieldValidationErrorData(path: Array<number | string>, message: s
  * Throws `validationFailed` for one field, like a schema issue at `path`, for checks that need data beyond the input
  * (e.g. the stored password).
  */
-export function throwFieldValidationError(path: Array<number | string>, message: LocalizedMessages): never {
-    throw new FieldValidationApiError(path, message);
+export function throwFieldValidationError<T>(
+    path: Array<number | string>,
+    catalogs: LocaleCatalogs<T>,
+    select: (messages: T) => string,
+): never {
+    throw new FieldValidationApiError(path, selectLocaleCatalogs(catalogs, select));
 }

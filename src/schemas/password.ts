@@ -1,3 +1,4 @@
+import { packLocaleCatalogs } from '../i18n/catalogs';
 import * as z from '../libs/zod';
 
 /**
@@ -8,43 +9,25 @@ export const strongPasswordSchema = z
     .string()
     .refine(
         (value) => value.length >= 12,
-        z.i18nIssue({
-            'en': 'Password must be at least 12 characters',
-            'zh-TW': '密碼長度至少 12 個字元',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.tooShort),
     )
     .refine(
         (value) => /^\S(?:.*\S)?$/.test(value),
-        z.i18nIssue({
-            'en': 'Password cannot start or end with whitespace',
-            'zh-TW': '密碼不能以空白開頭或結尾',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.leadingOrTrailingWhitespace),
     )
     .refine(
         (value) => /[A-Z]/.test(value),
-        z.i18nIssue({
-            'en': 'Password must contain an uppercase letter',
-            'zh-TW': '密碼至少包含一個大寫字母',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.missingUppercase),
     )
     .refine(
         (value) => /[a-z]/.test(value),
-        z.i18nIssue({
-            'en': 'Password must contain a lowercase letter',
-            'zh-TW': '密碼至少包含一個小寫字母',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.missingLowercase),
     )
     .refine(
         (value) => /\d/.test(value),
-        z.i18nIssue({
-            'en': 'Password must contain a digit',
-            'zh-TW': '密碼至少包含一個數字',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.missingDigit),
     )
     .refine(
         (value) => /[^0-9a-z]/i.test(value),
-        z.i18nIssue({
-            'en': 'Password must contain a special character (symbol, emoji, CJK character, etc.)',
-            'zh-TW': '密碼至少包含一個特殊字元（可為符號、表情符號、中文等）',
-        }),
+        z.i18nIssue(packLocaleCatalogs, (messages) => messages.validation.password.missingSpecialCharacter),
     );

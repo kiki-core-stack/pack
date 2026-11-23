@@ -14,14 +14,14 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 ### 前端可用與僅限後端
 
-- 前後端都可用：`constants`、`types`、`libs/permission`、`libs/i18n`、`libs/zod`（`backend/` 除外）、`libs/file/public`、`schemas`、`utils/error`。
+- 前後端都可用：`constants`、`types`、`libs/permission`、`i18n`、`libs/zod`（`backend/` 除外）、`libs/file/public`、`schemas`、`utils/error`。
 - 僅限前端：`libs/api-client`（需 axios）、`libs/auth/passkey/browser`（瀏覽器 API）。`libs/zod` 與 `schemas` 會 import mongoose（`z.objectId`），前端使用時需安裝 mongoose（例如透過 `@kikiutils/mongoose`）。
 - 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`、`utils/file`、`utils/image`（sharp），以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
 - 開發工具：`libs/codegen` 由前端的產生腳本在 dev 時使用。
 
 ## 目錄
 
-- constants/：enum、對照表與固定值。`*ToLabelMap` 是 enum 值的顯示名稱，前後端共用；`supportedLocales` 的第一個為預設語系；`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生。
+- constants/：enum、對照表與固定值。`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生。
 - types/：共用型別；`data/` 為前端看到的資料型別。
 - schemas/：zod schema；errorData 等型別由 schema 推導。
 - libs/：
@@ -43,7 +43,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - hono-backend/：Hono 後端共用元件。
   - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
   - libs/：`auth/`（`createHonoAuth`）與 `api/`（錯誤定義、驗證、route docs）。
-  - middlewares/：`locale()`、`cookieSession()`。
+  - middlewares/：`localeDetector()`、`cookieSession()`。
   - setups/：錯誤處理（`setupHonoAppErrorHandling`）；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods，`index` 加上要用的檔案各自 import 才會啟用。
   - types/：下游以 `declare module` 擴充 `CookieSessionData`。
 
@@ -53,21 +53,24 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 - 成功：`{ success: true, data? }`；失敗：`{ success: false, errorCode, errorData?, message, requestId? }`。
 - 失敗的 `message` 是依請求 `Accept-Language` 翻好的訊息，可直接顯示；程式判斷一律用 `errorCode`。
-- 前端 API 層不拋錯：攔截器以 `toApiClientFailureResponse` 把失敗轉為回應，HTTP 錯誤保留後端的 envelope（內容不是 envelope 時為 `internalServerError`），連線失敗、取消等合成 status 0 的同格式回應（`ClientApiErrorCode`）。
+- 前端 API 層不拋錯：攔截器以 `toApiClientFailureResponse` 把失敗轉為回應，HTTP 錯誤保留後端的 envelope（內容不是 envelope 時為 `internalServerError`），連線失敗、取消等合成 status 0 的同格式回應（`ClientApiErrorCode`），訊息由呼叫端以 `getMessage` 從 pack 的 `apiClientErrors` 取得。
 
 ### 錯誤碼
 
-- 以 `defineApiErrors({ code: { message, status, errorData? } })` 定義；`message` 是各語系訊息（也作為 route docs 的說明），`errorData` 是 zod schema。
+- 以 `defineApiErrors({ code: { status, errorData? } }, catalogs, (m) => m.apiErrors.xxx)` 定義；訊息取自定義錯誤那一層 catalog 的同名 key（預設語系也作為 route docs 的說明），`errorData` 是 zod schema。
 - `throwApiError(definition, { errorData, message, cause })`：`message`、`cause` 只寫進 log，不回傳。
 - 錯誤碼在所有命名空間中必須唯一（`listApiErrorCodes` 檢查）；`auth`、`common` 保留給 pack。
 - route docs 以 `apiDocs.responses(dataSchema?, ...errors)` 撰寫；每個錯誤在 OpenAPI 文件中是共用的 component `<Code>ApiError`，無 data 的成功回應為 `ApiSuccessResponse`，產生的前端型別因此每個錯誤只有一個。
 
 ### 多語系
 
-- 支援的語系由 `supportedLocales` 決定；`LocalizedMessages` 要求每個語系都有訊息，新增語系時漏翻會是型別錯誤。
-- 後端把 `locale()` 掛成第一個 app middleware，之後以 `ctx.var.locale` 取得語系；錯誤處理與 `apiValidator` 會自動使用。
-- 驗證訊息依序取：自訂規則的 `i18nIssue`、常見情況的專案措辭、zod 內建語系。schema 上不要寫死 `error` 訊息（會蓋過依請求的翻譯），自訂規則改用 `z.i18nIssue({...})`。
-- 文字跟著定義走：pack 的 enum 名稱放 pack，各後端的權限名稱放各後端的權限定義；前端 i18n 只放介面文字。
+- 語系只在 `i18n/locales.ts` 的 `localeDefinitions` 定義一次（`code`、BCP 47 `language`、`name`）；`defaultLocale`、`resolveLocale` 與 `Locale` 型別都由它衍生，前端 i18n 的 `locales` 也由它產生。每層的 catalog 都必須涵蓋所有語系，所以每個專案都支援全部語系，pack 新增語系時所有下游都要補翻譯。
+- 訊息放在定義它的那一層，每層每個語系一個 catalog：pack 的在 `i18n/messages/<locale>.ts`，各後端與前端在自己的 repo。型別由 `en` 推導（`PackMessages = typeof en`），enum 是否寫齊在 `en.ts` 內以 `satisfies Record<Enum, string>` 檢查，其他語系 `satisfies` 該型別；漏翻或多餘的 key 都是型別錯誤（前端寫死在元件裡的文字不在此限）。
+- 前端只載入目前語系 catalog 中會顯示的段落（`enums`、`apiClientErrors`）當 vue-i18n 訊息；API 錯誤與驗證訊息由後端依請求語系翻好。enum 顯示名稱是 `enums.<constants 檔名>.<enum>`（`constants/index.ts` 為 `common`），以 enum 值為 key（`$t(`enums.common.status.${status}`)`）。訊息只用 `{name}` 插值，不用 vue-i18n 其他特殊字元（`@ $ |`）。
+- 後端以 `(catalogs, select)` 傳入訊息：`defineApiErrors`、`z.i18nIssue`、`throwFieldValidationError`；其他需要各語系同一段內容時用 `selectLocaleCatalogs`，選到單一訊息即為 `LocalizedMessage`。
+- 後端把 `localeDetector()` 掛成第一個 app middleware，之後以 `ctx.var.locale` 取得語系；錯誤處理與 `apiValidator` 會自動使用。
+- 驗證訊息依序取：自訂規則的 `i18nIssue`、`validation.common` 的 pack 措辭、zod 內建語系。schema 上不要寫死 `error` 訊息（會蓋過依請求的翻譯），自訂規則改用 `z.i18nIssue(catalogs, (m) => ...)`。
+- 新增語系：pack 在 `localeDefinitions` 加一筆、加 `messages/<code>.ts`，並在 `packLocaleCatalogs` 與 zod 語系對照（`hono-backend/libs/api/_internals/validation.ts`）各加一筆；各後端加 catalog 檔；前端加語系檔與 UI 框架的語系對照，並重跑 codegen。除了前端語系檔與 codegen，漏做都是型別錯誤。
 
 ### auth
 
@@ -89,7 +92,8 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 ### 權限
 
-- 各後端用 `definePermissions` 定義自己的權限樹：群組 `{ label, children }`、權限 `{ label, requires? }`，key 為點號路徑（`admin.account.create`）。
+- 各後端用 `definePermissions` 定義自己的權限樹：群組 `{ children }`、權限 `{ requires? }`，key 為點號路徑（`admin.account.create`）。
+- 名稱放在定義權限那一層的 catalog（`permissions: { admin: PermissionMessages<typeof adminPermissionCatalog> }`），漏翻或殘留的 key 是型別錯誤；開發用路由回傳各語系的名稱，codegen 產生前端用的 vue-i18n 訊息（名稱含 `@ $ | { }` 時直接報錯），前端以 `$t(`permissions.admin['${key}']`)` 顯示。
 - `requires` 可寫同層的動作名稱（`'list'`）或其他節點的完整 key（`'admin.role.list'`）；定義時會檢查，並展開成含間接依賴的 `requirements`。
 - `hasPermission` 前後端共用；需求可寫 key、`group.*` 或 `!` 排除。
 - 身分組只存具體的 key，儲存前以 `expandPermissionRequirements` 補上依賴。
@@ -101,7 +105,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 | 函式 | 後端路由 | 產生內容 |
 | --- | --- | --- |
 | `generateApiErrorCodeFile` | `GET /api/public/api-error-code/list` | 錯誤碼清單與 `ApiErrorCode` 型別 |
-| `generateManagementPermissionFile` | `GET /api/<type>/<type>/permission/list` | 群組、key、型別、各語系名稱、依賴表 |
+| `generateManagementPermissionFiles` | `GET /api/<type>/<type>/permission/list` | 群組、key、型別、依賴表（`index.ts`），各語系名稱的 vue-i18n 訊息（`messages/<locale>.ts`） |
 | `generateOpenApiClient` | `GET /docs/openapi.json` | typescript-axios 的 API client：類別繼承 `OpenApiClientBase`，每個呼叫的型別為成功與文件列出錯誤的 `ApiClientPromise`；另產生只匯出 API 類別的 `api-classes.ts`（供 auto-import 等使用）；需在專案安裝 `@openapitools/openapi-generator-cli` 與 Java |
 
 ### enum 數值

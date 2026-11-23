@@ -15,6 +15,10 @@
     "./hono-backend/libs/auth": "./src/hono-backend/libs/auth/index.ts",
     "./hono-backend/libs/auth/routes": "./src/hono-backend/libs/auth/routes/index.ts",
     "./hono-backend/setups/mongoose-model-extensions": "./src/hono-backend/setups/mongoose-model-extensions/index.ts",
+    "./i18n/messages/types": {
+      "types": "./src/i18n/messages/types.ts",
+      "default": null
+    },
     "./init": "./src/init/index.ts",
     "./init/tasks": "./src/init/tasks/index.ts",
     "./init/tasks/kcs": "./src/init/tasks/kcs/index.ts",

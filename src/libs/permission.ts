@@ -2,10 +2,8 @@ import { objectEntries } from 'ts-extras';
 import type {
     Arrayable,
     UnknownRecord,
-
 } from 'type-fest';
 
-import type { LocalizedMessages } from '../types/i18n';
 import type {
     PermissionCatalog,
     PermissionTree,
@@ -17,19 +15,19 @@ import type {
 /**
  * Defines the permission catalog of one principal type.
  *
- * Groups are `{ label, children }` and permissions `{ label, requires? }`; each key is its dotted path. The catalog is
- * the single source of permission keys, labels and requirements, so routes reference `permissions.admin.create` instead
- * of repeating strings. Throws on invalid names, empty groups and unknown or self requirements.
+ * Groups are `{ children }` and permissions `{ requires? }`; each key is its dotted path. The catalog is the single
+ * source of permission keys and requirements, so routes reference `permissions.admin.create` instead of repeating
+ * strings; labels live in the defining layer's locale catalogs (`PermissionMessages`). Throws on invalid names, empty
+ * groups and unknown or self requirements.
  *
  * @example
  * ```ts
  * export const adminPermissions = definePermissions({
  *     admin: {
  *         children: {
- *             create: { label: { 'en': 'Create', 'zh-TW': '建立' }, requires: ['list'] },
- *             list: { label: { 'en': 'View list', 'zh-TW': '查看列表' } },
+ *             create: { requires: ['list'] },
+ *             list: {},
  *         },
- *         label: { 'en': 'Admins', 'zh-TW': '管理員' },
  *     },
  * });
  *
@@ -40,7 +38,6 @@ import type {
 export function definePermissions<const T extends PermissionTree>(tree: T): PermissionCatalog<T> {
     const groups: string[] = [];
     const keys: string[] = [];
-    const labels: Record<string, LocalizedMessages> = {};
     const directRequirements = new Map<string, string[]>();
     const walk = (node: PermissionTree, prefix: string) => {
         const entries = objectEntries(node);
@@ -49,7 +46,6 @@ export function definePermissions<const T extends PermissionTree>(tree: T): Perm
         for (const [name, child] of entries) {
             if (!/^[\w-]+$/.test(name)) throw new Error(`Invalid permission name "${name}" under "${prefix}"`);
             const path = `${prefix}${name}`;
-            labels[path] = child.label;
             if ('children' in child) {
                 groups.push(path);
                 map[name] = walk(child.children, `${path}.`);
@@ -72,7 +68,6 @@ export function definePermissions<const T extends PermissionTree>(tree: T): Perm
     return {
         groups,
         keys,
-        labels,
         permissions,
         requirements: resolvePermissionRequirements(new Set(keys), directRequirements),
     } as unknown as PermissionCatalog<T>;

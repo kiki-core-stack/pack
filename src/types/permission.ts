@@ -1,4 +1,4 @@
-import type { LocalizedMessages } from './i18n';
+import type { ReadonlyRecord } from '@kikiutils/shared/types';
 
 export type PermissionGroups<T extends PermissionTree, Prefix extends string = ''> = {
     [K in keyof T & string]: T[K] extends PermissionGroupNode
@@ -19,6 +19,16 @@ export type PermissionMap<T extends PermissionTree, Prefix extends string = ''> 
 };
 
 /**
+ * Labels of every group and permission of a catalog, keyed by path; part of each locale catalog of the layer that
+ * defines the permissions (`permissions: { admin: PermissionMessages<typeof adminPermissionCatalog> }`).
+ */
+export type PermissionMessages<C extends Readonly<Record<'groups' | 'keys', readonly string[]>>> = ReadonlyRecord<
+  | C['groups'][number]
+  | C['keys'][number],
+  string
+>;
+
+/**
  * A permission key, or `group.*` for "any permission within the group".
  *
  * Takes plain unions so both sides can use it: backends via `PermissionGroups<T>`/`PermissionKeys<T>`, frontends via
@@ -34,8 +44,8 @@ export type PermissionRequirement<Group extends string, Key extends string> =
   | PermissionPattern<Group, Key>;
 
 /**
- * Permission definition tree: named groups (`{ label, children }`) and permissions (`{ label }`), e.g.
- * `{ admin: { label, children: { create: { label } } } }`.
+ * Permission definition tree: named groups (`{ children }`) and permissions (`{ requires? }`), e.g.
+ * `{ admin: { children: { create: { requires: ['list'] }, list: {} } } }`.
  */
 export type PermissionTree = { readonly [Name in string]: PermissionGroupNode | PermissionLeafNode };
 
@@ -49,7 +59,6 @@ export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
      * Every permission key (`admin.role.create`), in definition order.
      */
     readonly keys: ReadonlyArray<PermissionKeys<T>>;
-    readonly labels: Readonly<Record<PermissionGroups<T> | PermissionKeys<T>, LocalizedMessages>>;
 
     /**
      * The definition tree with each leaf replaced by its full key: `permissions.admin.role.create`.
@@ -65,12 +74,9 @@ export interface PermissionCatalog<T extends PermissionTree = PermissionTree> {
 
 export interface PermissionGroupNode {
     readonly children: PermissionTree;
-    readonly label: LocalizedMessages;
 }
 
 export interface PermissionLeafNode {
-    readonly label: LocalizedMessages;
-
     /**
      * Permissions this one is unusable without (e.g. `create` needs `list` to reach the page): sibling action names
      * (`list`) or full keys of other nodes (`admin.role.list`).

@@ -22,7 +22,7 @@ import type { Locale } from '../../types/i18n';
 import * as apiErrors from '../api-errors';
 import { toApiValidationError } from '../libs/api/_internals/validation';
 import { ApiError } from '../libs/api/error';
-import { getRequestLocale } from '../middlewares/locale';
+import { getRequestLocale } from '../middlewares/locale-detector';
 import type { ApiErrorDefinition } from '../types/api';
 
 // Constants/Variables

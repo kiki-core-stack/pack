@@ -1,6 +1,3 @@
-import type { ReadonlyRecord } from '@kikiutils/shared/types';
-
-import type { LocalizedMessages } from '../types/i18n';
 import type {
     PlatformAuthConfig,
     PlatformConfigByScope,
@@ -63,56 +60,4 @@ export const defaultUserPlatformAuthConfig: Readonly<PlatformAuthConfig> = {
 export const defaultPlatformConfigs: Readonly<PlatformConfigByScope> = {
     [PlatformScope.AdminManagement]: { auth: defaultManagementPlatformAuthConfig },
     [PlatformScope.System]: { ipAccessPolicy: { enabled: false } },
-};
-
-export const platformIpAccessPolicyModeToLabelMap: ReadonlyRecord<PlatformIpAccessPolicyMode, LocalizedMessages> = {
-    [PlatformIpAccessPolicyMode.Allowlist]: {
-        'en': 'Allowlist',
-        'zh-TW': '白名單',
-    },
-    [PlatformIpAccessPolicyMode.Blacklist]: {
-        'en': 'Blacklist',
-        'zh-TW': '黑名單',
-    },
-};
-
-export const platformIpAccessPolicyCheckReasonToLabelMap: ReadonlyRecord<
-    PlatformIpAccessPolicyCheckReason,
-    LocalizedMessages
-> = {
-    [PlatformIpAccessPolicyCheckReason.Allowed]: {
-        'en': 'Passed the IP access check',
-        'zh-TW': '通過 IP 存取檢查',
-    },
-    [PlatformIpAccessPolicyCheckReason.AllowlistMiss]: {
-        'en': 'Not in the allowlist',
-        'zh-TW': '未命中白名單',
-    },
-    [PlatformIpAccessPolicyCheckReason.BlacklistMatch]: {
-        'en': 'Matched the blacklist',
-        'zh-TW': '命中黑名單',
-    },
-    [PlatformIpAccessPolicyCheckReason.Disabled]: {
-        'en': 'IP access policies are disabled',
-        'zh-TW': 'IP 存取規則已停用',
-    },
-    [PlatformIpAccessPolicyCheckReason.InvalidIp]: {
-        'en': 'Invalid source IP',
-        'zh-TW': '來源 IP 無效',
-    },
-    [PlatformIpAccessPolicyCheckReason.NoApplicablePolicy]: {
-        'en': 'No applicable IP access policy',
-        'zh-TW': '沒有適用的 IP 存取規則',
-    },
-};
-
-export const platformScopeToLabelMap: ReadonlyRecord<PlatformScope, LocalizedMessages> = {
-    [PlatformScope.AdminManagement]: {
-        'en': 'Admin management',
-        'zh-TW': '總後台',
-    },
-    [PlatformScope.System]: {
-        'en': 'System',
-        'zh-TW': '全系統',
-    },
 };

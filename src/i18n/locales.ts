@@ -1,8 +1,27 @@
-import {
-    defaultLocale,
-    supportedLocales,
-} from '../constants/i18n';
 import type { Locale } from '../types/i18n';
+
+// Constants/Variables
+export const defaultLocale = 'zh-TW' satisfies Locale;
+
+/**
+ * The only list of supported locales: backends negotiate against it and frontends build their i18n `locales` from it
+ * (`language` is the BCP 47 tag for `<html lang>`). Every project supports all of them, since each layer's catalogs
+ * must cover every locale.
+ */
+export const localeDefinitions = [
+    {
+        code: 'en',
+        language: 'en',
+        name: 'English',
+    },
+    {
+        code: 'zh-TW',
+        language: 'zh-TW',
+        name: '繁體中文',
+    },
+] as const;
+
+const supportedLocales: readonly Locale[] = localeDefinitions.map(({ code }) => code);
 
 // Functions
 

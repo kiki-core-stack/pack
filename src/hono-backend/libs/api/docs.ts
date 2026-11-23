@@ -1,7 +1,7 @@
 import { upperFirst } from 'es-toolkit';
 import * as z from 'zod';
 
-import { defaultLocale } from '../../../constants/i18n';
+import { defaultLocale } from '../../../i18n/locales';
 import type { ApiErrorDefinition } from '../../types/api';
 
 // Constants

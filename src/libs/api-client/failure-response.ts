@@ -36,7 +36,7 @@ async function parseBlobJsonData(data: unknown) {
  *
  * HTTP errors keep their response (with a fallback `internalServerError` envelope when the body is not one, e.g. a
  * proxy error page); failures without a response are synthesized with status 0 as `aborted` or `networkError`.
- * `getMessage` provides the app's own messages of the synthesized envelopes.
+ * `getMessage` returns the synthesized envelopes' messages, i.e. the current locale's pack `apiClientErrors`.
  */
 export async function toApiClientFailureResponse(
     error: AxiosError,

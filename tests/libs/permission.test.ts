@@ -9,29 +9,19 @@ import {
     hasPermission,
 } from '../../src/libs/permission';
 
-const label = {
-    'en': 'label',
-    'zh-TW': '標籤',
-};
-
 const catalog = definePermissions({
     admin: {
         children: {
-            create: { label },
+            create: {},
             role: {
                 children: {
-                    list: { label },
-                    update: { label },
+                    list: {},
+                    update: {},
                 },
-                label,
             },
         },
-        label,
     },
-    log: {
-        children: { list: { label } },
-        label,
-    },
+    log: { children: { list: {} } },
 });
 
 describe.concurrent('definePermissions', () => {
@@ -49,7 +39,6 @@ describe.concurrent('definePermissions', () => {
             'log',
         ]);
 
-        expect(catalog.labels['admin.role']).toBe(label);
         expect(catalog.permissions.admin.role.list).toBe('admin.role.list');
     });
 
@@ -58,24 +47,16 @@ describe.concurrent('definePermissions', () => {
             admin: {
                 children: {
                     create: {
-                        label,
                         requires: [
                             'update',
                             'log.list',
                         ],
                     },
-                    list: { label },
-                    update: {
-                        label,
-                        requires: ['list'],
-                    },
+                    list: {},
+                    update: { requires: ['list'] },
                 },
-                label,
             },
-            log: {
-                children: { list: { label } },
-                label,
-            },
+            log: { children: { list: {} } },
         });
 
         expect(requirements).toStrictEqual({
@@ -94,25 +75,10 @@ describe.concurrent('definePermissions', () => {
     });
 
     it('should reject invalid definitions', ({ expect }) => {
-        expect(() => definePermissions({ 'a.b': { label } })).toThrow('Invalid permission name');
-        expect(() => definePermissions({
-            admin: {
-                children: {},
-                label,
-            },
-        })).toThrow('has no children');
+        expect(() => definePermissions({ 'a.b': {} })).toThrow('Invalid permission name');
+        expect(() => definePermissions({ admin: { children: {} } })).toThrow('has no children');
 
-        expect(() => definePermissions({
-            admin: {
-                children: {
-                    create: {
-                        label,
-                        requires: ['list'],
-                    },
-                },
-                label,
-            },
-        })).toThrow('requires unknown permission "admin.list"');
+        expect(() => definePermissions({ admin: { children: { create: { requires: ['list'] } } } })).toThrow('requires unknown permission "admin.list"');
     });
 });
 

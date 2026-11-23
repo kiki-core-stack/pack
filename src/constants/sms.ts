@@ -1,7 +1,3 @@
-import type { ReadonlyRecord } from '@kikiutils/shared/types';
-
-import type { LocalizedMessages } from '../types/i18n';
-
 import { CommonStatus } from './';
 
 export enum SmsProviderCode {
@@ -23,14 +19,3 @@ export enum SmsSendRecordStatus {
     Processing = CommonStatus.Processing,
     Succeeded = CommonStatus.Succeeded,
 }
-
-export const smsProviderCodeToLabelMap: ReadonlyRecord<SmsProviderCode, LocalizedMessages> = {
-    [SmsProviderCode.Mitake]: {
-        'en': 'Mitake',
-        'zh-TW': '三竹簡訊',
-    },
-    [SmsProviderCode.TwSms]: {
-        'en': 'TwSMS',
-        'zh-TW': '台灣簡訊',
-    },
-};
