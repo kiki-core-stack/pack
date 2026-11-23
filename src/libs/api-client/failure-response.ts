@@ -4,10 +4,11 @@ import type {
     AxiosResponse,
 } from 'axios';
 
-import type { ApiErrorResponseData } from '../../types/api';
+import type {
+    ApiClientFailureMessageKey,
+    ApiErrorResponseData,
+} from '../../types/api';
 import type { ApiClientFailureResponseData } from '../../types/api-client';
-
-export type ApiClientFailureMessageKey = 'aborted' | 'invalidResponse' | 'networkError';
 
 // Functions
 function isApiErrorResponseData(data: unknown): data is ApiErrorResponseData {

@@ -11,7 +11,7 @@ import {
     PlatformScope,
 } from '../../constants/platform';
 import { SmsProviderCode } from '../../constants/sms';
-import type { ApiClientFailureMessageKey } from '../../libs/api-client/failure-response';
+import type { ApiClientFailureMessageKey } from '../../types/api';
 import type { AuthFactor } from '../../types/auth';
 
 export default {

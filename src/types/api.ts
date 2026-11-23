@@ -6,6 +6,11 @@ import type {
     validationFailedErrorDataSchema,
 } from '../schemas/api';
 
+/**
+ * Failures a client gives its own message to (pack `apiClientErrors`): its synthesized codes, plus `invalidResponse`
+ * for a response that is not an API envelope.
+ */
+export type ApiClientFailureMessageKey = 'invalidResponse' | ClientApiErrorCode;
 export type ApiResponseData<D extends object | undefined = undefined, E extends string = string> =
   | ApiErrorResponseData<E>
   | ApiSuccessResponseData<D>;
