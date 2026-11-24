@@ -100,8 +100,8 @@
   "scripts": {
     "knip:deps": "knip --dependencies",
     "knip:exports": "knip --exports",
-    "lint": "eslint --max-warnings 0 && stylua --check src/redis-scripts",
-    "lint:fix": "eslint --fix --max-warnings 0 && stylua src/redis-scripts",
+    "lint": "eslint --cache --concurrency=auto --max-warnings 0 && stylua --check src/redis-scripts",
+    "lint:fix": "eslint --cache --concurrency=auto --fix --max-warnings 0 && stylua src/redis-scripts",
     "lint:package": "publint --pack pnpm",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --coverage",
