@@ -36,7 +36,7 @@ registerModelExtensions.push((schema: Schema) => {
         async function (
             updatedAt: Date | string,
             updateQuery: UpdateQuery<unknown>,
-            options?: (mongo.UpdateOptions & MongooseUpdateQueryOptions<unknown>) | null,
+            options?: (mongo.UpdateOptions & MongooseUpdateQueryOptions) | null,
         ) {
             const updateResult = await (this.constructor as Model<unknown>).updateOne(
                 {

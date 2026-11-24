@@ -7,7 +7,7 @@ function createEnumObject<N extends string, T extends string[]>(name: N, keys: T
         const fullKey = `${name}${key}`;
         let hash = 0;
         for (const char of fullKey) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-        enumObject[key] = `${fullKey.replace(/[a-z]/g, '').toLowerCase()}${hash.toString(36).slice(0, 3)}`;
+        enumObject[key] = `${fullKey.replaceAll(/[a-z]/g, '').toLowerCase()}${hash.toString(36).slice(0, 3)}`;
     });
 
     return enumObject as { [K in T[number]]: `${N}.${K}` };

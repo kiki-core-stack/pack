@@ -28,7 +28,7 @@ function generateTotpCode(secret: Buffer, step: number) {
     const counter = Buffer.alloc(8);
     counter.writeBigUInt64BE(BigInt(step));
     const digest = createHmac('sha1', secret).update(counter).digest();
-    const offset = digest[digest.length - 1]! & 0x0F;
+    const offset = digest.at(-1)! & 0x0F;
     const binary = digest.readUInt32BE(offset) & 0x7FFFFFFF;
     return (binary % 10 ** totpDigits).toString().padStart(totpDigits, '0');
 }

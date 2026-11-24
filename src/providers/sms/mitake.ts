@@ -89,7 +89,7 @@ export class SmsMitakeProvider extends BaseSmsProvider<SmsProviderCode.Mitake> {
                 {
                     dstaddr: smsSendRecord.to,
                     password: this.config.password,
-                    smbody: smsSendRecord.content.replace(/\r?\n/g, String.fromCharCode(6)),
+                    smbody: smsSendRecord.content.replaceAll(/\r?\n/g, String.fromCharCode(6)),
                     username: this.config.username,
                 },
                 {

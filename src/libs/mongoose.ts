@@ -94,7 +94,7 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
                 for (const stage of update) {
                     for (const [operator, spec] of objectEntries(stage)) {
                         if (operator === '$replaceRoot' || operator === '$replaceWith' || hasAnyField(spec)) {
-                            throw new Error(`Aggregation pipeline updates cannot write Argon2 hash fields: ${fields}`);
+                            throw new Error(`Aggregation pipeline updates cannot write Argon2 hash fields: ${fields.join(', ')}`);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
                     ? isPlainObject(value) && objectValues(value).some((target) => fields.includes(target))
                     : hasAnyField(value);
 
-                if (writesField) throw new Error(`Update operator ${key} cannot write Argon2 hash fields: ${fields}`);
+                if (writesField) throw new Error(`Update operator ${key} cannot write Argon2 hash fields: ${fields.join(', ')}`);
             }
 
             await hashFields(update);
@@ -143,7 +143,7 @@ export function registerMongooseSchemaArgon2HashFieldHandlers(schema: Schema<any
                     (write) => hasAnyField(write) || (isPlainObject(write) && objectValues(write).some(hasAnyField)),
                 );
 
-                if (touchesField) throw new Error(`bulkWrite cannot write Argon2 hash fields: ${fields}`);
+                if (touchesField) throw new Error(`bulkWrite cannot write Argon2 hash fields: ${fields.join(', ')}`);
             }
         },
     );

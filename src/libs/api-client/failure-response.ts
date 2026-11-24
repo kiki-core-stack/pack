@@ -14,7 +14,7 @@ import type { ApiClientFailureResponseData } from '../../types/api-client';
 function isApiErrorResponseData(data: unknown): data is ApiErrorResponseData {
     return typeof data === 'object'
       && data !== null
-      && (data as ApiErrorResponseData).success === false
+      && !(data as ApiErrorResponseData).success
       && typeof (data as ApiErrorResponseData).errorCode === 'string';
 }
 

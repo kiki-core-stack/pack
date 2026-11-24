@@ -14,7 +14,11 @@ import { getPublicFileKey } from './public';
 
 // Functions
 async function getImageData(buffer: Buffer) {
-    const metadata = await sharp(buffer, { animated: true }).metadata().catch(() => undefined);
+    const metadata = await sharp(buffer, { animated: true }).metadata().catch(
+        // An image MIME type sharp cannot decode is still stored, just without dimensions.
+        () => undefined,
+    );
+
     if (!metadata?.width || !metadata.height) return;
     // Dimensions as displayed: EXIF orientation applied, and one frame of an animated image.
     const { height, width } = metadata.autoOrient;
