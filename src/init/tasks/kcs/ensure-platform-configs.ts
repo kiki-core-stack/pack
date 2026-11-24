@@ -30,9 +30,6 @@ function applyMissingPlatformConfigDefaults(config: UnknownRecord, defaults: Unk
     return changed;
 }
 
-/**
- * Creates the platform config of every scope and backfills missing defaults without overwriting existing values.
- */
 export default defineInitTask({
     name: 'kcs:ensure-platform-configs',
     async run({ adminId, session }) {

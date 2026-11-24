@@ -27,7 +27,7 @@ const releaseRedisLockIfOwned = createRedisScriptRunner<number>(redisClient, red
 
 /**
  * 嘗試取得固定期限佔位；不主動釋放，等待 TTL 到期。
- * key 由呼叫端提供完整名稱，TTL 單位為毫秒；Redis 錯誤直接拋出。
+ * key 由呼叫端提供完整名稱。
  */
 export async function tryClaimRedisKey(key: string, ttlMilliseconds: number): Promise<boolean> {
     return !!await redisClient.set(key, '1', 'PX', ttlMilliseconds.toString(), 'NX');
@@ -35,7 +35,7 @@ export async function tryClaimRedisKey(key: string, ttlMilliseconds: number): Pr
 
 /**
  * 取得鎖後執行 callback，完成或拋錯後原子釋放自己的鎖。
- * key 由呼叫端提供完整名稱，TTL 單位為毫秒；未取得鎖時不執行 callback。
+ * key 由呼叫端提供完整名稱；未取得鎖時不執行 callback。
  * 不自動續期或取消 callback；工作超過 TTL 後可能與其他執行者並行。
  * 取得鎖或 callback 的錯誤直接拋出；釋放失敗只記錄錯誤並等待 TTL 到期。
  */

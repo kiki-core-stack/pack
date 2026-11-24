@@ -65,18 +65,13 @@ const proofFactorToAttemptKindMap = {
 // Functions
 
 /**
- * 帳號是否已設定密碼。realm 沒有提供 `hasPassword` 時看帳號文件的 `password`；自訂 `verifyPassword` 的 realm
- * 密碼不一定存在該欄位，一律視為有。
+ * 自訂 `verifyPassword` 的 realm 密碼不一定存在帳號文件的 `password`，一律視為有。
  */
 export function hasAuthPassword<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P) {
     if (realm.hasPassword) return realm.hasPassword(principal);
     return !!realm.verifyPassword || !!(principal as P & { password?: string }).password;
 }
 
-/**
- * 帳號可用來通過高危操作驗證的因子：已綁定的第二因子；沒有任何第二因子時，改用 realm 寄出的驗證碼
- * （realm 有寄送通道時）或密碼（帳號有密碼時）。
- */
 export function listAuthVerificationFactors<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     principal: P,
@@ -90,7 +85,7 @@ export function listAuthVerificationFactors<P extends AuthPrincipal>(
 }
 
 /**
- * 寫入驗證失敗的事件。超過嘗試次數的失敗已在計數時記錄過一次，這裡不再重複寫入。
+ * 超過嘗試次數的失敗已在計數時記錄過一次，這裡不再重複寫入。
  */
 export async function recordAuthFailure(
     realm: AuthRealm<any>,
@@ -123,7 +118,6 @@ export function toAuthTotpSecretContext(realm: AuthRealm<any>, principalId: stri
  * - 登入的第二步可用 passkey、TOTP、救援碼；高危操作驗證可用的因子見 `listAuthVerificationFactors`。
  * - 先計數再驗證，以帳號為維度（驗證碼由 `verifyAuthCode` 計數）；成功後清除計數。
  *   第一次超過門檻時寫入一筆 `RateLimited` 事件。
- * - 失敗時寫入事件：登入的第二步記為 `LoginFailure`，高危操作驗證記為 `VerificationFailure`。
  */
 export async function verifyAuthFactor<P extends AuthPrincipal>(
     realm: AuthRealm<P>,

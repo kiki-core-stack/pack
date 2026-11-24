@@ -24,10 +24,6 @@ export interface AuthPrincipalSettingMutation<Result> {
 const maxMutationAttempts = 5;
 
 // Functions
-
-/**
- * 帳號被刪除後清除其帳號設定。
- */
 export async function deleteAuthPrincipalSetting(realm: AuthRealm<any>, principalId: string | Types.ObjectId) {
     await AuthPrincipalSettingModel.deleteOne({
         principalId,
@@ -73,9 +69,6 @@ export function hasAuthSecondFactor(realm: AuthRealm<any>, setting?: AuthPrincip
     return !!setting && (!!setting.totp || (!!realm.webauthn && setting.passkeys.length > 0));
 }
 
-/**
- * 是否需要雙重驗證：平台設定強制、帳號被強制、本人開啟，三者任一成立即需要。
- */
 export async function isAuthTwoFactorRequired(realm: AuthRealm<any>, setting?: AuthPrincipalSetting) {
     return (await realm.getConfig()).twoFactorRequired || !!setting?.twoFactorEnforced || !!setting?.twoFactorEnabled;
 }

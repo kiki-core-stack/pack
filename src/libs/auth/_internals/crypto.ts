@@ -53,7 +53,7 @@ export function sha256Hex(value: string) {
 }
 
 /**
- * 以固定時間比對兩個字串；長度不同時回傳 false。
+ * 長度不同時回傳 false。
  */
 export function timingSafeEqualStrings(a: string, b: string) {
     const aBuffer = Buffer.from(a);

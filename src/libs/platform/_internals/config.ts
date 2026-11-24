@@ -17,9 +17,6 @@ export const platformConfigCache = new VersionedCache({
 });
 
 // Functions
-/**
- * 直接從資料庫讀取並驗證設定，不經過快取。
- */
 export async function getUncachedPlatformConfig<S extends PlatformScope>(scope: S) {
     const platformConfig = await PlatformConfigModel.findOne({ scope }).select('config').lean();
     if (!platformConfig) throw new Error(`Platform config not found for scope ${scope}`);

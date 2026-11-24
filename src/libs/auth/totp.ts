@@ -16,9 +16,6 @@ import {
 const totpDigits = 6;
 const totpPeriodSeconds = 30;
 
-/**
- * 產生 160 位元的 TOTP 密鑰（base32）。
- */
 export function generateAuthTotpSecret() {
     return encodeBase32(randomBytes(20));
 }

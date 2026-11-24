@@ -147,9 +147,6 @@ export async function getAuthPasswordResetPrincipal<P extends AuthPrincipal>(rea
     return challenge && await findPasswordResetPrincipal(realm, challenge);
 }
 
-/**
- * 本人變更密碼是否要輸入目前密碼；否則只需高危操作驗證。
- */
 export function isAuthCurrentPasswordRequired<P extends AuthPrincipal>(realm: AuthRealm<P>, principal: P) {
     return realm.passwordChange !== 'verification' && hasAuthPassword(realm, principal);
 }

@@ -66,7 +66,7 @@ export async function consumeAuthVerificationGrant(
 }
 
 /**
- * 高危操作驗證：以因子驗證本人後發出一次性憑據，綁定工作階段與操作名稱、有效 2 分鐘、沒有放行期。
+ * 高危操作驗證：以因子驗證本人後發出一次性憑據，綁定工作階段與操作名稱、沒有放行期。
  * 操作名稱可帶目標 ID（例如 `deleteProject:<id>`），讓憑據只對該目標有效。
  */
 export async function createAuthVerificationGrant<P extends AuthPrincipal>(

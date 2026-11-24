@@ -9,10 +9,6 @@ interface GenerateOpenApiClientOptions {
      * Extra `openapi-generator-cli generate` arguments, e.g. `['--additional-properties=supportsES6=true']`.
      */
     additionalArgs?: string[];
-
-    /**
-     * Base URL of the running development backend.
-     */
     apiBaseUrl: string;
 
     /**

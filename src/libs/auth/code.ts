@@ -18,8 +18,8 @@ const authCodeTtlSeconds = 300;
 // Functions
 
 /**
- * 產生一組六位數的一次性驗證碼並回傳明文，由呼叫端寄出。同一個 `(purpose, subject)` 只有最新的一組有效，
- * 有效 5 分鐘；寄送次數以 `(purpose, subject)` 限流，超過即拋出 `AuthRateLimitError`。
+ * 產生一組六位數的一次性驗證碼並回傳明文，由呼叫端寄出。同一個 `(purpose, subject)` 只有最新的一組有效；
+ * 寄送次數以 `(purpose, subject)` 限流，超過即拋出 `AuthRateLimitError`。
  *
  * `subject` 是驗證碼的對象：帳號的操作用 `principalId`；還沒有帳號時（例如註冊時驗證收件位址）用收件位址本身。
  */

@@ -17,7 +17,6 @@
 - 因子（`authFactors`）：密碼、密碼金鑰、TOTP、救援碼、驗證碼（`code`，realm 寄出的一次性驗證碼）、外部身分（`external`，由後端以其他方式驗證的身分，例如 OAuth）。外部身分只會是登入的第一步，不能作為使用者提出的證明。
 - 第二因子：密碼金鑰、TOTP、救援碼（`authSecondFactors`）。救援碼只是備援：「已綁定第二因子」只看密碼金鑰與 TOTP。
 - 驗證身分：高危操作前要求本人再以因子證明身分，通過後取得只對該操作有效的一次性憑據（見「驗證身分」）。
-- 安全性紀錄：`auth.events` 中的驗證事件（`AuthEventType`）。
 
 ## 設定分三處
 
@@ -30,23 +29,6 @@
 ### realm 定義
 
 新增一種身分只需要：`PlatformScope` 加一個成員與含 `auth` 區塊的平台設定、這一份 realm 設定、各後端的路由轉接檔。
-
-```ts
-export const adminAuthRealm = defineAuthRealm<AdminDocument>({
-    name: 'admin',
-    scope: PlatformScope.AdminManagement,
-    model: AdminModel,
-    displayName: 'Example Admin',
-    cookieName: '__Host-admin-session',
-    origin: getRequiredEnv('ADMIN_AUTH_ORIGIN'), // 例如 https://admin.example.com
-    webauthn: true,
-    findPrincipalByIdentifier: (account) => AdminModel.findOne({ account }),
-    getPrincipalDisplayName: (admin) => admin.account,
-    isPrincipalActive: (admin) => admin.enabled,
-    onSessionsRevoked: async (principalId, sessionIds) => {}, // 選用；例如通知 ws.io-server 斷線
-    onEvent: async (event) => {}, // 選用；例如寄送新裝置登入或因子變更通知
-});
-```
 
 - `origin`：該身分前端的來源，每個 realm 只有一個（各入口網域固定且身分互不相通）。用於寫入類請求的 `Origin` 檢查與 WebAuthn 驗證，其網域即密碼金鑰的 `rpId`；更換網域會讓已綁定的密碼金鑰全部作廢。必須是純 origin（不含路徑與結尾的 `/`），否則啟動時報錯；各環境不同，由環境變數提供。
 - TOTP 與救援碼一律支援；QR Code 登入由平台設定開關。
@@ -83,23 +65,12 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 不得淘汰沒有 TTL 的 key：世代計數被淘汰會歸零，尚未清除的已踢除工作階段會重新有效。Redis 使用 `noeviction` 或 `volatile-*`；Dragonfly 沒有 `maxmemory-policy`，必須保持 `cache_mode` 關閉（開啟時會淘汰任何 key）。
 
-| key | 內容 | TTL |
-| --- | --- | --- |
-| `session:<principalId>:<sessionId>` | 工作階段 | 閒置逾時（不超過絕對上限的剩餘時間） |
-| `session-generation:<principalId>` | 世代計數；全部踢除時加一 | 無 |
-| `principal-sessions:<principalId>:<generation>` | 該世代的 `sessionId` 集合，供列表與清除使用 | 絕對上限；每次加入成員時重設 |
-| `principal-active:<principalId>` | 「已確認帳號啟用」的標記 | 60 秒 |
-| `challenge:<type>:<sha256(id)>` | 一次性挑戰 | 5 分鐘（`verificationGrant` 為 2 分鐘、`totpSetup` 為 10 分鐘） |
-| `code:<purpose>:<sha256(subject)>` | 一次性驗證碼的雜湊 | 5 分鐘 |
-| `qr-code-login:<sha256(qrToken)>`、`qr-code-login-decision:<sha256(qrToken)>` | QR 登入的請求與決定 | 2 分鐘 |
-| `attempts:<kind>:<sha256(key)>` | 嘗試次數 | 依限流規則 |
-
 挑戰 ID 與 `qrToken` 本身是秘密，Redis 只以其雜湊作為 key；限流的 key 與驗證碼的對象可能含用戶端輸入的字串，同樣雜湊後使用。
 
 工作階段：
 
 - token 格式為 `<principalId>.<sessionId>.<secret>`；`secret` 為 256 位元亂數，Redis 只存其 SHA-256，以固定時間比對。`sessionId` 可出現在列表與紀錄中，不具登入能力。token 中的 `principalId` 來自用戶端，組成 key 前必須驗證格式。
-- User-Agent 存原始字串，超過 512 個字元即截斷（安全性紀錄與 QR 登入請求亦同）；裝置與瀏覽器名稱在顯示時由前端解析。
+- User-Agent 存原始字串；裝置與瀏覽器名稱在顯示時由前端解析。
 - 建立：世代計數必須在驗證任何因子之前讀取，最後以該世代寫入工作階段並加入該世代的集合。兩步登入時，世代在驗證第一步之前讀取並存進 `secondFactor` 挑戰，第二步使用挑戰裡的世代。驗證期間若發生全部踢除（例如同時變更密碼），新工作階段的世代已過期而無效。
 - 順延：以 `SET … XX EX <ttl>`（存在才寫入）更新最後活動時間與 TTL，已被踢除的工作階段不會被寫回。受限工作階段不順延。
 - 踢除單一工作階段：刪除該 key、呼叫 `onSessionsRevoked`，再從集合移除。登出即踢除目前的工作階段並清除 cookie。
@@ -115,7 +86,6 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
   - 新工作階段沿用來源的世代，不採用當下最新的世代：換發期間發生全部踢除時，新工作階段的世代已過期，自然無效。
 - 密碼登入先以帳號找出 ID、讀取世代，再重新載入帳號取得用來驗證的密碼雜湊；世代早於雜湊讀取，變更密碼並全部踢除後，舊密碼就無法取得新世代的工作階段。
 - 設定期限一律使用以秒為單位的指令（`EX`、`EXPIRE`），因為 Dragonfly 有 `PEXPIRE` 搭配 `NX` 不支援的回報。
-- 列出：讀取目前世代的集合與其工作階段（最近活動者在前），順便移除已過期的成員；建立工作階段時也做同樣的清理。
 - 以登入路由（密碼、外部身分、第二因子、密碼金鑰、QR 領取）登入時若已持有有效工作階段：新工作階段建立後踢除原本的那一個。
 - 超過 `maxSessions` 時於建立後踢除排在上限之後的工作階段（最久未活動者）。並行的登入都依同一個固定排序決定踢除對象且不排除自己，只會留下排序在前的；自己被排到上限之後的那次登入回 `sessionInvalid`，不會互相踢除而全部失效。
 - 不綁定 IP；IP 與裝置只供顯示與紀錄。
@@ -135,8 +105,7 @@ export const adminAuthRealm = defineAuthRealm<AdminDocument>({
 
 ### MongoDB
 
-- `auth.principal_settings`：每個 `(realm, principalId)` 一筆，存雙重驗證開關、因子與 `revision`（變更因子與開關時的版本號）。
-- `auth.events`：安全性紀錄；操作者（`actorRealm`、`actorPrincipalId`）在本人操作時與帳號相同。
+- `auth.events` 的操作者（`actorRealm`、`actorPrincipalId`）在本人操作時與帳號相同。
 - 帳號設定在第一次寫入（開始綁定密碼金鑰或經過 `mutateAuthPrincipalSetting`）時才建立，建立時一律產生 WebAuthn user handle；不存在視為全部預設值。
 - `auth.events` 保存 180 天，由 `createdAt` 的 TTL index 自動刪除（事件含 IP 與 User-Agent）。
 - unique index：`(realm, principalId)`、WebAuthn user handle、`passkeys.credentialId`。後者是 partial index（`passkeys.credentialId` 存在才涵蓋），否則沒有密碼金鑰的文件會以 null 互相衝突。
@@ -207,7 +176,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 
 ### 寄送通道與一次性驗證碼
 
-realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證碼驗證身分」。pack 負責產生、儲存、限流與驗證，寄送管道（電子郵件、簡訊、通訊軟體…）與訊息內容由 realm 的 `messenger.send(principal, message)` 決定；它回傳是否寄出，帳號沒有可用的收件位址時回傳 false。`messenger.getDestinationHint` 選填，回傳顯示給使用者的遮罩後收件位址。
+realm 有填 `messenger` 才支援「未登入的重設密碼」與「以驗證碼驗證身分」。pack 負責產生、儲存、限流與驗證，寄送管道（電子郵件、簡訊、通訊軟體…）與訊息內容由 realm 的 `messenger.send(principal, message)` 決定。
 
 `passwordReset` 訊息帶的是 token：realm 以自己的 `origin` 組出前端重設密碼頁的連結，token 建議放在 fragment（`#` 之後），避免進入伺服器存取紀錄。
 
@@ -239,19 +208,16 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 
 ### TOTP 與救援碼
 
-- TOTP 自行實作（RFC 6238）：SHA-1、6 位數、30 秒、只接受目前與前一個時間步（兩步都比對，不以耗時洩漏命中哪一步）、160 位元密鑰。密鑰在綁定完成後不再回傳給用戶端。記錄上次通過的時間步，同一步或更早的驗證碼一律拒絕；因此登入後緊接著驗證身分時，同一組驗證碼不能再用，需等下一組。
+- TOTP 自行實作（RFC 6238），只接受目前與前一個時間步（兩步都比對，不以耗時洩漏命中哪一步）。密鑰在綁定完成後不再回傳給用戶端。記錄上次通過的時間步，同一步或更早的驗證碼一律拒絕；因此登入後緊接著驗證身分時，同一組驗證碼不能再用，需等下一組。
 - 綁定分兩步：產生密鑰與 `otpauth://` URI（issuer 為 realm 的 `displayName`、帳號名稱為 `getPrincipalDisplayName`；密鑰加密後暫存在 `totpSetup` 挑戰）→ 輸入一次驗證碼確認後才寫入帳號設定，並記錄該時間步。
-- 救援碼：10 組、一次性、每組為 80 位元亂數（16 個 base32 字元，以 `XXXX-XXXX-XXXX-XXXX` 顯示），以 SHA-256 雜湊後儲存；比對前去除分隔符號與空白並轉大寫。綁定密碼金鑰或 TOTP 時若帳號還沒有救援碼（第一次綁定，或移除最後一個第二因子後再綁定）即產生，隨綁定結果回傳（明文只回傳這一次）；可重新產生（舊的全部作廢）。
+- 救援碼：一次性，以 SHA-256 雜湊後儲存。綁定密碼金鑰或 TOTP 時若帳號還沒有救援碼（第一次綁定，或移除最後一個第二因子後再綁定）即產生，隨綁定結果回傳（明文只回傳這一次）；可重新產生（舊的全部作廢）。
 
 ### 密碼金鑰
 
-- 使用 `@simplewebauthn/server`（前端 `@simplewebauthn/browser`）。
-- 註冊：`residentKey: required`、`userVerification: required`、`attestation: none`，排除已綁定的憑證；每個帳號上限 10 把，可命名（最長 64 字）與改名。
 - user handle 為每個 `(realm, principalId)` 一組的隨機值，不直接使用 `principalId`。
 - 移除密碼金鑰後，裝置上的密碼管理工具仍留著它，之後選到會登入失敗。前端以 WebAuthn Signal API 讓密碼管理工具移除，不支援的瀏覽器略過：
   - 本人的安全性總覽回傳 `webauthn.userHandle`，前端載入總覽後以 `signalAcceptedPasskeys`（`libs/auth/passkey/browser`）告知仍有效的清單。管理端查看他人的總覽不回傳 user handle，因為那不是對方的裝置。
   - 驗證時查無該密碼金鑰回 `passkeyUnknown`，與其他失敗（`passkeyVerificationFailed`）分開，前端才能安全地以 `signalUnknownPasskey` 移除那一把；其他失敗原因不可移除，否則會刪掉仍有效的密碼金鑰。
-- 驗證時設定 `requireUserVerification: true`，並比對 `rpId`、`origin`、計數器（規則見「MongoDB」）。
 
 ### QR Code 登入
 
@@ -275,18 +241,11 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 - 路由以 meta 的 `verification` 標記所需的操作名稱；handler 內依條件決定時呼叫 `HonoAuth.assertVerification(ctx, operation)`。
 - 用戶端先收到 `verificationRequired`，以「驗證因子」函式驗證（密碼金鑰、TOTP、救援碼；沒有任何第二因子時用密碼或驗證碼），密碼金鑰的選項與驗證碼的寄送另有路由。
 - 通過後取得 `verificationGrant`：綁定帳號、`sessionId` 與操作名稱、一次性、有效 2 分鐘，沒有放行期。操作名稱可帶目標 ID（例如 `deleteProject:<id>`），讓憑據只對該目標有效。用戶端以 `X-Auth-Verification` 標頭帶上，讀取即刪除並比對，不符即回 `verificationRequired`。
-- 內建需要驗證的操作（`authVerificationOperations`）：
-  - `auth.addFactor`：新增密碼金鑰或 TOTP（受限工作階段的首次綁定除外）。
-  - `auth.removeFactor`、`auth.disableTwoFactor`、`auth.regenerateRecoveryCodes`：移除因子、關閉雙重驗證、重新產生救援碼。
-  - `auth.changePassword`：變更密碼（何時需要見「密碼」）。
-  - `auth.approveQrCodeLogin`：核准 QR 登入（依平台設定）。
-  - `auth.manageTwoFactor`：管理端的重設雙重驗證與取消 `twoFactorEnforced`；操作者需先在自己的 realm 驗證身分（設定強制不需要）。
+- `auth.manageTwoFactor`：管理端的重設雙重驗證與取消 `twoFactorEnforced`；操作者需先在自己的 realm 驗證身分（設定強制不需要）。
 
 ### 工作階段管理
 
-- 本人：列出自己的工作階段（裝置、IP、建立與最後活動時間、登入因子、是否為目前裝置、核准來源）、踢除指定一個（踢除目前裝置時一併清除 cookie）、踢除其他全部。安全性紀錄的列表由各後端自己的路由提供（見「模組配置」）。
-- 管理：查看指定帳號的安全性總覽、列出與踢除其工作階段（指定一個或全部）、設定或取消 `twoFactorEnforced`、重設雙重驗證。操作者不限於總後台管理員，也可以是其他 realm 或同一 realm 的帳號（例如商戶管理自己的子帳號）；pack 只提供操作本身並記錄操作者，「誰可以管理誰」由各後端的路由以權限與資料範圍判斷。
-- 任何踢除都會呼叫 realm 的 `onSessionsRevoked`。
+- 管理端的操作者不限於總後台管理員，也可以是其他 realm 或同一 realm 的帳號（例如商戶管理自己的子帳號）；pack 只提供操作本身並記錄操作者，「誰可以管理誰」由各後端的路由以權限與資料範圍判斷。
 
 ### 防暴力破解
 
@@ -320,8 +279,8 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 
 安全性紀錄的列表不由 pack 提供路由：各後端以自己的分頁與過濾機制查詢 `AuthEventModel`，並一律強制加上 `realm` 與 `principalId` 的條件。本人查看時 `principalId` 是登入者，管理端查看他人時是被管理的帳號。
 
-`createManagementRoutes({ getActor, assertActorVerification, getTargetPrincipalId? })`：操作者的登入與權限由後端自己的 middleware 檢查；`getTargetPrincipalId` 預設取路由參數 `id` 並確認存在，可改為以權限與資料範圍篩選。對象可以是操作者本人：全部踢除與重設雙重驗證會連同操作者目前的工作階段一起登出。
+`createManagementRoutes`：操作者的登入與權限由後端自己的 middleware 檢查；對象可透過 `getTargetPrincipalId` 改為以權限與資料範圍篩選。對象可以是操作者本人：全部踢除與重設雙重驗證會連同操作者目前的工作階段一起登出。
 
-- ws.io 的連線驗證：ws.io-server 把 cookie 的 token 與來源 IP 交給後端的內部路由，後端以 `getAuthRealm(name)` 取得 realm 後呼叫 `authenticateAuthConnection(realm, token, { ip })`（`libs/auth/access.ts`）。它與 HTTP 的 `authenticate` 共用 `authenticateAuthSession`（secret、世代、期限、帳號啟用、受限工作階段是否仍需要），另外拒絕受限工作階段並檢查 IP 存取政策，但不順延工作階段。ws.io-server 在握手時驗證一次，連線期間定期重新驗證，收到 4xx 即斷線；握手時的 `Origin` 檢查由 ws.io-server 自行處理。
+- ws.io 的連線驗證：ws.io-server 把 cookie 的 token 與來源 IP 交給後端的內部路由，後端呼叫 `authenticateAuthConnection(realm, token, { ip })`。它與 HTTP 的 `authenticate` 共用工作階段驗證，另外拒絕受限工作階段並檢查 IP 存取政策，但不順延工作階段。ws.io-server 在握手時驗證一次，連線期間定期重新驗證，收到 4xx 即斷線；握手時的 `Origin` 檢查由 ws.io-server 自行處理。
 - 踢除時的即時斷線：realm 的 `onSessionsRevoked` 發出 `WsIoEventNames.ToServer.AuthSessionsRevoked`（realm 名稱、帳號、工作階段 ID），ws.io-server 中斷綁在這些工作階段上的連線；斷線前是否通知前端、前端如何提示由下游實作。踢除其他裝置時，目前的工作階段不在清單內，它的連線不受影響。通知失敗只記錄錯誤，正確性由定期重新驗證保證。
 - 前端頁面（登入、安全性設定、裝置管理、QR 核准頁 `/auth/qr-code-login/`）在 admin-frontend 實作，其他前端自行複製調整。

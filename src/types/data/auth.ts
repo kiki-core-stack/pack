@@ -7,9 +7,6 @@ import type {
     AuthSecondFactor,
 } from '../auth';
 
-/**
- * 登入的結果：已發出工作階段，或需要再以第二因子完成。
- */
 export type AuthLoginResultData =
   | {
       /**

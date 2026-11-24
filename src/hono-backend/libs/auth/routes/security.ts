@@ -54,9 +54,6 @@ const passkeyNameSchema = z.string().trim().min(1).max(64);
 
 // Functions
 
-/**
- * The account's own security settings and sessions.
- */
 export function createAuthSecurityRoutes<P extends AuthPrincipal>({
     assertVerification,
     getOperationContext,

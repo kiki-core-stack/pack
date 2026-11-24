@@ -9,18 +9,14 @@ import type { AuthRealm } from './realm';
 import { authenticateAuthSession } from './session';
 
 // Functions
-
-/**
- * 以 realm 的 scope（與帳號，若已識別）檢查 IP 存取政策；不允許時拋出 `forbidden`。
- */
 export async function assertAuthIpAccess(realm: AuthRealm<any>, request: AuthRequestInfo, principalId?: string) {
     const result = await checkPlatformIpAccessPolicy(request.ip, realm.scope, principalId);
     if (!result.allowed) throw new AuthError('forbidden');
 }
 
 /**
- * 驗證長連線（例如 ws.io）所帶的 token，供握手與連線期間的定期重新驗證使用：工作階段有效（`authenticateAuthSession`）、
- * 不是受限工作階段，且來源 IP 通過存取政策。無效時回傳 undefined，IP 不允許時拋出 `forbidden`。
+ * 驗證長連線（例如 ws.io）所帶的 token，供握手與連線期間的定期重新驗證使用。
+ * 無效時回傳 undefined，IP 不允許時拋出 `forbidden`。
  *
  * 不順延工作階段：連線存活不算活動，閒置逾時只看 HTTP 請求。`Origin` 檢查由接受連線的服務在握手時自行處理。
  */

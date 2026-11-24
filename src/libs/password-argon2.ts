@@ -47,9 +47,6 @@ export async function hashPasswordWithArgon2(password: string) {
     return await withArgon2Semaphore(async () => await Bun.password.hash(password, argon2HashOptions));
 }
 
-/**
- * 雜湊不是以目前參數產生的 argon2id 雜湊時回傳 true。
- */
 export function isArgon2PasswordHashOutdated(hashed: string) {
     const match = argon2HashParamsPattern.exec(hashed);
     return (

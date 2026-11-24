@@ -88,9 +88,6 @@ export async function createAuthPasskeyAuthenticationOptions(
     };
 }
 
-/**
- * 產生綁定 passkey 的選項：discoverable credential、要求使用者驗證、不要求裝置憑證。挑戰綁定開始綁定的工作階段。
- */
 export async function createAuthPasskeyRegistrationOptions<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     principal: P,
@@ -156,8 +153,6 @@ function getRealmWebauthn(realm: AuthRealm<any>) {
 
 /**
  * 驗證 passkey 並回傳所使用的憑證。挑戰讀取即刪除，失敗也不可重用。
- *
- * 除了簽章，還確認：憑證屬於傳入的帳號設定、回傳的 user handle 與該帳號一致、挑戰的用途與綁定的帳號相符。
  */
 export async function verifyAuthPasskeyAuthentication(
     realm: AuthRealm<any>,

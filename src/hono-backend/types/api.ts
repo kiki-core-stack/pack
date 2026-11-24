@@ -19,10 +19,6 @@ export type ApiErrorDefinitions<Inputs extends Record<string, ApiErrorDefinition
 
 export interface ApiErrorDefinition<Code extends string = string, Data = unknown> {
     readonly code: Code;
-
-    /**
-     * Schema of the `errorData` field, used for docs and typing.
-     */
     readonly errorDataSchema?: z.ZodType<Data>;
 
     /**

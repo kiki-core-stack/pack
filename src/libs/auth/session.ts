@@ -196,7 +196,6 @@ async function ensureAuthPrincipalActive<P extends AuthPrincipal>(realm: AuthRea
 
 /**
  * 工作階段依目前設定還能存活的秒數；小於等於 0 表示已過期。
- * 受限工作階段固定 15 分鐘到期，不套用平台設定的期限。
  */
 function getSessionRemainingSeconds(session: StoredAuthSession, config: PlatformAuthConfig, now = EnhancedDate.now()) {
     const createdAt = new EnhancedDate(session.createdAt);
@@ -378,9 +377,9 @@ function toSessionKey(realm: AuthRealm<any>, principalId: string, sessionId: str
 }
 
 /**
- * 順延工作階段：距離上次順延超過門檻（5 分鐘與閒置逾時四分之一的較小者）才寫回最後活動時間與 TTL。
+ * 距離上次順延超過門檻才寫回最後活動時間與 TTL。
  * 閒置逾時取「目前設定」與「上次寫入時採用的值」較小者，設定調高後既有工作階段仍會在原本的存活時間內順延。
- * 以「存在才寫入」更新，已被踢除的工作階段不會被寫回；受限工作階段不順延。
+ * 以「存在才寫入」更新，已被踢除的工作階段不會被寫回。
  */
 export async function touchAuthSession(realm: AuthRealm<any>, session: AuthSession) {
     if (session.restricted) return;

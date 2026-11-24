@@ -34,7 +34,6 @@ describe('autoConvertAnimatedImageToWebp', () => {
 
     it('should correctly convert JPG image File directly to webp', async ({ expect }) => {
         const buffer = await readFile(imageJpgPath);
-        // Using Node's global File if available, otherwise just mock an object matching BinaryInput interface
         const input: any = typeof File !== 'undefined'
             ? new File([buffer], 'image.jpg', { type: 'image/jpeg' })
             : {
@@ -62,8 +61,6 @@ describe('autoConvertAnimatedImageToWebp', () => {
         expect(Buffer.isBuffer(resultBuffer)).toBe(true);
         const metadata = await sharp(resultBuffer).metadata();
         expect(metadata.format).toBe('webp');
-
-        // Assert that the image retains its animated property (multiple pages/frames).
         expect(metadata.pages).toBeGreaterThan(1);
     });
 });

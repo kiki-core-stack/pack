@@ -148,10 +148,6 @@ export async function getAuthSecondFactorChallengePrincipalId(realm: AuthRealm<a
     return challenge.principalId;
 }
 
-/**
- * 發出工作階段：確認 IP 存取政策、建立工作階段並寫入登入成功事件。
- * 需要雙重驗證但尚未綁定任何第二因子的帳號只發受限工作階段。
- */
 async function issueAuthSession(
     realm: AuthRealm<any>,
     principalId: string,
@@ -232,7 +228,6 @@ export async function loginWithAuthPasskey<P extends AuthPrincipal>(
 
 /**
  * 以密碼登入。帳號不存在、沒有密碼、密碼錯誤、帳號停用回同一個錯誤，並以 dummy hash 維持相同耗時。
- * 需要第二因子時回傳 `secondFactor` 挑戰，否則直接發出工作階段。
  */
 export async function loginWithAuthPassword<P extends AuthPrincipal>(
     realm: AuthRealm<P>,

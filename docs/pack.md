@@ -1,7 +1,5 @@
 # pack 架構與約定
 
-kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與型別、錯誤碼、多語系、權限、zod 擴充、儲存與外部服務 provider，以及 Hono 後端的共用元件。各 repo 以 git commit 版本依賴（`@kcs-project/pack`），不發布到 npm。
-
 ## 使用方式
 
 - 直接 import 原始碼，不經 build；只 import 用到的檔案，例如 `@kcs-project/pack/schemas/admin`，沒有總入口。
@@ -16,35 +14,19 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 - 前後端都可用：`constants`、`types`、`libs/permission`、`i18n`、`libs/zod`（`backend/` 除外）、`libs/file/public`、`schemas`、`utils/error`。
 - 僅限前端：`libs/api-client`（需 axios）、`libs/auth/passkey/browser`（瀏覽器 API）。`libs/zod` 與 `schemas` 會 import mongoose（`z.objectId`），前端使用時需安裝 mongoose（例如透過 `@kikiutils/mongoose`）。
-- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`、`utils/file`、`utils/image`（sharp），以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
+- 僅限後端（Bun）：`connections`、`models`、`stores`、`storages`、`providers`、`init`、`redis-scripts`、`hono-backend`、`libs/zod/backend`、`utils/image`（sharp），以及其餘依賴資料庫、Redis 或檔案儲存的 `libs`。
 - 開發工具：`libs/codegen` 由前端的產生腳本在 dev 時使用。
 
 ## 目錄
 
-- constants/：enum、對照表與固定值。`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生。
-- types/：共用型別；`data/` 為前端看到的資料型別。
-- schemas/：zod schema；errorData 等型別由 schema 推導。
+- constants/：`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生。
 - libs/：
-  - zod/：`z` 加上專案擴充；`backend/` 另含檔案上傳的擴充。
-  - codegen/：前端產生檔的產生函式（見下方「codegen」）；`templates/openapi-client/` 為 API client 的模板、generator 設定與固定的 generator 版本。
-  - auth/：見下方「auth」。
-  - api-client/：前端 API 呼叫；產生的 API 類別以 `XxxApi.use()` 取得實例。
-  - platform/：平台設定（本機快取並以 Redis 版本號同步，寫入後呼叫 `clearPlatformConfigCache`）與 IP 存取政策。
-  - storages/files/：S3 檔案儲存，`getFileStorage('public' | 'private')` 對應 bucket `<PROJECT_NAME>-<ENVIRONMENT>-<visibility>`，連線讀 `FILE_STORAGE_S3_*`；第一次使用時才建立，用不到檔案的服務不需要這些設定。
+  - platform/：平台設定在本機快取並以 Redis 版本號同步，寫入後呼叫 `clearPlatformConfigCache`。
+  - storages/files/：S3 檔案儲存，`getFileStorage('public' | 'private')` 對應 bucket `<PROJECT_NAME>-<ENVIRONMENT>-<visibility>`；第一次使用時才建立，用不到檔案的服務不需要這些設定。
   - file/：公開檔案以內容的 SHA-256 去重，存在 public bucket 的 `files/<hash>.<ext>`，由 gateway 以同一個 path 提供；`file/public` 的 key 與 path 規則前後端共用。
-  - 其餘：電子郵件／簡訊發送排程、job outbox、圖片轉換、redis lock、mongoose 擴充、密碼雜湊等。
-- models/：mongoose model。
-- stores/、storages/：快取。`storages` 是底層實例（LRU、Redis），`stores` 是建立在其上的各領域 keyed store。
-- connections/：Redis 連線。
-- utils/：不依賴資料庫與連線的工具（錯誤訊息、依內容偵測檔案類型、圖片轉換）。
-- providers/：電子郵件、簡訊服務商的實作。
-- redis-scripts/：Lua 腳本與其載入。
-- init/：系統初始化（`initializeSystem`）與每次初始化都會執行的任務（`tasks/index.ts`）；下游任務接在清單的下游區段，檔案放在自己的目錄。
-- hono-backend/：Hono 後端共用元件。
-  - api-errors/：pack 定義的錯誤碼，命名空間 `auth`、`common`。
-  - libs/：`auth/`（`createHonoAuth`）與 `api/`（錯誤定義、驗證、route docs）。
-  - middlewares/：`localeDetector()`、`cookieSession()`。
-  - setups/：錯誤處理（`setupHonoAppErrorHandling`）；`mongoose-model-extensions/` 為 model 的擴充 statics 與 methods，`index` 加上要用的檔案各自 import 才會啟用。
+- init/：下游任務接在 `tasks/index.ts` 清單的下游區段，檔案放在自己的目錄。
+- hono-backend/：
+  - setups/mongoose-model-extensions/：`index` 加上要用的檔案各自 import 才會啟用。
   - types/：下游以 `declare module` 擴充 `CookieSessionData`。
 
 ## 約定
@@ -80,7 +62,6 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 - 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與安全性紀錄存在 `auth.principal_settings`、`auth.events`。
 - 後端以 `createHonoAuth(realm, { getClientIp })` 取得 `authenticate`（掛在 route middleware）與路由處理函式，各路由檔只轉接；流程中的失敗拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 `auth` 錯誤碼。
 - 各專案自行重設密碼時呼叫 `resetAuthPassword`（或以 `revokeAllAuthSessionsAround` 包住寫入），停用帳號時呼叫 `revokeAllAuthSessions`，刪除帳號時呼叫 `deleteAuthPrincipalData`（見 auth.md「踢除的時機」）。
-- 環境變數 `AUTH_SECRET_ENCRYPTION_KEYS`：加密 TOTP 密鑰的金鑰。
 
 ### 依判別值變化的欄位
 
@@ -100,13 +81,7 @@ kiki-core-stack（KCS）各 repo 共用的程式碼：資料模型、常數與�
 
 ### codegen
 
-前端的產生腳本打後端的開發用路由產生檔案：
-
-| 函式 | 後端路由 | 產生內容 |
-| --- | --- | --- |
-| `generateApiErrorCodeFile` | `GET /api/public/api-error-code/list` | 錯誤碼清單與 `ApiErrorCode` 型別 |
-| `generateManagementPermissionFiles` | `GET /api/<type>/<type>/permission/list` | 群組、key、型別、依賴表（`index.ts`），各語系名稱的 vue-i18n 訊息（`messages/<locale>.ts`） |
-| `generateOpenApiClient` | `GET /docs/openapi.json` | typescript-axios 的 API client：類別繼承 `OpenApiClientBase`，每個呼叫的型別為成功與文件列出錯誤的 `ApiClientPromise`；另產生只匯出 API 類別的 `api-classes.ts`（供 auto-import 等使用）；需在專案安裝 `@openapitools/openapi-generator-cli` 與 Java |
+前端的產生腳本以 `libs/codegen` 打後端的開發用路由產生檔案；所需路由與工具寫在各函式的說明。
 
 ### enum 數值
 

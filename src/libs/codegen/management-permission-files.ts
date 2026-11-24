@@ -15,9 +15,6 @@ import { fetchApiData } from './_internals/fetch-api-data';
 import { writeGeneratedFile } from './_internals/write-generated-file';
 
 interface GenerateManagementPermissionFilesOptions {
-    /**
-     * Base URL of the running development backend.
-     */
     apiBaseUrl: string;
     managementType: ManagementType;
 

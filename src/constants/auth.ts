@@ -22,9 +22,6 @@ export enum AuthEventType {
     VerificationFailure = 18,
 }
 
-/**
- * 攜帶高危操作驗證一次性憑據的請求標頭。
- */
 export const authVerificationHeaderName = 'x-auth-verification';
 
 /**

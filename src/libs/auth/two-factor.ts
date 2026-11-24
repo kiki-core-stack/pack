@@ -398,9 +398,6 @@ export async function resetAuthTwoFactor(realm: AuthRealm<any>, principalId: str
     );
 }
 
-/**
- * 本人開啟或關閉雙重驗證。開啟需已綁定至少一個第二因子；被強制的帳號不可關閉。
- */
 export async function setAuthTwoFactorEnabled(
     realm: AuthRealm<any>,
     principalId: string,
@@ -434,7 +431,7 @@ export async function setAuthTwoFactorEnabled(
 }
 
 /**
- * 由有管理權限者設定或取消「此帳號強制使用雙重驗證」。取消時已綁定的因子保留，由本人決定是否關閉。
+ * 由有管理權限者設定或取消「此帳號強制使用雙重驗證」。
  */
 export async function setAuthTwoFactorEnforced(
     realm: AuthRealm<any>,
@@ -473,7 +470,7 @@ export async function setAuthTwoFactorEnforced(
 }
 
 /**
- * 開始綁定 TOTP：產生密鑰與 `otpauth://` URI，密鑰暫存在挑戰中，確認後才寫入帳號設定。挑戰綁定開始綁定的工作階段。
+ * 密鑰暫存在挑戰中，確認後才寫入帳號設定。
  */
 export async function startAuthTotpSetup<P extends AuthPrincipal>(
     realm: AuthRealm<P>,

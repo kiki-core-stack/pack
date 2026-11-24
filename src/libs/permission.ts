@@ -90,8 +90,6 @@ export function expandPermissionRequirements(
 }
 
 /**
- * Whether the principal passes the requirement.
- *
  * Each pattern is an exact key or `group.*` (any key within the group). The principal passes when any granted key
  * matches at least one pattern and none of the `!`-prefixed exclusions, e.g. `['catHouse.*', '!catHouse.job.*']` means
  * "some catHouse permission other than job". With only exclusions, every granted key outside them counts.
@@ -112,9 +110,6 @@ function matchesPermission(pattern: string, key: string) {
     return pattern.endsWith('.*') ? key.startsWith(pattern.slice(0, -1)) : key === pattern;
 }
 
-/**
- * Resolves each key's direct requirements to all requirements, including indirect ones.
- */
 function resolvePermissionRequirements(keySet: ReadonlySet<string>, directRequirements: ReadonlyMap<string, string[]>) {
     for (const [key, requiredKeys] of directRequirements) {
         for (const requiredKey of requiredKeys) {

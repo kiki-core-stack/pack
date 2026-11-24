@@ -17,8 +17,7 @@ import { createAuthVerificationRoutes } from './verification';
 // Functions
 
 /**
- * The self-service routes of a realm, by group: login, logout, password reset, QR code login, the account's own
- * security settings and sessions, and the verification of high-risk operations. See `docs/auth.md` for the flows.
+ * See `docs/auth.md` for the flows.
  */
 export function createAuthRoutes<P extends AuthPrincipal>(
     realm: AuthRealm<P>,

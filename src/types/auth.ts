@@ -28,16 +28,9 @@ export type AuthMessage =
       token: string;
   };
 
-/**
- * 事件紀錄所需的操作情境：操作者（未提供時為帳號本人）、請求資訊與目前的工作階段。
- */
 export type AuthOperationContext = Pick<RecordAuthEventInput, 'actor' | 'request' | 'sessionId'>;
-
 export type AuthSecondFactor = ArrayValues<typeof authSecondFactors>;
 
-/**
- * realm 的帳號文件至少需要的欄位。
- */
 export interface AuthPrincipal {
     _id: Types.ObjectId;
 }
