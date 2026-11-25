@@ -51,7 +51,7 @@
 - 前端只載入目前語系 catalog 中會顯示的段落（`enums`、`apiClientErrors`）當 vue-i18n 訊息；API 錯誤與驗證訊息由後端依請求語系翻好。enum 顯示名稱是 `enums.<constants 檔名>.<enum>`（`constants/index.ts` 為 `common`），以 enum 值為 key（`$t(`enums.common.status.${status}`)`）。訊息只用 `{name}` 插值，不用 vue-i18n 其他特殊字元（`@ $ |`）。
 - 後端以 `(catalogs, select)` 傳入訊息：`defineApiErrors`、`z.i18nIssue`、`throwFieldValidationError`；其他需要各語系同一段內容時用 `selectLocaleCatalogs`，選到單一訊息即為 `LocalizedMessage`。
 - 後端把 `localeDetector()` 掛成第一個 app middleware，之後以 `ctx.var.locale` 取得語系；錯誤處理與 `apiValidator` 會自動使用。
-- 驗證訊息依序取：自訂規則的 `i18nIssue`、`validation.common` 的 pack 措辭、zod 內建語系。schema 上不要寫死 `error` 訊息（會蓋過依請求的翻譯），自訂規則改用 `z.i18nIssue(catalogs, (m) => ...)`。
+- 驗證訊息依序取：自訂規則的 `i18nIssue`、`validation.common` 的 pack 措辭、zod 內建語系。自訂規則用 `z.i18nIssue(catalogs, (m) => ...)`。
 - 新增語系：pack 在 `localeDefinitions` 加一筆、加 `messages/<code>.ts`，並在 `packLocaleCatalogs` 與 zod 語系對照（`hono-backend/libs/api/_internals/validation.ts`）各加一筆；各後端加 catalog 檔；前端加語系檔與 UI 框架的語系對照，並重跑 codegen。除了前端語系檔與 codegen，漏做都是型別錯誤。
 
 ### auth
