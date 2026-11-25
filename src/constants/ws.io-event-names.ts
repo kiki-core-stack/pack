@@ -23,6 +23,11 @@ export const ToManagementBackend = /* @__PURE__ */ createEnumObject(
     [] as const,
 );
 
+export const ToOpsWorkersTs = /* @__PURE__ */ createEnumObject(
+    'ToOpsWorkersTs',
+    [] as const,
+);
+
 export const ToServer = /* @__PURE__ */ createEnumObject(
     'ToServer',
     ['AuthSessionsRevoked'] as const,
