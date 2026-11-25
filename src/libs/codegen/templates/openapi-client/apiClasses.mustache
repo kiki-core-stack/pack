@@ -3,6 +3,7 @@
 {{>licenseInfo}}
 
 // The API classes only, e.g. for auto-imports; models and the other generated exports stay in `./api`.
-export {
-{{#apiInfo}}{{#apis}}{{#operations}}    {{classname}},
-{{/operations}}{{/apis}}{{/apiInfo}}} from './api{{importFileExtension}}';
+{{#apiInfo}}{{#apis.0}}export {
+{{#apis}}{{#operations}}    {{classname}},
+{{/operations}}{{/apis}}} from './api{{importFileExtension}}';{{/apis.0}}{{^apis.0}}// An empty `export {} from` would be scanned by auto-imports as an export with an empty name.
+export {};{{/apis.0}}{{/apiInfo}}

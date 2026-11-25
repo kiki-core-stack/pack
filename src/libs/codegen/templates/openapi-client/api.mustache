@@ -4,7 +4,7 @@
 
 
 {{^withSeparateModelsAndApi}}
-import type { Configuration } from './configuration{{importFileExtension}}';
+{{#apiInfo}}{{#apis.0}}import type { Configuration } from './configuration{{importFileExtension}}';
 import type { AxiosInstance, RawAxiosRequestConfig } from 'axios';
 // Request failures resolve to a response whose data is an API envelope instead of rejecting
 import type { ApiClientPromise as AxiosPromise } from '@kcs-project/pack/types/api-client';
@@ -22,7 +22,7 @@ import FormData from 'form-data'
 import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction, replaceWithSerializableTypeIfNeeded{{#withAWSV4Signature}}, setAWS4SignatureInterceptor{{/withAWSV4Signature}} } from './common{{importFileExtension}}';
 import type { RequestArgs } from './base{{importFileExtension}}';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base{{importFileExtension}}';
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base{{importFileExtension}}';{{/apis.0}}{{/apiInfo}}
 
 {{#models}}
 {{#model}}{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{#oneOf}}{{#-first}}{{>modelOneOf}}{{/-first}}{{/oneOf}}{{^isEnum}}{{^oneOf}}{{>modelGeneric}}{{/oneOf}}{{/isEnum}}{{/model}}
