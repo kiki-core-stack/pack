@@ -238,7 +238,7 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 ### 驗證身分
 
 - 消耗憑據的時機：
-  - meta 的 `verification` 在 handler 執行前就消耗，只用在 handler 內沒有其他會失敗的條件的路由。
+  - meta 的 `verification` 在 validator 與 handler 執行前就消耗，只用在輸入驗證與 handler 都不會失敗的路由。
   - handler 內還有會失敗的條件（唯一性、對象狀態等）時，條件確認後、確定要寫入時才呼叫 `HonoAuth.assertVerification(ctx, operation)`；條件在 `mutateAuthPrincipalSetting` 內判斷的，交給它的 `beforeWrite`（見「錯誤」）。
   - 一次性驗證碼（`verifyAuthCode`）例外，要在消耗憑據之後才驗：驗對就刪除，而用戶端收到 `verificationRequired` 後會用同一組驗證碼重送；驗證碼錯誤時憑據仍會用掉。
   - 不能改成 handler 成功後才消耗：同一份憑據並行送出的請求會在消耗前都完成寫入，失去一次性。
