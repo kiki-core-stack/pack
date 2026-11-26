@@ -19,7 +19,7 @@
 
 ## 目錄
 
-- constants/：`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生。
+- constants/：`projectRedisKeyPrefix` 下游需換成自己的前綴；WS.IO 事件名稱的 Rust 版本由 `scripts/generate-rust-ws.io-event-names.ts` 產生到同層 pack-rs 的 `src/constants/ws_io_event_names/`（pack 與 pack-rs 要 clone 在同一個目錄下）。
 - libs/：
   - platform/：平台設定在本機快取並以 Redis 版本號同步，寫入後呼叫 `clearPlatformConfigCache`。
   - storages/files/：S3 檔案儲存，`getFileStorage('public' | 'private')` 對應 bucket `<PROJECT_NAME>-<ENVIRONMENT>-<visibility>`；第一次使用時才建立，用不到檔案的服務不需要這些設定。

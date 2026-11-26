@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 
-import { Path } from '@kikiutils/shared/classes/path';
+import {
+    lstat,
+    mkdir,
+    readdir,
+    rm,
+    writeFile,
+} from 'node:fs/promises';
+import { join } from 'node:path';
+
 import {
     constantCase,
     snakeCase,
@@ -26,13 +34,39 @@ for (const [zone, names] of objectEntries(WsIoEventNames)) {
     }
 }
 
-const outputDirPath = new Path(import.meta.dirname, '..', 'generated', 'ws_io_event_names');
-await outputDirPath.rm({
-    force: true,
-    recursive: true,
-});
+async function lstatOrUndefined(path: string) {
+    return await lstat(path).catch(
+        // A missing path is handled by the callers.
+        () => undefined,
+    );
+}
 
-await outputDirPath.mkdir({ recursive: true });
+// Written into the sibling pack-rs checkout. The checks guard the deletion below: it only ever removes `.rs` files of a
+// real (non-symlinked) pack-rs directory.
+const packRsPath = join(import.meta.dirname, '..', '..', 'pack-rs');
+const outputDirPath = join(packRsPath, 'src', 'constants', 'ws_io_event_names');
+for (const path of [
+    join(packRsPath, 'Cargo.toml'),
+    join(packRsPath, 'src', 'constants', 'mod.rs'),
+]) {
+    if (!(await lstatOrUndefined(path))?.isFile()) throw new Error(`${path} not found; is pack-rs cloned next to pack?`);
+}
+
+for (const path of [
+    packRsPath,
+    join(packRsPath, 'src'),
+    join(packRsPath, 'src', 'constants'),
+    outputDirPath,
+]) {
+    if ((await lstatOrUndefined(path))?.isSymbolicLink()) throw new Error(`${path} is a symlink`);
+}
+
+await mkdir(outputDirPath, { recursive: true });
+const staleEntries = await readdir(outputDirPath, { withFileTypes: true });
+const unexpectedEntry = staleEntries.find((entry) => !entry.isFile() || !entry.name.endsWith('.rs'));
+if (unexpectedEntry) throw new Error(`Unexpected entry in ${outputDirPath}: ${unexpectedEntry.name}`);
+await Promise.all(staleEntries.map(async (entry) => await rm(join(outputDirPath, entry.name))));
+
 await Promise.all(
     objectEntries(WsIoEventNames).map(async ([zone, names]) => {
         const fileName = `${snakeCase(zone)}.rs`;
@@ -40,10 +74,11 @@ await Promise.all(
             ([key, value]) => `pub const ${constantCase(key)}: &str = "${value}";`,
         );
 
-        return await outputDirPath.join(fileName).writeFile(`${fileContentLines.join('\n')}\n`);
+        return await writeFile(join(outputDirPath, fileName), `${fileContentLines.join('\n')}\n`);
     }),
 );
 
-await outputDirPath
-    .join('mod.rs')
-    .writeFile(`${objectKeys(WsIoEventNames).sort().map((zone) => `pub mod ${snakeCase(zone)};`).join('\n')}\n`);
+await writeFile(
+    join(outputDirPath, 'mod.rs'),
+    `${objectKeys(WsIoEventNames).sort().map((zone) => `pub mod ${snakeCase(zone)};`).join('\n')}\n`,
+);
