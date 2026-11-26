@@ -25,6 +25,7 @@ import {
 } from '../challenge';
 import { AuthError } from '../error';
 import { getOrCreateAuthPrincipalSetting } from '../principal-setting';
+import type { AuthPrincipalSettingMutationOptions } from '../principal-setting';
 import type { AuthRealm } from '../realm';
 
 /**
@@ -92,10 +93,12 @@ export async function createAuthPasskeyRegistrationOptions<P extends AuthPrincip
     realm: AuthRealm<P>,
     principal: P,
     sessionId: string,
+    { beforeWrite }: AuthPrincipalSettingMutationOptions = {},
 ) {
     const webauthn = getRealmWebauthn(realm);
     const setting = await getOrCreateAuthPrincipalSetting(realm, principal._id);
     if (setting.passkeys.length >= maxAuthPasskeysPerPrincipal) throw new AuthError('passkeyLimitReached');
+    await beforeWrite?.();
     const displayName = realm.getPrincipalDisplayName(principal);
     const options = await generateRegistrationOptions({
         attestationType: 'none',

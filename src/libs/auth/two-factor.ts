@@ -491,9 +491,11 @@ export async function startAuthTotpSetup<P extends AuthPrincipal>(
     realm: AuthRealm<P>,
     principal: P,
     sessionId: string,
+    { beforeWrite }: AuthPrincipalSettingMutationOptions = {},
 ) {
     const principalId = principal._id.toString();
     if ((await findAuthPrincipalSetting(realm, principalId))?.totp) throw new AuthError('totpAlreadyConfigured');
+    await beforeWrite?.();
     const secret = generateAuthTotpSecret();
     return {
         challengeId: await createAuthChallenge(

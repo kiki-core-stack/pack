@@ -22,8 +22,8 @@ export interface AuthPrincipalSettingMutation<Result> {
 
 export interface AuthPrincipalSettingMutationOptions {
     /**
-     * 判斷通過且要寫入時、寫入前呼叫一次（例如消耗驗證身分的憑據）；前置條件不成立或不需寫入時不呼叫，
-     * 不會白白用掉憑據。
+     * 判斷通過且要寫入（帳號設定或驗證挑戰）時、寫入前呼叫一次（例如消耗驗證身分的憑據）；前置條件不成立或
+     * 不需寫入時不呼叫，不會白白用掉憑據。
      */
     beforeWrite?: () => Promise<void>;
 }

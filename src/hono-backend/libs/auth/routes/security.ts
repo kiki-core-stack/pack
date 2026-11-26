@@ -65,8 +65,8 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
     /**
      * Adding a factor needs a verification, except the first set-up within a restricted session.
      */
-    async function assertAddFactorVerification(ctx: Context) {
-        if (!getSession(ctx).restricted) await assertVerification(ctx, authVerificationOperations.addFactor);
+    function addFactorVerification(ctx: Context) {
+        return getSession(ctx).restricted ? undefined : verifyBeforeWrite(ctx, authVerificationOperations.addFactor);
     }
 
     /**
@@ -150,13 +150,15 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
         ),
         getPasskeyRegistrationOptions: defineAuthRoute(
             { allowRestrictedSession: true },
-            async (ctx: Context) => {
-                await assertAddFactorVerification(ctx);
-                return createApiSuccessResponse(
-                    ctx,
-                    await createAuthPasskeyRegistrationOptions(realm, await getPrincipal(ctx), getSession(ctx).id),
-                );
-            },
+            async (ctx: Context) => createApiSuccessResponse(
+                ctx,
+                await createAuthPasskeyRegistrationOptions(
+                    realm,
+                    await getPrincipal(ctx),
+                    getSession(ctx).id,
+                    addFactorVerification(ctx),
+                ),
+            ),
         ),
         listSessions: defineAuthRoute(
             {},
@@ -319,13 +321,15 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
         ),
         startTotpSetup: defineAuthRoute(
             { allowRestrictedSession: true },
-            async (ctx: Context) => {
-                await assertAddFactorVerification(ctx);
-                return createApiSuccessResponse(
-                    ctx,
-                    await startAuthTotpSetup(realm, await getPrincipal(ctx), getSession(ctx).id),
-                );
-            },
+            async (ctx: Context) => createApiSuccessResponse(
+                ctx,
+                await startAuthTotpSetup(
+                    realm,
+                    await getPrincipal(ctx),
+                    getSession(ctx).id,
+                    addFactorVerification(ctx),
+                ),
+            ),
         ),
     };
 }
