@@ -33,6 +33,7 @@ import {
     hasAuthSecondFactor,
     mutateAuthPrincipalSetting,
 } from './principal-setting';
+import type { AuthPrincipalSettingMutationOptions } from './principal-setting';
 import {
     clearAuthAttempts,
     consumeAuthPrincipalAttempt,
@@ -175,6 +176,7 @@ export async function regenerateAuthRecoveryCodes(
     realm: AuthRealm<any>,
     principalId: string,
     context: AuthOperationContext,
+    options?: AuthPrincipalSettingMutationOptions,
 ) {
     const recoveryCodes = await mutateAuthPrincipalSetting(
         realm,
@@ -187,6 +189,7 @@ export async function regenerateAuthRecoveryCodes(
                 update: { $set: { recoveryCodes: toStoredRecoveryCodes(recoveryCodes) } },
             };
         },
+        options,
     );
 
     await recordAuthEvent(
@@ -252,6 +255,7 @@ export async function removeAuthPasskey(
     principalId: string,
     credentialId: string,
     context: AuthOperationContext,
+    options?: AuthPrincipalSettingMutationOptions,
 ) {
     const passkey = await removeSecondFactor(
         realm,
@@ -262,6 +266,7 @@ export async function removeAuthPasskey(
             passkeys: setting.passkeys.filter((passkey) => passkey.credentialId !== credentialId),
         }),
         { $pull: { passkeys: { credentialId } } },
+        options,
     );
 
     if (!passkey) return false;
@@ -278,7 +283,12 @@ export async function removeAuthPasskey(
     return true;
 }
 
-export async function removeAuthTotp(realm: AuthRealm<any>, principalId: string, context: AuthOperationContext) {
+export async function removeAuthTotp(
+    realm: AuthRealm<any>,
+    principalId: string,
+    context: AuthOperationContext,
+    options?: AuthPrincipalSettingMutationOptions,
+) {
     const totp = await removeSecondFactor(
         realm,
         principalId,
@@ -288,6 +298,7 @@ export async function removeAuthTotp(realm: AuthRealm<any>, principalId: string,
             totp: undefined,
         }),
         { $unset: { totp: 1 } },
+        options,
     );
 
     if (!totp) return false;
@@ -313,6 +324,7 @@ async function removeSecondFactor<Factor>(
     findFactor: (setting: AuthPrincipalSetting) => Factor | undefined,
     toSettingAfterRemoval: (setting: AuthPrincipalSetting) => AuthPrincipalSetting,
     update: UpdateQuery<AuthPrincipalSetting>,
+    options?: AuthPrincipalSettingMutationOptions,
 ) {
     const { twoFactorRequired } = await realm.getConfig();
     return await mutateAuthPrincipalSetting(
@@ -339,6 +351,7 @@ async function removeSecondFactor<Factor>(
                 },
             };
         },
+        options,
     );
 }
 
@@ -403,6 +416,7 @@ export async function setAuthTwoFactorEnabled(
     principalId: string,
     enabled: boolean,
     context: AuthOperationContext,
+    options?: AuthPrincipalSettingMutationOptions,
 ) {
     const { twoFactorRequired } = await realm.getConfig();
     const changed = await mutateAuthPrincipalSetting(
@@ -417,6 +431,7 @@ export async function setAuthTwoFactorEnabled(
                 update: { $set: { twoFactorEnabled: enabled } },
             };
         },
+        options,
     );
 
     if (!changed) return;

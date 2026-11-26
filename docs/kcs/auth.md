@@ -152,7 +152,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 流程中可預期的失敗一律拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 API 錯誤。
 
 - `verificationRequired` 的 `errorData` 為 `{ operation, factors }`：要驗證的操作名稱，與帳號可用來驗證的因子（沒有任何第二因子時為驗證碼與密碼中可用者）。用戶端據此顯示驗證畫面，取得一次性憑據後以 `X-Auth-Verification` 標頭（常數 `authVerificationHeaderName`）重送原請求。
-- 需要憑據的路由先確認其他前置條件（目前密碼、QR 請求仍有效、管理對象存在且可管理）再消耗憑據，這些條件不成立時不會白白用掉憑據。
+- 需要憑據的路由先確認前置條件再消耗憑據，條件不成立時不會白白用掉憑據：目前密碼、QR 請求仍有效、管理對象存在且可管理在消耗前檢查；因子狀態的條件（要移除的因子是否存在、是否被強制、是否已有第二因子）要與寫入一起判斷才能在並行請求下成立，所以由 `mutateAuthPrincipalSetting` 判斷通過、確定要寫入時才以 `beforeWrite` 消耗。
 - `verificationCodeUnavailable`：realm 沒有寄送通道，或這個帳號不能使用驗證碼（已有第二因子、沒有可用的收件位址）。
 - 帳號不存在、密碼錯誤、帳號停用一律為 `invalidCredentials`，回應不透露帳號是否存在。
 
@@ -237,7 +237,10 @@ pack 內建的流程中，驗證碼只用在已登入時的驗證身分：六位
 
 ### 驗證身分
 
-- 路由以 meta 的 `verification` 標記所需的操作名稱；handler 內依條件決定時呼叫 `HonoAuth.assertVerification(ctx, operation)`。
+- 消耗憑據的時機：
+  - meta 的 `verification` 在 handler 執行前就消耗，只用在 handler 內沒有其他會失敗的條件的路由。
+  - handler 內還有會失敗的條件（驗證碼、唯一性、對象狀態等）時，條件確認後、確定要寫入時才呼叫 `HonoAuth.assertVerification(ctx, operation)`；條件在 `mutateAuthPrincipalSetting` 內判斷的，交給它的 `beforeWrite`（見「錯誤」）。
+  - 不能改成 handler 成功後才消耗：同一份憑據並行送出的請求會在消耗前都完成寫入，失去一次性。
 - 用戶端先收到 `verificationRequired`，以「驗證因子」函式驗證（密碼金鑰、TOTP、救援碼；沒有任何第二因子時用密碼或驗證碼），密碼金鑰的選項與驗證碼的寄送另有路由。
 - 通過後取得 `verificationGrant`：綁定帳號、`sessionId` 與操作名稱、一次性、有效 2 分鐘，沒有放行期。操作名稱可帶目標 ID（例如 `deleteProject:<id>`），讓憑據只對該目標有效。用戶端以 `X-Auth-Verification` 標頭帶上，讀取即刪除並比對，不符即回 `verificationRequired`。
 - `auth.manageTwoFactor`：管理端的重設雙重驗證與取消 `twoFactorEnforced`；操作者需先在自己的 realm 驗證身分（設定強制不需要）。

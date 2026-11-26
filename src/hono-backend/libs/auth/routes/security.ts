@@ -70,6 +70,14 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
     }
 
     /**
+     * Consumes the verification only once the factor change is about to be written, so a request that fails its
+     * preconditions (e.g. the factor is gone or two-factor is enforced) keeps the grant.
+     */
+    function verifyBeforeWrite(ctx: Context, operation: string) {
+        return { beforeWrite: async () => await assertVerification(ctx, operation) };
+    }
+
+    /**
      * After a restricted session sets up its second factor, it is replaced with a normal session.
      */
     async function upgradeRestrictedSession(ctx: Context, factor: AuthFactor) {
@@ -165,7 +173,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
             },
         ),
         regenerateRecoveryCodes: defineAuthRoute(
-            { verification: authVerificationOperations.regenerateRecoveryCodes },
+            {},
             async (ctx: Context) => createApiSuccessResponse(
                 ctx,
                 {
@@ -173,6 +181,7 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                         realm,
                         getSession(ctx).principalId,
                         getOperationContext(ctx),
+                        verifyBeforeWrite(ctx, authVerificationOperations.regenerateRecoveryCodes),
                     ),
                 },
             ),
@@ -208,13 +217,14 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
          * Expects the route param `id`: the passkey's credential ID.
          */
         removePasskey: defineAuthRoute(
-            { verification: authVerificationOperations.removeFactor },
+            {},
             async (ctx: Context) => {
                 const removed = await removeAuthPasskey(
                     realm,
                     getSession(ctx).principalId,
                     ctx.req.param('id') ?? '',
                     getOperationContext(ctx),
+                    verifyBeforeWrite(ctx, authVerificationOperations.removeFactor),
                 );
 
                 if (!removed) throwApiError(apiErrors.common.notFound);
@@ -222,12 +232,16 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
             },
         ),
         removeTotp: defineAuthRoute(
-            { verification: authVerificationOperations.removeFactor },
+            {},
             async (ctx: Context) => {
-                if (!await removeAuthTotp(realm, getSession(ctx).principalId, getOperationContext(ctx))) {
-                    throwApiError(apiErrors.common.notFound);
-                }
+                const removed = await removeAuthTotp(
+                    realm,
+                    getSession(ctx).principalId,
+                    getOperationContext(ctx),
+                    verifyBeforeWrite(ctx, authVerificationOperations.removeFactor),
+                );
 
+                if (!removed) throwApiError(apiErrors.common.notFound);
                 return createApiSuccessResponse(ctx);
             },
         ),
@@ -290,12 +304,13 @@ export function createAuthSecurityRoutes<P extends AuthPrincipal>({
                 apiValidator('json', z.object({ enabled: z.boolean() })),
                 async (ctx) => {
                     const { enabled } = ctx.req.valid('json');
-                    if (!enabled) await assertVerification(ctx, authVerificationOperations.disableTwoFactor);
                     await setAuthTwoFactorEnabled(
                         realm,
                         getSession(ctx).principalId,
                         enabled,
                         getOperationContext(ctx),
+                        // Only disabling weakens the account, so only that needs a verification.
+                        enabled ? undefined : verifyBeforeWrite(ctx, authVerificationOperations.disableTwoFactor),
                     );
 
                     return createApiSuccessResponse(ctx);

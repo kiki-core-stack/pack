@@ -20,6 +20,14 @@ export interface AuthPrincipalSettingMutation<Result> {
     update?: UpdateQuery<AuthPrincipalSetting>;
 }
 
+export interface AuthPrincipalSettingMutationOptions {
+    /**
+     * 判斷通過且要寫入時、寫入前呼叫一次（例如消耗驗證身分的憑據）；前置條件不成立或不需寫入時不呼叫，
+     * 不會白白用掉憑據。
+     */
+    beforeWrite?: () => Promise<void>;
+}
+
 // Constants
 const maxMutationAttempts = 5;
 
@@ -93,11 +101,18 @@ export async function mutateAuthPrincipalSetting<Result>(
     realm: AuthRealm<any>,
     principalId: string | Types.ObjectId,
     mutate: (setting: AuthPrincipalSetting) => Promisable<AuthPrincipalSettingMutation<Result>>,
+    { beforeWrite }: AuthPrincipalSettingMutationOptions = {},
 ) {
+    let beforeWriteCalled = false;
     for (let attempt = 0; attempt < maxMutationAttempts; attempt++) {
         const setting = await getOrCreateAuthPrincipalSetting(realm, principalId);
         const { result, update } = await mutate(setting);
         if (!update) return result;
+        if (!beforeWriteCalled) {
+            beforeWriteCalled = true;
+            await beforeWrite?.();
+        }
+
         const updateResult = await AuthPrincipalSettingModel.updateOne(
             {
                 _id: setting._id,
