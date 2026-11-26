@@ -17,7 +17,7 @@ import { createAuthVerificationRoutes } from './verification';
 // Functions
 
 /**
- * See `docs/auth.md` for the flows.
+ * See `docs/kcs/auth.md` for the flows.
  */
 export function createAuthRoutes<P extends AuthPrincipal>(
     realm: AuthRealm<P>,

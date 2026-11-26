@@ -16,7 +16,7 @@ type AuthAttemptKind = keyof typeof authRateLimits;
 // Constants
 
 /**
- * 預設門檻，說明見 `docs/auth.md` 的「防暴力破解」。
+ * 預設門檻，說明見 `docs/kcs/auth.md` 的「防暴力破解」。
  */
 const authRateLimits = {
     codeBySubject: {

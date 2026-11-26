@@ -3,7 +3,7 @@
 ## 使用方式
 
 - 直接 import 原始碼，不經 build；只 import 用到的檔案，例如 `@kcs-project/pack/schemas/admin`，沒有總入口。
-- `package.json` 的 `exports` 由 `scripts/sync-package-exports.ts` 產生（pre-commit hook 會自動執行，exports 有變動時需 stage 後再 commit）：
+- `package.json` 的 `exports` 由 `scripts/sync-package-exports.ts` 產生（pre-commit hook 會自動執行）：
   - `./*` 對應 `./src/*.ts`；目錄的 `index.ts` 以目錄路徑匯出。
   - 路徑中有 `_internal(s)`、`internal(s)` 段的模組與 `.d.ts` 不對外。
   - 路徑中有 `types` 段或檔名為 `types` 的模組只匯出型別，且不得含執行期程式碼。
@@ -61,7 +61,6 @@
 - 每種可登入的身分以 `defineAuthRealm` 定義為一個 realm（帳號 model、scope、cookie、origin、密碼金鑰支援），營運政策放在該 scope 平台設定的 `auth` 區塊。
 - 工作階段存在 Redis（不使用 JWT），以 `__Host-` cookie 攜帶；帳號的雙重驗證設定與安全性紀錄存在 `auth.principal_settings`、`auth.events`。
 - 後端以 `createHonoAuth(realm, { getClientIp })` 取得 `authenticate`（掛在 route middleware）與路由處理函式，各路由檔只轉接；流程中的失敗拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 `auth` 錯誤碼。
-- 各專案自行重設密碼時呼叫 `resetAuthPassword`（或以 `revokeAllAuthSessionsAround` 包住寫入），停用帳號時呼叫 `revokeAllAuthSessions`，刪除帳號時呼叫 `deleteAuthPrincipalData`（見 auth.md「踢除的時機」）。
 
 ### 依判別值變化的欄位
 
@@ -79,14 +78,6 @@
 - `hasPermission` 前後端共用；需求可寫 key、`group.*` 或 `!` 排除。
 - 身分組只存具體的 key，儲存前以 `expandPermissionRequirements` 補上依賴。
 
-### codegen
-
-前端的產生腳本以 `libs/codegen` 打後端的開發用路由產生檔案；所需路由與工具寫在各函式的說明。
-
 ### enum 數值
 
 可被下游擴充的 enum 中，1000 以下保留給上游，下游從 1000 開始。下游值放在檔案內以 `eslint-disable` 標註的區段，手動插入；不要整檔 `eslint --fix`（排序規則會把下游值重排進上游區段）。
-
-## 開發
-
-- pnpm：`pnpm run typecheck`、`pnpm run lint`（含 Lua 的 stylua 檢查）、`pnpm run test`。

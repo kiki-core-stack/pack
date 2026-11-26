@@ -164,7 +164,7 @@ const authRealms = new Map<string, AuthRealm<any>>();
 // Functions
 
 /**
- * 定義一種可登入的身分；設定內容見 `docs/auth.md`。
+ * 定義一種可登入的身分；設定內容見 `docs/kcs/auth.md`。
  */
 export function defineAuthRealm<P extends AuthPrincipal>(options: AuthRealmOptions<P>): AuthRealm<P> {
     if (!/^[a-z][\da-z-]*$/.test(options.name)) throw new Error(`Invalid auth realm name: ${options.name}`);

@@ -5,7 +5,7 @@ import { packLocaleCatalogs } from '../i18n/catalogs';
 import * as z from '../libs/zod';
 
 /**
- * Auth policy of a realm, kept in the platform config of the realm's scope (see `docs/auth.md`).
+ * Auth policy of a realm, kept in the platform config of the realm's scope (see `docs/kcs/auth.md`).
  */
 export const platformAuthConfigSchema = z.object({
     maxSessions: z.int().min(1).max(100).nullable(),
