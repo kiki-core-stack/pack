@@ -1,6 +1,5 @@
 import type { BaseMongoosePaginateModel } from '@kikiutils/mongoose/types';
 import type { Context } from 'hono';
-import { Types } from 'mongoose';
 import type {
     HydratedDocument,
     ProjectionType,
@@ -42,7 +41,6 @@ registerModelExtensions.push(
             ) {
                 const id = ctx.req.param('id');
                 if (!id) throwApiError(apiErrors.common.notFound);
-                if (!Types.ObjectId.isValid(id)) throwApiError(apiErrors.common.notFound);
                 const document = await this.findOne(
                     {
                         ...filter || {},
