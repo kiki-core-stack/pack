@@ -18,6 +18,11 @@ export const ToAdminFrontend = /* @__PURE__ */ createEnumObject(
     ['ForceLogout'] as const,
 );
 
+export const ToBackend = /* @__PURE__ */ createEnumObject(
+    'ToBackend',
+    [] as const,
+);
+
 export const ToManagementBackend = /* @__PURE__ */ createEnumObject(
     'ToManagementBackend',
     [] as const,
@@ -31,4 +36,9 @@ export const ToOpsWorkersTs = /* @__PURE__ */ createEnumObject(
 export const ToServer = /* @__PURE__ */ createEnumObject(
     'ToServer',
     ['AuthSessionsRevoked'] as const,
+);
+
+export const ToServicesBackend = /* @__PURE__ */ createEnumObject(
+    'ToServicesBackend',
+    [] as const,
 );

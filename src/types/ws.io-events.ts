@@ -6,6 +6,8 @@ export namespace WsIoEvents {
         [WsIoEventNames.ToAdminFrontend.ForceLogout]: () => void;
     }
 
+    export interface ToBackend {}
+
     export interface ToManagementBackend {}
 
     export interface ToOpsWorkersTs {}
@@ -20,4 +22,6 @@ export namespace WsIoEvents {
             sessionIds: string[],
         ) => void;
     }
+
+    export interface ToServicesBackend {}
 }
