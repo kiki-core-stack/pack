@@ -1,15 +1,13 @@
 import { redisClient } from '../../connections/redis';
 import { AuthEventType } from '../../constants/auth';
-import type {
-    AuthFactor,
-    AuthRequestInfo,
-} from '../../types/auth';
+import type { AuthFactor } from '../../types/auth';
 
 import { sha256Hex } from './_internals/crypto';
 import { authRedisKey } from './_internals/redis';
 import { AuthError } from './error';
 import { recordAuthEvent } from './event';
 import type { AuthRealm } from './realm';
+import type { AuthRequestInfo } from './types';
 
 type AuthAttemptKind = keyof typeof authRateLimits;
 

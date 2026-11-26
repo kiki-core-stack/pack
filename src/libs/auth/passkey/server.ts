@@ -18,7 +18,6 @@ import type {
     AuthPrincipalSetting,
     AuthPrincipalSettingPasskey,
 } from '../../../models/auth/principal-setting';
-import type { AuthPrincipal } from '../../../types/auth';
 import {
     consumeAuthChallenge,
     createAuthChallenge,
@@ -27,6 +26,7 @@ import { AuthError } from '../error';
 import { getOrCreateAuthPrincipalSetting } from '../principal-setting';
 import type { AuthPrincipalSettingMutationOptions } from '../principal-setting';
 import type { AuthRealm } from '../realm';
+import type { AuthPrincipal } from '../types';
 
 /**
  * WebAuthn 挑戰的用途；驗證時必須與目前的操作相符。

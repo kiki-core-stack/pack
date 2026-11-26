@@ -6,13 +6,13 @@ import type {
 
 import { AuthError } from '../../../../libs/auth/error';
 import type { AuthRealm } from '../../../../libs/auth/realm';
-import * as z from '../../../../libs/zod/backend';
 import type {
     AuthOperationContext,
     AuthPrincipal,
     AuthRequestInfo,
     AuthSession,
-} from '../../../../types/auth';
+} from '../../../../libs/auth/types';
+import * as z from '../../../../libs/zod/backend';
 import type { AuthSessionData } from '../../../../types/data/auth';
 import type {
     AuthRouteDefinition,

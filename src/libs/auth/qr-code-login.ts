@@ -2,12 +2,7 @@ import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 
 import { redisClient } from '../../connections/redis';
 import { AuthEventType } from '../../constants/auth';
-import type {
-    AuthFactor,
-    AuthPrincipal,
-    AuthRequestInfo,
-    AuthSession,
-} from '../../types/auth';
+import type { AuthFactor } from '../../types/auth';
 
 import {
     generateRandomToken,
@@ -29,6 +24,11 @@ import {
     readAuthSessionGeneration,
 } from './session';
 import type { CreatedAuthSession } from './session';
+import type {
+    AuthPrincipal,
+    AuthRequestInfo,
+    AuthSession,
+} from './types';
 
 export type AuthQrCodeLoginPollOutcome =
   | {

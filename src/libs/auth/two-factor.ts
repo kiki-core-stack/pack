@@ -5,11 +5,6 @@ import type { UpdateQuery } from 'mongoose';
 import { AuthEventType } from '../../constants/auth';
 import { AuthPrincipalSettingModel } from '../../models/auth/principal-setting';
 import type { AuthPrincipalSetting } from '../../models/auth/principal-setting';
-import type {
-    AuthOperationContext,
-    AuthPrincipal,
-    AuthSession,
-} from '../../types/auth';
 import type { AuthSecurityOverviewData } from '../../types/data/auth';
 
 import {
@@ -53,6 +48,11 @@ import {
     toAuthTotpUri,
     verifyAuthTotpCode,
 } from './totp';
+import type {
+    AuthOperationContext,
+    AuthPrincipal,
+    AuthSession,
+} from './types';
 
 interface TotpSetupChallenge {
     principalId: string;

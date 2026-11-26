@@ -2,13 +2,7 @@ import { EnhancedDate } from '@kikiutils/shared/classes/enhanced-date';
 
 import { redisClient } from '../../connections/redis';
 import { AuthEventType } from '../../constants/auth';
-import type {
-    AuthFactor,
-    AuthPrincipal,
-    AuthRequestInfo,
-    AuthSession,
-    StoredAuthSession,
-} from '../../types/auth';
+import type { AuthFactor } from '../../types/auth';
 import type { PlatformAuthConfig } from '../../types/platform';
 import { logger } from '../_internals/logger';
 
@@ -28,6 +22,12 @@ import {
     hasAuthSecondFactor,
 } from './principal-setting';
 import type { AuthRealm } from './realm';
+import type {
+    AuthPrincipal,
+    AuthRequestInfo,
+    AuthSession,
+    StoredAuthSession,
+} from './types';
 
 export interface CreateAuthSessionInput {
     approvedBySessionId?: string;

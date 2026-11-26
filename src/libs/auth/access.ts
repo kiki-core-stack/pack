@@ -1,12 +1,12 @@
-import type {
-    AuthRequestInfo,
-    AuthSession,
-} from '../../types/auth';
 import { checkPlatformIpAccessPolicy } from '../platform/ip-access-policy';
 
 import { AuthError } from './error';
 import type { AuthRealm } from './realm';
 import { authenticateAuthSession } from './session';
+import type {
+    AuthRequestInfo,
+    AuthSession,
+} from './types';
 
 // Functions
 export async function assertAuthIpAccess(realm: AuthRealm<any>, request: AuthRequestInfo, principalId?: string) {

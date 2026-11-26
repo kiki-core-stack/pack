@@ -4,11 +4,7 @@ import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { AuthEventType } from '../../constants/auth';
 import { AuthPrincipalSettingModel } from '../../models/auth/principal-setting';
 import type { AuthPrincipalSetting } from '../../models/auth/principal-setting';
-import type {
-    AuthFactor,
-    AuthPrincipal,
-    AuthRequestInfo,
-} from '../../types/auth';
+import type { AuthFactor } from '../../types/auth';
 import { verifyPasswordWithArgon2 } from '../password-argon2';
 
 import { verifyAuthCode } from './code';
@@ -32,6 +28,10 @@ import {
     encryptAuthSecret,
 } from './secret-encryption';
 import { verifyAuthTotpCode } from './totp';
+import type {
+    AuthPrincipal,
+    AuthRequestInfo,
+} from './types';
 
 export type AuthFactorProof =
   | {

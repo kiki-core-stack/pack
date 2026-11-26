@@ -3,17 +3,17 @@ import type * as z from 'zod';
 
 import type { PlatformScope } from '../../constants/platform';
 import type {
-    AuthMessage,
-    AuthPrincipal,
-    AuthRealmEvent,
-} from '../../types/auth';
-import type {
     PlatformAuthConfig,
     PlatformConfigByScope,
 } from '../../types/platform';
 import { getPlatformConfig } from '../platform/config';
 
 import { getAuthSecretEncryptionKeys } from './secret-encryption';
+import type {
+    AuthMessage,
+    AuthPrincipal,
+    AuthRealmEvent,
+} from './types';
 
 export type AuthPlatformScope = {
     [S in PlatformScope]: PlatformConfigByScope[S] extends { auth: PlatformAuthConfig } ? S : never;

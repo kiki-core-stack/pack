@@ -3,7 +3,7 @@ import type {
     MiddlewareHandler,
 } from 'hono';
 
-import type { AuthSession } from '../../types/auth';
+import type { AuthSession } from '../../libs/auth/types';
 
 declare module 'hono' {
     interface Context {

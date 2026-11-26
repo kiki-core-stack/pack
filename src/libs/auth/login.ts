@@ -3,8 +3,6 @@ import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { AuthEventType } from '../../constants/auth';
 import type {
     AuthFactor,
-    AuthPrincipal,
-    AuthRequestInfo,
     AuthSecondFactor,
 } from '../../types/auth';
 import { verifyPasswordWithArgon2 } from '../password-argon2';
@@ -44,6 +42,10 @@ import {
     readAuthSessionGeneration,
 } from './session';
 import type { CreatedAuthSession } from './session';
+import type {
+    AuthPrincipal,
+    AuthRequestInfo,
+} from './types';
 
 type AuthFirstFactor = Extract<AuthFactor, 'external' | 'password'>;
 

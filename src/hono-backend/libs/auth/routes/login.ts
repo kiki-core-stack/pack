@@ -15,8 +15,8 @@ import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/pa
 import { findAuthPrincipalSetting } from '../../../../libs/auth/principal-setting';
 import { consumeAuthAttempt } from '../../../../libs/auth/rate-limit';
 import { revokeAuthSession } from '../../../../libs/auth/session';
+import type { AuthPrincipal } from '../../../../libs/auth/types';
 import * as z from '../../../../libs/zod/backend';
-import type { AuthPrincipal } from '../../../../types/auth';
 import { apiValidator } from '../../api/validator';
 import {
     applyAuthLoginOutcome,

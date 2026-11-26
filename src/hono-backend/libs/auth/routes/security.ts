@@ -26,12 +26,10 @@ import {
     setAuthTwoFactorEnabled,
     startAuthTotpSetup,
 } from '../../../../libs/auth/two-factor';
+import type { AuthPrincipal } from '../../../../libs/auth/types';
 import * as z from '../../../../libs/zod/backend';
 import { strongPasswordSchema } from '../../../../schemas/password';
-import type {
-    AuthFactor,
-    AuthPrincipal,
-} from '../../../../types/auth';
+import type { AuthFactor } from '../../../../types/auth';
 import * as apiErrors from '../../../api-errors';
 import { throwApiError } from '../../api/error';
 import { apiValidator } from '../../api/validator';

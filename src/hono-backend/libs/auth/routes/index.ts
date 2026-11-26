@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
 
 import type { AuthRealm } from '../../../../libs/auth/realm';
-import type { AuthPrincipal } from '../../../../types/auth';
+import type { AuthPrincipal } from '../../../../libs/auth/types';
 import type { HonoAuthOptions } from '../../../types/auth';
 import { createAuthRoutesContext } from '../_internals/route';
 

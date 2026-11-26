@@ -1,9 +1,4 @@
 import { AuthEventType } from '../../constants/auth';
-import type {
-    AuthOperationContext,
-    AuthPrincipal,
-    AuthRequestInfo,
-} from '../../types/auth';
 import { logger } from '../_internals/logger';
 
 import { assertAuthIpAccess } from './access';
@@ -33,6 +28,11 @@ import {
     readAuthSessionGeneration,
     revokeAllAuthSessionsAround,
 } from './session';
+import type {
+    AuthOperationContext,
+    AuthPrincipal,
+    AuthRequestInfo,
+} from './types';
 
 interface PasswordResetChallenge {
     /**

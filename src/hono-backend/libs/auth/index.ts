@@ -9,11 +9,11 @@ import {
     authenticateAuthSession,
     touchAuthSession,
 } from '../../../libs/auth/session';
-import { consumeAuthVerificationGrant } from '../../../libs/auth/verification';
 import type {
     AuthPrincipal,
     AuthSession,
-} from '../../../types/auth';
+} from '../../../libs/auth/types';
+import { consumeAuthVerificationGrant } from '../../../libs/auth/verification';
 import type {
     AuthRouteMeta,
     HonoAuthOptions,

@@ -9,7 +9,7 @@ import type { AuthLoginOutcome } from '../../../../libs/auth/login';
 import type { AuthRealm } from '../../../../libs/auth/realm';
 import { revokeAuthSession } from '../../../../libs/auth/session';
 import type { CreatedAuthSession } from '../../../../libs/auth/session';
-import type { AuthRequestInfo } from '../../../../types/auth';
+import type { AuthRequestInfo } from '../../../../libs/auth/types';
 import type { AuthLoginResultData } from '../../../../types/data/auth';
 import type { HonoAuthOptions } from '../../../types/auth';
 import { createApiSuccessResponseData } from '../../api';

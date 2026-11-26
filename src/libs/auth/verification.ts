@@ -1,8 +1,3 @@
-import type {
-    AuthPrincipal,
-    AuthRequestInfo,
-    AuthSession,
-} from '../../types/auth';
 import type { AuthSentCodeData } from '../../types/data/auth';
 
 import {
@@ -18,6 +13,11 @@ import {
 import type { AuthFactorProof } from './factor';
 import { findAuthPrincipalSetting } from './principal-setting';
 import type { AuthRealm } from './realm';
+import type {
+    AuthPrincipal,
+    AuthRequestInfo,
+    AuthSession,
+} from './types';
 
 interface VerificationGrant {
     operation: string;

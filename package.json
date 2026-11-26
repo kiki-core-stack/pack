@@ -22,6 +22,10 @@
     "./init": "./src/init/index.ts",
     "./init/tasks": "./src/init/tasks/index.ts",
     "./init/tasks/kcs": "./src/init/tasks/kcs/index.ts",
+    "./libs/auth/types": {
+      "types": "./src/libs/auth/types.ts",
+      "default": null
+    },
     "./libs/file": "./src/libs/file/index.ts",
     "./libs/storages/files": "./src/libs/storages/files/index.ts",
     "./libs/zod": "./src/libs/zod/index.ts",

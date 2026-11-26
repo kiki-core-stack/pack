@@ -3,12 +3,12 @@ import { createFactory } from 'hono/factory';
 
 import { createAuthPasskeyAuthenticationOptions } from '../../../../libs/auth/passkey/server';
 import { findAuthPrincipalSetting } from '../../../../libs/auth/principal-setting';
+import type { AuthPrincipal } from '../../../../libs/auth/types';
 import {
     createAuthVerificationGrant,
     sendAuthVerificationCode,
 } from '../../../../libs/auth/verification';
 import * as z from '../../../../libs/zod/backend';
-import type { AuthPrincipal } from '../../../../types/auth';
 import { apiValidator } from '../../api/validator';
 import { createApiSuccessResponse } from '../_internals/context';
 import {

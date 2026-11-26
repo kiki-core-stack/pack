@@ -1,11 +1,11 @@
 import { AuthEventModel } from '../../models/auth/event';
-import type {
-    AuthPrincipal,
-    RecordAuthEventInput,
-} from '../../types/auth';
 import { logger } from '../_internals/logger';
 
 import type { AuthRealm } from './realm';
+import type {
+    AuthPrincipal,
+    RecordAuthEventInput,
+} from './types';
 
 // Constants
 const maxAuthUserAgentLength = 512;

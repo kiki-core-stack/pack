@@ -8,8 +8,8 @@ import {
     getAuthQrCodeLoginInfo,
     pollAuthQrCodeLogin,
 } from '../../../../libs/auth/qr-code-login';
+import type { AuthPrincipal } from '../../../../libs/auth/types';
 import * as z from '../../../../libs/zod/backend';
-import type { AuthPrincipal } from '../../../../types/auth';
 import { apiValidator } from '../../api/validator';
 import {
     createApiSuccessResponse,

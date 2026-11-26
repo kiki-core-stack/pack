@@ -18,8 +18,8 @@ import {
     resetAuthTwoFactor,
     setAuthTwoFactorEnforced,
 } from '../../../../libs/auth/two-factor';
+import type { AuthOperationContext } from '../../../../libs/auth/types';
 import * as z from '../../../../libs/zod/backend';
-import type { AuthOperationContext } from '../../../../types/auth';
 import * as apiErrors from '../../../api-errors';
 import type { HonoAuthOptions } from '../../../types/auth';
 import { throwApiError } from '../../api/error';
