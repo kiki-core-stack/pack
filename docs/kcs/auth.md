@@ -135,7 +135,7 @@
 5. 沒有有效工作階段時：`noLoginRequired` 的路由放行，否則回 `unauthorized`（沒帶 token）或 `sessionInvalid`。
 6. 設定 `ctx.authSession`。受限工作階段只放行 `allowRestrictedSession` 的路由（`noLoginRequired` 的路由也放行），否則回 `secondFactorSetupRequired`。
 7. 路由 meta 有 `verification` 時消耗驗證身分的憑據（見「驗證身分」）。
-8. 以上都通過後才順延：距離上次順延超過門檻才寫回最後活動時間與 TTL，門檻為「5 分鐘」與「閒置逾時的四分之一」較小者（閒置逾時取目前設定與上次寫入時採用的值較小者）。被拒絕的請求不順延。
+8. 以上都通過後才順延：距離上次順延超過門檻才寫回最後活動時間與 TTL，門檻為「5 分鐘」與「閒置逾時的四分之一」較小者（閒置逾時取目前設定與上次寫入時採用的值較小者）。以上被拒絕的請求不順延；handler 內才消耗憑據的路由，缺少憑據時已經順延。
 
 WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在握手時自行檢查 `Origin`。
 
@@ -152,7 +152,7 @@ WebSocket 握手是 GET，不在第 3 步的範圍內；ws.io-server 必須在�
 流程中可預期的失敗一律拋出 `AuthError`，由 `setupHonoAppErrorHandling` 對應到 API 錯誤。
 
 - `verificationRequired` 的 `errorData` 為 `{ operation, factors }`：要驗證的操作名稱，與帳號可用來驗證的因子（沒有任何第二因子時為驗證碼與密碼中可用者）。用戶端據此顯示驗證畫面，取得一次性憑據後以 `X-Auth-Verification` 標頭（常數 `authVerificationHeaderName`）重送原請求。
-- 需要憑據的路由先確認前置條件再消耗憑據，條件不成立時不會白白用掉憑據：目前密碼、QR 請求仍有效、管理對象存在且可管理在消耗前檢查；因子狀態的條件（要移除的因子是否存在、是否被強制、是否已有第二因子）要與寫入一起判斷才能在並行請求下成立，所以由 `mutateAuthPrincipalSetting` 判斷通過、確定要寫入時才以 `beforeWrite` 消耗。
+- 需要憑據的路由先確認前置條件再消耗憑據，條件不成立時不會白白用掉憑據：目前密碼、QR 請求仍有效、管理對象存在且可管理在消耗前檢查；因子狀態的條件（要移除的因子是否存在、是否被強制、是否已有第二因子）要與寫入一起判斷才能在並行請求下成立，所以由 `mutateAuthPrincipalSetting` 判斷通過、確定要寫入時才以 `beforeWrite` 消耗；消耗後若因並行修改重試、重新判斷時條件已不成立，憑據仍會用掉。
 - `verificationCodeUnavailable`：realm 沒有寄送通道，或這個帳號不能使用驗證碼（已有第二因子、沒有可用的收件位址）。
 - 帳號不存在、密碼錯誤、帳號停用一律為 `invalidCredentials`，回應不透露帳號是否存在。
 
