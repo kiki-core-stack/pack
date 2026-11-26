@@ -13,7 +13,7 @@ import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { SmsProviderBaseData } from '../../types/data/sms';
 import type { SmsProviderConfigVariant } from '../../types/sms';
 
-export type SmsProvider = SmartDataToBaseMongooseDocType<SmsProviderBaseData> & SmsProviderConfigVariant;
+export type SmsProvider = SmartDataToBaseMongooseDocType<SmsProviderBaseData, never, 'usedAt'> & SmsProviderConfigVariant;
 export type SmsProviderDocument = MongooseHydratedDocument<SmsProvider>;
 type SmsProviderModel = BaseMongoosePaginateModel<SmsProvider>;
 
@@ -27,6 +27,8 @@ const schema = new Schema<SmsProvider, SmsProviderModel>({
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(64).trim.unique.required,
     priority: s.int32().default(0).required,
+    // Set before the first send; deletion only removes providers without it.
+    usedAt: s.date().nonRequired,
 });
 
 export const SmsProviderModel = buildMongooseModel<SmsProvider, SmsProviderModel>(

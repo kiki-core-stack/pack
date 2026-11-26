@@ -16,6 +16,7 @@ export interface EmailProviderBaseData extends BaseMongooseModelData, WithAdminA
     enabled: boolean;
     name: string;
     priority: number;
+    usedAt?: string;
 }
 
 export interface EmailSenderIdentityData extends BaseMongooseModelData, WithAdminAuditData {

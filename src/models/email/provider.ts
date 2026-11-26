@@ -13,7 +13,7 @@ import type { SmartDataToBaseMongooseDocType } from '../../types/data';
 import type { EmailProviderBaseData } from '../../types/data/email';
 import type { EmailProviderConfigVariant } from '../../types/email';
 
-export type EmailProvider = EmailProviderConfigVariant & SmartDataToBaseMongooseDocType<EmailProviderBaseData>;
+export type EmailProvider = EmailProviderConfigVariant & SmartDataToBaseMongooseDocType<EmailProviderBaseData, never, 'usedAt'>;
 export type EmailProviderDocument = MongooseHydratedDocument<EmailProvider>;
 type EmailProviderModel = BaseMongoosePaginateModel<EmailProvider>;
 
@@ -27,6 +27,8 @@ const schema = new Schema<EmailProvider, EmailProviderModel>({
     enabled: s.boolean().default(false).required,
     name: s.string().maxlength(64).trim.unique.required,
     priority: s.int32().default(0).required,
+    // Set before the first send; deletion only removes providers without it.
+    usedAt: s.date().nonRequired,
 });
 
 export const EmailProviderModel = buildMongooseModel<EmailProvider, EmailProviderModel>(

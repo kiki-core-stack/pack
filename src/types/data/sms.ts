@@ -13,6 +13,7 @@ export interface SmsProviderBaseData extends BaseMongooseModelData, WithAdminAud
     enabled: boolean;
     name: string;
     priority: number;
+    usedAt?: string;
 }
 
 export interface SmsSendRecordData extends BaseMongooseModelData {
